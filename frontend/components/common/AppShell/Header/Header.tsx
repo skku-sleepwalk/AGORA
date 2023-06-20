@@ -12,13 +12,13 @@ export function Header({ links }: HeaderProps) {
   const [active, setActive] = useState(links[0].link);
 
   return (
-    <MantineHeader height={76} className={classes.header}>
+    <MantineHeader height={69} className={classes.header}>
       <Group className={classes.container} position="apart">
-        <Group spacing={40}>
-          <Text size={28} weight="bold">
-            AGORA
+        <Group spacing={40} className={classes.fullHeight}>
+          <Text size={32} weight="bold" color="white">
+            Agora
           </Text>
-          <Group spacing={5}>
+          <Group spacing={0} className={classes.fullHeight}>
             {links.map((link) => (
               <Anchor
                 key={link.label}
@@ -28,7 +28,8 @@ export function Header({ links }: HeaderProps) {
                   event.preventDefault();
                   setActive(link.link);
                 }}
-                size="lg"
+                size={24}
+                color="white"
               >
                 {link.label}
               </Anchor>

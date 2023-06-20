@@ -16,8 +16,10 @@ export function UserMenu({ image, name }: UserMenu) {
         <Button className={classes.userMenu} variant="white">
           <Group>
             <Avatar src={image} radius="xl" size={30} />
-            <Text size="md">{name}</Text>
-            <IconChevronDown size="0.9rem" stroke={1.5} />
+            <Text size="md" weight="normal">
+              {name}
+            </Text>
+            <IconChevronDown stroke={1.5} />
           </Group>
         </Button>
       </Menu.Target>
