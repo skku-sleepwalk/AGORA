@@ -1,7 +1,5 @@
-import styles from "../styles/Home.module.css";
-
 function Main() {
-  return <div className={styles.container}>Agora</div>;
+  return <div>Hello</div>;
 }
 
 export default Main;
