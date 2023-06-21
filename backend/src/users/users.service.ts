@@ -29,6 +29,7 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const getByEmail = getRepository(User)
       .createQueryBuilder('user')
       .where('user.email = :email', { email });
@@ -41,6 +42,7 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const newUser: User = {
       id: uuid(),
       username: username,
@@ -49,6 +51,7 @@ export class UsersService {
       rating: 0,
       createdAt: new Date(),
     };
+
     const validation_error = await validate(newUser);
     if (validation_error.length > 0) {
       const _error = { username: 'UserInput is not valid check type' };
@@ -62,18 +65,21 @@ export class UsersService {
   }
 
   findAll() {
-    return `This action returns all users`;
+    return this.userRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    return this.userRepository.findOne(id);
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const toUpdateUser = await this.userRepository.findOne(id);
+    const { username, email } = updateUserDto;
+    toUpdateUser.email = email;
+    toUpdateUser.username = username;
+    return await this.userRepository.save(toUpdateUser);
   }
-
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(userid: string) {
+    await this.userRepository.delete({ id: userid });
   }
 }
