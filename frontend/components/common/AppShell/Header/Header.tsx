@@ -1,4 +1,4 @@
-import { Anchor, Group, Header as MantineHeader, Text, TextInput } from "@mantine/core";
+import { Anchor, Group, Header as MantineHeader, Text } from "@mantine/core";
 import { useHeaderStyles } from "./Header.styles";
 import { useState } from "react";
 import { UserMenu } from "./UserMenu/UserMenu";

@@ -8,8 +8,6 @@ interface Props {
 }
 
 function AppShell({ children }: Props) {
-  const theme = useMantineTheme();
-
   return (
     <MantineAppShell
       styles={{ main: { background: "#FCFCFE" } }}

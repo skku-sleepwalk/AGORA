@@ -2,12 +2,12 @@ import { Group, Avatar, Text, Button, useMantineTheme, Menu } from "@mantine/cor
 import { IconChevronDown, IconSettings, IconUser, IconLogout } from "@tabler/icons-react";
 import { useUserMenuStyles } from "./UserMenu.styles";
 
-interface UserMenu {
+export interface UserMenuProps {
   image: string;
   name: string;
 }
 
-export function UserMenu({ image, name }: UserMenu) {
+export function UserMenu({ image, name }: UserMenuProps) {
   const { classes } = useUserMenuStyles();
 
   return (
