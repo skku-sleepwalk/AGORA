@@ -4,6 +4,7 @@ import { TextInput } from "@mantine/core";
 import { Modal, Button } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useWriteWritingStyles } from "./WriteWriting.styles";
+import RichEditor from "./RichEditor";
 
 function WriteWriting() {
   const { classes } = useWriteWritingStyles();
@@ -24,6 +25,7 @@ function WriteWriting() {
         transitionProps={{ transition: "fade", duration: 200 }}
       >
         여기에 글을 써봅시다.
+        <RichEditor />
       </Modal>
 
       <Avatar
