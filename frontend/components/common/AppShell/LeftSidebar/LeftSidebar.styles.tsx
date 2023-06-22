@@ -26,6 +26,11 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
   Checkbox: {
     display: 'block',
     position: 'relative',
-    top: 30,
+    top: 30
+  },
+  CheckboxGroup: {
+    display: 'block',
+    position: 'relative',
+    top: 30
   }
 }));
