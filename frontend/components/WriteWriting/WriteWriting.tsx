@@ -10,14 +10,16 @@ function WriteWriting(){
         <Container className={classes.container}>
 
             <Avatar src={"https://avatars.githubusercontent.com/u/52057157?v=4" } radius="xl" size={30} display={"inline-block"}
-            pos={"relative"}
-            top={10}
+            // pos={"relative"}
+            left={150}
+            top={70}
             />
             
             <TextInput
             placeholder="새로운 글을 작성해보세요."
             display={"inline-block"}
-            left={10}
+            left={160}
+            top={60}
             pos={"relative"}
             
             className={classes.TextInput}
