@@ -5,6 +5,7 @@ import { Modal, Button } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useWriteWritingStyles } from "./WriteWriting.styles";
 import RichEditor from "./RichEditor";
+import { ButtonProgress } from "./writebtn";
 
 function WriteWriting() {
   const { classes } = useWriteWritingStyles();
@@ -15,6 +16,7 @@ function WriteWriting() {
   //   console.log(1);
   //   return 0;
   // }
+
   return (
     <Container className={classes.container}>
       <Modal
@@ -24,8 +26,9 @@ function WriteWriting() {
         fullScreen={isMobile}
         transitionProps={{ transition: "fade", duration: 200 }}
       >
-        여기에 글을 써봅시다.
         <RichEditor />
+        <br></br>
+        <ButtonProgress />
       </Modal>
 
       <Avatar
