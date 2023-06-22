@@ -11,10 +11,16 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
-    "@mantine/core": "^6.0.13",
-    "@mantine/hooks": "^6.0.13",
+    "@mantine/core": "^6.0.14",
+    "@mantine/hooks": "^6.0.14",
     "@mantine/next": "^6.0.13",
+    "@mantine/tiptap": "^6.0.14",
     "@tabler/icons-react": "^2.22.0",
+    "@tiptap/core": "^2.0.3",
+    "@tiptap/extension-link": "^2.0.3",
+    "@tiptap/pm": "^2.0.3",
+    "@tiptap/react": "^2.0.3",
+    "@tiptap/starter-kit": "^2.0.3",
     "next": "13.4.6",
     "react": "18.2.0",
     "react-dom": "18.2.0"
