@@ -1,5 +1,7 @@
+import { LiftSidebar } from "../components/common/AppShell/LeftSidebar/LeftSidebar";
+
 function Main() {
-  return <div>Hello</div>;
+  return LiftSidebar();
 }
 
 export default Main;
