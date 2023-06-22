@@ -1,7 +1,7 @@
-import { LiftSidebar } from "../components/common/AppShell/LeftSidebar/LeftSidebar";
+import { LeftSidebar } from "../components/common/AppShell/LeftSidebar/LeftSidebar";
 
 function Main() {
-  return LiftSidebar();
+  return LeftSidebar();
 }
 
 export default Main;

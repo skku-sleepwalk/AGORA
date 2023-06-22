@@ -7,7 +7,7 @@ export interface LeftSidebarProps {
   links: { label: string; link: string }[];
 }
 
-export function LiftSidebar() {
+export function LeftSidebar() {
   const { classes, cx } = useLeftSidebarStyles();
 
   const [category] = useListState(Category);
