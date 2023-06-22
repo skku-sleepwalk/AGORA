@@ -1,5 +1,6 @@
+import WriteWriting from "../components/WriteWriting/WriteWriting";
 function Main() {
-  return <div>Hello</div>;
+  return( <WriteWriting/>);
 }
 
 export default Main;
