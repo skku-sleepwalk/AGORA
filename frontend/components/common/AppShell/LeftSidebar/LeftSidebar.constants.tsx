@@ -17,3 +17,11 @@ export const DesignValues = [
   { label: 'C#', checked: false, key: randomId() },
   { label: 'Python', checked: false, key: randomId() },
 ];
+
+export const ContestValues = [
+  { label: 'Unity', checked: false, key: randomId() },
+  { label: 'C#', checked: false, key: randomId() },
+  { label: 'Python', checked: false, key: randomId() },
+];
+
+export const Values = [DevelopValues, DesignValues, ContestValues];

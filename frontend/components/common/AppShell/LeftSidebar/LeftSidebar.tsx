@@ -1,5 +1,6 @@
 import { Checkbox, Group, Text, Container } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
+import { IconChevronDown } from "@tabler/icons-react";
 import { useLeftSidebarStyles } from './LeftSidebar.styles';
 import { Category, DevelopValues } from './LeftSidebar.constants';
 
@@ -30,6 +31,7 @@ export function LeftSidebar() {
   const CategoryItems = category.map((value) => (
     <Group className={classes.CheckboxGroup}>
       <Checkbox 
+        display={'inline-block'}
         checked={allChecked}
         indeterminate={indeterminate}
         label={value.label}
@@ -39,14 +41,15 @@ export function LeftSidebar() {
             current.map((value) => ({ ...value, checked: !allChecked }))
           )
         }
-      />
+      /> 
+      <IconChevronDown stroke={1.5} className={classes.DropDown} />
       {Items}
     </Group>
   ));
 
   return (
-    <Container className={classes.CategoryBox}>
-      <Text className={classes.Category}>카테고리</Text>
+    <Container className={classes.CategoryContainer}>
+      <Text className={classes.CategoryText}>카테고리</Text>
       <Group>
         {CategoryItems}
       </Group>

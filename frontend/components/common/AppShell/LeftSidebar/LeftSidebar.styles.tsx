@@ -1,10 +1,10 @@
 import { createStyles } from "@mantine/core";
 
 export const useLeftSidebarStyles = createStyles((theme) => ({
-  CategoryBox: {
+  CategoryContainer: {
     boxSizing: 'border-box',
     width: 261,
-    height: 390,
+    // height: 390,
 
     position: 'relative',
     float: 'left',
@@ -14,7 +14,8 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
     borderRadius: "15px"
   },
-  Category: {
+
+  CategoryText: {
     display: 'block',
     position: 'relative',
     top: 20,
@@ -23,11 +24,13 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     fontSize: 20,
     color: '#000'
   },
-  Checkbox: {
-    display: 'block',
-    position: 'relative',
-    top: 30
+
+  DropDown: {
+    display: 'inline-block',
+    marginLeft: 10,
+    paddingTop: 2,
   },
+
   CheckboxGroup: {
     display: 'block',
     position: 'relative',
