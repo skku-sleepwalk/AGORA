@@ -12,7 +12,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
 
     backgroundColor: "#FFF",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
-    borderRadius: "15px"
+    borderRadius: "15px",
   },
 
   CategoryText: {
@@ -22,18 +22,20 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
 
     fontWeight: 500,
     fontSize: 20,
-    color: '#000'
+    color: '#000',
   },
 
   DropDown: {
     display: 'inline-block',
-    marginLeft: 10,
-    paddingTop: 2,
+
+    boxSizing: 'border-box',
+    height: 20,
   },
 
   CheckboxGroup: {
     display: 'block',
     position: 'relative',
-    top: 30
+    top: 35,
+    margin: 0,
   }
 }));

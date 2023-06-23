@@ -1,4 +1,4 @@
-import { Checkbox, Group, Text, Container } from '@mantine/core';
+import { Checkbox, Group, Text, Container, Menu, Button } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { IconChevronDown } from "@tabler/icons-react";
 import { useLeftSidebarStyles } from './LeftSidebar.styles';
@@ -18,33 +18,43 @@ export function LeftSidebar() {
   const indeterminate = values.some((value) => value.checked) && !allChecked;
 
   const Items = values.map((value, index) => ( // map : 각 요소에 대하여 그 값을 반환
-    <Checkbox
-      mt="xs"
-      ml={33}
-      label={value.label}
-      key={value.key}
-      checked={value.checked}
-      onChange={(event) => handlers.setItemProp(index, 'checked', event.currentTarget.checked)}
-    />
+    <Menu.Item>
+      <Checkbox
+        mt="xs"
+        //ml={33}
+        label={value.label}
+        key={value.key}
+        checked={value.checked}
+        onChange={(event) => handlers.setItemProp(index, 'checked', event.currentTarget.checked)}
+      />
+    </Menu.Item>
   ));
 
   const CategoryItems = category.map((value) => (
-    <Group className={classes.CheckboxGroup}>
-      <Checkbox 
-        display={'inline-block'}
-        checked={allChecked}
-        indeterminate={indeterminate}
-        label={value.label}
-        transitionDuration={0}
-        onChange={() => // onChange : 체크 상태가 변경되면 이벤트 발생
-          handlers.setState((current) =>
-            current.map((value) => ({ ...value, checked: !allChecked }))
-          )
-        }
-      /> 
-      <IconChevronDown stroke={1.5} className={classes.DropDown} />
-      {Items}
-    </Group>
+    <Menu position="bottom-start" closeOnItemClick={false}>
+      <Group className={classes.CheckboxGroup}>
+        <Checkbox 
+          display={'inline-block'}
+          checked={allChecked}
+          indeterminate={indeterminate}
+          label={value.label}
+          transitionDuration={0}
+          onChange={() => // onChange : 체크 상태가 변경되면 이벤트 발생
+            handlers.setState((current) =>
+              current.map((value) => ({ ...value, checked: !allChecked }))
+            )
+          }
+        />
+        <Menu.Target> 
+          <Button variant="white" className={classes.DropDown}>
+            <IconChevronDown stroke={1.5}  color='#000'/>
+          </Button>
+        </Menu.Target>
+        <Menu.Dropdown display={'block'}>
+          {Items}
+        </Menu.Dropdown>
+      </Group>
+    </Menu>
   ));
 
   return (
