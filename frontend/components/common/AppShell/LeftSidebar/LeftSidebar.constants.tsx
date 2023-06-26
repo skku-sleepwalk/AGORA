@@ -1,11 +1,7 @@
 import { randomId } from '@mantine/hooks';
 
 export const Category = new Array ('개발', '디자인', '공모전');
-//   { label: '개발' }, 
-//   { label: '디자인' }, 
-//   { label: '공모전' }
-// ];
-
+export const CategoryNum = 3; // 위의 카테고리 개수와 같도록
 
 export const DevelopValues = [
   { label: 'Unity', checked: false, key: randomId() },

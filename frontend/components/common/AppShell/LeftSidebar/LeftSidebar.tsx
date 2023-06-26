@@ -2,7 +2,7 @@ import { Checkbox, Group, Text, Container, Menu, Button } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
 import { IconChevronDown } from "@tabler/icons-react";
 import { useLeftSidebarStyles } from './LeftSidebar.styles';
-import { Category, Values } from './LeftSidebar.constants';
+import { Category, CategoryNum, Values } from './LeftSidebar.constants';
 
 export interface LeftSidebarProps {
   links: { label: string; link: string }[];
@@ -11,8 +11,8 @@ export interface LeftSidebarProps {
 export function LeftSidebar() {
   const { classes, cx } = useLeftSidebarStyles();
 
-  let CategoryItems = new Array(3);
-  for (let i = 0; i < 3; i++) {
+  let CategoryItems = new Array(CategoryNum);
+  for (let i = 0; i < CategoryNum; i++) {
     const [values, handlers] = useListState(Values[i]); // useListState : list처럼 작동하게 하는 듯
 
     const allChecked = values.every((value) => value.checked); // every : 모든 요소가 true면 true 반환
@@ -62,9 +62,7 @@ export function LeftSidebar() {
     <Container className={classes.CategoryContainer}>
       <Text className={classes.CategoryText}>카테고리</Text>
       <Group>
-        {CategoryItems[0]}
-        {CategoryItems[1]}
-        {CategoryItems[2]}
+        {CategoryItems}
       </Group>
     </Container>
   );
