@@ -25,7 +25,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     color: '#000',
   },
 
-  DropDown: {
+  DropDownButton: {
     display: 'inline-block',
 
     boxSizing: 'border-box',
