@@ -1,8 +1,9 @@
 import { Checkbox, Group, Text, Container, Menu, Button } from '@mantine/core';
 import { useListState } from '@mantine/hooks';
-import { IconChevronDown } from "@tabler/icons-react";
+import { IconChevronDown, IconCornerDownRight } from "@tabler/icons-react";
 import { useLeftSidebarStyles } from './LeftSidebar.styles';
 import { Category, CategoryNum, Values } from './LeftSidebar.constants';
+
 
 export interface LeftSidebarProps {
   links: { label: string; link: string }[];
@@ -19,7 +20,7 @@ export function LeftSidebar() {
     const indeterminate = values.some((value) => value.checked) && !allChecked;
 
     const Items = values.map((value, index) => ( // map : 각 요소에 대하여 그 값을 반환
-      <Menu.Item>
+      <Menu.Item icon={<IconCornerDownRight size={20} stroke={1.5} />}>
         <Checkbox
           mt="xs"
           label={value.label}
@@ -31,7 +32,7 @@ export function LeftSidebar() {
     ));
 
     CategoryItems[i] = (
-      <Menu position="bottom-start" closeOnItemClick={false}>
+      <Menu position="bottom-end" width={220} withinPortal={true} closeOnItemClick={false}>
         <Group className={classes.CheckboxGroup}>
           <Checkbox 
             display={'inline-block'}
@@ -50,9 +51,9 @@ export function LeftSidebar() {
               <IconChevronDown stroke={1.5}  color='#000'/>
             </Button>
           </Menu.Target>
-            <Menu.Dropdown display={'block'}>
-              {Items}
-            </Menu.Dropdown>
+          <Menu.Dropdown display={'block'}>
+            {Items}
+          </Menu.Dropdown>
         </Group>
       </Menu>
     );

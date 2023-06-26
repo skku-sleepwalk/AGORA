@@ -4,7 +4,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
   CategoryContainer: {
     boxSizing: 'border-box',
     width: 261,
-    // height: 390,
+    // height: 100,
 
     position: 'relative',
     float: 'left',
@@ -27,6 +27,8 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
 
   DropDownButton: {
     display: 'inline-block',
+    position: 'relative',
+    left: 100,
 
     boxSizing: 'border-box',
     height: 20,
