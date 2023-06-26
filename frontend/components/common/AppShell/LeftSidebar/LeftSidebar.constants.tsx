@@ -1,10 +1,10 @@
 import { randomId } from '@mantine/hooks';
 
-export const Category = [
-  { label: '개발' }, 
-  { label: '디자인' }, 
-  { label: '공모전' }
-];
+export const Category = new Array ('개발', '디자인', '공모전');
+//   { label: '개발' }, 
+//   { label: '디자인' }, 
+//   { label: '공모전' }
+// ];
 
 
 export const DevelopValues = [

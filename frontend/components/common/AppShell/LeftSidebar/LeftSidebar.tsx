@@ -11,7 +11,6 @@ export interface LeftSidebarProps {
 export function LeftSidebar() {
   const { classes, cx } = useLeftSidebarStyles();
 
-  const [category] = useListState(Category);
   let CategoryItems = new Array(3);
   for (let i = 0; i < 3; i++) {
     const [values, handlers] = useListState(Values[i]); // useListState : list처럼 작동하게 하는 듯
@@ -23,7 +22,6 @@ export function LeftSidebar() {
       <Menu.Item>
         <Checkbox
           mt="xs"
-          //ml={33}
           label={value.label}
           key={value.key}
           checked={value.checked}
@@ -32,14 +30,14 @@ export function LeftSidebar() {
       </Menu.Item>
     ));
 
-    CategoryItems[i] = category.map((value) => (
+    CategoryItems[i] = (
       <Menu position="bottom-start" closeOnItemClick={false}>
         <Group className={classes.CheckboxGroup}>
           <Checkbox 
             display={'inline-block'}
             checked={allChecked}
             indeterminate={indeterminate}
-            label={value.label}
+            label={Category[i]}
             transitionDuration={0}
             onChange={() => // onChange : 체크 상태가 변경되면 이벤트 발생
               handlers.setState((current) =>
@@ -57,7 +55,7 @@ export function LeftSidebar() {
             </Menu.Dropdown>
         </Group>
       </Menu>
-    ));
+    );
   }
 
   return (
@@ -66,6 +64,7 @@ export function LeftSidebar() {
       <Group>
         {CategoryItems[0]}
         {CategoryItems[1]}
+        {CategoryItems[2]}
       </Group>
     </Container>
   );
