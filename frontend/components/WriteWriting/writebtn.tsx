@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useInterval } from "@mantine/hooks";
 import { createStyles, Button, Progress } from "@mantine/core";
-
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 const useStyles = createStyles((theme) => ({
   button: {
     position: "relative",
@@ -20,8 +20,11 @@ const useStyles = createStyles((theme) => ({
     zIndex: 1,
   },
 }));
-
-export function ButtonProgress() {
+export interface ButtonProgressProps {
+  CloseModal: () => void;
+}
+export function ButtonProgress({ CloseModal }: ButtonProgressProps) {
+  //   const [opened, { open, close }] = useDisclosure(false);
   const { classes, theme } = useStyles();
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -44,7 +47,8 @@ export function ButtonProgress() {
     <Button
       fullWidth
       className={classes.button}
-      onClick={() => (loaded ? setLoaded(false) : !interval.active && interval.start())}
+      onClick={() => (loaded ? CloseModal() : !interval.active && interval.start())}
+      //   setLoaded(false) <--원래 null자리
       color={loaded ? "teal" : theme.primaryColor}
     >
       <div className={classes.label}>

@@ -2,24 +2,26 @@ import { TextInput, createStyles } from "@mantine/core";
 
 export const useWriteWritingStyles = createStyles((theme) => ({
   container: {
-    height: "80%",
+    height: "10% ",
+    display: "flex",
     // backgroundColor: 'red'
+    overflow: "hidden",
   },
+
   TextInput: {
     // onkeyup: enterkey(Event),
+    float: "left",
     width: 495,
+    // left: 160,
+    // top: 60,
   },
   erase: {
     display: "none",
   },
-  floatRight: {
-    float: "right",
-    border: "1px solid red",
-    margin: "1em",
-    width: "3em",
-    height: "2em",
-  },
-  writebtn: {
-    size: "2000em",
+  avatarInWriting: {
+    display: "inline-block",
+    pos: "relative",
+    // left: 150,
+    // top: 60,
   },
 }));

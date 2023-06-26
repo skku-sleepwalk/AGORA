@@ -1,4 +1,4 @@
-import { Container } from "@mantine/core";
+// import { Container } from "@mantine/core";
 import { Avatar } from "@mantine/core";
 import { TextInput } from "@mantine/core";
 import { Modal, Button } from "@mantine/core";
@@ -6,6 +6,7 @@ import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { useWriteWritingStyles } from "./WriteWriting.styles";
 import RichEditor from "./RichEditor";
 import { ButtonProgress } from "./writebtn";
+import CardContainer from "../common/CardContainer/CardContainer";
 
 function WriteWriting() {
   const { classes } = useWriteWritingStyles();
@@ -18,7 +19,7 @@ function WriteWriting() {
   // }
 
   return (
-    <Container className={classes.container}>
+    <CardContainer className={classes.container}>
       <Modal
         opened={opened}
         onClose={close}
@@ -27,25 +28,23 @@ function WriteWriting() {
         transitionProps={{ transition: "fade", duration: 200 }}
       >
         <RichEditor />
+
         <br></br>
-        <ButtonProgress />
+        <ButtonProgress CloseModal={close} />
       </Modal>
 
       <Avatar
-        src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
+        className={classes.avatarInWriting}
         radius="xl"
         size={30}
-        display={"inline-block"}
-        // pos={"relative"}
-        left={150}
-        top={70}
+        src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
       />
 
       <TextInput
         placeholder="새로운 글을 작성해보세요."
         display={"inline-block"}
-        left={160}
-        top={60}
+        // left={160}
+        // top={60}
         pos={"relative"}
         onClick={open}
         className={classes.TextInput}
@@ -53,7 +52,7 @@ function WriteWriting() {
 
         //게시 버튼까지
       />
-    </Container>
+    </CardContainer>
   );
 }
 export default WriteWriting;
