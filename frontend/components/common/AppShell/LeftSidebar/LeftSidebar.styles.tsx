@@ -19,6 +19,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     display: 'block',
     position: 'relative',
     paddingTop: 20,
+    paddingBottom: 15,
 
     fontWeight: 500,
     fontSize: 20,
@@ -30,13 +31,21 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
 
     boxSizing: 'border-box',
     height: 20,
+    padding: '0px 5px',
+
   },
 
   CheckboxGroup: {
     display: 'block',
     position: 'relative',
-    top: 35,
     width: '100%',
-    margin: 0,
-  }
+  },
+
+  PaddingTop: {
+    paddingTop: 10,
+  },
+
+  PaddingBottom: {
+    paddingBottom: 20,
+  },
 }));
