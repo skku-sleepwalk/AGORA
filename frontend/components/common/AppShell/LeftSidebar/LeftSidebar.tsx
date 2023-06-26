@@ -34,23 +34,25 @@ export function LeftSidebar() {
     CategoryItems[i] = (
       <Menu position="bottom-end" width={220} withinPortal={true} closeOnItemClick={false}>
         <Group className={classes.CheckboxGroup}>
-          <Checkbox 
-            display={'inline-block'}
-            checked={allChecked}
-            indeterminate={indeterminate}
-            label={Category[i]}
-            transitionDuration={0}
-            onChange={() => // onChange : 체크 상태가 변경되면 이벤트 발생
-              handlers.setState((current) =>
-                current.map((value) => ({ ...value, checked: !allChecked }))
-              )
-            }
-          />
-          <Menu.Target> 
-            <Button variant="white" className={classes.DropDownButton}>
-              <IconChevronDown stroke={1.5}  color='#000'/>
-            </Button>
-          </Menu.Target>
+          <Group position='apart'>
+            <Checkbox 
+              display={'inline-block'}
+              checked={allChecked}
+              indeterminate={indeterminate}
+              label={Category[i]}
+              transitionDuration={0}
+              onChange={() => // onChange : 체크 상태가 변경되면 이벤트 발생
+                handlers.setState((current) =>
+                  current.map((value) => ({ ...value, checked: !allChecked }))
+                )
+              }
+            />
+            <Menu.Target> 
+              <Button variant="white" className={classes.DropDownButton}>
+                <IconChevronDown stroke={1.5}  color='#000'/>
+              </Button>
+            </Menu.Target>
+          </Group>
           <Menu.Dropdown display={'block'}>
             {Items}
           </Menu.Dropdown>

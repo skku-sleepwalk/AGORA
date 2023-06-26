@@ -18,7 +18,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
   CategoryText: {
     display: 'block',
     position: 'relative',
-    top: 20,
+    paddingTop: 20,
 
     fontWeight: 500,
     fontSize: 20,
@@ -27,8 +27,6 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
 
   DropDownButton: {
     display: 'inline-block',
-    position: 'relative',
-    left: 100,
 
     boxSizing: 'border-box',
     height: 20,
@@ -38,6 +36,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     display: 'block',
     position: 'relative',
     top: 35,
+    width: '100%',
     margin: 0,
   }
 }));
