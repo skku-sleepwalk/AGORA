@@ -6,7 +6,6 @@ modal: {
   ".mantine-Modal-body": {padding: 0},
 },
 carousel: {
-  maxWidth: 690,
   ".mantine-Carousel-control": {backgroundColor: 'transparent', border: 'none'}
 },
 }));

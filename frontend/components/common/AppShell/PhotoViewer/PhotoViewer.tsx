@@ -1,4 +1,5 @@
-import { Carousel } from '@mantine/carousel';
+import { useState } from 'react';
+import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { useListState, useDisclosure } from '@mantine/hooks';
 import { Modal, Group, Image, Button } from '@mantine/core';
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
@@ -10,9 +11,14 @@ export function PhotoViewer() {
 
   const [values, handlers] = useListState(PhotoSrcValues);
   const [opened, { open, close }] = useDisclosure(false);
+  
+  const TRANSITION_DURATION = 200;
+  const [embla, setEmbla] = useState<Embla | null>(null);
+
+  useAnimationOffsetEffect(embla, TRANSITION_DURATION);
 
   const Photos = values.map((value, index) => ( // map : 각 요소에 대하여 그 값을 반환
-      <Carousel.Slide size={800} gap={'xs'}>
+      <Carousel.Slide size={690} gap={'xs'}>
         <Image width={690} height={450} fit="contain" src={value.src} />
       </Carousel.Slide>
     ));
@@ -26,7 +32,7 @@ export function PhotoViewer() {
         withCloseButton={false}>
         <Carousel
           className={classes.carousel}
-          mx={'auto'}
+          getEmblaApi={setEmbla}
           withIndicators
           align={'center'}
           previousControlIcon={<IconChevronLeft color='white'></IconChevronLeft>} 
