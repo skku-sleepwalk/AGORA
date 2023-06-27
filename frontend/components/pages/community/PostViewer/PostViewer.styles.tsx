@@ -43,5 +43,15 @@ export const usePostViewerStyles = createStyles(
       maxWidth: "100%",
       overflow: "hidden",
     },
+
+    modal: {
+      borderRadius: 30,
+      ".mantine-Modal-body": {
+        padding: 0,
+      },
+      ".mantine-Modal-header": {
+        display: "none",
+      },
+    },
   })
 );
