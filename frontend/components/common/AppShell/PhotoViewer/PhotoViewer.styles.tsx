@@ -10,9 +10,7 @@ carousel: {
 },
 
 carouselSlide: {
-  width: 710,
-  height: 450,
-  padding: '0px 10px',
+  padding: '0px 50px 35px',
 },
 
 }));
