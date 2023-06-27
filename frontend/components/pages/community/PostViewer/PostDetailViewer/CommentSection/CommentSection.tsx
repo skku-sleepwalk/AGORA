@@ -18,8 +18,18 @@ function CommentSection({ editorOpen }: CommentSectionProps) {
       </Collapse>
       <Comment user={MOCKUP_USER}>
         <Comment user={MOCKUP_USER} />
-        <Comment user={MOCKUP_USER} />
       </Comment>
+      <Comment user={MOCKUP_USER}>
+        <Comment user={MOCKUP_USER}>
+          <Comment user={MOCKUP_USER} />
+        </Comment>
+        <Comment user={MOCKUP_USER} />
+        <Comment user={MOCKUP_USER}>
+          <Comment user={MOCKUP_USER} />
+          <Comment user={MOCKUP_USER} />
+        </Comment>
+      </Comment>
+      <Comment user={MOCKUP_USER} />
       <Comment user={MOCKUP_USER} />
     </Stack>
   );

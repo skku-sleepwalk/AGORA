@@ -19,7 +19,7 @@ function Comment({ children, user }: CommentProps) {
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
 
   return (
-    <CommentFrame user={user}>
+    <CommentFrame user={user} withoutLeftBorder={!children}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
           <Text size="sm">
