@@ -45,12 +45,14 @@ export const usePostViewerStyles = createStyles(
     },
 
     modal: {
-      borderRadius: 30,
       ".mantine-Modal-body": {
         padding: 0,
       },
       ".mantine-Modal-header": {
         display: "none",
+      },
+      "	.mantine-Modal-content": {
+        borderRadius: 15,
       },
     },
   })

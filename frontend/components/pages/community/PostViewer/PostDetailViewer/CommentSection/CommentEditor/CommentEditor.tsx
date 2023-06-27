@@ -15,6 +15,7 @@ import { ActionIcon, Box, Button, Group, useMantineTheme } from "@mantine/core";
 import Image from "@tiptap/extension-image";
 import { User } from "../../../../../../../types/user";
 import CommentFrame from "../CommentFrame/CommentFrame";
+import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
 
 export interface CommentEditorProps {
   user: User;
@@ -50,30 +51,7 @@ function CommentEditor({ user }: CommentEditorProps) {
 
           <RichTextEditor.Toolbar>
             <Group position="apart" className={classes.toolbarGroup}>
-              <Group>
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Bold />
-                  <RichTextEditor.Italic />
-                  <RichTextEditor.Underline />
-                  <RichTextEditor.Strikethrough />
-                  <RichTextEditor.Code />
-                  <RichTextEditor.CodeBlock icon={() => <IconCodeDots size={16} stroke={2} />} />
-                </RichTextEditor.ControlsGroup>
-
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Hr />
-                  <RichTextEditor.Subscript />
-                  <RichTextEditor.Superscript />
-                </RichTextEditor.ControlsGroup>
-
-                <RichTextEditor.ControlsGroup>
-                  <ActionIcon variant="outline" className={classes.photoButton} size={26}>
-                    <IconPhoto size={16} stroke={1} />
-                  </ActionIcon>
-                  <RichTextEditor.Link />
-                  <RichTextEditor.Unlink />
-                </RichTextEditor.ControlsGroup>
-              </Group>
+              <RichTextEditorControlGroup />
               <Button radius="xl" className={classes.submitButton}>
                 작성
               </Button>
