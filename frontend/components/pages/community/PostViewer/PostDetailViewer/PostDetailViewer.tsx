@@ -31,14 +31,7 @@ function PostDetailViewer({ title, content, user, date }: PostDetailViewerProps)
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-        <PostFooter
-          onEditClick={toggleCommentEditor}
-          onCommentClick={toggleCommentEditor}
-          onShareClick={() => {
-            showNotification("Hello!", "success");
-            showError("Hello!", "error");
-          }}
-        />
+        <PostFooter onEditClick={toggleCommentEditor} onCommentClick={toggleCommentEditor} />
         <CommentSection editorOpen={commentEditorOpened} />
       </Stack>
     </CardContainer>
