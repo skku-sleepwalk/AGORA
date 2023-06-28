@@ -18,9 +18,9 @@ export function PhotoViewer() {
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
 
   const Photos = values.map((value, index) => ( // map : 각 요소에 대하여 그 값을 반환
-      <Carousel.Slide size={790}>
+      <Carousel.Slide size={'49.375rem'}>
         <Center className={classes.carouselSlide}>
-          <Image width={690} height={450} fit="contain" src={value.src} />
+          <Image width={'43.125rem'} height={'28.125rem'} fit="contain" src={value.src} />
         </Center>
       </Carousel.Slide>
     ));
@@ -28,7 +28,7 @@ export function PhotoViewer() {
   return (
     <>
       <Modal opened={opened} onClose={close}
-        size={790}
+        size={'49.375rem'}
         padding={0}
         centered
         className={classes.modal}
@@ -39,8 +39,8 @@ export function PhotoViewer() {
           withIndicators
           loop
           align={'center'}
-          previousControlIcon={<IconChevronLeft color='white' size={40}></IconChevronLeft>} 
-          nextControlIcon={<IconChevronRight color='white' size={40}></IconChevronRight>}>
+          previousControlIcon={<IconChevronLeft color='white' size={'2.5rem'}></IconChevronLeft>} 
+          nextControlIcon={<IconChevronRight color='white' size={'2.5rem'}></IconChevronRight>}>
           {Photos}
         </Carousel>
       </Modal>
