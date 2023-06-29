@@ -38,7 +38,7 @@ export function SideBar() {
             </InvisibleButton>
           }
           value={value}
-          placeholder="Your email"
+          placeholder="검색 부탁드립니다!"
           className={classes.Search}
         />
 
