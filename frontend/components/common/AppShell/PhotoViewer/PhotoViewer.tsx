@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Carousel, Embla, useAnimationOffsetEffect } from '@mantine/carousel';
 import { useListState, useDisclosure } from '@mantine/hooks';
-import { Modal, Group, Image, Button, Box, Center } from '@mantine/core';
+import { Modal, Group, Image, Button, Center } from '@mantine/core';
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { usePhotoViewerStyles } from './PhotoViewer.styles';
 import { PhotoSrcValues } from './PhotoViewer.constants';
@@ -18,8 +18,12 @@ export function PhotoViewer() {
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
 
   const Photos = values.map((value, index) => ( // map : 각 요소에 대하여 그 값을 반환
-      <Carousel.Slide size={'49.375rem'}>
-        <Center className={classes.carouselSlide}>
+      <Carousel.Slide size={'49.375rem'} >
+        <Center 
+          className={classes.carouselSlide}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}>
           <Image width={'43.125rem'} height={'28.125rem'} fit="contain" src={value.src} />
         </Center>
       </Carousel.Slide>

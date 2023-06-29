@@ -2,11 +2,18 @@ import { createStyles } from "@mantine/core";
 
 export const usePhotoViewerStyles = createStyles((theme) => ({
 modal: {
-  ".mantine-Modal-content": {backgroundColor: 'transparent', boxShadow: 'none'},
+  ".mantine-Modal-content": {
+    backgroundColor: 'transparent',
+    boxShadow: 'none'
+  },
 },
 
 carousel: {
-  ".mantine-Carousel-control": {backgroundColor: 'transparent', border: 'none', boxShadow: 'none'},
+  ".mantine-Carousel-control": {
+    backgroundColor: 'transparent', 
+    border: 'none', 
+    boxShadow: 'none'
+  },
 },
 
 carouselSlide: {
