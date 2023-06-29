@@ -11,14 +11,12 @@ function UserInfo({ user }: UserInfoProps) {
   return (
     <Group spacing={14}>
       <Avatar src={user.avatar} radius="xl" size={46} />
-      <Center>
-        <Stack spacing={5}>
-          <Text size="md">{user.name}</Text>
-          <Text size="xs" color={theme.colors.gray[5]}>
-            {user.info}
-          </Text>
-        </Stack>
-      </Center>
+      <Stack spacing={5}>
+        <Text size="md">{user.name}</Text>
+        <Text size="xs" color={theme.colors.gray[5]}>
+          {user.info}
+        </Text>
+      </Stack>
     </Group>
   );
 }
