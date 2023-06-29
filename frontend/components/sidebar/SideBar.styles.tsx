@@ -11,7 +11,6 @@ export const useSideBarStyles = createStyles((theme) => ({
     float: "right",
     padding: "0",
     boxShadow: "-4px 4px 4px 0px rgba(0, 0, 0, 0.50)",
-    backgroundImage: "url(/Union.png)",
   },
   SideBarName: {
     float: "left",
@@ -29,12 +28,13 @@ export const useSideBarStyles = createStyles((theme) => ({
     marginTop: "1rem",
     paddingTop: "1rem",
     paddingBottom: "1rem",
-
+    // backgroundImage:
+    //   "url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png)",
     width: "12.59619rem",
     height: "2rem",
     borderRadius: " 15px",
     border: "1px solid #757575",
-    background: "#F3F3F3",
+    backgroundColor: "#F3F3F3",
   },
   Grouping: {
     paddingBottom: "14rem",

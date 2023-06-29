@@ -1,7 +1,8 @@
 import { Center, Container } from "@mantine/core";
 import { useSideBarStyles } from "./SideBar.styles";
-import { Input } from "@mantine/core";
+import { Input, Image } from "@mantine/core";
 import { Text } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
 
 export function SideBar() {
   const { classes, cx } = useSideBarStyles();
@@ -13,8 +14,20 @@ export function SideBar() {
 
           {/* <h4 style={{ textAlign: "center" }}>검색</h4> */}
         </Center>
-        <input type="text" placeholder="   검색" className={classes.Search} />
+        {/* <input
+          // src="Union.png"
+          type="search"
+          className={classes.Search}
+          // style={{
+          //   backgroundImage:
+          //     "url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png)",
+          // }}
+        /> */}
+        <Input className={classes.Search}></Input>
+        {/* <Image maw={240} mx="auto" radius="md" src="./aaa.jpg" alt="Random image" /> */}
+        {/* <IconSearch size={"2.5rem"}></IconSearch> */}
       </Container>
+
       <br />
       <br />
       <Container className={classes.Grouping}>
