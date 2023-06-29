@@ -16,7 +16,7 @@ export const useSideBarStyles = createStyles((theme) => ({
     float: "left",
     width: "5rem",
     height: "1.4375rem",
-    flexShrink: 0,
+
     backgroundColor: "#9AE3EB",
     borderRadius: "0.3rem",
     marginTop: "1rem",
@@ -24,19 +24,36 @@ export const useSideBarStyles = createStyles((theme) => ({
   SideBarN: {
     marginTop: "0.2rem",
   },
+
   Search: {
-    marginTop: "1rem",
-    paddingTop: "1rem",
-    paddingBottom: "1rem",
-    // backgroundImage:
-    //   "url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png)",
+    // paddingTop: "3rem",
+    // paddingTop: "1rem",
+    // paddingBottom: "1rem",
+    // // backgroundImage:
+    // //   "url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png)",
+    // width: "12.59619rem",
+    // height: "2rem",
+    // borderRadius: " 15px",
+    // border: "1px solid #757575",
+    // backgroundColor: "#F3F3F3",
     width: "12.59619rem",
     height: "2rem",
-    borderRadius: " 15px",
-    border: "1px solid #757575",
-    backgroundColor: "#F3F3F3",
+    ".mantine-TextInput-wrapper": {
+      // paddingTop: "1rem",
+      // paddingBottom: "1rem",
+
+      borderRadius: " 15px",
+      border: "1px solid #757575",
+      backgroundColor: "#F3F3F3",
+    },
+    ".mantine-TextInput-input": {
+      border: "none",
+      backgroundColor: "transparent",
+    },
   },
+
   Grouping: {
-    paddingBottom: "14rem",
+    marginBottom: "14rem",
+    paddingLeft: "1rem",
   },
 }));

@@ -1,14 +1,15 @@
-import { Center, Container } from "@mantine/core";
+import { Center, Container, Stack } from "@mantine/core";
 import { useSideBarStyles } from "./SideBar.styles";
 import { Input, Image } from "@mantine/core";
-import { Text } from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Text, TextInput } from "@mantine/core";
+import { IconSearch, IconX } from "@tabler/icons-react";
+import InvisibleButton from "../common/InvisibleButton/InvisibleButton";
 
 export function SideBar() {
   const { classes, cx } = useSideBarStyles();
   return (
     <Container className={classes.SideBarContainer}>
-      <Container className={classes.Grouping}>
+      <Stack className={classes.Grouping} spacing={"1rem"}>
         <Center className={classes.SideBarName}>
           <Text color="white">검색</Text>
 
@@ -23,10 +24,22 @@ export function SideBar() {
           //     "url(https://cdn1.iconfinder.com/data/icons/hawcons/32/698627-icon-111-search-256.png)",
           // }}
         /> */}
-        <Input className={classes.Search}></Input>
-        {/* <Image maw={240} mx="auto" radius="md" src="./aaa.jpg" alt="Random image" /> */}
+
+        {/* <Input className={classes.Search}></Input> */}
+
+        <TextInput
+          icon={<IconSearch size="1rem" />}
+          rightSection={
+            <InvisibleButton>
+              <IconX />
+            </InvisibleButton>
+          }
+          placeholder="Your email"
+          className={classes.Search}
+        />
+
         {/* <IconSearch size={"2.5rem"}></IconSearch> */}
-      </Container>
+      </Stack>
 
       <br />
       <br />
