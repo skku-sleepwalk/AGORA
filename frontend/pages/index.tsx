@@ -4,10 +4,10 @@ import { PhotoViewer } from "../components/common/AppShell/PhotoViewer/PhotoView
 
 function Main() {
   return (
-    <Box>
+    <>
       <LeftSidebar/>
       <PhotoViewer/>
-    </Box>
+    </>
     )
 }
 
