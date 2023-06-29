@@ -4,9 +4,11 @@ import { Input, Image } from "@mantine/core";
 import { Text, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import InvisibleButton from "../common/InvisibleButton/InvisibleButton";
+import { useState } from "react";
 
 export function SideBar() {
   const { classes, cx } = useSideBarStyles();
+  const [value, setValue] = useState("");
   return (
     <Container className={classes.SideBarContainer}>
       <Stack className={classes.Grouping} spacing={"1rem"}>
@@ -28,12 +30,14 @@ export function SideBar() {
         {/* <Input className={classes.Search}></Input> */}
 
         <TextInput
+          onChange={(event) => setValue(event.currentTarget.value)}
           icon={<IconSearch size="1rem" />}
           rightSection={
             <InvisibleButton>
-              <IconX />
+              <IconX onClick={(event) => setValue("")} />
             </InvisibleButton>
           }
+          value={value}
           placeholder="Your email"
           className={classes.Search}
         />
