@@ -5,6 +5,7 @@ export const useCommunityLayoutStyles = createStyles((theme) => ({
     display: "flex",
     width: "100%",
     gap: 83,
+    height: "100%",
   },
 
   leftMainContainer: {
@@ -20,7 +21,7 @@ export const useCommunityLayoutStyles = createStyles((theme) => ({
   },
 
   mainContainer: {
-    flexGrow: 1,
+    width: 616,
     margin: 0,
   },
 

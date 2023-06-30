@@ -13,12 +13,12 @@ export function Header({ links }: HeaderProps) {
 
   return (
     <MantineHeader height={69} className={classes.header}>
-      <Group className={classes.container} position="apart">
-        <Group spacing={40} className={classes.fullHeight}>
+      <Group className={classes.container} position="apart" noWrap>
+        <Group spacing={40} className={classes.fullHeight} noWrap>
           <Text size={32} weight="bold" color="white">
             Agora
           </Text>
-          <Group spacing={0} className={classes.fullHeight}>
+          <Group spacing={0} className={classes.fullHeight} noWrap>
             {links.map((link) => (
               <Anchor
                 key={link.label}
