@@ -3,7 +3,7 @@ import { useSideBarStyles } from "./SideBar.styles";
 import { Input, Image } from "@mantine/core";
 import { Text, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import InvisibleButton from "../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useState } from "react";
 
 export function SideBar() {

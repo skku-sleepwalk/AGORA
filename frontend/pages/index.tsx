@@ -1,9 +1,7 @@
-
-import { SideBar } from "../components/sidebar/SideBar";
+import { PhotoViewer } from "../components/common/PhotoViewer/PhotoViewer";
 
 function Main() {
-  return <SideBar />;
-
+  return <PhotoViewer/>;
 }
 
 export default Main;
