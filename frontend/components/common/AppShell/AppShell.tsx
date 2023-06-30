@@ -12,6 +12,7 @@ function AppShell({ children }: Props) {
     <MantineAppShell
       styles={{ main: { background: "#FCFCFE" } }}
       header={<Header links={HEADER_LINKS} />}
+      padding={0}
     >
       {children}
     </MantineAppShell>
