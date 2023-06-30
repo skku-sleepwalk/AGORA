@@ -1,6 +1,9 @@
-import WriteWriting from "../components/WriteWriting/WriteWriting";
+
+import { SideBar } from "../components/sidebar/SideBar";
+
 function Main() {
-  return <WriteWriting />;
+  return <SideBar />;
+
 }
 
 export default Main;
