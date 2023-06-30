@@ -33,6 +33,7 @@ function PostWriter() {
             open();
           }}
           className={classes.TextInput}
+          readOnly
         />
       </CardContainer>
       <Modal
