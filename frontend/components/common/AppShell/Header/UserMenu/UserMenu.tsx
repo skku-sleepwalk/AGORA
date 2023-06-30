@@ -1,4 +1,4 @@
-import { Group, Avatar, Text, Button, useMantineTheme, Menu } from "@mantine/core";
+import { Group, Avatar, Text, Button, Menu } from "@mantine/core";
 import { IconChevronDown, IconSettings, IconUser, IconLogout } from "@tabler/icons-react";
 import { useUserMenuStyles } from "./UserMenu.styles";
 
