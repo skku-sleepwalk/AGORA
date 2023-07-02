@@ -1,29 +1,51 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
-
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  Generated,
+  ManyToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { CategoryType } from '../category/entities/category.entity';
 @Entity('Board')
 export class Board {
-  @PrimaryColumn('uuid')
-  id!: string;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-  @Column({ nullable: false })
-  writerId: string;
+  @Column()
+  @Generated('increment')
+  readonly _id?: number;
 
-  @Column('uuid', { nullable: true })
-  parentId: string;
+  @Column('varchar')
+  readonly writerEmail: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  readonly parentId: string;
 
   @Column({ length: 32 })
   title: string;
 
   @Column()
-  description: string;
+  content: string;
 
-  @Column()
+  @Column({ nullable: false, default: 0 })
   like: number;
 
-  @Column()
-  @Column({ type: 'timestamp', nullable: false })
-  createdAt!: Date;
+  @Column({ nullable: false, default: 0 })
+  child: number;
 
-  @Column({ type: 'timestamp', nullable: true })
-  updatedAt?: Date;
+  @Column('varchar', { array: true, nullable: false, default: [] })
+  categoryNames: Array<string>;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
 }
+export type Order = '_id' | 'child' | 'like';

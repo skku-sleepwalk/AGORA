@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBoardDto {
   @IsNotEmpty()
@@ -7,12 +7,17 @@ export class CreateBoardDto {
 
   @IsNotEmpty()
   @IsString()
-  readonly description: string;
+  readonly content: string;
 
   @IsNotEmpty()
   @IsString()
-  readonly writerId: string;
+  readonly writerEmail: string;
 
+  @IsOptional()
   @IsString()
   readonly parentId: string;
+
+  @IsOptional()
+  @IsArray()
+  readonly categoryNames: Array<string>;
 }

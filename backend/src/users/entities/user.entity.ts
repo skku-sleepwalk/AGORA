@@ -1,25 +1,34 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 @Entity('User')
 export class User {
-  @PrimaryColumn()
-  id: string;
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-  @Column({ length: 32 })
+  @Column({ length: 32, unique: true })
   username!: string;
+
+  @Column({ nullable: true })
+  description?: string;
 
   @Column({ unique: true })
   email?: string;
 
-  @Column()
-  token!: number;
+  @Column({ default: 0 })
+  token: number;
 
-  @Column()
-  rating!: number;
+  @Column({ default: 0 })
+  rating: number;
 
-  @Column({ type: 'timestamp', nullable: false })
+  @CreateDateColumn()
   createdAt!: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @UpdateDateColumn()
   updatedAt?: Date;
 }
