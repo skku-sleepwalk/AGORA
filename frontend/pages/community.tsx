@@ -7,14 +7,24 @@ import { MOCKUP_CONTENT } from "../mockups/post";
 import { MOCKUP_USER } from "../mockups/user";
 import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
-import { useCommunityStyles } from "../styles/pages/community.styles";
+import { SideBar } from "../components/pages/community/sidebar/SideBar";
+import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
 
   return (
-    <CommunityLayout>
+    <CommunityLayout
+      leftSection={<LeftSidebar />}
+      rightSection={
+        <SideBar
+          onSearchSubmit={(text) => {
+            console.log(text);
+          }}
+        />
+      }
+    >
       <Stack spacing={50}>
         {search ? (
           <Stack spacing={20}>
