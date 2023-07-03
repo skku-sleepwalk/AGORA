@@ -1,4 +1,4 @@
-import { AppShell as MantineAppShell, useMantineTheme } from "@mantine/core";
+import { AppShell as MantineAppShell } from "@mantine/core";
 import { ReactNode } from "react";
 import { Header } from "./Header/Header";
 import { HEADER_LINKS } from "./AppShell.constants";
@@ -12,6 +12,7 @@ function AppShell({ children }: Props) {
     <MantineAppShell
       styles={{ main: { background: "#FCFCFE" } }}
       header={<Header links={HEADER_LINKS} />}
+      padding={0}
     >
       {children}
     </MantineAppShell>

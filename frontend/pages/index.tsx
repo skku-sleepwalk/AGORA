@@ -1,7 +1,7 @@
-import { LeftSidebar } from "../components/common/AppShell/LeftSidebar/LeftSidebar";
+import { PhotoViewer } from "../components/common/PhotoViewer/PhotoViewer";
 
 function Main() {
-  return LeftSidebar();
+  return <PhotoViewer/>;
 }
 
 export default Main;
