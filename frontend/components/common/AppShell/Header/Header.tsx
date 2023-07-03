@@ -2,6 +2,8 @@ import { Anchor, Group, Header as MantineHeader, Text } from "@mantine/core";
 import { useHeaderStyles } from "./Header.styles";
 import { useState } from "react";
 import { UserMenu } from "./UserMenu/UserMenu";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 export interface HeaderProps {
   links: { label: string; link: string }[];
@@ -9,7 +11,8 @@ export interface HeaderProps {
 
 export function Header({ links }: HeaderProps) {
   const { classes, cx } = useHeaderStyles();
-  const [active, setActive] = useState(links[0].link);
+  const router = useRouter();
+  const [active, setActive] = useState(router.pathname);
 
   return (
     <MantineHeader height={69} className={classes.header}>
@@ -20,19 +23,16 @@ export function Header({ links }: HeaderProps) {
           </Text>
           <Group spacing={0} className={classes.fullHeight} noWrap>
             {links.map((link) => (
-              <Anchor
-                key={link.label}
+              <Link
                 href={link.link}
+                key={link.label}
                 className={cx(classes.link, { [classes.linkActive]: active === link.link })}
                 onClick={(event) => {
-                  event.preventDefault();
                   setActive(link.link);
                 }}
-                size={24}
-                color="white"
               >
                 {link.label}
-              </Anchor>
+              </Link>
             ))}
           </Group>
         </Group>
