@@ -11,7 +11,6 @@ export const useHeaderStyles = createStyles((theme) => ({
 
   container: {
     height: "100%",
-    // maxWidth: 1280,
     margin: "0 auto",
   },
 
@@ -33,6 +32,8 @@ export const useHeaderStyles = createStyles((theme) => ({
     width: 130,
     backgroundColor: "transparent",
     height: "100%",
+    color: "white",
+    fontSize: 22,
 
     "&:hover": {
       textDecoration: "none",
