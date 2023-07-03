@@ -9,11 +9,29 @@ import { MOCKUP_USER } from "../../../../mockups/user";
 import RichEditor from "./RichEditor/RichEditor";
 import { ButtonProgress } from "./ButtonProgress/ButtonProgress";
 import CategorySelector from "./CategorySelector/CategorySelector";
+import { useForm } from "@mantine/form";
 
-function PostWriter() {
+export interface Post {
+  title: string;
+  content: string;
+  category: string[];
+}
+
+export interface PostWriterProps {
+  onSubmit: (values: Post) => void;
+}
+
+function PostWriter({ onSubmit }: PostWriterProps) {
   const { classes } = useWriteWritingStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 50em)");
+  const form = useForm({
+    initialValues: {
+      title: "",
+      content: "",
+      category: [] as string[],
+    },
+  });
 
   return (
     <>
@@ -33,6 +51,7 @@ function PostWriter() {
             open();
           }}
           className={classes.TextInput}
+          value={form.values.title}
           readOnly
         />
       </CardContainer>
@@ -44,18 +63,41 @@ function PostWriter() {
         size="auto"
         scrollAreaComponent={ScrollArea.Autosize}
         centered
+        keepMounted
       >
-        <FocusTrap active={opened}>
-          <Stack className={classes.editorContainer} spacing={17}>
-            <UserInfo user={MOCKUP_USER} />
-            <TextInput placeholder="멋진 제목을 입력해주세요." data-autoFocus />
-            <RichEditor />
-            <CategorySelector />
-            <Group position="right">
-              <ButtonProgress CloseModal={close} />
-            </Group>
-          </Stack>
-        </FocusTrap>
+        <form
+          onSubmit={form.onSubmit((values) => {
+            onSubmit?.(values);
+          })}
+        >
+          <FocusTrap active={opened}>
+            <Stack className={classes.editorContainer} spacing={17}>
+              <UserInfo user={MOCKUP_USER} />
+              <TextInput
+                placeholder="멋진 제목을 입력해주세요."
+                data-autofocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
+                {...form.getInputProps("title")}
+              />
+              <RichEditor
+                onChange={(content) => form.setFieldValue("content", content)}
+                value={form.values.content}
+              />
+              <CategorySelector
+                onChange={(category) => {
+                  form.setFieldValue("category", category);
+                }}
+              />
+              <Group position="right">
+                <ButtonProgress CloseModal={close} type="submit" />
+              </Group>
+            </Stack>
+          </FocusTrap>
+        </form>
       </Modal>
     </>
   );

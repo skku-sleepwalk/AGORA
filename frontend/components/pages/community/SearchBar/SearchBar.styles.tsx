@@ -7,8 +7,10 @@ export const useSearchBarStyles = createStyles((theme) => ({
 
   input: {
     height: "100%",
+    flexGrow: 1,
     ".mantine-TextInput-wrapper": {
       height: "100%",
+      width: "100%",
     },
     ".mantine-TextInput-input": {
       height: "100%",

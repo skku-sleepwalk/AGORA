@@ -1,5 +1,6 @@
 import { MultiSelect } from "@mantine/core";
 import { useCategorySelectorStyles } from "./CategorySelector.styles";
+import { ComponentPropsWithoutRef } from "react";
 
 const data = [
   { value: "C#", label: "C#", group: "개발" },
@@ -15,7 +16,10 @@ const data = [
   { value: "디자인 공모전", label: "디자인 공모전", group: "공모전" },
 ];
 
-function CategorySelector() {
+export interface CategorySelectorProps
+  extends Omit<ComponentPropsWithoutRef<typeof MultiSelect>, "data"> {}
+
+function CategorySelector({ ...others }: CategorySelectorProps) {
   const { classes } = useCategorySelectorStyles();
 
   return (
@@ -24,6 +28,7 @@ function CategorySelector() {
       label="카테고리"
       placeholder="하나 이상의 카테고리를 선택해주세요."
       className={classes.multiSelect}
+      {...others}
     />
   );
 }
