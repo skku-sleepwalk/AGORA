@@ -15,7 +15,7 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
   const [value, setValue] = useState("");
   const form = useForm({
     initialValues: {
-      searchKeyWord: "",
+      searchKeyword: "",
     },
   });
   return (
@@ -27,23 +27,23 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
         <form
           // action="http://localhost:3000/community"
           onSubmit={form.onSubmit((values) => {
-            if (values.searchKeyWord.trim() === "") {
+            if (values.searchKeyword.trim() === "") {
               alert("검색어를 입력해주세요!");
             }
 
-            alert(values.searchKeyWord);
-            onSearchSubmit?.(values.searchKeyWord);
+            alert(values.searchKeyword);
+            onSearchSubmit?.(values.searchKeyword);
           })}
         >
           <TextInput
-            {...form.getInputProps("searchKeyWord")}
+            {...form.getInputProps("searchKeyword")}
             onSubmit={(event) => {
               alert(event.currentTarget.value);
             }}
             icon={<IconSearch size="1rem" />}
             rightSection={
               <InvisibleButton>
-                <IconX onClick={(event) => setValue("")} />
+                <IconX onClick={(event) => form.setFieldValue("searchKeyword", "")} />
               </InvisibleButton>
             }
             // value={value} //이거 왜 있는지 모르겠어서 일단 살려둠
