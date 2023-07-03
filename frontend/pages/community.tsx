@@ -1,9 +1,20 @@
 import CommunityLayout from "../components/pages/community/CommunityLayout/CommunityLayout";
-import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
 
+import { SideBar } from "../components/pages/community/sidebar/SideBar";
 
-function Community() {
-  return <CommunityLayout leftSection={<LeftSidebar></LeftSidebar>}></CommunityLayout>;
+function Main() {
+  return (
+    <CommunityLayout
+      rightSection={
+        <SideBar
+          onSearchSubmit={(text) => {
+            console.log(text);
+          }}
+        />
+      }
+    />
+  );
 }
 
-export default Community;
+export default Main;
+
