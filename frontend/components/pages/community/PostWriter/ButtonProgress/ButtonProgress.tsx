@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { ComponentPropsWithoutRef, useState } from "react";
 import { useInterval } from "@mantine/hooks";
 import { Button, Progress } from "@mantine/core";
 import { useButtonProgressStyles } from "./ButtonProgress.styles";
 
-export interface ButtonProgressProps {
+export interface ButtonProgressProps extends ComponentPropsWithoutRef<"button"> {
   CloseModal: () => void;
 }
 
-export function ButtonProgress({ CloseModal }: ButtonProgressProps) {
+export function ButtonProgress({ CloseModal, ...others }: ButtonProgressProps) {
   const { classes, theme } = useButtonProgressStyles();
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -32,6 +32,7 @@ export function ButtonProgress({ CloseModal }: ButtonProgressProps) {
       onClick={() => (loaded ? CloseModal() : !interval.active && interval.start())}
       //   setLoaded(false) <--원래 null자리
       color={loaded ? "teal" : theme.primaryColor}
+      {...others}
     >
       <div className={classes.label}>
         {progress !== 0 ? "글 업로드 중" : loaded ? "업로드 완료!" : "글 작성"}

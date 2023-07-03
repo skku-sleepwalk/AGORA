@@ -8,11 +8,21 @@ import SubScript from "@tiptap/extension-subscript";
 import RichTextEditorControlGroup from "../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
 import { useRichEditorStyles } from "./RichEditor.styles";
 
-function RichEditor() {
+export interface RichEditorProps {
+  onChange?: (content: string) => void;
+  value?: string;
+}
+
+function RichEditor({ onChange, value }: RichEditorProps) {
   const editor = useEditor({
     extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight],
+    content: "",
   });
   const { classes } = useRichEditorStyles();
+
+  editor?.on("update", () => {
+    onChange?.(editor.getHTML());
+  });
 
   return (
     <RichTextEditor editor={editor} className={classes.editor}>

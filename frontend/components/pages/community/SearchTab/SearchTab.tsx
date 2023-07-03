@@ -5,11 +5,9 @@ import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 
 export interface SearchTabProps {
   className?: string;
-  postTab: React.ReactNode;
-  commentTab: React.ReactNode;
 }
 
-function SearchTab({ className, postTab, commentTab }: SearchTabProps) {
+function SearchTab({ className }: SearchTabProps) {
   const { classes, cx } = useSearchTabStyles();
   const [tab, setTab] = useState<string | null>("post");
 
@@ -54,10 +52,6 @@ function SearchTab({ className, postTab, commentTab }: SearchTabProps) {
           </Menu>
         </Group>
       </Tabs.List>
-
-      <Tabs.Panel value="post">{postTab}</Tabs.Panel>
-
-      <Tabs.Panel value="comment">{commentTab}</Tabs.Panel>
     </Tabs>
   );
 }
