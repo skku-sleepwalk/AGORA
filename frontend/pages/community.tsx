@@ -1,4 +1,5 @@
 import CommunityLayout from "../components/pages/community/CommunityLayout/CommunityLayout";
+
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 
 function Main() {
@@ -16,3 +17,4 @@ function Main() {
 }
 
 export default Main;
+

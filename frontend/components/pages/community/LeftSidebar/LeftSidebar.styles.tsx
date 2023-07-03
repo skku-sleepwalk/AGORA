@@ -3,12 +3,11 @@ import { createStyles } from "@mantine/core";
 export const useLeftSidebarStyles = createStyles((theme) => ({
   CategoryContainer: {
     boxSizing: 'border-box',
-    width: 261,
-    // height: 100,
+    width: '16.313rem',
 
     position: 'relative',
     float: 'left',
-    top: 10,
+    marginTop: '0.625rem',
 
     backgroundColor: "#FFF",
     boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -18,8 +17,8 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
   CategoryText: {
     display: 'block',
     position: 'relative',
-    paddingTop: 20,
-    paddingBottom: 15,
+    paddingTop: '1.25rem',
+    paddingBottom: '0.938rem',
 
     fontWeight: 500,
     fontSize: 20,
@@ -30,7 +29,7 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     display: 'inline-block',
 
     boxSizing: 'border-box',
-    height: 20,
+    height: '1.25rem',
     padding: '0px 5px',
 
   },
@@ -42,10 +41,10 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
   },
 
   PaddingTop: {
-    paddingTop: 10,
+    paddingTop: '0.625rem',
   },
 
   PaddingBottom: {
-    paddingBottom: 20,
+    paddingBottom: '1.25rem',
   },
 }));
