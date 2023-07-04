@@ -1,14 +1,12 @@
-import { Container, Stack, Title, TypographyStylesProvider } from "@mantine/core";
+import { Stack, Title, TypographyStylesProvider } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
 import CardContainer from "../../../../common/CardContainer/CardContainer";
 import { User } from "../../../../../types/user";
-import CommentEditor from "./CommentSection/CommentEditor/CommentEditor";
-import Comment from "./CommentSection/Comment/Comment";
-import { MOCKUP_USER } from "../../../../../mockups/user";
 import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
+import { showError, showNotification } from "../../../../../utils/notifications";
 
 export interface PostDetailViewerProps {
   title?: string;

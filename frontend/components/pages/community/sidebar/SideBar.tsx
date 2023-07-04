@@ -7,12 +7,12 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useState } from "react";
 
 import { useForm } from "@mantine/form";
+import { showError } from "../../../../utils/notifications";
 export interface SideBarProps {
   onSearchSubmit?: (text: string) => void;
 }
 export function SideBar({ onSearchSubmit }: SideBarProps) {
   const { classes, cx } = useSideBarStyles();
-  const [value, setValue] = useState("");
   const form = useForm({
     initialValues: {
       searchKeyword: "",
@@ -28,10 +28,8 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
           // action="http://localhost:3000/community"
           onSubmit={form.onSubmit((values) => {
             if (values.searchKeyword.trim() === "") {
-              alert("검색어를 입력해주세요!");
+              showError("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
             }
-
-            alert(values.searchKeyword);
             onSearchSubmit?.(values.searchKeyword);
           })}
         >

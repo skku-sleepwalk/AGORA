@@ -3,8 +3,9 @@ import image from "./Union.jpg";
 
 export const useSideBarStyles = createStyles((theme) => ({
   SideBarContainer: {
-    width: " 16.375rem",
-    height: "43.4375rem",
+    width: "16.375rem",
+    height: "100vh",
+    position: "fixed",
     // flexShrink: 0,
     // background: "#F9FEFF",
     backgroundColor: "#F9FEFF",
