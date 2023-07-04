@@ -38,14 +38,6 @@ export class CategoryService {
     return await this.categoryTypeRepository.findOne({ name: name });
   }
 
-  // async _findByBoard(board: Board) {
-  //   return this.categoryBoardRepository.find({ board: board });
-  // }
-
-  // async _findByCategoryType(categoryType: CategoryType) {
-  //   return this.categoryBoardRepository.find({ categoryType: categoryType });
-  // }
-
   remove(id: string) {
     return `This action removes a #${id} category`;
   }

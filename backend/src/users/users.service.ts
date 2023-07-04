@@ -14,7 +14,7 @@ export class UsersService {
   }
 
   async create(createUserDto: CreateUserDto) {
-    const { username, description, email } = createUserDto;
+    const { name, description, email } = createUserDto;
     const id = uuid();
     // 중복방지
     const byUserEmail = await this.userRepository.findOne({ email: email });
@@ -27,7 +27,7 @@ export class UsersService {
     }
     const newUser = this.userRepository.create({
       id,
-      username,
+      name,
       email,
       description,
     });
@@ -62,9 +62,9 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     const toUpdateUser = await this.userRepository.findOne(id);
-    const { username, email } = updateUserDto;
+    const { name, email } = updateUserDto;
     toUpdateUser.email = email;
-    toUpdateUser.username = username;
+    toUpdateUser.name = name;
     toUpdateUser.updatedAt = new Date();
     return await this.userRepository.save(toUpdateUser);
   }

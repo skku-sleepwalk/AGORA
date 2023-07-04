@@ -1,7 +1,9 @@
+import { Board } from 'src/boards/entities/board.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,7 +14,7 @@ export class User {
   readonly id: string;
 
   @Column({ length: 32, unique: true })
-  username!: string;
+  name!: string;
 
   @Column({ nullable: true })
   description?: string;
@@ -25,6 +27,9 @@ export class User {
 
   @Column({ default: 0 })
   rating: number;
+
+  @OneToMany(() => Board, (board) => board.writer)
+  boards: Board[];
 
   @CreateDateColumn()
   createdAt!: Date;

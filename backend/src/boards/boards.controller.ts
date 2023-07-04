@@ -16,7 +16,6 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Order } from './entities/board.entity';
 import { Cursor } from 'typeorm-cursor-pagination';
-import { UUID } from 'crypto';
 
 @Controller('boards')
 export class BoardsController {
@@ -29,10 +28,13 @@ export class BoardsController {
   }
 
   @Get()
-  getBoards(@Query('before') before: string, @Query('after') after: string) {
-    return this.boardsService.getBoardAll({
-      afterCursor: after,
-      beforeCursor: before,
+  getBoards(
+    @Query('before') beforeCursor: string,
+    @Query('after') afterCursor: string,
+  ) {
+    return this.boardsService.getBoard({
+      afterCursor,
+      beforeCursor,
     });
   }
   @Get('/user/:userEmail')
@@ -42,27 +44,41 @@ export class BoardsController {
 
   @Get('/search')
   @UsePipes(ValidationPipe)
-  findByCategory(
-    @Query('queryData', new ParseArrayPipe({ items: String, separator: ',' }))
-    queryData: [UUID, UUID, Order, string, string],
+  searchBoard(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('order') order: Order,
+    @Query('search') search: string,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
   ) {
     const cursor: Cursor = {
-      afterCursor: queryData[0],
-      beforeCursor: queryData[1],
+      afterCursor,
+      beforeCursor,
     };
-    const search: string = queryData[3];
-    const order: Order = queryData[2];
-    return this.boardsService.getBoards(
-      queryData.slice(4),
-      cursor,
+    return this.boardsService.searhBoards(categoryNames, cursor, order, search);
+  }
+
+  @Get('/getChild/:parentId')
+  getChild(
+    @Param('parentId') parentId: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('order') order: Order,
+  ) {
+    return this.boardsService.getChild(
+      parentId,
+      { afterCursor, beforeCursor },
       order,
-      search,
     );
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.boardsService.findOne(id);
+  @Get('/email/:email')
+  findOne(@Param('email') writerEmail: string) {
+    return this.boardsService.findByUser(writerEmail);
   }
 
   @Patch(':id')

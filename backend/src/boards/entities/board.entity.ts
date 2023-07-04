@@ -4,11 +4,15 @@ import {
   DeleteDateColumn,
   Entity,
   Generated,
+  JoinTable,
   ManyToMany,
+  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { CategoryType } from '../category/entities/category.entity';
+import { User } from 'src/users/entities/user.entity';
 @Entity('Board')
 export class Board {
   @PrimaryGeneratedColumn('uuid')
@@ -17,12 +21,6 @@ export class Board {
   @Column()
   @Generated('increment')
   readonly _id?: number;
-
-  @Column('varchar')
-  readonly writerEmail: string;
-
-  @Column({ nullable: true, type: 'varchar' })
-  readonly parentId: string;
 
   @Column({ length: 32 })
   title: string;
@@ -36,9 +34,6 @@ export class Board {
   @Column({ nullable: false, default: 0 })
   child: number;
 
-  @Column('varchar', { array: true, nullable: false, default: [] })
-  categoryNames: Array<string>;
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -47,5 +42,18 @@ export class Board {
 
   @DeleteDateColumn()
   deletedAt?: Date | null;
+
+  @ManyToOne(() => User, (user) => user.boards)
+  readonly writer: User;
+
+  @ManyToOne(() => Board, { nullable: true })
+  parent: Board;
+
+  @OneToMany(() => Board, (board) => board.parent)
+  children: Board[];
+
+  @ManyToMany(() => CategoryType)
+  @JoinTable()
+  categoryTypes: CategoryType[];
 }
 export type Order = '_id' | 'child' | 'like';

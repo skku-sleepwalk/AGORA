@@ -4,8 +4,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -21,8 +19,8 @@ export class CategoryType {
   @Column({ unique: true, nullable: false })
   readonly name: string;
 
-  @Column('varchar', { array: true, nullable: false, default: [] })
-  boardIds: Array<string>;
+  @ManyToMany(() => Board)
+  boards: Board[];
 
   @CreateDateColumn()
   createdAt: Date;

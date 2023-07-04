@@ -3,9 +3,8 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board, Order } from './entities/board.entity';
 import { BoardRepository } from './boards.repository';
-import { CategoryService } from './category/category.service';
 import { UsersService } from 'src/users/users.service';
-import { Connection } from 'typeorm';
+import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   Cursor,
@@ -13,13 +12,14 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { CategoryTypeRepository } from './category/category.repository';
+import { UserRepository } from 'src/users/user.repository';
 
 @Injectable()
 export class BoardsService {
   private readonly boardRepository: BoardRepository;
   private readonly categoryTypeRepository: CategoryTypeRepository;
+  private readonly userRepository: UserRepository;
   constructor(
-    private readonly categoryService: CategoryService,
     private readonly usersService: UsersService,
     private readonly connection: Connection,
   ) {
@@ -27,6 +27,7 @@ export class BoardsService {
     this.categoryTypeRepository = connection.getCustomRepository(
       CategoryTypeRepository,
     );
+    this.userRepository = connection.getCustomRepository(UserRepository);
   }
 
   private paginateOption: PaginationOptions<Board> = {
@@ -44,59 +45,64 @@ export class BoardsService {
       createBoardDto;
 
     // User check
-    const user = await this.usersService.findByEmail(writerEmail);
-    const id = uuid();
-    if (user === undefined) {
-      const _error = { writerEmail: 'BoardInput is not valid check type' };
-      throw new HttpException(
-        { message: 'Input data is not exist', _error },
-        HttpStatus.BAD_REQUEST,
-      );
+    const writer = await this.userRepository.findOne({ email: writerEmail });
+    if (!writer) {
+      throw new Error(`User with email ${writerEmail} not found.`);
     }
 
     // Parent check
-    if (parentId != undefined) {
-      let parent = await this.boardRepository.findOne(parentId);
-      if (parent === undefined) {
-        const _error = { parentId: 'No board exist with id' };
+    let parent: Board | undefined;
+    if (parentId) {
+      parent = await this.boardRepository.findOne(parentId);
+      if (!parent) {
         throw new HttpException(
-          { message: 'Input data is not exist', _error },
+          {
+            message: '입력한 데이터가 올바르지 않습니다.',
+            error: {
+              parentId: '해당 ID를 가진 부모 게시물이 존재하지 않습니다',
+            },
+          },
           HttpStatus.BAD_REQUEST,
         );
-      } else {
-        while (true) {
-          parent.child += 1;
-          this.boardRepository.save(parent);
-          if (parent.parentId === null) {
-            break;
-          }
-          parent = await this.boardRepository.findOne(parent.parentId);
-        }
       }
     }
 
+    // Increment child count of parent recursively
+    let currentParent = parent;
+    while (currentParent) {
+      currentParent.child += 1;
+      await this.boardRepository.save(currentParent);
+      if (!currentParent.parent) {
+        break;
+      }
+      currentParent = await this.boardRepository.findOne(
+        currentParent.parent.id,
+      );
+    }
+
     const newBoard = this.boardRepository.create({
-      id: id,
-      writerEmail,
-      parentId,
+      id: uuid(),
       title,
       content,
-      categoryNames,
+      writer,
+      parent,
+      categoryTypes: [], // Assuming you'll handle categoryTypes separately
     });
 
     for (const categoryName of categoryNames) {
       const categoryType = await this.categoryTypeRepository.findOne({
         name: categoryName,
       });
-
-      categoryType.boardIds.push(id);
-      this.categoryTypeRepository.save(categoryType);
+      if (categoryType) {
+        newBoard.categoryTypes.push(categoryType);
+      }
     }
 
     return this.boardRepository.save(newBoard);
   }
+
   ///////////////////////////{  READ  }/////////////////////////////////
-  async getBoardAll(_cursor: Cursor) {
+  async getBoard(_cursor: Cursor) {
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
       .where('board.parentId IS NULL');
@@ -116,34 +122,34 @@ export class BoardsService {
     return this.boardRepository.findOne(id);
   }
 
-  async getBoards(
+  async searhBoards(
     categoryTypeNames: Array<string>,
     _cursor: Cursor,
     order: Order,
     search: string,
   ) {
-    const boardIds: Array<string> = [];
+    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'category')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .where('category.name IN (:...categoryNames)')
+      .setParameter('categoryNames', categoryTypeNames);
 
-    for (const categoryTypeName of categoryTypeNames) {
-      boardIds.push(
-        ...(
-          await this.categoryTypeRepository.findOne({ name: categoryTypeName })
-        ).boardIds,
+    if (search) {
+      queryBuilder.andWhere(
+        'board.title LIKE :search OR board.content LIKE :search',
+        {
+          search: `%${search}%`,
+        },
       );
     }
-
-    let queryBuilder = this.boardRepository.createQueryBuilder('board');
-    if (search) {
-      queryBuilder = queryBuilder.where('board.parentId IS NULL'); //검색 구현 아직 안됨.
-    } else {
-      queryBuilder = queryBuilder.whereInIds(boardIds);
-    }
     const paginateOption = this.paginateOption;
-    this.paginateOption.paginationKeys = [order, '_id'];
-    if (_cursor.afterCursor != null) {
+    this.paginateOption.paginationKeys = [order];
+    if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
-    if (_cursor.beforeCursor != null) {
+    if (_cursor.beforeCursor) {
       paginateOption.query.beforeCursor = _cursor.beforeCursor;
     }
     const paginator = buildPaginator(paginateOption);
@@ -151,16 +157,35 @@ export class BoardsService {
     return { data, cursor };
   }
 
-  async findByUser(Email: string) {
-    return this.boardRepository.find({ writerEmail: Email });
+  async getChild(parentId: string, _cursor: Cursor, order: Order) {
+    const queryBuilder = this.boardRepository
+      .createQueryBuilder('board')
+      .where('board.parentId = :parentId', { parentId: parentId });
+    const paginateOption = this.paginateOption;
+    this.paginateOption.paginationKeys = [order];
+    if (_cursor.afterCursor) {
+      paginateOption.query.afterCursor = _cursor.afterCursor;
+    }
+    if (_cursor.beforeCursor) {
+      paginateOption.query.beforeCursor = _cursor.beforeCursor;
+    }
+    const paginator = buildPaginator(paginateOption);
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
+  }
+
+  async findByUser(writerEmail: string) {
+    return this.boardRepository.find({
+      writer: await this.userRepository.findOne({ email: writerEmail }),
+    });
   }
 
   ///////////////////////////{  UPDATE  }/////////////////////////////////
   async update(id: string, updateBoardDto: UpdateBoardDto) {
     const toUpdateBoard = await this.findOne(id);
     const { updateEmail, title, content } = updateBoardDto;
-
-    if (updateEmail === toUpdateBoard.writerEmail) {
+    console.log(toUpdateBoard);
+    if (updateEmail === toUpdateBoard.writer.email) {
       toUpdateBoard.title = title;
       toUpdateBoard.content = content;
       toUpdateBoard.updatedAt = new Date();
@@ -174,36 +199,6 @@ export class BoardsService {
   }
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
-    await this.boardRepository.delete(id);
-  }
-  //////////////////////////////////////////////////////////////////////
-  async paginate(_cursor: Cursor, limit: number) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .where('board.parent IS NULL')
-      .where('board.writerEmail = :writerEmail', {
-        writerEmail: 'a@gmail.com',
-      });
-
-    const paginateOption: PaginationOptions<Board> = {
-      entity: Board,
-      paginationKeys: ['_id'],
-      query: {
-        limit,
-        order: 'DESC',
-      },
-    };
-
-    if (_cursor.afterCursor != null) {
-      paginateOption.query.afterCursor = _cursor.afterCursor;
-    }
-    if (_cursor.beforeCursor != null) {
-      paginateOption.query.beforeCursor = _cursor.beforeCursor;
-    }
-
-    const paginator = buildPaginator(paginateOption);
-    const { data, cursor } = await paginator.paginate(queryBuilder);
-
-    return { data, cursor };
+    await this.boardRepository.softDelete(id);
   }
 }
