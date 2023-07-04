@@ -1,7 +1,7 @@
-import { Container, Group, Text, Image, Stack } from "@mantine/core";
+import { Container, Group, Box, Text, Image, Stack, Badge, Divider } from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { usePopularPostStyles } from "./PopularPost.styles";
-import { PopularPostValues } from "./PopularPost.constants";
+import { PopularPostValues, PopularPostNum } from "./PopularPost.constants";
 
 export interface PopularPostProps {
   onPopularPostChange?: (popularPost: string[]) => void;
@@ -11,6 +11,19 @@ export function PopularPost({ onPopularPostChange }: PopularPostProps) {
   const { classes } = usePopularPostStyles();
 
   const [values, handlers] = useListState(PopularPostValues);
+
+  let Items = new Array(PopularPostNum - 2);
+  for (let i = 0; i < PopularPostNum - 2; i++) {
+    Items[i] = (
+      <Box>
+        <Badge className={classes.Badge} 
+          variant="light" radius="md" size="lg"
+          component="a" href={values[i + 2].href} fullWidth>
+          {values[i + 2].label}
+        </Badge>
+      </Box>
+    );
+  }
 
   return (
     <Container className={classes.PopularPostContainer}>
@@ -27,11 +40,24 @@ export function PopularPost({ onPopularPostChange }: PopularPostProps) {
           </Image>
         </Group>
         <Group position="apart">
-          <Text size={'xs'}>{values[0].label}</Text>
-          <Text size={'xs'}>{values[1].label}</Text>
+          <Box w={'6.5rem'}>
+            <Badge className={classes.Badge} 
+              variant="light" radius="md"
+              component="a" href={values[0].href} fullWidth>
+              {values[0].label}
+            </Badge>
+          </Box>
+          <Box w={'6.5rem'}>
+            <Badge className={classes.Badge} 
+              variant="light" radius="md"
+              component="a" href={values[1].href} fullWidth>
+              {values[1].label}
+            </Badge>
+          </Box>
         </Group>
+        <Divider/>
+        {Items}
       </Stack>
-      
     </Container>
   );
 }
