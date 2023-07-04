@@ -22,4 +22,14 @@ export const usePopularPostStyles = createStyles((theme) => ({
     fontSize: 20,
     color: "#000",
   },
+  content: {
+    lineHeight: 1.5,
+    maxWidth: '6.5rem',
+    overflow: "hidden",
+    borderBottom: "none",
+    fontSize: 'xs',
+  },
+  PaddingBottom: {
+    paddingBottom: "1.25rem",
+  },
 }));
