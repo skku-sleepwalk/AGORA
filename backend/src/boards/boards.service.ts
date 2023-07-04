@@ -119,7 +119,11 @@ export class BoardsService {
   }
 
   findOne(id: string) {
-    return this.boardRepository.findOne(id);
+    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .andWhere('board.id = :boardId', { boardId: id });
+    return queryBuilder.getOne();
   }
 
   async searhBoards(
@@ -184,7 +188,6 @@ export class BoardsService {
   async update(id: string, updateBoardDto: UpdateBoardDto) {
     const toUpdateBoard = await this.findOne(id);
     const { updateEmail, title, content } = updateBoardDto;
-    console.log(toUpdateBoard);
     if (updateEmail === toUpdateBoard.writer.email) {
       toUpdateBoard.title = title;
       toUpdateBoard.content = content;
