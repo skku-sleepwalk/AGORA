@@ -1,5 +1,7 @@
+import { PhotoViewer } from "../components/common/PhotoViewer/PhotoViewer";
+
 function Main() {
-  return <div>Hello</div>;
+  return <PhotoViewer />;
 }
 
 export default Main;
