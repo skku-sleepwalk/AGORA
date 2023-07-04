@@ -30,12 +30,19 @@ export const usePopularPostStyles = createStyles((theme) => ({
     fontSize: 'xs',
   },
   Badge:{
+    padding: '0px 7px',
+    textAlign: 'left',
+    justifyContent: 'flex-start',
+
     ".mantine-Badge-root": {
-      padding: '0px 3px',
+      textDecoration: 'none',
     },
     ".mantine-Badge-inner": {
       fontWeight: 'normal',
-      alignContent: 'flex-start',
+    },
+    "&:hover": {
+      textDecoration: "none",
+      cursor: 'pointer',
     },
   },
   PaddingBottom: {

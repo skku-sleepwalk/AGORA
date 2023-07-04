@@ -30,14 +30,18 @@ export function PopularPost({ onPopularPostChange }: PopularPostProps) {
       <Text className={classes.PopularPostText}>인기글</Text>
       <Stack spacing={"xs"} className={classes.PaddingBottom}>
         <Group position="apart">
-          <Image 
-            width={'6.5rem'} height={'6.5rem'} radius={'0.94rem'} 
-            src={values[0].src} fit="cover">
-          </Image>
-          <Image 
-            width={'6.5rem'} height={'6.5rem'} radius={'0.94rem'} 
-            src={values[1].src} fit="cover">
-          </Image>
+          <a href={values[0].href}>
+            <Image 
+              width={'6.5rem'} height={'6.5rem'} radius={'0.94rem'} 
+              src={values[0].src} fit="cover">
+            </Image>
+          </a>
+          <a href={values[1].href}>
+            <Image 
+              width={'6.5rem'} height={'6.5rem'} radius={'0.94rem'} 
+              src={values[1].src} fit="cover">
+            </Image>
+          </a>
         </Group>
         <Group position="apart">
           <Box w={'6.5rem'}>
