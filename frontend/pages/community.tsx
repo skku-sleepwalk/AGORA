@@ -16,7 +16,15 @@ function Community() {
 
   return (
     <CommunityLayout
-      leftSection={<LeftSidebar />}
+      leftSection={
+        <Stack spacing={16}>
+          <LeftSidebar
+            onCategoryChange={(category) => {
+              console.log(category);
+            }}
+          />
+        </Stack>
+      }
       rightSection={
         <SideBar
           onSearchSubmit={(text) => {
@@ -33,7 +41,11 @@ function Community() {
                 console.log(text);
               }}
             />
-            <SearchTab />
+            <SearchTab
+              onChange={(tab) => {
+                console.log(tab);
+              }}
+            />
           </Stack>
         ) : (
           <PostWriter
@@ -42,6 +54,9 @@ function Community() {
             }}
           />
         )}
+        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
+        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
+        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
         <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
         <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
         <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />

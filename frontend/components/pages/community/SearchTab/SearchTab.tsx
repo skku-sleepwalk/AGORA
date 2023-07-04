@@ -5,14 +5,22 @@ import { IconAdjustmentsHorizontal } from "@tabler/icons-react";
 
 export interface SearchTabProps {
   className?: string;
+  onChange?: (tab: string) => void;
 }
 
-function SearchTab({ className }: SearchTabProps) {
+function SearchTab({ className, onChange }: SearchTabProps) {
   const { classes, cx } = useSearchTabStyles();
   const [tab, setTab] = useState<string | null>("post");
 
   return (
-    <Tabs value={tab} onTabChange={setTab} className={className}>
+    <Tabs
+      value={tab}
+      onTabChange={(tabName) => {
+        setTab(tabName);
+        onChange?.(tabName as string);
+      }}
+      className={className}
+    >
       <Tabs.List>
         <Group position="apart" className={classes.tabList} noWrap>
           <Group spacing={0} noWrap>
