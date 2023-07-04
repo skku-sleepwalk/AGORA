@@ -1,7 +1,6 @@
 import { randomId } from '@mantine/hooks';
 
 export const Category = new Array ('개발', '디자인', '공모전', '음악', '퍼블리싱', '인터페이스', '창업', '입문');
-export const CategoryNum = 8; // 위의 카테고리 개수와 같도록
 
 export const DevelopValues = [
   { label: 'Unity', checked: true, key: randomId() },
@@ -46,3 +45,7 @@ export const BasicValues = [
 ];
 
 export const Values = new Array(DevelopValues, DesignValues, ContestValues, MusicValues, PublishingValues, InterfaceValues, StartUpValues, BasicValues);
+
+let a = Category.length;
+let b = Values.length;
+export const CategoryNum = a == b? a: (a > b? b: a);
