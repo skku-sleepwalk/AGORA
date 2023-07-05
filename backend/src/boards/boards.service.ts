@@ -13,6 +13,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { CategoryTypeRepository } from './category/category.repository';
 import { UserRepository } from 'src/users/user.repository';
+import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class BoardsService {
@@ -34,6 +35,8 @@ export class BoardsService {
     entity: Board,
     paginationKeys: ['_id'],
     query: {
+      afterCursor: null,
+      beforeCursor: null,
       limit: 5,
       order: 'DESC',
     },
@@ -105,12 +108,17 @@ export class BoardsService {
   async getBoard(_cursor: Cursor) {
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
-      .where('board.parentId IS NULL');
-    const paginateOption = this.paginateOption;
-    if (_cursor.afterCursor != null) {
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent');
+
+    const paginateOption: PaginationOptions<Board> = cloneDeep(
+      this.paginateOption,
+    );
+
+    if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
-    if (_cursor.beforeCursor != null) {
+    if (_cursor.beforeCursor) {
       paginateOption.query.beforeCursor = _cursor.beforeCursor;
     }
     const paginator = buildPaginator(paginateOption);
@@ -139,7 +147,6 @@ export class BoardsService {
       .leftJoinAndSelect('board.writer', 'writer')
       .where('category.name IN (:...categoryNames)')
       .setParameter('categoryNames', categoryTypeNames);
-
     if (search) {
       queryBuilder.andWhere(
         'board.title LIKE :search OR board.content LIKE :search',
@@ -148,8 +155,11 @@ export class BoardsService {
         },
       );
     }
-    const paginateOption = this.paginateOption;
-    this.paginateOption.paginationKeys = [order];
+
+    const paginateOption: PaginationOptions<Board> = cloneDeep(
+      this.paginateOption,
+    );
+    paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
@@ -160,7 +170,6 @@ export class BoardsService {
     const { data, cursor } = await paginator.paginate(queryBuilder);
     return { data, cursor };
   }
-
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
