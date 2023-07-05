@@ -9,6 +9,7 @@ import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
+import { PopularPost } from "../components/pages/community/PopularPost/PopularPost";
 
 function Community() {
   const router = useRouter();
@@ -23,6 +24,11 @@ function Community() {
               console.log(category);
             }}
           />
+          <PopularPost>
+            {/* onPopularPostChange={(popularPost) => {
+              console.log(popularPost);
+            }} */}
+          </PopularPost>
         </Stack>
       }
       rightSection={
