@@ -1,7 +1,7 @@
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateBoardDto {
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   readonly title: string;
 

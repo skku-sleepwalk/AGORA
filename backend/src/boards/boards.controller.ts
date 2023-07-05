@@ -42,6 +42,11 @@ export class BoardsController {
     return this.boardsService.findByUser(userEmail);
   }
 
+  @Get(':id')
+  getOne(@Param('id') id: string) {
+    return this.boardsService.findOne(id);
+  }
+
   @Get('/search')
   @UsePipes(ValidationPipe)
   searchBoard(

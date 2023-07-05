@@ -109,7 +109,8 @@ export class BoardsService {
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent');
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
 
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
@@ -130,6 +131,8 @@ export class BoardsService {
     const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
       .andWhere('board.id = :boardId', { boardId: id });
     return queryBuilder.getOne();
   }

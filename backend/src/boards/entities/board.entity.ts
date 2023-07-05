@@ -22,7 +22,7 @@ export class Board {
   @Generated('increment')
   readonly _id?: number;
 
-  @Column({ length: 32 })
+  @Column({ length: 32, nullable: true })
   title: string;
 
   @Column()
