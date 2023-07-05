@@ -16,7 +16,6 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Order } from './entities/board.entity';
 import { Cursor } from 'typeorm-cursor-pagination';
-import { CustomParseArrayPipe } from './pipe/custom-parse-array.pipe.ts';
 
 @Controller('boards')
 export class BoardsController {

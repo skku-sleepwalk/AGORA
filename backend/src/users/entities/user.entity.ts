@@ -20,7 +20,7 @@ export class User {
   description?: string;
 
   @Column({ unique: true })
-  email?: string;
+  email: string;
 
   @Column({ default: 0 })
   token: number;
