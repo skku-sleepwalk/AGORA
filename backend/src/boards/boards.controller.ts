@@ -16,6 +16,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Order } from './entities/board.entity';
 import { Cursor } from 'typeorm-cursor-pagination';
+import { CustomParseArrayPipe } from './pipe/custom-parse-array.pipe.ts';
 
 @Controller('boards')
 export class BoardsController {
@@ -29,8 +30,8 @@ export class BoardsController {
 
   @Get()
   getBoards(
-    @Query('before') beforeCursor: string,
-    @Query('after') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('afterCursor') afterCursor: string,
   ) {
     return this.boardsService.getBoard({
       afterCursor,
@@ -43,7 +44,6 @@ export class BoardsController {
   }
 
   @Get('/search')
-  @UsePipes(ValidationPipe)
   searchBoard(
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
