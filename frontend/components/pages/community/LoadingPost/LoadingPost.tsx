@@ -12,20 +12,20 @@ export function LoadingPost() {
             <Group spacing={14}>
               <Skeleton height={46} circle/>
               <Stack spacing={5}>
-                <Skeleton height={16} width={100} radius="xl" />
-                <Skeleton height={12} width={150} radius="xl" />
+                <Skeleton height={16} width={100} radius="sm" />
+                <Skeleton height={12} width={150} radius="sm" />
               </Stack>
             </Group>
-          <Skeleton height={12} width={30} radius="xl" />
+          <Skeleton height={12} width={30} radius="sm" />
         </Group>
         <Container className={classes.content}>
           <Stack spacing={8} h={157} justify="center">
-            <Skeleton height={16} radius="xl" />
-            <Skeleton height={16} radius="xl" />
-            <Skeleton height={16} radius="xl" />
-            <Skeleton height={16} radius="xl" />
-            <Skeleton height={16} radius="xl" />
-            <Skeleton height={16} radius="xl" />
+            <Skeleton height={16} radius="sm" />
+            <Skeleton height={16} radius="sm" />
+            <Skeleton height={16} radius="sm" />
+            <Skeleton height={16} radius="sm" />
+            <Skeleton height={16} radius="sm" />
+            <Skeleton height={16} radius="sm" />
           </Stack>
         </Container>
       </Stack>
