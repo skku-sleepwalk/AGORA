@@ -199,11 +199,19 @@ export class BoardsService {
   ///////////////////////////{  UPDATE  }/////////////////////////////////
   async update(id: string, updateBoardDto: UpdateBoardDto) {
     const toUpdateBoard = await this.findOne(id);
-    const { updateEmail, title, content } = updateBoardDto;
+    const { updateEmail, title, content, categoryNames } = updateBoardDto;
     if (updateEmail === toUpdateBoard.writer.email) {
       toUpdateBoard.title = title;
       toUpdateBoard.content = content;
-      toUpdateBoard.updatedAt = new Date();
+      toUpdateBoard.categoryTypes = [];
+      for (const categoryName of categoryNames) {
+        const categoryType = await this.categoryTypeRepository.findOne({
+          name: categoryName,
+        });
+        if (categoryType) {
+          toUpdateBoard.categoryTypes.push(categoryType);
+        }
+      }
       return await this.boardRepository.save(toUpdateBoard);
     } else {
       throw new HttpException(

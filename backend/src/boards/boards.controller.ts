@@ -27,7 +27,7 @@ export class BoardsController {
     return this.boardsService.createBoard(createBoardDto);
   }
 
-  @Get()
+  @Get('/main')
   getBoards(
     @Query('before') beforeCursor: string,
     @Query('after') afterCursor: string,
@@ -40,11 +40,6 @@ export class BoardsController {
   @Get('/user/:userEmail')
   findByUser(@Param('userEmail') userEmail: string) {
     return this.boardsService.findByUser(userEmail);
-  }
-
-  @Get(':id')
-  getOne(@Param('id') id: string) {
-    return this.boardsService.findOne(id);
   }
 
   @Get('/search')
@@ -84,6 +79,11 @@ export class BoardsController {
   @Get('/email/:email')
   findOne(@Param('email') writerEmail: string) {
     return this.boardsService.findByUser(writerEmail);
+  }
+
+  @Get('/id/:id')
+  getOne(@Param('id') id: string) {
+    return this.boardsService.findOne(id);
   }
 
   @Patch(':id')
