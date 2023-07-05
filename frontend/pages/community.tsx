@@ -24,11 +24,6 @@ function Community() {
               console.log(category);
             }}
           />
-          <PopularPost>
-            {/* onPopularPostChange={(popularPost) => {
-              console.log(popularPost);
-            }} */}
-          </PopularPost>
         </Stack>
       }
       rightSection={
