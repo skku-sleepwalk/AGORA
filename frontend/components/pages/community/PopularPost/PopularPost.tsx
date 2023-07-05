@@ -3,11 +3,7 @@ import { useListState } from "@mantine/hooks";
 import { usePopularPostStyles } from "./PopularPost.styles";
 import { PopularPostValues, PopularPostNum } from "./PopularPost.constants";
 
-export interface PopularPostProps {
-  onPopularPostChange?: (popularPost: string[]) => void;
-}
-
-export function PopularPost({ onPopularPostChange }: PopularPostProps) {
+export function PopularPost() {
   const { classes } = usePopularPostStyles();
 
   const [values, handlers] = useListState(PopularPostValues);
