@@ -109,7 +109,8 @@ export class BoardsService {
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent');
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
 
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
@@ -130,6 +131,8 @@ export class BoardsService {
     const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
       .andWhere('board.id = :boardId', { boardId: id });
     return queryBuilder.getOne();
   }
@@ -196,11 +199,19 @@ export class BoardsService {
   ///////////////////////////{  UPDATE  }/////////////////////////////////
   async update(id: string, updateBoardDto: UpdateBoardDto) {
     const toUpdateBoard = await this.findOne(id);
-    const { updateEmail, title, content } = updateBoardDto;
+    const { updateEmail, title, content, categoryNames } = updateBoardDto;
     if (updateEmail === toUpdateBoard.writer.email) {
       toUpdateBoard.title = title;
       toUpdateBoard.content = content;
-      toUpdateBoard.updatedAt = new Date();
+      toUpdateBoard.categoryTypes = [];
+      for (const categoryName of categoryNames) {
+        const categoryType = await this.categoryTypeRepository.findOne({
+          name: categoryName,
+        });
+        if (categoryType) {
+          toUpdateBoard.categoryTypes.push(categoryType);
+        }
+      }
       return await this.boardRepository.save(toUpdateBoard);
     } else {
       throw new HttpException(

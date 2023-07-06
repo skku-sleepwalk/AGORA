@@ -2,7 +2,9 @@ import { Board } from 'src/boards/entities/board.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -28,12 +30,18 @@ export class User {
   @Column({ default: 0 })
   rating: number;
 
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date | null;
+
   @OneToMany(() => Board, (board) => board.writer)
   boards: Board[];
 
-  @CreateDateColumn()
-  createdAt!: Date;
-
-  @UpdateDateColumn()
-  updatedAt?: Date;
+  @ManyToMany(() => Board)
+  likedBoards: Board[];
 }

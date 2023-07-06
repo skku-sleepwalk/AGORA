@@ -55,5 +55,9 @@ export class Board {
   @ManyToMany(() => CategoryType)
   @JoinTable()
   categoryTypes: CategoryType[];
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  likedUsers: User[];
 }
 export type Order = '_id' | 'child' | 'like';
