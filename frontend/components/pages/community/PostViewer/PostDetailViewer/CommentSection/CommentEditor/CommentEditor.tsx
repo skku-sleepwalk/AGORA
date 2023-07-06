@@ -6,22 +6,22 @@ import Underline from "@tiptap/extension-underline";
 import Superscript from "@tiptap/extension-superscript";
 import Subscript from "@tiptap/extension-subscript";
 import Highlight from "@tiptap/extension-highlight";
-import TextAlign from "@tiptap/extension-text-align";
 import { RichTextEditor } from "@mantine/tiptap";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { lowlight } from "lowlight";
-import { IconCodeDots, IconPhoto } from "@tabler/icons-react";
-import { ActionIcon, Box, Button, Group, useMantineTheme } from "@mantine/core";
+import { Box, Button, Group } from "@mantine/core";
 import Image from "@tiptap/extension-image";
 import { User } from "../../../../../../../types/user";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
+import { useDebouncedState } from "@mantine/hooks";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 
 export interface CommentEditorProps {
   user: User;
 }
 
-function CommentEditor({ user }: CommentEditorProps) {
+const CommentEditor = forwardRef(({ user }: CommentEditorProps, ref) => {
   const { classes } = useCommentEditorStyles();
   const editor = useEditor({
     extensions: [
@@ -37,6 +37,12 @@ function CommentEditor({ user }: CommentEditorProps) {
       Image,
     ],
   });
+
+  useImperativeHandle(ref, () => ({
+    getHTML: () => {
+      return editor?.getHTML();
+    },
+  }));
 
   return (
     <CommentFrame user={user} withoutLeftBorder>
@@ -56,6 +62,6 @@ function CommentEditor({ user }: CommentEditorProps) {
       </Box>
     </CommentFrame>
   );
-}
+});
 
 export default CommentEditor;

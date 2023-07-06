@@ -8,30 +8,41 @@ import SubScript from "@tiptap/extension-subscript";
 import RichTextEditorControlGroup from "../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
 import { useRichEditorStyles } from "./RichEditor.styles";
 import Image from "@tiptap/extension-image";
+import { forwardRef, useImperativeHandle } from "react";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { lowlight } from "lowlight";
 
-export interface RichEditorProps {
-  onChange?: (content: string) => void;
-  value?: string;
-}
-
-function RichEditor({ onChange, value }: RichEditorProps) {
+const RichEditor = forwardRef(({}, ref) => {
   const editor = useEditor({
-    extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight, Image],
+    extensions: [
+      StarterKit,
+      Underline,
+      Link,
+      Superscript,
+      SubScript,
+      Highlight,
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
+      Image,
+    ],
     content: "",
   });
   const { classes } = useRichEditorStyles();
 
-  editor?.on("update", () => {
-    onChange?.(editor.getHTML());
-  });
+  useImperativeHandle(ref, () => ({
+    getHTML: () => {
+      return editor?.getHTML();
+    },
+  }));
 
   return (
     <RichTextEditor editor={editor} className={classes.editor}>
-      <RichTextEditor.Toolbar>
+      <RichTextEditor.Toolbar sticky>
         <RichTextEditorControlGroup editor={editor} />
       </RichTextEditor.Toolbar>
       <RichTextEditor.Content />
     </RichTextEditor>
   );
-}
+});
 export default RichEditor;
