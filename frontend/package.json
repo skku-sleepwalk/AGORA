@@ -13,6 +13,7 @@
     "@emotion/server": "^11.11.0",
     "@mantine/carousel": "^6.0.14",
     "@mantine/core": "^6.0.14",
+    "@mantine/dropzone": "^6.0.14",
     "@mantine/form": "^6.0.14",
     "@mantine/hooks": "^6.0.14",
     "@mantine/next": "^6.0.13",
@@ -34,8 +35,10 @@
     "embla-carousel-react": "^7.0.0",
     "lowlight": "^2.9.0",
     "next": "13.4.6",
+    "qs": "^6.11.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-dom": "18.2.0",
+    "swr": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "20.3.1",

@@ -34,12 +34,7 @@ function CommentEditor({ user }: CommentEditorProps) {
       CodeBlockLowlight.configure({
         lowlight,
       }),
-      Image.configure({
-        inline: true,
-        HTMLAttributes: {
-          style: "width: 400px; height: auto;",
-        },
-      }),
+      Image,
     ],
   });
 
@@ -51,7 +46,7 @@ function CommentEditor({ user }: CommentEditorProps) {
 
           <RichTextEditor.Toolbar>
             <Group position="apart" className={classes.toolbarGroup}>
-              <RichTextEditorControlGroup />
+              <RichTextEditorControlGroup editor={editor} />
               <Button radius="xl" className={classes.submitButton}>
                 작성
               </Button>
