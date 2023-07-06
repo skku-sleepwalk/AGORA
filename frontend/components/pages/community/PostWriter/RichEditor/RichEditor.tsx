@@ -7,6 +7,7 @@ import Superscript from "@tiptap/extension-superscript";
 import SubScript from "@tiptap/extension-subscript";
 import RichTextEditorControlGroup from "../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
 import { useRichEditorStyles } from "./RichEditor.styles";
+import Image from "@tiptap/extension-image";
 
 export interface RichEditorProps {
   onChange?: (content: string) => void;
@@ -15,7 +16,7 @@ export interface RichEditorProps {
 
 function RichEditor({ onChange, value }: RichEditorProps) {
   const editor = useEditor({
-    extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight],
+    extensions: [StarterKit, Underline, Link, Superscript, SubScript, Highlight, Image],
     content: "",
   });
   const { classes } = useRichEditorStyles();
@@ -27,7 +28,7 @@ function RichEditor({ onChange, value }: RichEditorProps) {
   return (
     <RichTextEditor editor={editor} className={classes.editor}>
       <RichTextEditor.Toolbar>
-        <RichTextEditorControlGroup />
+        <RichTextEditorControlGroup editor={editor} />
       </RichTextEditor.Toolbar>
       <RichTextEditor.Content />
     </RichTextEditor>
