@@ -23,7 +23,7 @@ function RichTextEditorControlGroup({ editor }: RichTextEditorControlGroupProps)
   const uploadFileRef = useClickOutside(() => closeImagePopover());
 
   return (
-    <Group>
+    <>
       <RichTextEditor.ControlsGroup>
         <RichTextEditor.Bold />
         <RichTextEditor.Italic />
@@ -113,7 +113,7 @@ function RichTextEditorControlGroup({ editor }: RichTextEditorControlGroupProps)
         <RichTextEditor.Link />
         <RichTextEditor.Unlink />
       </RichTextEditor.ControlsGroup>
-    </Group>
+    </>
   );
 }
 
