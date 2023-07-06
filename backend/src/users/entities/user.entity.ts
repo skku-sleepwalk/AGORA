@@ -4,6 +4,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -29,9 +30,6 @@ export class User {
   @Column({ default: 0 })
   rating: number;
 
-  @OneToMany(() => Board, (board) => board.writer)
-  boards: Board[];
-
   @CreateDateColumn()
   createdAt: Date;
 
@@ -40,4 +38,10 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @OneToMany(() => Board, (board) => board.writer)
+  boards: Board[];
+
+  @ManyToMany(() => Board)
+  likedBoards: Board[];
 }
