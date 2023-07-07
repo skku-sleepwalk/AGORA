@@ -220,6 +220,27 @@ export class BoardsService {
       );
     }
   }
+
+  async likeUpdate(boardId: string, userId: string) {
+    const queryBuilder = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+    const board = await queryBuilder
+      .where('board.id = :boardId', { boardId })
+      .getOne();
+    const likedUser = await this.userRepository.findOne(userId);
+    if (!board.likedUsers.map((user) => user.id).includes(likedUser.id)) {
+      board.likedUsers.push(likedUser);
+      board.like += 1;
+    } else {
+      board.like -= 1;
+      board.likedUsers = board.likedUsers.filter(
+        (user) => user.id != likedUser.id,
+      );
+    }
+    return this.boardRepository.save(board);
+  }
+
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
     await this.boardRepository.softDelete(id);

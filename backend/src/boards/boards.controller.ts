@@ -85,10 +85,18 @@ export class BoardsController {
     return this.boardsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('/id/:id')
   @UsePipes(ValidationPipe)
   update(@Param('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
     return this.boardsService.update(id, updateBoardDto);
+  }
+
+  @Patch('/like')
+  likeUpdate(
+    @Query('boardId') boardId: string,
+    @Query('userId') userId: string,
+  ) {
+    return this.boardsService.likeUpdate(boardId, userId);
   }
 
   @Delete(':id')
