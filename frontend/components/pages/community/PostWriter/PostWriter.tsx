@@ -10,6 +10,8 @@ import RichEditor from "./RichEditor/RichEditor";
 import { ButtonProgress } from "./ButtonProgress/ButtonProgress";
 import CategorySelector from "./CategorySelector/CategorySelector";
 import { useForm } from "@mantine/form";
+import { useRef } from "react";
+import { Editor } from "@tiptap/react";
 
 export interface Post {
   title: string;
@@ -28,10 +30,10 @@ function PostWriter({ onSubmit }: PostWriterProps) {
   const form = useForm({
     initialValues: {
       title: "",
-      content: "",
       category: [] as string[],
     },
   });
+  const editorRef = useRef<Editor>(null);
 
   return (
     <>
@@ -67,7 +69,12 @@ function PostWriter({ onSubmit }: PostWriterProps) {
       >
         <form
           onSubmit={form.onSubmit((values) => {
-            onSubmit?.(values);
+            const content = editorRef.current!.getHTML();
+            const postData = {
+              ...values,
+              content,
+            };
+            onSubmit(postData);
           })}
         >
           <FocusTrap active={opened}>
@@ -83,10 +90,7 @@ function PostWriter({ onSubmit }: PostWriterProps) {
                 }}
                 {...form.getInputProps("title")}
               />
-              <RichEditor
-                onChange={(content) => form.setFieldValue("content", content)}
-                value={form.values.content}
-              />
+              <RichEditor ref={editorRef} />
               <CategorySelector
                 onChange={(category) => {
                   form.setFieldValue("category", category);
