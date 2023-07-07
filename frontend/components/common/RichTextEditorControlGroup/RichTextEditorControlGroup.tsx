@@ -69,9 +69,19 @@ function RichTextEditorControlGroup({ editor }: RichTextEditorControlGroupProps)
                   .filter((result): result is PostUploadImageResponse => result !== null)
                   .map(({ url }) => url);
                 setImageUploading(false);
-                urls.forEach((url) => {
-                  editor?.chain().focus().setImage({ src: url }).run();
+                const { state } = editor!.view;
+                let { tr } = state;
+                const pos = state.selection.to;
+
+                urls.reverse().forEach((url, index) => {
+                  console.log(url);
+                  const node = state.schema.nodes.image.create({ src: url });
+
+                  tr.insert(pos + index, node);
                 });
+
+                editor?.view.dispatch(tr);
+                editor?.view.focus();
                 closeImagePopover();
               }}
               onReject={() => {
