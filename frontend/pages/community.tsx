@@ -9,6 +9,7 @@ import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
+import { uploadPost } from "../utils/api/uploadPost";
 
 function Community() {
   const router = useRouter();
@@ -50,7 +51,13 @@ function Community() {
         ) : (
           <PostWriter
             onSubmit={(values) => {
-              console.log(values);
+              const { title, content, category } = values;
+              uploadPost({
+                title: title,
+                content: content,
+                writerEmail: "lucas@naver.com",
+                categoryNames: category,
+              });
             }}
           />
         )}
