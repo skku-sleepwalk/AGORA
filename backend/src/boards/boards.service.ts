@@ -14,7 +14,6 @@ import {
 import { CategoryTypeRepository } from './category/category.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { cloneDeep } from 'lodash';
-import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -115,12 +114,7 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
-
+    const queryBuilder = this.getBoardWithRelation();
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
@@ -137,12 +131,10 @@ export class BoardsService {
   }
 
   findOne(id: string) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
-      .andWhere('board.id = :boardId', { boardId: id });
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelation().andWhere('board.id = :boardId', {
+        boardId: id,
+      });
     return queryBuilder.getOne();
   }
 
@@ -152,17 +144,18 @@ export class BoardsService {
     order: Order,
     search: string,
   ) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'category')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .where('category.name IN (:...categoryNames)')
-      .setParameter('categoryNames', categoryTypeNames);
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelation().where(
+        'categoryTypes.name IN (:...categoryNames)',
+        {
+          categoryNames: categoryTypeNames,
+        },
+      );
     if (search) {
       queryBuilder.andWhere(
-        'board.title LIKE :search OR board.content LIKE :search',
+        '(categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
         {
+          categoryNames: categoryTypeNames,
           search: `%${search}%`,
         },
       );
@@ -183,9 +176,10 @@ export class BoardsService {
     return { data, cursor };
   }
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .where('board.parentId = :parentId', { parentId: parentId });
+    const queryBuilder = this.getBoardWithRelation().where(
+      'board.parentId = :parentId',
+      { parentId: parentId },
+    );
     const paginateOption = this.paginateOption;
     this.paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {
