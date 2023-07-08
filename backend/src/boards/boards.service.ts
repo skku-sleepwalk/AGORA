@@ -14,6 +14,7 @@ import {
 import { CategoryTypeRepository } from './category/category.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { cloneDeep } from 'lodash';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -42,6 +43,14 @@ export class BoardsService {
     },
   };
 
+  getBoardWithRelation() {
+    return this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
+      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+  }
   ///////////////////////////{  CREATE  }/////////////////////////////////
   async createBoard(createBoardDto: CreateBoardDto) {
     const { title, content, writerEmail, parentId, categoryNames } =
@@ -219,6 +228,22 @@ export class BoardsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+  }
+
+  async likeUpdate(boardId: string, userId: string) {
+    const queryBuilder = this.getBoardWithRelation();
+    const board: Board = await queryBuilder
+      .where('board.id = :boardId', { boardId })
+      .getOne();
+
+    if (!board.likedUsers.map((user) => user.id).includes(userId)) {
+      board.likedUsers.push(await this.userRepository.findOne(userId));
+      board.like += 1;
+    } else {
+      board.likedUsers = board.likedUsers.filter((user) => user.id != userId);
+      board.like -= 1;
+    }
+    return this.boardRepository.save(board);
   }
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
