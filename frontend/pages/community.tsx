@@ -51,7 +51,6 @@ function Community() {
         ) : (
           <PostWriter
             onSubmit={(values) => {
-              console.log(values);
               const { title, content, category } = values;
               uploadPost({
                 title: title,
