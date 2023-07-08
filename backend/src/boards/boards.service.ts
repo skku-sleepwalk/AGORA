@@ -49,6 +49,14 @@ export class BoardsService {
       .leftJoinAndSelect('board.likedUsers', 'likedUsers');
   }
 
+  getBoardWithRelation() {
+    return this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
+      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+  }
   ///////////////////////////{  CREATE  }/////////////////////////////////
   async createBoard(createBoardDto: CreateBoardDto) {
     const { title, content, writerEmail, parentId, categoryNames } =
@@ -113,8 +121,11 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
-    const queryBuilder: SelectQueryBuilder<Board> =
-      this.getBoardWithRelations();
+    const queryBuilder = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
 
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
@@ -132,10 +143,12 @@ export class BoardsService {
   }
 
   findOne(id: string) {
-    const queryBuilder: SelectQueryBuilder<Board> =
-      this.getBoardWithRelations().andWhere('board.id = :boardId', {
-        boardId: id,
-      });
+    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
+      .andWhere('board.id = :boardId', { boardId: id });
     return queryBuilder.getOne();
   }
 
@@ -145,13 +158,18 @@ export class BoardsService {
     order: Order,
     search: string,
   ) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.getBoardWithRelations()
+    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'category')
+      .leftJoinAndSelect('board.writer', 'writer')
       .where('category.name IN (:...categoryNames)')
       .setParameter('categoryNames', categoryTypeNames);
     if (search) {
       queryBuilder.andWhere(
-        'board.title LIKE :search OR board.content LIKE :search',
+        '(categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
         {
+          categoryNames: categoryTypeNames,
           search: `%${search}%`,
         },
       );
@@ -172,10 +190,9 @@ export class BoardsService {
     return { data, cursor };
   }
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
-    const queryBuilder = this.getBoardWithRelations().where(
-      'board.parentId = :parentId',
-      { parentId: parentId },
-    );
+    const queryBuilder = this.boardRepository
+      .createQueryBuilder('board')
+      .where('board.parentId = :parentId', { parentId: parentId });
     const paginateOption = this.paginateOption;
     this.paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {
@@ -219,25 +236,6 @@ export class BoardsService {
       );
     }
   }
-
-  async likeUpdate(boardId: string, userId: string) {
-    const queryBuilder = this.getBoardWithRelations();
-    const board = await queryBuilder
-      .where('board.id = :boardId', { boardId })
-      .getOne();
-    const likedUser = await this.userRepository.findOne(userId);
-    if (!board.likedUsers.map((user) => user.id).includes(likedUser.id)) {
-      board.likedUsers.push(likedUser);
-      board.like += 1;
-    } else {
-      board.like -= 1;
-      board.likedUsers = board.likedUsers.filter(
-        (user) => user.id != likedUser.id,
-      );
-    }
-    return this.boardRepository.save(board);
-  }
-
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
     await this.boardRepository.softDelete(id);
