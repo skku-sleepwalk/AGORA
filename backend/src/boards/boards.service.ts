@@ -4,7 +4,7 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board, Order } from './entities/board.entity';
 import { BoardRepository } from './boards.repository';
 import { UsersService } from 'src/users/users.service';
-import { Connection, QueryBuilder, SelectQueryBuilder } from 'typeorm';
+import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   Cursor,
