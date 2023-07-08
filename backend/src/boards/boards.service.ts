@@ -4,7 +4,7 @@ import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board, Order } from './entities/board.entity';
 import { BoardRepository } from './boards.repository';
 import { UsersService } from 'src/users/users.service';
-import { Connection, SelectQueryBuilder } from 'typeorm';
+import { Connection, QueryBuilder, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
   Cursor,
@@ -30,7 +30,6 @@ export class BoardsService {
     );
     this.userRepository = connection.getCustomRepository(UserRepository);
   }
-
   private paginateOption: PaginationOptions<Board> = {
     entity: Board,
     paginationKeys: ['_id'],
@@ -41,6 +40,14 @@ export class BoardsService {
       order: 'DESC',
     },
   };
+  getBoardWithRelations(): SelectQueryBuilder<Board> {
+    return this.boardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
+      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+  }
 
   ///////////////////////////{  CREATE  }/////////////////////////////////
   async createBoard(createBoardDto: CreateBoardDto) {
@@ -106,11 +113,8 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelations();
 
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
@@ -128,12 +132,10 @@ export class BoardsService {
   }
 
   findOne(id: string) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
-      .andWhere('board.id = :boardId', { boardId: id });
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelations().andWhere('board.id = :boardId', {
+        boardId: id,
+      });
     return queryBuilder.getOne();
   }
 
@@ -143,11 +145,7 @@ export class BoardsService {
     order: Order,
     search: string,
   ) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'category')
-      .leftJoinAndSelect('board.writer', 'writer')
+    const queryBuilder: SelectQueryBuilder<Board> = this.getBoardWithRelations()
       .where('category.name IN (:...categoryNames)')
       .setParameter('categoryNames', categoryTypeNames);
     if (search) {
@@ -174,9 +172,10 @@ export class BoardsService {
     return { data, cursor };
   }
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .where('board.parentId = :parentId', { parentId: parentId });
+    const queryBuilder = this.getBoardWithRelations().where(
+      'board.parentId = :parentId',
+      { parentId: parentId },
+    );
     const paginateOption = this.paginateOption;
     this.paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {
@@ -222,9 +221,7 @@ export class BoardsService {
   }
 
   async likeUpdate(boardId: string, userId: string) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+    const queryBuilder = this.getBoardWithRelations();
     const board = await queryBuilder
       .where('board.id = :boardId', { boardId })
       .getOne();
