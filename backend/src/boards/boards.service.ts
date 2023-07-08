@@ -236,6 +236,21 @@ export class BoardsService {
       );
     }
   }
+  async likeUpdate(boardId: string, userId: string) {
+    const queryBuilder = this.getBoardWithRelation();
+    const board: Board = await queryBuilder
+      .where('board.id = :boardId', { boardId })
+      .getOne();
+
+    if (!board.likedUsers.map((user) => user.id).includes(userId)) {
+      board.likedUsers.push(await this.userRepository.findOne(userId));
+      board.like += 1;
+    } else {
+      board.likedUsers = board.likedUsers.filter((user) => user.id != userId);
+      board.like -= 1;
+    }
+    return this.boardRepository.save(board);
+  }
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
     await this.boardRepository.softDelete(id);
