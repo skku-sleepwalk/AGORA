@@ -7,6 +7,12 @@ import { UploadController } from './upload.controller';
     MulterModule.register({
       dest: './images',
     }),
+    MulterModule.register({
+      dest: './games',
+    }),
+    MulterModule.register({
+      dest: './videos',
+    }),
   ],
   controllers: [UploadController],
 })
