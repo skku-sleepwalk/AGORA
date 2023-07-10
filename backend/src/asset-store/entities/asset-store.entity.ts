@@ -22,8 +22,8 @@ export class AssetStoreBoards {
   @Column()
   description: string;
 
-  @Column()
-  downloadUrl: string;
+  @Column('varchar', { array: true })
+  downloadUrl: string[];
 
   @Column()
   price: number;

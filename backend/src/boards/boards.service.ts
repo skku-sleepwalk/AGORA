@@ -3,7 +3,6 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
 import { Board, Order } from './entities/board.entity';
 import { BoardRepository } from './boards.repository';
-import { UsersService } from 'src/users/users.service';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
@@ -20,10 +19,7 @@ export class BoardsService {
   private readonly boardRepository: BoardRepository;
   private readonly categoryTypeRepository: CategoryTypeRepository;
   private readonly userRepository: UserRepository;
-  constructor(
-    private readonly usersService: UsersService,
-    private readonly connection: Connection,
-  ) {
+  constructor(private readonly connection: Connection) {
     this.boardRepository = connection.getCustomRepository(BoardRepository);
     this.categoryTypeRepository = connection.getCustomRepository(
       CategoryTypeRepository,
@@ -182,9 +178,10 @@ export class BoardsService {
     return { data, cursor };
   }
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .where('board.parentId = :parentId', { parentId: parentId });
+    const queryBuilder = this.getBoardWithRelations().where(
+      'board.parentId = :parentId',
+      { parentId: parentId },
+    );
     const paginateOption = this.paginateOption;
     this.paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {

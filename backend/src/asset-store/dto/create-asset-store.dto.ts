@@ -1,1 +1,41 @@
-export class CreateAssetStoreDto {}
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+
+export class CreateAssetStoreBoardsDto {
+  @IsNotEmpty()
+  @IsString()
+  readonly title: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  readonly price: number;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly authorId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly downloadUrl: string[];
+}
+
+export class CreateAssetStoreReviewsDto {
+  @IsNotEmpty()
+  @IsString()
+  readonly writerId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly assetStoreBoardId: string;
+
+  @IsNotEmpty()
+  @IsNumber()
+  readonly rating: number;
+
+  @IsNotEmpty()
+  @IsString()
+  readonly description: string;
+}
