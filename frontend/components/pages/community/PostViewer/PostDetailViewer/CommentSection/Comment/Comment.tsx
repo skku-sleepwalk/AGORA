@@ -1,5 +1,4 @@
 import { Collapse, Divider, Group, Stack, Text, useMantineTheme } from "@mantine/core";
-import { User } from "../../../../../../../types/user";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
 import { IconChevronDown, IconChevronUp, IconHeart, IconMessage } from "@tabler/icons-react";
@@ -7,32 +6,32 @@ import { useCommentStyles } from "./Comment.styles";
 import CommentEditor from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
 import { useDisclosure } from "@mantine/hooks";
+import { Board } from "../../../../../../../types/api/boards";
 
 export interface CommentProps {
   children?: React.ReactNode;
-  user: User;
+  post: Board;
+  onSubmitComment?: (content: string, parentId: string) => void;
 }
 
-function Comment({ children, user }: CommentProps) {
+function Comment({ children, post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
 
   return (
-    <CommentFrame user={user} withoutLeftBorder={!children || !commentOpen}>
+    <CommentFrame user={post.writer} withoutLeftBorder={!children || !commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          <Text size="sm">
-            인생을 낭비하는 것은 좋지 않습니다. 어서 가서 낮잠을 자시는게 좋겠어요.
-          </Text>
+          <Text size="sm">{post.content}</Text>
           <Group spacing={8}>
             <Group spacing={5}>
               <InvisibleButton>
                 <IconHeart size={22} color={theme.colors.gray[6]} />
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">
-                7,111
+                {post.like}
               </Text>
             </Group>
             <InvisibleButton onClick={toggleEditor}>
@@ -64,7 +63,12 @@ function Comment({ children, user }: CommentProps) {
           }
         />
         <Collapse in={editorOpen}>
-          <CommentEditor user={MOCKUP_USER} />
+          <CommentEditor
+            user={MOCKUP_USER}
+            onSubmit={(content) => {
+              onSubmitComment?.(content, post.id);
+            }}
+          />
         </Collapse>
       </Stack>
       <Collapse in={commentOpen}>

@@ -1,9 +1,12 @@
-import { User } from "../types/user";
+import { User } from "../types/api/user";
 
 export const MOCKUP_USER: User = {
-  id: 1,
-  name: "바리스타룰스중증애호가",
-  info: "나는 바닐라빈 라떼가 좋다.",
-  avatar:
-    "https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/avatars/d5/d55e17d29cccfd4627affb5aa29405b16a245388_full.jpg",
+  id: "1",
+  createdAt: "2021-01-01T00:00:00.000Z",
+  name: "John Doe",
+  email: "qazxsw100415@gmail.com",
+  description: "Hello, I am John Doe.",
+  token: 1000,
+  updatedAt: "2021-01-01T00:00:00.000Z",
+  deletedAt: null,
 };

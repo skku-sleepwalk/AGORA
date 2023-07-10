@@ -3,19 +3,16 @@ import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
 import CardContainer from "../../../../common/CardContainer/CardContainer";
-import { User } from "../../../../../types/user";
 import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
-import { showError, showNotification } from "../../../../../utils/notifications";
+import { Board } from "../../../../../types/api/boards";
+import { uploadPost } from "../../../../../utils/api/uploadPost";
 
 export interface PostDetailViewerProps {
-  title?: string;
-  content: string;
-  user: User;
-  date: string;
+  post: Board;
 }
 
-function PostDetailViewer({ title, content, user, date }: PostDetailViewerProps) {
+function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
 
@@ -23,16 +20,28 @@ function PostDetailViewer({ title, content, user, date }: PostDetailViewerProps)
     <CardContainer className={classes.postContainer}>
       <Stack spacing={15}>
         <Stack spacing={14}>
-          <PostHeader user={user} date={date} />
+          <PostHeader user={post.writer} date={post.createdAt} />
           <Stack spacing={7}>
-            <Title order={3}>{title}</Title>
+            <Title order={3}>{post.title}</Title>
             <TypographyStylesProvider>
-              <div className={classes.content} dangerouslySetInnerHTML={{ __html: content }} />
+              <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
             </TypographyStylesProvider>
           </Stack>
         </Stack>
         <PostFooter onEditClick={toggleCommentEditor} onCommentClick={toggleCommentEditor} />
-        <CommentSection editorOpen={commentEditorOpened} />
+        <CommentSection
+          editorOpen={commentEditorOpened}
+          parentId={post.id}
+          categoryNames={post.categoryTypes.map((category) => category.name)}
+          onSubmitComment={(content, parentId) => {
+            uploadPost({
+              content,
+              parentId,
+              writerEmail: "qazxsw100415@gmail.com",
+              categoryNames: post.categoryTypes.map((category) => category.name),
+            });
+          }}
+        />
       </Stack>
     </CardContainer>
   );
