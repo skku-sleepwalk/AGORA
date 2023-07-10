@@ -29,7 +29,7 @@ export const useCommentFrameStyles = createStyles(
 
     commentContainer: {
       margin: 0,
-      paddingLeft: 10,
+      paddingLeft: withoutLeftBorder ? 10 : 8,
     },
 
     userName: {

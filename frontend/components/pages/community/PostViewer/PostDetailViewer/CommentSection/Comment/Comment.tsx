@@ -1,8 +1,8 @@
-import { Collapse, Group, Stack, Text, useMantineTheme } from "@mantine/core";
+import { Collapse, Divider, Group, Stack, Text, useMantineTheme } from "@mantine/core";
 import { User } from "../../../../../../../types/user";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
-import { IconBookmark, IconHeart, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconHeart, IconMessage } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
@@ -17,9 +17,10 @@ function Comment({ children, user }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
+  const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
 
   return (
-    <CommentFrame user={user} withoutLeftBorder={!children}>
+    <CommentFrame user={user} withoutLeftBorder={!children || !commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
           <Text size="sm">
@@ -44,11 +45,35 @@ function Comment({ children, user }: CommentProps) {
             </InvisibleButton>
           </Group>
         </Stack>
+        <Divider
+          className={classes.divider}
+          labelPosition="right"
+          label={
+            <InvisibleButton onClick={toggleComment}>
+              <Group spacing={5} align="center">
+                <Text color={theme.colors.gray[6]} size="sm">
+                  {commentOpen ? "댓글 접기" : "댓글 보기"}
+                </Text>
+                {commentOpen ? (
+                  <IconChevronUp size={16} color={theme.colors.gray[6]} />
+                ) : (
+                  <IconChevronDown size={16} color={theme.colors.gray[6]} />
+                )}
+              </Group>
+            </InvisibleButton>
+          }
+        />
         <Collapse in={editorOpen}>
           <CommentEditor user={MOCKUP_USER} />
         </Collapse>
       </Stack>
-      {children}
+      <Collapse in={commentOpen}>
+        {children || (
+          <Text size="sm" color={theme.colors.gray[6]} align="center" className={classes.noComment}>
+            등록된 댓글이 없습니다.
+          </Text>
+        )}
+      </Collapse>
     </CommentFrame>
   );
 }
