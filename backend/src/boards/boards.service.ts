@@ -32,7 +32,7 @@ export class BoardsService {
   }
   private paginateOption: PaginationOptions<Board> = {
     entity: Board,
-    paginationKeys: ['_id'],
+    paginationKeys: ['createdAt'],
     query: {
       afterCursor: null,
       beforeCursor: null,
@@ -49,14 +49,6 @@ export class BoardsService {
       .leftJoinAndSelect('board.likedUsers', 'likedUsers');
   }
 
-  getBoardWithRelation() {
-    return this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
-      .leftJoinAndSelect('board.likedUsers', 'likedUsers');
-  }
   ///////////////////////////{  CREATE  }/////////////////////////////////
   async createBoard(createBoardDto: CreateBoardDto) {
     const { title, content, writerEmail, parentId, categoryNames } =
@@ -237,7 +229,7 @@ export class BoardsService {
     }
   }
   async likeUpdate(boardId: string, userId: string) {
-    const queryBuilder = this.getBoardWithRelation();
+    const queryBuilder = this.getBoardWithRelations();
     const board: Board = await queryBuilder
       .where('board.id = :boardId', { boardId })
       .getOne();

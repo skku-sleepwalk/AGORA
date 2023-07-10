@@ -7,6 +7,7 @@ import { BoardsModule } from './boards/boards.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from 'src/upload/upload.module';
+import { AssetStoreModule } from './asset-store/asset-store.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { UploadModule } from 'src/upload/upload.module';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
+    AssetStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
