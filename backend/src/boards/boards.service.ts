@@ -59,7 +59,11 @@ export class BoardsService {
     // Parent check
     let parent: Board | undefined;
     if (parentId) {
-      parent = await this.boardRepository.findOne(parentId);
+      parent = await this.getBoardWithRelations()
+        .where('board.id = :id', {
+          id: parentId,
+        })
+        .getOne();
       if (!parent) {
         throw new HttpException(
           {
@@ -77,13 +81,16 @@ export class BoardsService {
     let currentParent = parent;
     while (currentParent) {
       currentParent.child += 1;
-      await this.boardRepository.save(currentParent);
+      this.boardRepository.save(currentParent);
       if (!currentParent.parent) {
         break;
       }
-      currentParent = await this.boardRepository.findOne(
-        currentParent.parent.id,
-      );
+      const currentParentId = currentParent.parent.id;
+      currentParent = await this.getBoardWithRelations()
+        .where('board.id = :id', {
+          id: currentParentId,
+        })
+        .getOne();
     }
 
     const newBoard = this.boardRepository.create({
@@ -109,13 +116,9 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
-    console.log(_cursor);
-    const queryBuilder = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes');
-
+    const queryBuilder = this.getBoardWithRelations().where(
+      'board.parent IS NULL',
+    );
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
@@ -133,12 +136,10 @@ export class BoardsService {
   }
 
   findOne(id: string) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.writer', 'writer')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
-      .andWhere('board.id = :boardId', { boardId: id });
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelations().andWhere('board.id = :boardId', {
+        boardId: id,
+      });
     return queryBuilder.getOne();
   }
 
@@ -148,11 +149,7 @@ export class BoardsService {
     order: Order,
     search: string,
   ) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.boardRepository
-      .createQueryBuilder('board')
-      .leftJoinAndSelect('board.parent', 'parent')
-      .leftJoinAndSelect('board.categoryTypes', 'category')
-      .leftJoinAndSelect('board.writer', 'writer')
+    const queryBuilder: SelectQueryBuilder<Board> = this.getBoardWithRelations()
       .where('category.name IN (:...categoryNames)')
       .setParameter('categoryNames', categoryTypeNames);
     if (search) {

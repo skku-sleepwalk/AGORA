@@ -5,6 +5,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -46,6 +48,10 @@ export class AssetStoreBoards {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'author' })
   readonly author: User;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  likedUsers: User[];
 }
 
 @Entity()
@@ -59,7 +65,14 @@ export class AssetStoreReviews {
   @Column({ nullable: false })
   description: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   createdAt: Date;
 
   @UpdateDateColumn()
