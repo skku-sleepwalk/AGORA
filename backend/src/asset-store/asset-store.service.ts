@@ -3,7 +3,10 @@ import {
   CreateAssetStoreBoardsDto,
   CreateAssetStoreReviewsDto,
 } from './dto/create-asset-store.dto';
-import { UpdateAssetStoreDto } from './dto/update-asset-store.dto';
+import {
+  UpdateAssetStoreBoardsDto,
+  UpdateAssetStoreReviewsDto,
+} from './dto/update-asset-store.dto';
 import { UserRepository } from 'src/users/user.repository';
 import {
   AssetStoreBoardsRepository,
@@ -14,6 +17,7 @@ import { v4 as uuid } from 'uuid';
 import {
   AssetStoreBoards,
   AssetStoreBoardsOrder,
+  AssetStoreReviews,
 } from './entities/asset-store.entity';
 import {
   Cursor,
@@ -21,12 +25,14 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { cloneDeep } from 'lodash';
+import { AssetStoreCategoryRepository } from './asset-store-category/asset-store-category.repository';
 
 @Injectable()
 export class AssetStoreService {
   private readonly assetStoreBoardsRepository: AssetStoreBoardsRepository;
   private readonly assetStoreReviewsRepository: AssetStoreReviewsRepository;
   private readonly userRepository: UserRepository;
+  private readonly assetStoreCategoryRepository: AssetStoreCategoryRepository;
   constructor(private readonly connection: Connection) {
     this.assetStoreBoardsRepository = connection.getCustomRepository(
       AssetStoreBoardsRepository,
@@ -35,6 +41,9 @@ export class AssetStoreService {
       AssetStoreReviewsRepository,
     );
     this.userRepository = connection.getCustomRepository(UserRepository);
+    this.assetStoreCategoryRepository = connection.getCustomRepository(
+      AssetStoreCategoryRepository,
+    );
   }
 
   private paginateOption: PaginationOptions<AssetStoreBoards> = {
@@ -55,13 +64,22 @@ export class AssetStoreService {
       .leftJoinAndSelect(
         'assetStoreBoards.assetStoreReviews',
         'assetStoreReviews',
-      );
+      )
+      .leftJoinAndSelect('assetStoreBoards.likedUsers', 'likedUsers')
+      .leftJoinAndSelect('assetStoreBoards.categoryTypes', 'categoryTypes');
   }
+
   async createAssetStoreBoards(
     createAssetStoreBoardsDto: CreateAssetStoreBoardsDto,
   ) {
-    const { title, description, downloadUrl, price, authorEmail } =
-      createAssetStoreBoardsDto;
+    const {
+      title,
+      description,
+      downloadUrl,
+      price,
+      authorEmail,
+      categoryNames,
+    } = createAssetStoreBoardsDto;
     const author = await this.userRepository.findOne({ email: authorEmail });
     const newAssetStoreBoard = this.assetStoreBoardsRepository.create({
       id: uuid(),
@@ -71,7 +89,14 @@ export class AssetStoreService {
       downloadUrl,
       price,
       assetStoreReviews: [],
+      categoryTypes: [],
     });
+    for (const categoryName of categoryNames) {
+      const categoryType = await this.assetStoreCategoryRepository.findOne({
+        name: categoryName,
+      });
+      newAssetStoreBoard.categoryTypes.push(categoryType);
+    }
     return this.assetStoreBoardsRepository.save(newAssetStoreBoard);
   }
 
@@ -95,8 +120,15 @@ export class AssetStoreService {
     return this.assetStoreReviewsRepository.save(newAssetStoreReview);
   }
 
-  async findAllAssetStoreBoards(_cursor: Cursor, order: AssetStoreBoardsOrder) {
-    const queryBuilder = this.getAssetStoreBoardsWithRelations();
+  async findAllAssetStoreBoards(
+    _cursor: Cursor,
+    order: AssetStoreBoardsOrder,
+    categoryNames: string[],
+  ) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
+      'categoryTypes.name IN (:...categoryNames)',
+      { categoryNames: categoryNames },
+    );
     const paginateOption: PaginationOptions<AssetStoreBoards> = cloneDeep(
       this.paginateOption,
     );
@@ -114,10 +146,12 @@ export class AssetStoreService {
     _cursor: Cursor,
     order: AssetStoreBoardsOrder,
     search: string,
+    categoryNames: string[],
   ) {
     const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
-      'assetStoreBoards.title LIKE :search OR assetStoreBoards.description LIKE :search',
+      '(categoryTypes.name IN (:...categoryNames)) AND (assetStoreBoards.title LIKE :search OR assetStoreBoards.description LIKE :search)',
       {
+        categoryNames: categoryNames,
         search: `%${search}%`,
       },
     );
@@ -134,15 +168,66 @@ export class AssetStoreService {
     return { data, cursor };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} assetStore`;
+  findOne(id: string) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
+      'assetStoreBoard.id = :id',
+      { id },
+    );
+    return queryBuilder.getOne();
   }
 
-  update(id: number, updateAssetStoreDto: UpdateAssetStoreDto) {
-    return `This action updates a #${id} assetStore`;
+  async updateAssetStoreBoards(
+    id: string,
+    updateAssetStoreBoardsDto: UpdateAssetStoreBoardsDto,
+  ) {
+    const {
+      title,
+      price,
+      updateEmail,
+      description,
+      downloadUrl,
+      categoryNames,
+    } = updateAssetStoreBoardsDto;
+    const toUpdateAssetStoreBoard: AssetStoreBoards =
+      await this.getAssetStoreBoardsWithRelations()
+        .where('assetStoreBoard.id = :id', { id })
+        .getOne();
+
+    if (updateEmail === toUpdateAssetStoreBoard.author.email) {
+      toUpdateAssetStoreBoard.title = title;
+      toUpdateAssetStoreBoard.description = description;
+      toUpdateAssetStoreBoard.price = price;
+      toUpdateAssetStoreBoard.downloadUrl = downloadUrl;
+      for (const categoryName of categoryNames) {
+        const categoryType = await this.assetStoreCategoryRepository.findOne({
+          name: categoryName,
+        });
+        if (categoryType) {
+          toUpdateAssetStoreBoard.categoryTypes.push(categoryType);
+        }
+      }
+    }
+    return this.assetStoreBoardsRepository.save(toUpdateAssetStoreBoard);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} assetStore`;
+  async updateAssetStoreReviews(
+    id: string,
+    updateAssetStoreReviewsDto: UpdateAssetStoreReviewsDto,
+  ) {
+    const { rating, description, updateEmail } = updateAssetStoreReviewsDto;
+    const toUpdateAssetStoreReview: AssetStoreReviews =
+      await this.assetStoreReviewsRepository.findOne(id);
+    if (updateEmail === toUpdateAssetStoreReview.writer.email) {
+      toUpdateAssetStoreReview.rating = rating;
+      toUpdateAssetStoreReview.description = description;
+    }
+    return this.assetStoreReviewsRepository.save(toUpdateAssetStoreReview);
+  }
+  async removeAssetStoreBoards(id: string) {
+    await this.assetStoreBoardsRepository.softDelete(id);
+  }
+
+  async removeAssetStoreReviews(id: string) {
+    await this.assetStoreReviewsRepository.softDelete(id);
   }
 }
