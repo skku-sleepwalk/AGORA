@@ -13,6 +13,7 @@ import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPo
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { isBrowser } from "../types/browser";
+import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
 
 function Community() {
   const router = useRouter();
@@ -24,7 +25,7 @@ function Community() {
   } = useBoardList(["Unity", "C#", "C", "C++"]);
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
-
+  
   useEffect(() => {
     if (scrollY >= scrollThreshold) {
       setPostSize((prev) => prev + 1);
@@ -73,14 +74,15 @@ function Community() {
               uploadPost({
                 title: title,
                 content: content,
-                writerEmail: "qazxsw100415@gmail.com",
+                writerEmail: "lucas@naver.com",
                 categoryNames: category,
               });
             }}
           />
         )}
         {postData?.map((data) => {
-          return data.data.map((data) => <PostViewer key={data.id} post={data} />);
+          // extractThumbnailUrl(post = {data})
+          return data.data.map((data) => <PostViewer key={data.id} post={data}/>);
         })}
         {isPostLoading && <LoadingPost />}
       </Stack>
