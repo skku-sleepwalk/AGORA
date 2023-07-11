@@ -62,13 +62,19 @@ export class AssetStoreController {
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('order') order: AssetStoreBoardsOrder,
+    @Query('search') search: string,
     @Query(
       'categoryNames',
       new ParseArrayPipe({ items: String, separator: ',' }),
     )
     categoryNames: string[],
   ) {
-    return;
+    return this.assetStoreService.searchAssetStoreBoards(
+      { afterCursor, beforeCursor },
+      order,
+      search,
+      categoryNames,
+    );
   }
 
   @Get('/id/:id')

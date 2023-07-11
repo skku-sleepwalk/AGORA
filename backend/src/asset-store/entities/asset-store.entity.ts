@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AssetStoreCategory } from '../asset-store-category/entities/asset-store-category.entity';
 
 @Entity()
 export class AssetStoreBoards {
@@ -55,6 +56,10 @@ export class AssetStoreBoards {
   @ManyToMany(() => User)
   @JoinTable()
   likedUsers: User[];
+
+  @ManyToMany(() => AssetStoreCategory)
+  @JoinTable()
+  categoryTypes: AssetStoreCategory[];
 }
 
 @Entity()

@@ -21,12 +21,14 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { cloneDeep } from 'lodash';
+import { AssetStoreCategoryRepository } from './asset-store-category/asset-store-category.repository';
 
 @Injectable()
 export class AssetStoreService {
   private readonly assetStoreBoardsRepository: AssetStoreBoardsRepository;
   private readonly assetStoreReviewsRepository: AssetStoreReviewsRepository;
   private readonly userRepository: UserRepository;
+  private readonly assetStoreCategoryRepository: AssetStoreCategoryRepository;
   constructor(private readonly connection: Connection) {
     this.assetStoreBoardsRepository = connection.getCustomRepository(
       AssetStoreBoardsRepository,
@@ -35,6 +37,9 @@ export class AssetStoreService {
       AssetStoreReviewsRepository,
     );
     this.userRepository = connection.getCustomRepository(UserRepository);
+    this.assetStoreCategoryRepository = connection.getCustomRepository(
+      AssetStoreCategoryRepository,
+    );
   }
 
   private paginateOption: PaginationOptions<AssetStoreBoards> = {
@@ -63,8 +68,14 @@ export class AssetStoreService {
   async createAssetStoreBoards(
     createAssetStoreBoardsDto: CreateAssetStoreBoardsDto,
   ) {
-    const { title, description, downloadUrl, price, authorEmail } =
-      createAssetStoreBoardsDto;
+    const {
+      title,
+      description,
+      downloadUrl,
+      price,
+      authorEmail,
+      categoryNames,
+    } = createAssetStoreBoardsDto;
     const author = await this.userRepository.findOne({ email: authorEmail });
     const newAssetStoreBoard = this.assetStoreBoardsRepository.create({
       id: uuid(),
@@ -74,7 +85,14 @@ export class AssetStoreService {
       downloadUrl,
       price,
       assetStoreReviews: [],
+      categoryTypes: [],
     });
+    for (const categoryName of categoryNames) {
+      const categoryType = await this.assetStoreCategoryRepository.findOne({
+        name: categoryName,
+      });
+      newAssetStoreBoard.categoryTypes.push(categoryType);
+    }
     return this.assetStoreBoardsRepository.save(newAssetStoreBoard);
   }
 
@@ -124,10 +142,12 @@ export class AssetStoreService {
     _cursor: Cursor,
     order: AssetStoreBoardsOrder,
     search: string,
+    categoryNames: string[],
   ) {
     const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
-      'assetStoreBoards.title LIKE :search OR assetStoreBoards.description LIKE :search',
+      '(categoryTypes.name IN (:...categoryNames)) AND (assetStoreBoards.title LIKE :search OR assetStoreBoards.description LIKE :search)',
       {
+        categoryNames: categoryNames,
         search: `%${search}%`,
       },
     );
