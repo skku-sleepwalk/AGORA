@@ -28,13 +28,18 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-        <PostFooter onEditClick={toggleCommentEditor} onCommentClick={toggleCommentEditor} />
+        <PostFooter
+          onEditClick={toggleCommentEditor}
+          onCommentClick={toggleCommentEditor}
+          commentCount={post.child}
+          likeCount={post.like}
+        />
         <CommentSection
           editorOpen={commentEditorOpened}
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
-          onSubmitComment={(content, parentId) => {
-            uploadPost({
+          onSubmitComment={async (content, parentId) => {
+            return uploadPost({
               content,
               parentId,
               writerEmail: "qazxsw100415@gmail.com",

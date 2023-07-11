@@ -17,7 +17,7 @@ import { User } from "../../../../../../../types/api/user";
 
 export interface CommentEditorProps {
   user: User;
-  onSubmit?: (content: string) => void;
+  onSubmit?: (content: string) => Promise<any>;
 }
 
 function CommentEditor({ user, onSubmit }: CommentEditorProps) {
@@ -52,7 +52,9 @@ function CommentEditor({ user, onSubmit }: CommentEditorProps) {
                 radius="xl"
                 className={classes.submitButton}
                 onClick={() => {
-                  onSubmit?.(editor!.getHTML());
+                  onSubmit?.(editor!.getHTML()).then(() => {
+                    editor!.commands.setContent("");
+                  });
                 }}
               >
                 작성

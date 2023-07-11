@@ -20,14 +20,14 @@ const getKey = (
     // 첫번째 페이지
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "_id",
+      order: "createdAt",
       search,
     });
   } else {
     // 두번째 페이지부터
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "_id",
+      order: "createdAt",
       afterCursor: previousPageData.cursor.afterCursor,
       search,
     });
@@ -42,7 +42,13 @@ function useBoardList(categories: string[], settings: useBoardListSettings = {})
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, categories, settings),
     fetcher
   );
-  return response;
+  const isLast = response.data?.[response.data.length - 1]?.cursor?.afterCursor === null;
+  const isEmpty = response.data?.[0]?.data.length === 0;
+  return {
+    ...response,
+    isLast,
+    isEmpty,
+  };
 }
 
 export default useBoardList;

@@ -1,4 +1,13 @@
-import { Collapse, Divider, Group, Stack, Text, useMantineTheme } from "@mantine/core";
+import {
+  Center,
+  Collapse,
+  Divider,
+  Group,
+  Loader,
+  Stack,
+  Text,
+  useMantineTheme,
+} from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
 import { IconChevronDown, IconChevronUp, IconHeart, IconMessage } from "@tabler/icons-react";
@@ -7,21 +16,28 @@ import CommentEditor from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
+import useBoardList from "../../../../../../../hooks/useBoardList";
+import { showNotification } from "../../../../../../../utils/notifications";
 
 export interface CommentProps {
-  children?: React.ReactNode;
   post: Board;
-  onSubmitComment?: (content: string, parentId: string) => void;
+  onSubmitComment?: (content: string, parentId: string) => Promise<any>;
 }
 
-function Comment({ children, post, onSubmitComment }: CommentProps) {
+function Comment({ post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
+  const { data, setSize, size, isEmpty, mutate, isLast, isLoading } = useBoardList(
+    post.categoryTypes.map((category) => category.name),
+    {
+      parentId: post.id,
+    }
+  );
 
   return (
-    <CommentFrame user={post.writer} withoutLeftBorder={!children || !commentOpen}>
+    <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
           <Text size="sm">{post.content}</Text>
@@ -65,18 +81,58 @@ function Comment({ children, post, onSubmitComment }: CommentProps) {
         <Collapse in={editorOpen}>
           <CommentEditor
             user={MOCKUP_USER}
-            onSubmit={(content) => {
-              onSubmitComment?.(content, post.id);
+            onSubmit={async (content) => {
+              return onSubmitComment?.(content, post.id).then(() => {
+                mutate();
+                showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+              });
             }}
           />
         </Collapse>
       </Stack>
       <Collapse in={commentOpen}>
-        {children || (
-          <Text size="sm" color={theme.colors.gray[6]} align="center" className={classes.noComment}>
-            등록된 댓글이 없습니다.
-          </Text>
-        )}
+        <Stack spacing={0}>
+          {isEmpty ? (
+            <Text
+              size="sm"
+              color={theme.colors.gray[6]}
+              align="center"
+              className={classes.noComment}
+            >
+              등록된 댓글이 없습니다.
+            </Text>
+          ) : (
+            data?.map((data) => {
+              return data.data.map((data) => (
+                <Comment
+                  key={data.id}
+                  post={data}
+                  onSubmitComment={async (content, parentId) => {
+                    return onSubmitComment?.(content, parentId);
+                  }}
+                />
+              ));
+            })
+          )}
+          {!isLast &&
+            !isEmpty &&
+            (isLoading ? (
+              <Center className={classes.moreButton}>
+                <Loader size="sm" />
+              </Center>
+            ) : (
+              <InvisibleButton
+                onClick={() => {
+                  setSize((prev) => prev + 1);
+                }}
+                className={classes.moreButton}
+              >
+                <Text color="gray" size="sm">
+                  답글 더보기
+                </Text>
+              </InvisibleButton>
+            ))}
+        </Stack>
       </Collapse>
     </CommentFrame>
   );

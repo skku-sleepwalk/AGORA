@@ -109,6 +109,7 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
+    console.log(_cursor);
     const queryBuilder = this.boardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.writer', 'writer')
@@ -121,6 +122,7 @@ export class BoardsService {
 
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
+      console.log('afterCursor', _cursor.afterCursor);
     }
     if (_cursor.beforeCursor) {
       paginateOption.query.beforeCursor = _cursor.beforeCursor;
@@ -182,7 +184,7 @@ export class BoardsService {
       'board.parentId = :parentId',
       { parentId: parentId },
     );
-    const paginateOption = this.paginateOption;
+    const paginateOption = cloneDeep(this.paginateOption);
     this.paginateOption.paginationKeys = [order];
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
