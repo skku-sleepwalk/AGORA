@@ -116,7 +116,9 @@ export class BoardsService {
 
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor) {
-    const queryBuilder = this.getBoardWithRelations();
+    const queryBuilder = this.getBoardWithRelations().where(
+      'board.parent IS NULL',
+    );
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );

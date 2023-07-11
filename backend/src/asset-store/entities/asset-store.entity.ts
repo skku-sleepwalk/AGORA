@@ -5,6 +5,8 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -46,6 +48,10 @@ export class AssetStoreBoards {
   @ManyToOne(() => User)
   @JoinColumn({ name: 'author' })
   readonly author: User;
+
+  @ManyToMany(() => User)
+  @JoinTable()
+  likedUsers: User[];
 }
 
 @Entity()
