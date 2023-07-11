@@ -30,6 +30,9 @@ export class AssetStoreBoards {
   @Column()
   price: number;
 
+  @Column()
+  like: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -88,3 +91,5 @@ export class AssetStoreReviews {
   @ManyToOne(() => AssetStoreBoards)
   readonly AssetStoreBoard: AssetStoreBoards;
 }
+
+export type AssetStoreBoardsOrder = 'createdAt' | 'like' | null;

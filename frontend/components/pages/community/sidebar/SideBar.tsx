@@ -1,13 +1,12 @@
 import { Center, Container, Stack } from "@mantine/core";
 import { useSideBarStyles } from "./SideBar.styles";
-import { Input, Image } from "@mantine/core";
 import { Text, TextInput } from "@mantine/core";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-import { useState } from "react";
-
 import { useForm } from "@mantine/form";
 import { showError } from "../../../../utils/notifications";
+import { useRouter } from "next/router";
+
 export interface SideBarProps {
   onSearchSubmit?: (text: string) => void;
 }
@@ -18,6 +17,8 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
       searchKeyword: "",
     },
   });
+  const router = useRouter();
+
   return (
     <Container className={classes.SideBarContainer}>
       <Stack className={classes.Grouping} spacing={"1rem"}>
@@ -25,12 +26,13 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
           <Text color="white">검색</Text>
         </Center>
         <form
-          // action="http://localhost:3000/community"
           onSubmit={form.onSubmit((values) => {
             if (values.searchKeyword.trim() === "") {
               showError("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
+            } else {
+              onSearchSubmit?.(values.searchKeyword);
+              router.push(`?search=${values.searchKeyword}`);
             }
-            onSearchSubmit?.(values.searchKeyword);
           })}
         >
           <TextInput

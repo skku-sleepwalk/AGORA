@@ -7,22 +7,32 @@ import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
-import { uploadPost } from "../utils/api/uploadPost";
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { isBrowser } from "../types/browser";
 import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
+import { Values } from "../constants/category";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+
+  const [categorystrings, setcategory] = useState(Values);
+
+  const [tab, setTab] = useState<string>("post");
+
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
-  } = useBoardList(["Unity", "C#", "C", "C++"]);
+    //여기를 건드려야함
+  } = useBoardList(categorystrings, {
+    search: search ? search.toString() : undefined,
+    boardType: tab == "post" ? "parent" : "child",
+  });
+
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
   
@@ -40,7 +50,7 @@ function Community() {
         <Stack spacing={16}>
           <LeftSidebar
             onCategoryChange={(category) => {
-              console.log(category);
+              setcategory(category);
             }}
           />
         </Stack>
@@ -57,28 +67,19 @@ function Community() {
         {search ? (
           <Stack spacing={20}>
             <SearchBar
+              defaultValue={search.toString()}
               onSubmit={(text) => {
-                console.log(text);
+                router.push(`?search=${text}`);
               }}
             />
             <SearchTab
               onChange={(tab) => {
-                console.log(tab);
+                setTab(tab);
               }}
             />
           </Stack>
         ) : (
-          <PostWriter
-            onSubmit={(values) => {
-              const { title, content, category } = values;
-              uploadPost({
-                title: title,
-                content: content,
-                writerEmail: "lucas@naver.com",
-                categoryNames: category,
-              });
-            }}
-          />
+          <PostWriter />
         )}
         {postData?.map((data) => {
           return data.data.map((data) => <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)}/>);
