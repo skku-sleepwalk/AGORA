@@ -20,6 +20,7 @@ import { AssetStoreModule } from './asset-store/asset-store.module';
       database: 'board-app',
       entities: ['dist/**/**.entity{.ts,.js}'],
       synchronize: true,
+      timezone: 'Asia/Seoul', // 'local', 'Z', '+HH:MM', '-HH:MM' 등으로 적절히 변경해주세요. 기본값은 'local' 입니다
     }),
     UsersModule,
     BoardsModule,

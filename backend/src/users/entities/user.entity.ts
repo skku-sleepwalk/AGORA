@@ -60,4 +60,7 @@ export class User {
 
   @ManyToMany(() => Board)
   likedBoards: Board[];
+
+  @ManyToMany(() => AssetStoreBoards)
+  likedAssetStoreBoards: AssetStoreBoards[];
 }

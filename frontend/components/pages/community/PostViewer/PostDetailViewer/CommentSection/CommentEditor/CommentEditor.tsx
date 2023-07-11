@@ -11,17 +11,16 @@ import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { lowlight } from "lowlight";
 import { Box, Button, Group } from "@mantine/core";
 import Image from "@tiptap/extension-image";
-import { User } from "../../../../../../../types/user";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
-import { useDebouncedState } from "@mantine/hooks";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { User } from "../../../../../../../types/api/user";
 
 export interface CommentEditorProps {
   user: User;
+  onSubmit?: (content: string) => Promise<any>;
 }
 
-const CommentEditor = forwardRef(({ user }: CommentEditorProps, ref) => {
+function CommentEditor({ user, onSubmit }: CommentEditorProps) {
   const { classes } = useCommentEditorStyles();
   const editor = useEditor({
     extensions: [
@@ -38,12 +37,6 @@ const CommentEditor = forwardRef(({ user }: CommentEditorProps, ref) => {
     ],
   });
 
-  useImperativeHandle(ref, () => ({
-    getHTML: () => {
-      return editor?.getHTML();
-    },
-  }));
-
   return (
     <CommentFrame user={user} withoutLeftBorder>
       <Box className={classes.editorWrapper}>
@@ -52,8 +45,18 @@ const CommentEditor = forwardRef(({ user }: CommentEditorProps, ref) => {
 
           <RichTextEditor.Toolbar>
             <Group position="apart" className={classes.toolbarGroup}>
-              <RichTextEditorControlGroup editor={editor} />
-              <Button radius="xl" className={classes.submitButton}>
+              <Group>
+                <RichTextEditorControlGroup editor={editor} />
+              </Group>
+              <Button
+                radius="xl"
+                className={classes.submitButton}
+                onClick={() => {
+                  onSubmit?.(editor!.getHTML()).then(() => {
+                    editor!.commands.setContent("");
+                  });
+                }}
+              >
                 작성
               </Button>
             </Group>
@@ -62,6 +65,6 @@ const CommentEditor = forwardRef(({ user }: CommentEditorProps, ref) => {
       </Box>
     </CommentFrame>
   );
-});
+}
 
 export default CommentEditor;

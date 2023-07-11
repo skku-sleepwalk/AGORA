@@ -12,4 +12,9 @@ export const useCommentStyles = createStyles((theme) => ({
   noComment: {
     margin: "10px 0",
   },
+
+  moreButton: {
+    height: 30,
+    textDecoration: "underline",
+  },
 }));

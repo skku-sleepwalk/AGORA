@@ -3,39 +3,52 @@ import { GetBoardListResponse } from "../types/api/boards";
 import { stringify } from "querystring";
 import { fetcher } from "../utils/fetcher";
 
+export interface useBoardListSettings {
+  search?: string;
+  parentId?: string;
+}
+
 const getKey = (
   pageIndex: number,
   previousPageData: GetBoardListResponse,
   categories: string[],
-  search?: string
+  { search, parentId }: useBoardListSettings
 ) => {
-  if (previousPageData.data.length === 0) return null; // 마지막 페이지
+  if (previousPageData && previousPageData.cursor.afterCursor === null) return null;
+  let queryString = "";
   if (pageIndex === 0) {
     // 첫번째 페이지
-    const queryString = stringify({
+    queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "_id",
+      order: "createdAt",
       search,
     });
-    return `/boards/search?${queryString}`;
   } else {
     // 두번째 페이지부터
-    const queryString = stringify({
+    queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "_id",
+      order: "createdAt",
       afterCursor: previousPageData.cursor.afterCursor,
       search,
     });
-    return `/boards/search?${queryString}`;
   }
+  if (search) return `http://localhost:8000/boards/search?${queryString}`;
+  if (parentId) return `http://localhost:8000/boards/getChild/${parentId}?${queryString}`;
+  else return `http://localhost:8000/boards/main?${queryString}`;
 };
 
-function useBoardList(categories: string[], search?: string) {
+function useBoardList(categories: string[], settings: useBoardListSettings = {}) {
   const response = useSWRInfinite<GetBoardListResponse>(
-    (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, categories, search),
+    (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, categories, settings),
     fetcher
   );
-  return response;
+  const isLast = response.data?.[response.data.length - 1]?.cursor?.afterCursor === null;
+  const isEmpty = response.data?.[0]?.data.length === 0;
+  return {
+    ...response,
+    isLast,
+    isEmpty,
+  };
 }
 
 export default useBoardList;

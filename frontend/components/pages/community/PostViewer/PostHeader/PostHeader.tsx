@@ -1,7 +1,7 @@
 import { Group, Text } from "@mantine/core";
-import { User } from "../../../../../types/user";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 import UserInfo from "../../../../common/UserInfo/UserInfo";
+import { User } from "../../../../../types/api/user";
 
 export interface PostHeaderProps {
   user: User;

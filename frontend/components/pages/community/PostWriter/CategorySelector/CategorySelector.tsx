@@ -10,7 +10,7 @@ for (let i = 0; i < CategoryNum; i++) {
   const values = Values[i];
   values.map(
     ( value ) => {
-      data.push({ values: value.label, label: value.label, group: Category[i]});
+      data.push({ value: value.label, label: value.label, group: Category[i]});
     }
   )
 };

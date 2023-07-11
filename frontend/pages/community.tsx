@@ -3,17 +3,35 @@ import CommunityLayout from "../components/pages/community/CommunityLayout/Commu
 import PostWriter from "../components/pages/community/PostWriter/PostWriter";
 import { Stack } from "@mantine/core";
 import PostViewer from "../components/pages/community/PostViewer/PostViewer";
-import { MOCKUP_CONTENT } from "../mockups/post";
-import { MOCKUP_USER } from "../mockups/user";
 import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
 import { uploadPost } from "../utils/api/uploadPost";
+import useBoardList from "../hooks/useBoardList";
+import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
+import { useWindowScroll } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { isBrowser } from "../types/browser";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+  const {
+    data: postData,
+    isLoading: isPostLoading,
+    setSize: setPostSize,
+  } = useBoardList(["Unity", "C#", "C", "C++"]);
+  const [{ y: scrollY }, scrollTo] = useWindowScroll();
+  const [scrollThreshold, setScrollThreshold] = useState(0);
+
+  useEffect(() => {
+    if (scrollY >= scrollThreshold) {
+      setPostSize((prev) => prev + 1);
+      setScrollThreshold((prev) => prev + 1000);
+      console.log("scroll");
+    }
+  }, [scrollY]);
 
   return (
     <CommunityLayout
@@ -55,19 +73,16 @@ function Community() {
               uploadPost({
                 title: title,
                 content: content,
-                writerEmail: "lucas@naver.com",
+                writerEmail: "qazxsw100415@gmail.com",
                 categoryNames: category,
               });
             }}
           />
         )}
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
-        <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
+        {postData?.map((data) => {
+          return data.data.map((data) => <PostViewer key={data.id} post={data} />);
+        })}
+        {isPostLoading && <LoadingPost />}
       </Stack>
     </CommunityLayout>
   );
