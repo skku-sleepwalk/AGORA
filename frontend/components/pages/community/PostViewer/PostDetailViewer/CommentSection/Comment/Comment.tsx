@@ -6,6 +6,7 @@ import {
   Loader,
   Stack,
   Text,
+  TypographyStylesProvider,
   useMantineTheme,
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
@@ -40,7 +41,9 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          <Text size="sm">{post.content}</Text>
+          <TypographyStylesProvider>
+            <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+          </TypographyStylesProvider>
           <Group spacing={8}>
             <Group spacing={5}>
               <InvisibleButton>
