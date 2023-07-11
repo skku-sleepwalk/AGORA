@@ -7,6 +7,7 @@ import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
+import React, { useState } from 'react';
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -15,6 +16,7 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
+  const [likeCounting, setCount] = useState(post.like);
 
   return (
     <CardContainer className={classes.postContainer}>
@@ -31,8 +33,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         <PostFooter
           onEditClick={toggleCommentEditor}
           onCommentClick={toggleCommentEditor}
+          onLikeClick={() => {setCount(likeCounting + 1)}}
           commentCount={post.child}
-          likeCount={post.like}
+          likeCount={likeCounting}
         />
         <CommentSection
           editorOpen={commentEditorOpened}
@@ -42,7 +45,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             return uploadPost({
               content,
               parentId,
-              writerEmail: "qazxsw100415@gmail.com",
+              writerEmail: "lucas@naver.com",
               categoryNames: post.categoryTypes.map((category) => category.name),
             });
           }}

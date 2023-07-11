@@ -11,7 +11,6 @@ import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { isBrowser } from "../types/browser";
 import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
 import { CategoryNum, Values } from "../constants/category";
 
