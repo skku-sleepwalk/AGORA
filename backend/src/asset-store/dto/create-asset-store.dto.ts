@@ -15,7 +15,7 @@ export class CreateAssetStoreBoardsDto {
 
   @IsNotEmpty()
   @IsString()
-  readonly authorId: string;
+  readonly authorEmail: string;
 
   @IsNotEmpty()
   @IsString()
@@ -25,7 +25,7 @@ export class CreateAssetStoreBoardsDto {
 export class CreateAssetStoreReviewsDto {
   @IsNotEmpty()
   @IsString()
-  readonly writerId: string;
+  readonly writerEmail: string;
 
   @IsNotEmpty()
   @IsString()

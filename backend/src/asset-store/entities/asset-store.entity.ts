@@ -59,7 +59,14 @@ export class AssetStoreReviews {
   @Column({ nullable: false })
   description: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   createdAt: Date;
 
   @UpdateDateColumn()

@@ -6,9 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { AssetStoreService } from './asset-store.service';
-import { CreateAssetStoreBoardsDto } from './dto/create-asset-store.dto';
+import {
+  CreateAssetStoreBoardsDto,
+  CreateAssetStoreReviewsDto,
+} from './dto/create-asset-store.dto';
 import { UpdateAssetStoreDto } from './dto/update-asset-store.dto';
 
 @Controller('asset-store')
@@ -16,15 +20,33 @@ export class AssetStoreController {
   constructor(private readonly assetStoreService: AssetStoreService) {}
 
   @Post('/boards')
-  create(@Body() createAssetStoreBoardsDto: CreateAssetStoreBoardsDto) {
+  createAssetStoreBoards(
+    @Body() createAssetStoreBoardsDto: CreateAssetStoreBoardsDto,
+  ) {
     return this.assetStoreService.createAssetStoreBoards(
       createAssetStoreBoardsDto,
     );
   }
 
+  @Post('/reviews')
+  createAssetStoreReviews(
+    @Body() createAssetStoreReviewssDto: CreateAssetStoreReviewsDto,
+  ) {
+    return this.assetStoreService.createAssetStoreReviews(
+      createAssetStoreReviewssDto,
+    );
+  }
+
   @Get()
-  findAll() {
-    return this.assetStoreService.findAll();
+  findAll(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('order') order,
+  ) {
+    return this.assetStoreService.findAllAssetStoreBoards(
+      { afterCursor, beforeCursor },
+      order,
+    );
   }
 
   @Get(':id')
