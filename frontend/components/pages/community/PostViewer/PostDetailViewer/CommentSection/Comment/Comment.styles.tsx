@@ -17,4 +17,8 @@ export const useCommentStyles = createStyles((theme) => ({
     height: 30,
     textDecoration: "underline",
   },
+
+  content: {
+    lineHeight: 1.5,
+  },
 }));

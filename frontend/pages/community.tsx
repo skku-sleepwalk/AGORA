@@ -7,22 +7,22 @@ import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
-import { uploadPost } from "../utils/api/uploadPost";
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { isBrowser } from "../types/browser";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+  const [tab, setTab] = useState<string>("post");
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
   } = useBoardList(["Unity", "C#", "C", "C++"], {
     search: search ? search.toString() : undefined,
+    boardType: tab == "post" ? "parent" : "child",
   });
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
@@ -58,22 +58,19 @@ function Community() {
         {search ? (
           <Stack spacing={20}>
             <SearchBar
-              defaultValue={"asd"}
+              defaultValue={search.toString()}
               onSubmit={(text) => {
                 router.push(`?search=${text}`);
               }}
             />
             <SearchTab
               onChange={(tab) => {
-                console.log(tab);
+                setTab(tab);
               }}
             />
           </Stack>
         ) : (
-
           <PostWriter />
-
-       
         )}
         {postData?.map((data) => {
           return data.data.map((data) => <PostViewer key={data.id} post={data} />);

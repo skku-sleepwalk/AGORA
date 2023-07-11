@@ -6,14 +6,14 @@ import { fetcher } from "../utils/fetcher";
 export interface useBoardListSettings {
   search?: string;
   parentId?: string;
-  type?: "parent" | "child";
+  boardType?: "parent" | "child";
 }
 
 const getKey = (
   pageIndex: number,
   previousPageData: GetBoardListResponse,
   categories: string[],
-  { search, parentId, type }: useBoardListSettings
+  { search, parentId, boardType }: useBoardListSettings
 ) => {
   if (previousPageData && previousPageData.cursor.afterCursor === null) return null;
   let queryString = "";
@@ -22,7 +22,7 @@ const getKey = (
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
-      type,
+      boardType,
       search,
     });
   } else {
@@ -30,7 +30,7 @@ const getKey = (
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
-      type,
+      boardType,
       afterCursor: previousPageData.cursor.afterCursor,
       search,
     });
