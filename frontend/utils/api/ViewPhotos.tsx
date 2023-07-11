@@ -10,7 +10,7 @@ export function extractImageSrc(html: string) {
   // doc의 img 태그와 일치하는 요소를 유사 배열 형태로 반환
   const srcArray = [];
   if (images.length == 0) {
-    return "none";
+    return [""];
   }
 
   for (let i = 0; i < images.length; i++) {
@@ -28,12 +28,14 @@ export function extractImageSrc(html: string) {
 
 // thumbnailUrl를 추출하는 함수
 export function extractThumbnailUrl ( post : Board) {
-  if (extractImageSrc(post.content) != 'none') {
+  if (extractImageSrc(post.content)[0] != '') {
     return extractImageSrc(post.content)[0];
   }
   return undefined;
 }
 
-// 아래는 PhotoViewer에서 사용 가능한 형식으로 바꾸는 코드
-// const extractedImages = extractImageSrc(content)
-// const PhotoSrcValues = extractedImages.map(image => ({ src: image.src }));
+// html 문자열에서 img 태그를 제거하는 함수
+export function removeImgTags(html: string): string {
+  const imgRegex = /<img\b[^>]*>/gi;
+  return html.replace(imgRegex, '');
+}

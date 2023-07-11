@@ -15,6 +15,7 @@ import PostDetailViewer from "./PostDetailViewer/PostDetailViewer";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { Board } from "../../../../types/api/boards";
 import { PhotoViewer } from "../../../common/PhotoViewer/PhotoViewer";
+import { extractImageSrc } from "../../../../utils/api/ViewPhotos";
 
 export interface PostViewerProps {
   post: Board;
@@ -26,6 +27,8 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const { classes } = usePostViewerStyles({ maxContentHeight });
   const [opened, { open, close }] = useDisclosure(false); // modal of PostDetailViewer
   const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
+
+  const imageSrcArray = extractImageSrc(post.content);
 
   return (
     <>
@@ -57,7 +60,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                     className={classes.imageModal}
                     withCloseButton={false}
                   >
-                    <PhotoViewer />
+                    <PhotoViewer imageSrc={imageSrcArray}/>
                   </Modal>
                   <Image
                     onClick={(e) => {

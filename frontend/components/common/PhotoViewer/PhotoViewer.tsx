@@ -4,11 +4,12 @@ import { useListState } from '@mantine/hooks';
 import { Image, Center } from '@mantine/core';
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { usePhotoViewerStyles } from './PhotoViewer.styles';
-import { PhotoSrcValues } from './PhotoViewer.constants';
+// import { PhotoSrcValues } from './PhotoViewer.constants';
 
-export function PhotoViewer() {
+export function PhotoViewer({imageSrc}: {imageSrc: string[]}) {
   const { classes, cx } = usePhotoViewerStyles();
 
+  const PhotoSrcValues = imageSrc.map((image) => ({ src: image }));
   const [values] = useListState(PhotoSrcValues);
   
   const TRANSITION_DURATION = 200;
