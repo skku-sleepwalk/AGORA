@@ -3,7 +3,10 @@ import {
   CreateAssetStoreBoardsDto,
   CreateAssetStoreReviewsDto,
 } from './dto/create-asset-store.dto';
-import { UpdateAssetStoreDto } from './dto/update-asset-store.dto';
+import {
+  UpdateAssetStoreBoardsDto,
+  UpdateAssetStoreReviewsDto,
+} from './dto/update-asset-store.dto';
 import { UserRepository } from 'src/users/user.repository';
 import {
   AssetStoreBoardsRepository,
@@ -14,6 +17,7 @@ import { v4 as uuid } from 'uuid';
 import {
   AssetStoreBoards,
   AssetStoreBoardsOrder,
+  AssetStoreReviews,
 } from './entities/asset-store.entity';
 import {
   Cursor,
@@ -172,11 +176,58 @@ export class AssetStoreService {
     return queryBuilder.getOne();
   }
 
-  update(id: number, updateAssetStoreDto: UpdateAssetStoreDto) {
-    return `This action updates a #${id} assetStore`;
+  async updateAssetStoreBoards(
+    id: string,
+    updateAssetStoreBoardsDto: UpdateAssetStoreBoardsDto,
+  ) {
+    const {
+      title,
+      price,
+      updateEmail,
+      description,
+      downloadUrl,
+      categoryNames,
+    } = updateAssetStoreBoardsDto;
+    const toUpdateAssetStoreBoard: AssetStoreBoards =
+      await this.getAssetStoreBoardsWithRelations()
+        .where('assetStoreBoard.id = :id', { id })
+        .getOne();
+
+    if (updateEmail === toUpdateAssetStoreBoard.author.email) {
+      toUpdateAssetStoreBoard.title = title;
+      toUpdateAssetStoreBoard.description = description;
+      toUpdateAssetStoreBoard.price = price;
+      toUpdateAssetStoreBoard.downloadUrl = downloadUrl;
+      for (const categoryName of categoryNames) {
+        const categoryType = await this.assetStoreCategoryRepository.findOne({
+          name: categoryName,
+        });
+        if (categoryType) {
+          toUpdateAssetStoreBoard.categoryTypes.push(categoryType);
+        }
+      }
+    }
+    return this.assetStoreBoardsRepository.save(toUpdateAssetStoreBoard);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} assetStore`;
+  async updateAssetStoreReviews(
+    id: string,
+    updateAssetStoreReviewsDto: UpdateAssetStoreReviewsDto,
+  ) {
+    const { rating, description, updateEmail } = updateAssetStoreReviewsDto;
+    const toUpdateAssetStoreReview: AssetStoreReviews =
+      await this.assetStoreReviewsRepository.findOne(id);
+    if (updateEmail === toUpdateAssetStoreReview.writer.email) {
+      toUpdateAssetStoreReview.rating = rating;
+      toUpdateAssetStoreReview.description = description;
+    }
+    return this.assetStoreReviewsRepository.save(toUpdateAssetStoreReview);
+  }
+  async removeAssetStoreBoards(id: string) {
+    await this.assetStoreBoardsRepository.softDelete(id);
+  }
+
+  async removeAssetStoreReviews(id: string) {
+    await this.assetStoreReviewsRepository.softDelete(id);
   }
 }

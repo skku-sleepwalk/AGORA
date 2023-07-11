@@ -14,7 +14,10 @@ import {
   CreateAssetStoreBoardsDto,
   CreateAssetStoreReviewsDto,
 } from './dto/create-asset-store.dto';
-import { UpdateAssetStoreDto } from './dto/update-asset-store.dto';
+import {
+  UpdateAssetStoreBoardsDto,
+  UpdateAssetStoreReviewsDto,
+} from './dto/update-asset-store.dto';
 import { AssetStoreBoardsOrder } from './entities/asset-store.entity';
 
 @Controller('asset-store')
@@ -82,16 +85,35 @@ export class AssetStoreController {
     return this.assetStoreService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
+  @Patch('/boards/:id')
+  updateAssetStoreBoards(
     @Param('id') id: string,
-    @Body() updateAssetStoreDto: UpdateAssetStoreDto,
+    @Body() updateAssetStoreDto: UpdateAssetStoreBoardsDto,
   ) {
-    return this.assetStoreService.update(+id, updateAssetStoreDto);
+    return this.assetStoreService.updateAssetStoreBoards(
+      id,
+      updateAssetStoreDto,
+    );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.assetStoreService.remove(+id);
+  @Patch('/reviews/:id')
+  updateAssetStoreReviews(
+    @Param('id') id: string,
+    @Body() updateAssetStoreDto: UpdateAssetStoreReviewsDto,
+  ) {
+    return this.assetStoreService.updateAssetStoreReviews(
+      id,
+      updateAssetStoreDto,
+    );
+  }
+
+  @Delete('/boards/:id')
+  removeAssetStoreBoards(@Param('id') id: string) {
+    return this.assetStoreService.removeAssetStoreBoards(id);
+  }
+
+  @Delete('/reviews/:id')
+  removeAssetStoreReviews(@Param('id') id: string) {
+    return this.assetStoreService.removeAssetStoreBoards(id);
   }
 }
