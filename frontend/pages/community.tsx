@@ -11,31 +11,13 @@ import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
+import { Values } from "../constants/category";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
 
-  const [categorystrings, setcategory] = useState([
-    "Unity",
-    "C#",
-    "Python",
-    "캐릭터",
-    "적",
-    "배경",
-    "Unity 공모전",
-    "C# 공모전",
-    "Python 공모전",
-    "배경 음악",
-    "효과음",
-    "퍼블리싱",
-    "게임 시작",
-    "설정",
-    "팀원 모집",
-    "자금",
-    "유니티 입문",
-    "얼리얼 입문",
-  ]);
+  const [categorystrings, setcategory] = useState(Values);
 
   const [tab, setTab] = useState<string>("post");
 
@@ -43,8 +25,7 @@ function Community() {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
- //여기를 건드려야함
-
+    //여기를 건드려야함
   } = useBoardList(categorystrings, {
     search: search ? search.toString() : undefined,
     boardType: tab == "post" ? "parent" : "child",
