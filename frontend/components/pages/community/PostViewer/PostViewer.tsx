@@ -13,43 +13,65 @@ import { usePostViewerStyles } from "./PostViewer.styles";
 import { useDisclosure } from "@mantine/hooks";
 import PostDetailViewer from "./PostDetailViewer/PostDetailViewer";
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { User } from "../../../../types/user";
+import { Board } from "../../../../types/api/boards";
+import { PhotoViewer } from "../../../common/PhotoViewer/PhotoViewer";
 
 export interface PostViewerProps {
-  content: string;
+  post: Board;
   thumbnailUrl?: string;
-  title?: string;
-  user: User;
-  date: string;
 }
 
-function PostViewer({ content, thumbnailUrl, title, user, date }: PostViewerProps) {
+function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const maxContentHeight = thumbnailUrl ? 50 : 150;
   const { classes } = usePostViewerStyles({ maxContentHeight });
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false); // modal of PostDetailViewer
+  const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
 
   return (
     <>
       <UnstyledButton onClick={open}>
         <CardContainer className={classes.postContainer}>
           <Stack spacing={14}>
-            <PostHeader user={user} date={date} />
+            <PostHeader user={post.writer} date={post.createdAt} />
             <Stack spacing={7}>
-              <Title order={3}>{title}</Title>
+              <Title order={3}>{post.title}</Title>
               <Container className={classes.contentWrapper}>
                 <TypographyStylesProvider>
-                  <div className={classes.content} dangerouslySetInnerHTML={{ __html: content }} />
+                  <div
+                    className={classes.content}
+                    dangerouslySetInnerHTML={{ __html: post.content }}
+                  />
                 </TypographyStylesProvider>
               </Container>
               {thumbnailUrl && (
-                <Image
-                  src={thumbnailUrl}
-                  alt="thumbnail"
-                  width="100%"
-                  height={300}
-                  fit="contain"
-                  className={classes.thumbnail}
-                />
+                <>
+                  <Modal
+                    opened={opening}
+                    onClose={handlers.close}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                    size={"49.375rem"}
+                    padding={0}
+                    centered
+                    className={classes.imageModal}
+                    withCloseButton={false}
+                  >
+                    <PhotoViewer />
+                  </Modal>
+                  <Image
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlers.open();
+                    }}
+                    src={thumbnailUrl}
+                    alt="thumbnail"
+                    width="100%"
+                    height={300}
+                    fit="contain"
+                    className={classes.thumbnail}
+                  />
+                </>
               )}
             </Stack>
           </Stack>
@@ -63,7 +85,7 @@ function PostViewer({ content, thumbnailUrl, title, user, date }: PostViewerProp
         centered
         scrollAreaComponent={ScrollArea.Autosize}
       >
-        <PostDetailViewer content={content} user={user} date={date} title={title} />
+        <PostDetailViewer post={post} />
       </Modal>
     </>
   );

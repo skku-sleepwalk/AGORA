@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  Generated,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -17,10 +16,6 @@ import { User } from 'src/users/entities/user.entity';
 export class Board {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
-
-  @Column()
-  @Generated('increment')
-  readonly _id: number;
 
   @Column({ length: 32, nullable: true })
   title: string;
@@ -60,4 +55,5 @@ export class Board {
   @JoinTable()
   likedUsers: User[];
 }
-export type Order = '_id' | 'child' | 'like';
+
+export type Order = 'createdAt' | 'child' | 'like';

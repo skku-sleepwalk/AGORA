@@ -9,6 +9,8 @@ export interface PostFooterProps {
   onShareClick?: () => void;
   onBookmarkClick?: () => void;
   onEditClick?: () => void;
+  commentCount: number;
+  likeCount: number;
 }
 
 function PostFooter({
@@ -17,6 +19,8 @@ function PostFooter({
   onShareClick,
   onBookmarkClick,
   onEditClick,
+  commentCount,
+  likeCount,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
 
@@ -27,13 +31,13 @@ function PostFooter({
           <InvisibleButton onClick={onCommentClick}>
             <IconMessage size={25} />
           </InvisibleButton>
-          <Text>12,119</Text>
+          <Text>{commentCount}</Text>
         </Group>
         <Group spacing={8}>
           <InvisibleButton onClick={onLikeClick}>
             <IconHeart size={25} />
           </InvisibleButton>
-          <Text>7,111</Text>
+          <Text>{likeCount}</Text>
         </Group>
         <InvisibleButton onClick={onShareClick}>
           <IconShare size={25} />
