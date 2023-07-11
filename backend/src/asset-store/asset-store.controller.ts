@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { AssetStoreService } from './asset-store.service';
 import {
@@ -14,6 +15,7 @@ import {
   CreateAssetStoreReviewsDto,
 } from './dto/create-asset-store.dto';
 import { UpdateAssetStoreDto } from './dto/update-asset-store.dto';
+import { AssetStoreBoardsOrder } from './entities/asset-store.entity';
 
 @Controller('asset-store')
 export class AssetStoreController {
@@ -37,21 +39,41 @@ export class AssetStoreController {
     );
   }
 
-  @Get()
-  findAll(
+  @Get('/main')
+  findAllAssetStoreBoards(
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
-    @Query('order') order,
+    @Query('order') order: AssetStoreBoardsOrder,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
   ) {
     return this.assetStoreService.findAllAssetStoreBoards(
       { afterCursor, beforeCursor },
       order,
+      categoryNames,
     );
   }
 
-  @Get(':id')
+  @Get('/search')
+  searchAssetStoreBoards(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('order') order: AssetStoreBoardsOrder,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
+  ) {
+    return;
+  }
+
+  @Get('/id/:id')
   findOne(@Param('id') id: string) {
-    return this.assetStoreService.findOne(+id);
+    return this.assetStoreService.findOne(id);
   }
 
   @Patch(':id')

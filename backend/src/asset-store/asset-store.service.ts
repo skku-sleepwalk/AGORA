@@ -55,8 +55,11 @@ export class AssetStoreService {
       .leftJoinAndSelect(
         'assetStoreBoards.assetStoreReviews',
         'assetStoreReviews',
-      );
+      )
+      .leftJoinAndSelect('assetStoreBoards.likedUsers', 'likedUsers')
+      .leftJoinAndSelect('assetStoreBoards.categoryTypes', 'categoryTypes');
   }
+
   async createAssetStoreBoards(
     createAssetStoreBoardsDto: CreateAssetStoreBoardsDto,
   ) {
@@ -95,8 +98,15 @@ export class AssetStoreService {
     return this.assetStoreReviewsRepository.save(newAssetStoreReview);
   }
 
-  async findAllAssetStoreBoards(_cursor: Cursor, order: AssetStoreBoardsOrder) {
-    const queryBuilder = this.getAssetStoreBoardsWithRelations();
+  async findAllAssetStoreBoards(
+    _cursor: Cursor,
+    order: AssetStoreBoardsOrder,
+    categoryNames: string[],
+  ) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
+      'categoryTypes.name IN (:...categoryNames)',
+      { categoryNames: categoryNames },
+    );
     const paginateOption: PaginationOptions<AssetStoreBoards> = cloneDeep(
       this.paginateOption,
     );
@@ -134,8 +144,12 @@ export class AssetStoreService {
     return { data, cursor };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} assetStore`;
+  findOne(id: string) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
+      'assetStoreBoard.id = :id',
+      { id },
+    );
+    return queryBuilder.getOne();
   }
 
   update(id: number, updateAssetStoreDto: UpdateAssetStoreDto) {
