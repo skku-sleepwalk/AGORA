@@ -70,17 +70,10 @@ function Community() {
             />
           </Stack>
         ) : (
-          <PostWriter
-            onSubmit={(values) => {
-              const { title, content, category } = values;
-              uploadPost({
-                title: title,
-                content: content,
-                writerEmail: "qazxsw100415@gmail.com",
-                categoryNames: category,
-              });
-            }}
-          />
+
+          <PostWriter />
+
+       
         )}
         {postData?.map((data) => {
           return data.data.map((data) => <PostViewer key={data.id} post={data} />);

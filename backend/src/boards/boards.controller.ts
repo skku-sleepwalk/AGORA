@@ -14,7 +14,7 @@ import {
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { Order } from './entities/board.entity';
+import { BoardType, Order } from './entities/board.entity';
 import { Cursor } from 'typeorm-cursor-pagination';
 
 @Controller('boards')
@@ -31,11 +31,21 @@ export class BoardsController {
   getBoards(
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
+    @Query('order') order: Order,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
   ) {
-    return this.boardsService.getBoard({
-      afterCursor,
-      beforeCursor,
-    });
+    return this.boardsService.getBoard(
+      {
+        afterCursor,
+        beforeCursor,
+      },
+      order,
+      categoryNames,
+    );
   }
   @Get('/user/:userEmail')
   findByUser(@Param('userEmail') userEmail: string) {
@@ -48,6 +58,7 @@ export class BoardsController {
     @Query('beforeCursor') beforeCursor: string,
     @Query('order') order: Order,
     @Query('search') search: string,
+    @Query('boardType') boardType: BoardType,
     @Query(
       'categoryNames',
       new ParseArrayPipe({ items: String, separator: ',' }),
@@ -58,7 +69,13 @@ export class BoardsController {
       afterCursor,
       beforeCursor,
     };
-    return this.boardsService.searhBoards(categoryNames, cursor, order, search);
+    return this.boardsService.searhBoards(
+      categoryNames,
+      cursor,
+      order,
+      search,
+      boardType,
+    );
   }
 
   @Get('/getChild/:parentId')

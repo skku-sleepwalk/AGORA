@@ -11,8 +11,16 @@ import {
 } from './asset-store.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
-import { AssetStoreBoards } from './entities/asset-store.entity';
-import { Cursor } from 'typeorm-cursor-pagination';
+import {
+  AssetStoreBoards,
+  AssetStoreBoardsOrder,
+} from './entities/asset-store.entity';
+import {
+  Cursor,
+  PaginationOptions,
+  buildPaginator,
+} from 'typeorm-cursor-pagination';
+import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class AssetStoreService {
@@ -29,12 +37,23 @@ export class AssetStoreService {
     this.userRepository = connection.getCustomRepository(UserRepository);
   }
 
-  getBoardWithRelations(): SelectQueryBuilder<AssetStoreBoards> {
+  private paginateOption: PaginationOptions<AssetStoreBoards> = {
+    entity: AssetStoreBoards,
+    paginationKeys: ['createdAt'],
+    query: {
+      afterCursor: null,
+      beforeCursor: null,
+      limit: 5,
+      order: 'DESC',
+    },
+  };
+
+  getAssetStoreBoardsWithRelations(): SelectQueryBuilder<AssetStoreBoards> {
     return this.assetStoreBoardsRepository
-      .createQueryBuilder('AssetStoreBoards')
-      .leftJoinAndSelect('AssetStoreBoards.author', 'author')
+      .createQueryBuilder('assetStoreBoards')
+      .leftJoinAndSelect('assetStoreBoards.author', 'author')
       .leftJoinAndSelect(
-        'AssetStoreBoards.assetStoreReviews',
+        'assetStoreBoards.assetStoreReviews',
         'assetStoreReviews',
       );
   }
@@ -62,7 +81,7 @@ export class AssetStoreService {
     const { writerEmail, assetStoreBoardId, rating, description } =
       createAssetStoreReviewsDto;
     const writer = await this.userRepository.findOne({ email: writerEmail });
-    const board = await this.getBoardWithRelations()
+    const board = await this.getAssetStoreBoardsWithRelations()
       .where('AssetStoreBoards.id = :id', { id: assetStoreBoardId })
       .getOne();
     const newAssetStoreReview = this.assetStoreReviewsRepository.create({
@@ -76,8 +95,43 @@ export class AssetStoreService {
     return this.assetStoreReviewsRepository.save(newAssetStoreReview);
   }
 
-  findAllAssetStoreBoards(cursor: Cursor, order) {
-    return `This action returns all assetStore`;
+  async findAllAssetStoreBoards(_cursor: Cursor, order: AssetStoreBoardsOrder) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations();
+    const paginateOption: PaginationOptions<AssetStoreBoards> = cloneDeep(
+      this.paginateOption,
+    );
+    if (order) paginateOption.paginationKeys = [order];
+    if (_cursor.afterCursor)
+      paginateOption.query.afterCursor = _cursor.afterCursor;
+    if (_cursor.beforeCursor)
+      paginateOption.query.beforeCursor = _cursor.beforeCursor;
+    const paginator = buildPaginator(paginateOption);
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
+  }
+
+  async searchAssetStoreBoards(
+    _cursor: Cursor,
+    order: AssetStoreBoardsOrder,
+    search: string,
+  ) {
+    const queryBuilder = this.getAssetStoreBoardsWithRelations().where(
+      'assetStoreBoards.title LIKE :search OR assetStoreBoards.description LIKE :search',
+      {
+        search: `%${search}%`,
+      },
+    );
+    const paginateOption: PaginationOptions<AssetStoreBoards> = cloneDeep(
+      this.paginateOption,
+    );
+    if (order) paginateOption.paginationKeys = [order];
+    if (_cursor.afterCursor)
+      paginateOption.query.afterCursor = _cursor.afterCursor;
+    if (_cursor.beforeCursor)
+      paginateOption.query.beforeCursor = _cursor.beforeCursor;
+    const paginator = buildPaginator(paginateOption);
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
   }
 
   findOne(id: number) {
