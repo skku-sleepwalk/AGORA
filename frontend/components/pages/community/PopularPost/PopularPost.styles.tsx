@@ -9,7 +9,7 @@ export const usePopularPostStyles = createStyles((theme) => ({
     float: "left",
 
     backgroundColor: "#FFF",
-    boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
+    boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.2)",
     borderRadius: "15px",
   },
   PopularPostText: {
