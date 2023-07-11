@@ -17,11 +17,31 @@ import { isBrowser } from "../types/browser";
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+  const [categorystrings, setcategory] = useState([
+    "Unity",
+    "C#",
+    "Python",
+    "캐릭터",
+    "적",
+    "배경",
+    "Unity 공모전",
+    "C# 공모전",
+    "Python 공모전",
+    "배경 음악",
+    "효과음",
+    "퍼블리싱",
+    "게임 시작",
+    "설정",
+    "팀원 모집",
+    "자금",
+    "유니티 입문",
+    "얼리얼 입문",
+  ]);
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
-  } = useBoardList(["Unity", "C#", "C", "C++"]);
+  } = useBoardList(categorystrings); //여기를 건드려야함
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
 
@@ -39,7 +59,7 @@ function Community() {
         <Stack spacing={16}>
           <LeftSidebar
             onCategoryChange={(category) => {
-              console.log(category);
+              setcategory(category);
             }}
           />
         </Stack>
@@ -67,10 +87,7 @@ function Community() {
             />
           </Stack>
         ) : (
-
           <PostWriter />
-
-       
         )}
         {postData?.map((data) => {
           return data.data.map((data) => <PostViewer key={data.id} post={data} />);
