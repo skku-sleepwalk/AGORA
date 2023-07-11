@@ -12,35 +12,17 @@ export function ButtonProgress({ CloseModal, ...others }: ButtonProgressProps) {
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
 
-  const interval = useInterval(
-    () =>
-      setProgress((current) => {
-        if (current < 100) {
-          return current + 1; //여기를 멈춰야 해
-        }
-
-        interval.stop();
-        setLoaded(true);
-        return 0;
-      }),
-    20
-  );
-
   return (
     <Button
       className={classes.button}
-      onClick={() => (loaded ? CloseModal() : !interval.active && interval.start())}
       //   setLoaded(false) <--원래 null자리
       color={loaded ? "teal" : theme.primaryColor}
       {...others}
     >
-      <div className={classes.label}>
-        {progress !== 0 ? "글 업로드 중" : loaded ? "업로드 완료!" : "글 작성"}
-      </div>
+      <div className={classes.label}>{"글 작성"}</div>
       {progress !== 0 && (
         <Progress
           value={progress}
-          className={classes.progress}
           color={theme.fn.rgba(theme.colors[theme.primaryColor][2], 0.35)}
           radius="sm"
         />
