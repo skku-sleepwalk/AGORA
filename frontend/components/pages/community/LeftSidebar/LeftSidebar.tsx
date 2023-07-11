@@ -2,7 +2,7 @@ import { Checkbox, Group, Container, Box, Stack, Collapse, Text, Button } from "
 import { useListState, useDisclosure } from "@mantine/hooks";
 import { IconChevronDown, IconCornerDownRight } from "@tabler/icons-react";
 import { useLeftSidebarStyles } from "./LeftSidebar.styles";
-import { Category, CategoryNum, Values } from "./LeftSidebar.constants";
+import { Category, CategoryNum, Values } from "../../../../constants/category";
 import { useEffect } from "react";
 
 export interface LeftSidebarProps {

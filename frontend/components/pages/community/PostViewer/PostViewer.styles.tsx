@@ -55,5 +55,11 @@ export const usePostViewerStyles = createStyles(
         borderRadius: 15,
       },
     },
+    imageModal: {
+      ".mantine-Modal-content": {
+        backgroundColor: 'transparent',
+        boxShadow: 'none'
+      },
+    },
   })
 );
