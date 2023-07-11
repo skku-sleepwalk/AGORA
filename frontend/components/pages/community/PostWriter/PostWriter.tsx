@@ -81,14 +81,6 @@ function PostWriter() {
             }).then(close, showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다."));
           })}
         >
-          {/* (values) => {
-              const { title, content, category } = values;
-              uploadPost({
-                title: title,
-                content: content,
-                writerEmail: "lucas@naver.com",
-                categoryNames: category,
-              }) */}
           <FocusTrap active={opened}>
             <Stack className={classes.editorContainer} spacing={17}>
               <UserInfo user={MOCKUP_USER} />
