@@ -16,7 +16,7 @@ export function ButtonProgress({ CloseModal, ...others }: ButtonProgressProps) {
     () =>
       setProgress((current) => {
         if (current < 100) {
-          return current + 1;
+          return current + 1; //여기를 멈춰야 해
         }
 
         interval.stop();

@@ -49,17 +49,7 @@ function Community() {
             />
           </Stack>
         ) : (
-          <PostWriter
-            onSubmit={(values) => {
-              const { title, content, category } = values;
-              uploadPost({
-                title: title,
-                content: content,
-                writerEmail: "lucas@naver.com",
-                categoryNames: category,
-              });
-            }}
-          />
+          <PostWriter />
         )}
         <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
         <PostViewer content={MOCKUP_CONTENT} user={MOCKUP_USER} date="2021-08-01" />
