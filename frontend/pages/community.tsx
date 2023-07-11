@@ -81,8 +81,7 @@ function Community() {
           />
         )}
         {postData?.map((data) => {
-          // extractThumbnailUrl(post = {data})
-          return data.data.map((data) => <PostViewer key={data.id} post={data}/>);
+          return data.data.map((data) => <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)}/>);
         })}
         {isPostLoading && <LoadingPost />}
       </Stack>

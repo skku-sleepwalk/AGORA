@@ -1,4 +1,4 @@
-import { PostViewerProps } from "../../components/pages/community/PostViewer/PostViewer";
+import { Board } from "../../types/api/boards";
 
 // content에서 img 태그의 src 속성값을 \를 제외하고 배열 형태로 반환하는 함수
 export function extractImageSrc(html: string) {
@@ -27,8 +27,11 @@ export function extractImageSrc(html: string) {
 }
 
 // thumbnailUrl를 추출하는 함수
-export function extractThumbnailUrl ({ post }: PostViewerProps) {
-  extractImageSrc(post.content)
+export function extractThumbnailUrl ( post : Board) {
+  if (extractImageSrc(post.content) != 'none') {
+    return extractImageSrc(post.content)[0];
+  }
+  return undefined;
 }
 
 // 아래는 PhotoViewer에서 사용 가능한 형식으로 바꾸는 코드
