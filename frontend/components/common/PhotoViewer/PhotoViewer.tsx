@@ -4,7 +4,6 @@ import { useListState } from '@mantine/hooks';
 import { Image, Center } from '@mantine/core';
 import { IconChevronRight, IconChevronLeft } from "@tabler/icons-react";
 import { usePhotoViewerStyles } from './PhotoViewer.styles';
-// import { PhotoSrcValues } from './PhotoViewer.constants';
 
 export function PhotoViewer({imageSrc}: {imageSrc: string[]}) {
   const { classes, cx } = usePhotoViewerStyles();
