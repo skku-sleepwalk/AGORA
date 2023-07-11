@@ -56,4 +56,5 @@ export class Board {
   likedUsers: User[];
 }
 
-export type Order = 'createdAt' | 'child' | 'like';
+export type Order = 'createdAt' | 'child' | 'like' | null;
+export type BoardType = 'parent' | 'child';

@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { Board, Order } from './entities/board.entity';
+import { Board, BoardType, Order } from './entities/board.entity';
 import { BoardRepository } from './boards.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -115,14 +115,17 @@ export class BoardsService {
   }
 
   ///////////////////////////{  READ  }/////////////////////////////////
-  async getBoard(_cursor: Cursor) {
+  async getBoard(_cursor: Cursor, order: Order, categoryTypeNames: string[]) {
     const queryBuilder = this.getBoardWithRelations().where(
-      'board.parent IS NULL',
+      '(board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames))',
+      { categoryNames: categoryTypeNames },
     );
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
-
+    if (order) {
+      paginateOption.paginationKeys = [order];
+    }
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
@@ -147,13 +150,20 @@ export class BoardsService {
     _cursor: Cursor,
     order: Order,
     search: string,
+    boardType: BoardType,
   ) {
-    const queryBuilder: SelectQueryBuilder<Board> = this.getBoardWithRelations()
-      .where('category.name IN (:...categoryNames)')
-      .setParameter('categoryNames', categoryTypeNames);
-    if (search) {
-      queryBuilder.andWhere(
-        '(categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+    let queryBuilder: SelectQueryBuilder<Board>;
+    if (boardType === 'parent') {
+      queryBuilder = this.getBoardWithRelations().where(
+        '(board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+        {
+          categoryNames: categoryTypeNames,
+          search: `%${search}%`,
+        },
+      );
+    } else {
+      queryBuilder = this.getBoardWithRelations().where(
+        '(board.parent IS NOT NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
         {
           categoryNames: categoryTypeNames,
           search: `%${search}%`,
@@ -164,7 +174,9 @@ export class BoardsService {
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
-    paginateOption.paginationKeys = [order];
+    if (order) {
+      paginateOption.paginationKeys = [order];
+    }
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
@@ -181,7 +193,9 @@ export class BoardsService {
       { parentId: parentId },
     );
     const paginateOption = cloneDeep(this.paginateOption);
-    this.paginateOption.paginationKeys = [order];
+    if (order) {
+      this.paginateOption.paginationKeys = [order];
+    }
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
     }
