@@ -13,13 +13,23 @@ import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 import { isBrowser } from "../types/browser";
 import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
-import { Values } from "../constants/category";
+import { CategoryNum, Values } from "../constants/category";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
 
-  const [categorystrings, setcategory] = useState(Values);
+  let data = new Array();
+  for (let i = 0; i < CategoryNum; i++) {
+    const values = Values[i];
+    values.map(
+      ( value ) => {
+        data.push(value.label);
+      }
+    )
+  };
+
+  const [categorystrings, setcategory] = useState(data);
 
   const [tab, setTab] = useState<string>("post");
 
@@ -27,7 +37,6 @@ function Community() {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
-    //여기를 건드려야함
   } = useBoardList(categorystrings, {
     search: search ? search.toString() : undefined,
     boardType: tab == "post" ? "parent" : "child",
