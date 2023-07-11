@@ -21,7 +21,9 @@ function Community() {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
-  } = useBoardList(["Unity", "C#", "C", "C++"]);
+  } = useBoardList(["Unity", "C#", "C", "C++"], {
+    search: search ? search.toString() : undefined,
+  });
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
 
@@ -56,8 +58,9 @@ function Community() {
         {search ? (
           <Stack spacing={20}>
             <SearchBar
+              defaultValue={"asd"}
               onSubmit={(text) => {
-                console.log(text);
+                router.push(`?search=${text}`);
               }}
             />
             <SearchTab

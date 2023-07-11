@@ -7,9 +7,10 @@ import { init } from "next/dist/compiled/@vercel/og/satori";
 export interface SearchBarProps {
   className?: string;
   onSubmit?: (text: string) => void;
+  defaultValue?: string;
 }
 
-function SearchBar({ className, onSubmit }: SearchBarProps) {
+function SearchBar({ className, onSubmit, defaultValue }: SearchBarProps) {
   const { classes, cx } = useSearchBarStyles();
   const form = useForm({
     initialValues: {
@@ -28,6 +29,7 @@ function SearchBar({ className, onSubmit }: SearchBarProps) {
           placeholder="검색어를 입력해주세요."
           className={classes.input}
           {...form.getInputProps("searchKeyword")}
+          defaultValue={defaultValue}
         />
         <UnstyledButton variant="transparent" className={classes.searchButton} type="submit">
           <Center>

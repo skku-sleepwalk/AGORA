@@ -6,13 +6,14 @@ import { fetcher } from "../utils/fetcher";
 export interface useBoardListSettings {
   search?: string;
   parentId?: string;
+  type?: "parent" | "child";
 }
 
 const getKey = (
   pageIndex: number,
   previousPageData: GetBoardListResponse,
   categories: string[],
-  { search, parentId }: useBoardListSettings
+  { search, parentId, type }: useBoardListSettings
 ) => {
   if (previousPageData && previousPageData.cursor.afterCursor === null) return null;
   let queryString = "";
@@ -21,6 +22,7 @@ const getKey = (
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
+      type,
       search,
     });
   } else {
@@ -28,6 +30,7 @@ const getKey = (
     queryString = stringify({
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
+      type,
       afterCursor: previousPageData.cursor.afterCursor,
       search,
     });
