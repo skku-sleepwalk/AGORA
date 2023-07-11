@@ -7,16 +7,15 @@ import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
 import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
-import { uploadPost } from "../utils/api/uploadPost";
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { isBrowser } from "../types/browser";
 
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+
   const [categorystrings, setcategory] = useState([
     "Unity",
     "C#",
@@ -37,11 +36,20 @@ function Community() {
     "유니티 입문",
     "얼리얼 입문",
   ]);
+
+  const [tab, setTab] = useState<string>("post");
+
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
-  } = useBoardList(categorystrings); //여기를 건드려야함
+ //여기를 건드려야함
+
+  } = useBoardList(categorystrings, {
+    search: search ? search.toString() : undefined,
+    boardType: tab == "post" ? "parent" : "child",
+  });
+
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
 
@@ -76,13 +84,14 @@ function Community() {
         {search ? (
           <Stack spacing={20}>
             <SearchBar
+              defaultValue={search.toString()}
               onSubmit={(text) => {
-                console.log(text);
+                router.push(`?search=${text}`);
               }}
             />
             <SearchTab
               onChange={(tab) => {
-                console.log(tab);
+                setTab(tab);
               }}
             />
           </Stack>
