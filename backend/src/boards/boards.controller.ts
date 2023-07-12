@@ -111,9 +111,9 @@ export class BoardsController {
   @Patch('/like')
   likeUpdate(
     @Query('boardId') boardId: string,
-    @Query('userId') userId: string,
+    @Query('userEmail') userEmail: string,
   ) {
-    return this.boardsService.likeUpdate(boardId, userId);
+    return this.boardsService.likeUpdate(boardId, userEmail);
   }
 
   @Delete(':id')

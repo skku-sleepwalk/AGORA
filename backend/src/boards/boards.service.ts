@@ -240,18 +240,22 @@ export class BoardsService {
       );
     }
   }
-  async likeUpdate(boardId: string, userId: string) {
+  async likeUpdate(boardId: string, userEmail: string) {
     const queryBuilder = this.getBoardWithRelations();
     const board: Board = await queryBuilder
       .where('board.id = :boardId', { boardId })
       .getOne();
 
     const createdAt = cloneDeep(board.createdAt);
-    if (!board.likedUsers.map((user) => user.id).includes(userId)) {
-      board.likedUsers.push(await this.userRepository.findOne(userId));
+    if (!board.likedUsers.map((user) => user.email).includes(userEmail)) {
+      board.likedUsers.push(
+        await this.userRepository.findOne({ email: userEmail }),
+      );
       board.like += 1;
     } else {
-      board.likedUsers = board.likedUsers.filter((user) => user.id != userId);
+      board.likedUsers = board.likedUsers.filter(
+        (user) => user.email != userEmail,
+      );
       board.like -= 1;
     }
     board.createdAt = createdAt;
