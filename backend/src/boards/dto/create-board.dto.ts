@@ -9,10 +9,6 @@ export class CreateBoardDto {
   @IsString()
   readonly content: string;
 
-  @IsNotEmpty()
-  @IsString()
-  readonly writerEmail: string;
-
   @IsOptional()
   @IsString()
   readonly parentId: string;

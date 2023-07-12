@@ -10,6 +10,7 @@ import {
   ValidationPipe,
   Query,
   ParseArrayPipe,
+  Headers,
 } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
@@ -23,8 +24,11 @@ export class BoardsController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  create(@Body() createBoardDto: CreateBoardDto) {
-    return this.boardsService.createBoard(createBoardDto);
+  create(
+    @Headers('authorization') writerEmail: string,
+    @Body() createBoardDto: CreateBoardDto,
+  ) {
+    return this.boardsService.createBoard(writerEmail, createBoardDto);
   }
 
   @Get('/main')
@@ -104,14 +108,18 @@ export class BoardsController {
 
   @Patch('/update')
   @UsePipes(ValidationPipe)
-  update(@Query('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
-    return this.boardsService.update(id, updateBoardDto);
+  update(
+    @Headers('authorization') userEmail: string,
+    @Query('id') id: string,
+    @Body() updateBoardDto: UpdateBoardDto,
+  ) {
+    return this.boardsService.update(id, updateBoardDto, userEmail);
   }
 
   @Patch('/like')
   likeUpdate(
+    @Headers('authorization') userEmail: string,
     @Query('boardId') boardId: string,
-    @Query('userEmail') userEmail: string,
   ) {
     return this.boardsService.likeUpdate(boardId, userEmail);
   }

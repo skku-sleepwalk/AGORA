@@ -46,9 +46,8 @@ export class BoardsService {
   }
 
   ///////////////////////////{  CREATE  }/////////////////////////////////
-  async createBoard(createBoardDto: CreateBoardDto) {
-    const { title, content, writerEmail, parentId, categoryNames } =
-      createBoardDto;
+  async createBoard(writerEmail: string, createBoardDto: CreateBoardDto) {
+    const { title, content, parentId, categoryNames } = createBoardDto;
 
     // User check
     const writer = await this.userRepository.findOne({ email: writerEmail });
@@ -214,9 +213,13 @@ export class BoardsService {
   }
 
   ///////////////////////////{  UPDATE  }/////////////////////////////////
-  async update(id: string, updateBoardDto: UpdateBoardDto) {
+  async update(
+    id: string,
+    updateBoardDto: UpdateBoardDto,
+    updateEmail: string,
+  ) {
     const toUpdateBoard = await this.findOne(id);
-    const { updateEmail, title, content, categoryNames } = updateBoardDto;
+    const { title, content, categoryNames } = updateBoardDto;
     if (updateEmail === toUpdateBoard.writer.email) {
       const createdAt = cloneDeep(toUpdateBoard.createdAt);
 
