@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
-import { User } from './entities/user.entity';
 import { validate } from 'class-validator';
 import { Connection } from 'typeorm';
 import { v4 as uuid } from 'uuid';
@@ -15,7 +14,6 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const { name, description, email } = createUserDto;
-    const id = uuid();
     // 중복방지
     const byUserEmail = await this.userRepository.findOne({ email: email });
     if (byUserEmail != undefined) {
@@ -26,7 +24,7 @@ export class UsersService {
       );
     }
     const newUser = this.userRepository.create({
-      id,
+      id: uuid(),
       name,
       email,
       description,
@@ -39,12 +37,14 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     } else {
+      console.log(this.userRepository.find({ name: 'p' }));
       return await this.userRepository.save(newUser);
     }
   }
 
   findAll() {
-    return this.userRepository.find();
+    // return this.userRepository.find();
+    return this.userRepository.findOne({ name: 'b' });
   }
 
   findOne(id: string) {

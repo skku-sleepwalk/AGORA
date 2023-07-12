@@ -6,25 +6,18 @@ import {
   AssetStoreBoards,
   AssetStoreReviews,
 } from './entities/asset-store.entity';
-import {
-  AssetStoreBoardsRepository,
-  AssetStoreReviewsRepository,
-} from './asset-store.repository';
-import { UsersModule } from 'src/users/users.module';
+import { AssetStoreBoardsRepository } from './asset-store.repository';
 import { AssetStoreCategoryModule } from './asset-store-category/asset-store-category.module';
 
 @Module({
   imports: [
     AssetStoreModule,
-    UsersModule,
-    TypeOrmModule.forFeature([AssetStoreBoards, AssetStoreReviews]),
     AssetStoreCategoryModule,
+    TypeOrmModule.forFeature([AssetStoreBoards]),
+    TypeOrmModule.forFeature([AssetStoreReviews]),
   ],
   controllers: [AssetStoreController],
-  providers: [
-    AssetStoreService,
-    AssetStoreBoardsRepository,
-    AssetStoreReviewsRepository,
-  ],
+  providers: [AssetStoreService, AssetStoreBoardsRepository],
+  exports: [TypeOrmModule],
 })
 export class AssetStoreModule {}

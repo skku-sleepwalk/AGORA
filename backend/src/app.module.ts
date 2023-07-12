@@ -25,10 +25,10 @@ import { AssetStoreModule } from './asset-store/asset-store.module';
     UsersModule,
     BoardsModule,
     UploadModule,
+    AssetStoreModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
-    AssetStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
