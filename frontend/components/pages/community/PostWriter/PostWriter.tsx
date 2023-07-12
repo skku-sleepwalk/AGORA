@@ -10,10 +10,11 @@ import RichEditor from "./RichEditor/RichEditor";
 import { ButtonProgress } from "./ButtonProgress/ButtonProgress";
 import CategorySelector from "./CategorySelector/CategorySelector";
 import { useForm } from "@mantine/form";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Editor } from "@tiptap/react";
 import { uploadPost } from "../../../../utils/api/uploadPost";
 import { showNotification } from "../../../../utils/notifications";
+import { CommunityContext } from "../../../../pages/community";
 
 export interface Post {
   title: string;
@@ -32,6 +33,7 @@ function PostWriter() {
     },
   });
   const editorRef = useRef<Editor>(null);
+  const { mutatePost } = useContext(CommunityContext);
 
   return (
     <>
@@ -76,9 +78,13 @@ function PostWriter() {
             uploadPost({
               title: postData.title,
               content: postData.content,
-              writerEmail: "lucas@naver.com",
+              writerEmail: "qazxsw100415@gmail.com",
               categoryNames: postData.category,
-            }).then(close, showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다."));
+            }).then(() => {
+              close();
+              showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+              mutatePost();
+            });
           })}
         >
           <FocusTrap active={opened}>
