@@ -102,7 +102,7 @@ export class BoardsController {
     return this.boardsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch('/update')
   @UsePipes(ValidationPipe)
   update(@Query('id') id: string, @Body() updateBoardDto: UpdateBoardDto) {
     return this.boardsService.update(id, updateBoardDto);

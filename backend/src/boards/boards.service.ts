@@ -255,6 +255,25 @@ export class BoardsService {
   }
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
+    const queryBuilder = this.getBoardWithRelations();
+    const toDeleteBoard = await queryBuilder
+      .where('board.id = :id', { id })
+      .getOne();
+
+    let currentParent = toDeleteBoard.parent;
+    while (currentParent) {
+      currentParent.child -= 1;
+      this.boardRepository.save(currentParent);
+      if (!currentParent.parent) {
+        break;
+      }
+      const currentParentId = currentParent.parent.id;
+      currentParent = await this.getBoardWithRelations()
+        .where('board.id = :id', {
+          id: currentParentId,
+        })
+        .getOne();
+    }
     await this.boardRepository.softDelete(id);
   }
 }

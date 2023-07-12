@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateAssetStoreBoardsDto {
   @IsNotEmpty()
@@ -20,6 +20,10 @@ export class CreateAssetStoreBoardsDto {
   @IsNotEmpty()
   @IsString()
   readonly downloadUrl: string[];
+
+  @IsNotEmpty()
+  @IsArray()
+  readonly categoryNames: Array<string>;
 }
 
 export class CreateAssetStoreReviewsDto {
