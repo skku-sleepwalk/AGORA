@@ -14,6 +14,7 @@ export interface Board {
   writer: User;
   parent?: Board;
   categoryTypes: Category[];
+  likedUsers: User[];
 }
 
 export interface PostBoardBody {

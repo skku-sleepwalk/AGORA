@@ -8,7 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
 import React, { useState } from 'react';
-import { onLikeClick } from "../../../../../utils/api/onLikeClick";
+import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -18,6 +18,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
   const [likeCounting, setCount] = useState(post.like);
+
+  // boards/likedUsers에 현재 user-id가 들어있는 지 확인
+  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"});
 
   return (
     <CardContainer className={classes.postContainer}>
@@ -47,6 +50,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               }}
             commentCount={post.child}
             likeCount={likeCounting}
+            isliking={isliking}
           />
         <CommentSection
           editorOpen={commentEditorOpened}
