@@ -7,21 +7,6 @@ export interface LikeClickResponse {
   userId: string;
 }
 
-// export async function onLikeClick({ boardId, userId }: LikeClickResponse): Promise<void | undefined> {
-//   const url = `http://localhost:8000/boards/like?boardId=${boardId}&userId=${userId}`;
-//   const data = {};
-//   const headers = {
-//     'Content-Type': 'application/json',
-//   };
-
-//   try {
-//     await axios.patch(url, data, { headers }); // 서버로 데이터 업데이트 요청
-//     mutate(url, undefined, true); // 강제로 데이터를 다시 가져오고 캐시를 갱신
-//   } catch (error) {
-//     throw error; // 오류 처리
-//   }
-// }
-
 export async function onLikeClick({ boardId, userId }: LikeClickResponse): Promise<void | undefined> {
   const url = `http://localhost:8000/boards/like?boardId=${boardId}&userId=${userId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const data = {};
