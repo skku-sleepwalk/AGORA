@@ -230,6 +230,7 @@ export class AssetStoreService {
     toUpdateAssetStoreReview.createdAt = createdAt;
     return this.assetStoreReviewsRepository.save(toUpdateAssetStoreReview);
   }
+
   async removeAssetStoreBoards(id: string) {
     await this.assetStoreBoardsRepository.softDelete(id);
   }
