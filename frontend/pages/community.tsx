@@ -11,6 +11,8 @@ import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { createContext, useEffect, useState } from "react";
+import { CategoryNum, Values } from "../constants/category";
+import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
 
 export const CommunityContext = createContext({
   mutatePost: () => {},
@@ -19,16 +21,29 @@ export const CommunityContext = createContext({
 function Community() {
   const router = useRouter();
   const search = router.query.search;
+
+  let data = new Array();
+  for (let i = 0; i < CategoryNum; i++) {
+    const values = Values[i];
+    values.map((value) => {
+      data.push(value.label);
+    });
+  }
+
+  const [categorystrings, setcategory] = useState(data);
+
   const [tab, setTab] = useState<string>("post");
+
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
-  } = useBoardList(["Unity", "C#", "C", "C++"], {
+  } = useBoardList(categorystrings, {
     search: search ? search.toString() : undefined,
     boardType: tab == "post" ? "parent" : "child",
   });
+
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
 
@@ -51,7 +66,7 @@ function Community() {
           <Stack spacing={16}>
             <LeftSidebar
               onCategoryChange={(category) => {
-                console.log(category);
+                setcategory(category);
               }}
             />
           </Stack>
@@ -83,7 +98,9 @@ function Community() {
             <PostWriter />
           )}
           {postData?.map((data) => {
-            return data.data.map((data) => <PostViewer key={data.id} post={data} />);
+            return data.data.map((data) => (
+              <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
+            ));
           })}
           {isPostLoading && <LoadingPost />}
         </Stack>

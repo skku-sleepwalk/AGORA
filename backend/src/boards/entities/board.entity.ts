@@ -29,13 +29,34 @@ export class Board {
   @Column({ nullable: false, default: 0 })
   child: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   deletedAt?: Date | null;
 
   @ManyToOne(() => User, (user) => user.boards)

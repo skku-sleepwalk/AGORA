@@ -12,6 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AssetStoreCategory } from '../asset-store-category/entities/asset-store-category.entity';
 
 @Entity()
 export class AssetStoreBoards {
@@ -33,13 +34,34 @@ export class AssetStoreBoards {
   @Column()
   like: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   deletedAt?: Date | null;
 
   @OneToMany(
@@ -55,6 +77,10 @@ export class AssetStoreBoards {
   @ManyToMany(() => User)
   @JoinTable()
   likedUsers: User[];
+
+  @ManyToMany(() => AssetStoreCategory)
+  @JoinTable()
+  categoryTypes: AssetStoreCategory[];
 }
 
 @Entity()
@@ -78,10 +104,24 @@ export class AssetStoreReviews {
   })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({
+    type: 'timestamptz',
+    default: () => 'CURRENT_TIMESTAMP',
+    transformer: {
+      from: (value: string) => new Date(value),
+      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
+    },
+  })
   deletedAt?: Date | null;
 
   @ManyToOne(() => User)
