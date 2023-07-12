@@ -37,7 +37,7 @@ function PostFooter({
         </Group>
         <Group spacing={8}>
           <InvisibleButton onClick={onLikeClick}>
-            {isliking && <IconHeart size={25} stroke={4} color="#fd0061"/>}
+            {isliking && <IconHeartFilled size={25} color="#fd0061"/>}
             {!isliking && <IconHeart size={25} />}
           </InvisibleButton>
           <Text>{likeCount}</Text>

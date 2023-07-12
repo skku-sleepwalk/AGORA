@@ -10,7 +10,6 @@ import { uploadPost } from "../../../../../utils/api/uploadPost";
 import React, { useContext, useState } from 'react';
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
-import useBoardList from "../../../../../hooks/useBoardList";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -19,10 +18,9 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
-  const [likeCounting, setCount] = useState(post.like);
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"});
+  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -42,18 +40,18 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             onEditClick={toggleCommentEditor}
             onCommentClick={toggleCommentEditor}
             onLikeClick={() => {
-              onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
+              onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
                 .then(() => {
                   mutatePost();
-                  alert("좋아요");
+                  // alert("좋아요");
                 })
                 .catch((error) => {
                   // 오류 처리
-                  alert(error);
+                  // alert(error);
                 }); 
               }}
             commentCount={post.child}
-            likeCount={likeCounting}
+            likeCount={post.like}
             isliking={isliking}
           />
         <CommentSection
