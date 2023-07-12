@@ -20,33 +20,12 @@ export class AssetStoreCategory {
   @ManyToMany(() => AssetStoreBoards)
   assetStoreBoards: AssetStoreBoards[];
 
-  @CreateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    transformer: {
-      from: (value: string) => new Date(value),
-      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
-    },
-  })
+  @CreateDateColumn()
   createdAt: Date;
 
-  @UpdateDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    transformer: {
-      from: (value: string) => new Date(value),
-      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
-    },
-  })
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @DeleteDateColumn({
-    type: 'timestamptz',
-    default: () => 'CURRENT_TIMESTAMP',
-    transformer: {
-      from: (value: string) => new Date(value),
-      to: () => new Date().toLocaleString('en-US', { timeZone: 'Asia/Seoul' }),
-    },
-  })
+  @DeleteDateColumn()
   deleteAt?: Date | null;
 }

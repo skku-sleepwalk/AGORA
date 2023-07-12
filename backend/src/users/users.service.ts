@@ -37,14 +37,12 @@ export class UsersService {
         HttpStatus.BAD_REQUEST,
       );
     } else {
-      console.log(this.userRepository.find({ name: 'p' }));
       return await this.userRepository.save(newUser);
     }
   }
 
   findAll() {
-    // return this.userRepository.find();
-    return this.userRepository.findOne({ name: 'b' });
+    return this.userRepository.find();
   }
 
   findOne(id: string) {
