@@ -19,6 +19,8 @@ import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
 import useBoardList from "../../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../../utils/notifications";
+import { useContext } from "react";
+import { CommunityContext } from "../../../../../../../pages/community";
 
 export interface CommentProps {
   post: Board;
@@ -36,6 +38,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
       parentId: post.id,
     }
   );
+  const { mutatePost } = useContext(CommunityContext);
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
@@ -87,6 +90,8 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             onSubmit={async (content) => {
               return onSubmitComment?.(content, post.id).then(() => {
                 mutate();
+                mutatePost();
+                console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
               });
             }}

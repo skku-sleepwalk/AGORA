@@ -10,10 +10,13 @@ import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSideb
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
-import { useEffect, useState } from "react";
-import { isBrowser } from "../types/browser";
-import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
+import { createContext, useEffect, useState } from "react";
 import { CategoryNum, Values } from "../constants/category";
+import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
+
+export const CommunityContext = createContext({
+  mutatePost: () => {},
+});
 
 function Community() {
   const router = useRouter();
@@ -22,12 +25,10 @@ function Community() {
   let data = new Array();
   for (let i = 0; i < CategoryNum; i++) {
     const values = Values[i];
-    values.map(
-      ( value ) => {
-        data.push(value.label);
-      }
-    )
-  };
+    values.map((value) => {
+      data.push(value.label);
+    });
+  }
 
   const [categorystrings, setcategory] = useState(data);
 
@@ -37,6 +38,7 @@ function Community() {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
+    mutate: mutatePost,
   } = useBoardList(categorystrings, {
     search: search ? search.toString() : undefined,
     boardType: tab == "post" ? "parent" : "child",
@@ -44,7 +46,7 @@ function Community() {
 
   const [{ y: scrollY }, scrollTo] = useWindowScroll();
   const [scrollThreshold, setScrollThreshold] = useState(0);
-  
+
   useEffect(() => {
     if (scrollY >= scrollThreshold) {
       setPostSize((prev) => prev + 1);
@@ -54,48 +56,56 @@ function Community() {
   }, [scrollY]);
 
   return (
-    <CommunityLayout
-      leftSection={
-        <Stack spacing={16}>
-          <LeftSidebar
-            onCategoryChange={(category) => {
-              setcategory(category);
-            }}
-          />
-        </Stack>
-      }
-      rightSection={
-        <SideBar
-          onSearchSubmit={(text) => {
-            console.log(text);
-          }}
-        />
-      }
+    <CommunityContext.Provider
+      value={{
+        mutatePost,
+      }}
     >
-      <Stack spacing={50}>
-        {search ? (
-          <Stack spacing={20}>
-            <SearchBar
-              defaultValue={search.toString()}
-              onSubmit={(text) => {
-                router.push(`?search=${text}`);
-              }}
-            />
-            <SearchTab
-              onChange={(tab) => {
-                setTab(tab);
+      <CommunityLayout
+        leftSection={
+          <Stack spacing={16}>
+            <LeftSidebar
+              onCategoryChange={(category) => {
+                setcategory(category);
               }}
             />
           </Stack>
-        ) : (
-          <PostWriter />
-        )}
-        {postData?.map((data) => {
-          return data.data.map((data) => <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)}/>);
-        })}
-        {isPostLoading && <LoadingPost />}
-      </Stack>
-    </CommunityLayout>
+        }
+        rightSection={
+          <SideBar
+            onSearchSubmit={(text) => {
+              console.log(text);
+            }}
+          />
+        }
+      >
+        <Stack spacing={50}>
+          {search ? (
+            <Stack spacing={20}>
+              <SearchBar
+                defaultValue={search.toString()}
+                onSubmit={(text) => {
+                  router.push(`?search=${text}`);
+                }}
+              />
+              <SearchTab
+                onChange={(tab) => {
+                  setTab(tab);
+                }}
+              />
+            </Stack>
+          ) : (
+            <PostWriter />
+          )}
+          {postData?.map((data) => {
+            return data.data.map((data) => (
+              <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
+            ));
+          })}
+          {isPostLoading && <LoadingPost />}
+        </Stack>
+      </CommunityLayout>
+    </CommunityContext.Provider>
   );
 }
 

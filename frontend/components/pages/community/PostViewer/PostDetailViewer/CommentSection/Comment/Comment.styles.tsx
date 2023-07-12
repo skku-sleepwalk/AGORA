@@ -19,6 +19,6 @@ export const useCommentStyles = createStyles((theme) => ({
   },
 
   content: {
-    lineHeight: 1.5,
+    lineHeight: 0.5,
   },
 }));
