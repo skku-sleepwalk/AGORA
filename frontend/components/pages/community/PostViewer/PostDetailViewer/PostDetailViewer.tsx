@@ -43,11 +43,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
                 .then(() => {
                   mutatePost();
-                  // alert("좋아요");
                 })
                 .catch((error) => {
                   // 오류 처리
-                  // alert(error);
                 }); 
               }}
             commentCount={post.child}
