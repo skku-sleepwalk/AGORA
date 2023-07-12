@@ -31,22 +31,23 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-        <PostFooter
-          onEditClick={toggleCommentEditor}
-          onCommentClick={toggleCommentEditor}
-          onLikeClick={() => {
-            onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
-              .then((data) => {
-                // 성공적으로 응답을 받았을 때의 동작
-                alert(data);
-              })
-              .catch((error) => {
-                // 오류 처리
-                alert(error);
-              }); }}
-          commentCount={post.child}
-          likeCount={likeCounting}
-        />
+          <PostFooter
+            onEditClick={toggleCommentEditor}
+            onCommentClick={toggleCommentEditor}
+            onLikeClick={() => {
+              onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
+                .then(() => {
+                  // 성공적으로 응답을 받았을 때의 동작
+                  alert("좋아요");
+                })
+                .catch((error) => {
+                  // 오류 처리
+                  alert(error);
+                }); 
+              }}
+            commentCount={post.child}
+            likeCount={likeCounting}
+          />
         <CommentSection
           editorOpen={commentEditorOpened}
           parentId={post.id}
