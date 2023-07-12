@@ -7,6 +7,8 @@ import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
+import React, { useState } from 'react';
+import { onLikeClick } from "../../../../../utils/api/onLikeClick";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -15,6 +17,7 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
+  const [likeCounting, setCount] = useState(post.like);
 
   return (
     <CardContainer className={classes.postContainer}>
@@ -28,12 +31,23 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-        <PostFooter
-          onEditClick={toggleCommentEditor}
-          onCommentClick={toggleCommentEditor}
-          commentCount={post.child}
-          likeCount={post.like}
-        />
+          <PostFooter
+            onEditClick={toggleCommentEditor}
+            onCommentClick={toggleCommentEditor}
+            onLikeClick={() => {
+              onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
+                .then(() => {
+                  // 성공적으로 응답을 받았을 때의 동작
+                  alert("좋아요");
+                })
+                .catch((error) => {
+                  // 오류 처리
+                  alert(error);
+                }); 
+              }}
+            commentCount={post.child}
+            likeCount={likeCounting}
+          />
         <CommentSection
           editorOpen={commentEditorOpened}
           parentId={post.id}
@@ -42,7 +56,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             return uploadPost({
               content,
               parentId,
-              writerEmail: "qazxsw100415@gmail.com",
+              writerEmail: "lucas@naver.com",
               categoryNames: post.categoryTypes.map((category) => category.name),
             });
           }}
