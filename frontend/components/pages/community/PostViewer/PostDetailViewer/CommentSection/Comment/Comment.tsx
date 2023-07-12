@@ -21,6 +21,7 @@ import useBoardList from "../../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../../utils/notifications";
 import { useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
+import { onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 
 export interface CommentProps {
   post: Board;
@@ -49,7 +50,17 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           </TypographyStylesProvider>
           <Group spacing={8}>
             <Group spacing={5}>
-              <InvisibleButton>
+              <InvisibleButton
+                onClick={() => {
+                  onLikeClick({ boardId: post.id, userId: "74c29399-c762-4246-a694-25b373dc0a9a" })
+                    .then(() => {
+                      mutate();
+                    })
+                    .catch((error) => {
+                      // 오류 처리
+                    });
+                }}
+              >
                 <IconHeart size={22} color={theme.colors.gray[6]} />
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">

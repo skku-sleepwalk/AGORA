@@ -7,7 +7,7 @@ import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 
@@ -20,7 +20,10 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
+  const isliking = CheckIsliking({
+    likedUsers: post.likedUsers,
+    userId: "74c29399-c762-4246-a694-25b373dc0a9a",
+  });
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -36,22 +39,22 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-          <PostFooter
-            onEditClick={toggleCommentEditor}
-            onCommentClick={toggleCommentEditor}
-            onLikeClick={() => {
-              onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
-                .then(() => {
-                  mutatePost();
-                })
-                .catch((error) => {
-                  // 오류 처리
-                }); 
-              }}
-            commentCount={post.child}
-            likeCount={post.like}
-            isliking={isliking}
-          />
+        <PostFooter
+          onEditClick={toggleCommentEditor}
+          onCommentClick={toggleCommentEditor}
+          onLikeClick={() => {
+            onLikeClick({ boardId: post.id, userId: "74c29399-c762-4246-a694-25b373dc0a9a" })
+              .then(() => {
+                mutatePost();
+              })
+              .catch((error) => {
+                // 오류 처리
+              });
+          }}
+          commentCount={post.child}
+          likeCount={post.like}
+          isliking={isliking}
+        />
         <CommentSection
           editorOpen={commentEditorOpened}
           parentId={post.id}
