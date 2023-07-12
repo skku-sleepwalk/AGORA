@@ -5,6 +5,8 @@ import { UserRepository } from './user.repository';
 import { validate } from 'class-validator';
 import { Connection } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { cloneDeep } from 'lodash';
+
 @Injectable()
 export class UsersService {
   private readonly userRepository: UserRepository;
@@ -61,9 +63,11 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const toUpdateUser = await this.userRepository.findOne(id);
     const { name, email } = updateUserDto;
+    const createdAt = cloneDeep(toUpdateUser.createdAt);
+
     toUpdateUser.email = email;
     toUpdateUser.name = name;
-    toUpdateUser.updatedAt = new Date();
+    toUpdateUser.createdAt = createdAt;
     return await this.userRepository.save(toUpdateUser);
   }
 

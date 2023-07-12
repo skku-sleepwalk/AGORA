@@ -128,7 +128,6 @@ export class BoardsService {
     }
     if (_cursor.afterCursor) {
       paginateOption.query.afterCursor = _cursor.afterCursor;
-      console.log('afterCursor', _cursor.afterCursor);
     }
     if (_cursor.beforeCursor) {
       paginateOption.query.beforeCursor = _cursor.beforeCursor;
@@ -219,9 +218,12 @@ export class BoardsService {
     const toUpdateBoard = await this.findOne(id);
     const { updateEmail, title, content, categoryNames } = updateBoardDto;
     if (updateEmail === toUpdateBoard.writer.email) {
+      const createdAt = cloneDeep(toUpdateBoard.createdAt);
+
       toUpdateBoard.title = title;
       toUpdateBoard.content = content;
       toUpdateBoard.categoryTypes = [];
+      toUpdateBoard.createdAt = createdAt;
       for (const categoryName of categoryNames) {
         const categoryType = await this.categoryTypeRepository.findOne({
           name: categoryName,
@@ -244,6 +246,7 @@ export class BoardsService {
       .where('board.id = :boardId', { boardId })
       .getOne();
 
+    const createdAt = cloneDeep(board.createdAt);
     if (!board.likedUsers.map((user) => user.id).includes(userId)) {
       board.likedUsers.push(await this.userRepository.findOne(userId));
       board.like += 1;
@@ -251,6 +254,7 @@ export class BoardsService {
       board.likedUsers = board.likedUsers.filter((user) => user.id != userId);
       board.like -= 1;
     }
+    board.createdAt = createdAt;
     return this.boardRepository.save(board);
   }
   ///////////////////////////{  DELETE  }/////////////////////////////////

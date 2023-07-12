@@ -188,10 +188,13 @@ export class AssetStoreService {
       downloadUrl,
       categoryNames,
     } = updateAssetStoreBoardsDto;
+
     const toUpdateAssetStoreBoard: AssetStoreBoards =
       await this.getAssetStoreBoardsWithRelations()
         .where('assetStoreBoard.id = :id', { id })
         .getOne();
+
+    const createdAt = toUpdateAssetStoreBoard.createdAt;
 
     if (updateEmail === toUpdateAssetStoreBoard.author.email) {
       toUpdateAssetStoreBoard.title = title;
@@ -207,6 +210,7 @@ export class AssetStoreService {
         }
       }
     }
+    toUpdateAssetStoreBoard.createdAt = createdAt;
     return this.assetStoreBoardsRepository.save(toUpdateAssetStoreBoard);
   }
 
@@ -217,10 +221,13 @@ export class AssetStoreService {
     const { rating, description, updateEmail } = updateAssetStoreReviewsDto;
     const toUpdateAssetStoreReview: AssetStoreReviews =
       await this.assetStoreReviewsRepository.findOne(id);
+
+    const createdAt = toUpdateAssetStoreReview.createdAt;
     if (updateEmail === toUpdateAssetStoreReview.writer.email) {
       toUpdateAssetStoreReview.rating = rating;
       toUpdateAssetStoreReview.description = description;
     }
+    toUpdateAssetStoreReview.createdAt = createdAt;
     return this.assetStoreReviewsRepository.save(toUpdateAssetStoreReview);
   }
   async removeAssetStoreBoards(id: string) {
