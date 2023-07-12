@@ -11,6 +11,7 @@ export interface PostFooterProps {
   onEditClick?: () => void;
   commentCount: number;
   likeCount: number;
+  isliking: boolean;
 }
 
 function PostFooter({
@@ -21,10 +22,9 @@ function PostFooter({
   onEditClick,
   commentCount,
   likeCount,
+  isliking,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
-
-  const isliking = false; // boards/likedUsers에 현재 user-id가 들어있는 지 확인
 
   return (
     <Group position="apart" className={classes.footer}>
@@ -37,7 +37,7 @@ function PostFooter({
         </Group>
         <Group spacing={8}>
           <InvisibleButton onClick={onLikeClick}>
-            {isliking && <IconHeartFilled size={25}/>}
+            {isliking && <IconHeart size={23} stroke={4} color="#fd0061"/>}
             {!isliking && <IconHeart size={25} />}
           </InvisibleButton>
           <Text>{likeCount}</Text>
