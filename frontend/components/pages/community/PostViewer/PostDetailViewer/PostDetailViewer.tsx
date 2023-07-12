@@ -8,6 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
 import React, { useState } from 'react';
+import { onLikeClick } from "../../../../../utils/api/onLikeClick";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -33,7 +34,16 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         <PostFooter
           onEditClick={toggleCommentEditor}
           onCommentClick={toggleCommentEditor}
-          onLikeClick={() => {setCount(likeCounting + 1)}}
+          onLikeClick={() => {
+            onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
+              .then((data) => {
+                // 성공적으로 응답을 받았을 때의 동작
+                alert(data);
+              })
+              .catch((error) => {
+                // 오류 처리
+                alert(error);
+              }); }}
           commentCount={post.child}
           likeCount={likeCounting}
         />

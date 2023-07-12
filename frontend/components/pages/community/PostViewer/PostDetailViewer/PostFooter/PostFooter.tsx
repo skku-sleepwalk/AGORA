@@ -1,5 +1,5 @@
 import { Center, Group, Text } from "@mantine/core";
-import { IconBookmark, IconHeart, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
+import { IconBookmark, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 
@@ -24,6 +24,8 @@ function PostFooter({
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
 
+  const isliking = false; // boards/likedUsers에 현재 user-id가 들어있는 지 확인
+
   return (
     <Group position="apart" className={classes.footer}>
       <Group spacing={13}>
@@ -35,7 +37,8 @@ function PostFooter({
         </Group>
         <Group spacing={8}>
           <InvisibleButton onClick={onLikeClick}>
-            <IconHeart size={25} />
+            {isliking && <IconHeartFilled size={25}/>}
+            {!isliking && <IconHeart size={25} />}
           </InvisibleButton>
           <Text>{likeCount}</Text>
         </Group>
