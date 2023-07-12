@@ -7,8 +7,10 @@ import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../../pages/community";
+import useBoardList from "../../../../../hooks/useBoardList";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -21,6 +23,8 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
   const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"});
+
+  const { mutatePost } = useContext(CommunityContext);
 
   return (
     <CardContainer className={classes.postContainer}>
@@ -40,7 +44,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             onLikeClick={() => {
               onLikeClick({boardId: post.id, userId: "b471af9f-0ce6-404a-a119-229b0bf38149"})
                 .then(() => {
-                  // 성공적으로 응답을 받았을 때의 동작
+                  mutatePost();
                   alert("좋아요");
                 })
                 .catch((error) => {
