@@ -4,10 +4,9 @@ import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
 import CardContainer from "../../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
-import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 
@@ -17,7 +16,6 @@ export interface PostDetailViewerProps {
 
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
-  const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
   const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
@@ -37,8 +35,6 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           </Stack>
         </Stack>
           <PostFooter
-            onEditClick={toggleCommentEditor}
-            onCommentClick={toggleCommentEditor}
             onLikeClick={() => {
               onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
                 .then(() => {
@@ -53,7 +49,6 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             isliking={isliking}
           />
         <CommentSection
-          editorOpen={commentEditorOpened}
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
           onSubmitComment={async (content, parentId) => {
