@@ -78,7 +78,7 @@ function PostWriter() {
             uploadPost({
               title: postData.title,
               content: postData.content,
-              writerEmail: "qazxsw100415@gmail.com",
+              writerEmail: "04smailing@naver.com",
               categoryNames: postData.category,
             }).then(() => {
               close();

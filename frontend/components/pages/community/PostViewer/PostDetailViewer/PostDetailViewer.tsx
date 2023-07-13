@@ -55,7 +55,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             return uploadPost({
               content,
               parentId,
-              writerEmail: "lucas@naver.com",
+              writerEmail: "04smailing@naver.com",
               categoryNames: post.categoryTypes.map((category) => category.name),
             });
           }}
