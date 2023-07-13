@@ -6,7 +6,7 @@ import PostViewer from "../components/pages/community/PostViewer/PostViewer";
 import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
 import { SideBar } from "../components/pages/community/sidebar/SideBar";
-import { LeftSidebar } from "../components/pages/community/LeftSidebar/LeftSidebar";
+import { CommunityCategory } from "../components/pages/community/CommunityCategory/CommunityCategory";
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
@@ -64,7 +64,7 @@ function Community() {
       <CommunityLayout
         leftSection={
           <Stack spacing={16}>
-            <LeftSidebar
+            <CommunityCategory
               onCategoryChange={(category) => {
                 setcategory(category);
               }}

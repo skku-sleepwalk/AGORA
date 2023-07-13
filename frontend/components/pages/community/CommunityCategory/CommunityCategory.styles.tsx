@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 
-export const useLeftSidebarStyles = createStyles((theme) => ({
+export const useCommunityCategoryStyles = createStyles((theme) => ({
   CategoryContainer: {
     boxSizing: "border-box",
     width: "16.313rem",
@@ -38,11 +38,30 @@ export const useLeftSidebarStyles = createStyles((theme) => ({
     width: "100%",
   },
 
-  PaddingTop: {
-    paddingTop: "0.625rem",
+  CheckboxItems:{
+    marginLeft: "0.65rem",
+    padding: 0,
+    paddingLeft: "0.65rem",
   },
 
   PaddingBottom: {
     paddingBottom: "1.25rem",
+  },
+
+  marginTop: {
+    marginTop: "0.5rem",
+  },
+
+  allCheckBox: {
+    marginBottom: "1rem",
+    padding: 0,
+
+    ".mantine-Checkbox-label": {
+      color: theme.colors.gray[3],
+    },
+  },
+
+  allCheckBoxIcon: {
+    width: "100%",
   },
 }));
