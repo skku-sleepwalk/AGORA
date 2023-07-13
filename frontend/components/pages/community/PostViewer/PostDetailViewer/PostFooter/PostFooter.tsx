@@ -15,7 +15,6 @@ export interface PostFooterProps {
 }
 
 function PostFooter({
-  onCommentClick,
   onLikeClick,
   onShareClick,
   onBookmarkClick,
@@ -30,9 +29,7 @@ function PostFooter({
     <Group position="apart" className={classes.footer}>
       <Group spacing={13}>
         <Group spacing={8}>
-          <InvisibleButton onClick={onCommentClick}>
-            <IconMessage size={25} />
-          </InvisibleButton>
+          <IconMessage size={25} />
           <Text>{commentCount}</Text>
         </Group>
         <Group spacing={8}>
