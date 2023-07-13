@@ -41,7 +41,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   );
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
+  const isliking = CheckIsliking({likedUsers: post.likedUsers, userEmail: "04smailing@naver.com"});
   
   const { mutatePost } = useContext(CommunityContext);
 
@@ -55,7 +55,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           <Group spacing={8}>
             <Group spacing={5}>
               <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
+                onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
                   .then(() => {
                     mutate();
                     mutatePost();
