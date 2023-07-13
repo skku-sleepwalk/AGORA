@@ -8,6 +8,7 @@ export async function uploadPost(post: PostBoardBody): Promise<PostBoardResponse
     {
       headers: {
         "Content-Type": "application/json",
+        'Authorization': post.writerEmail
       },
     }
   );

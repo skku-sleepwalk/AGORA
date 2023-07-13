@@ -18,7 +18,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
+  const isliking = CheckIsliking({likedUsers: post.likedUsers, userEmail: "04smailing@naver.com"});
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -36,7 +36,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         </Stack>
           <PostFooter
             onLikeClick={() => {
-              onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
+              onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
                 .then(() => {
                   mutatePost();
                 })
@@ -55,7 +55,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             return uploadPost({
               content,
               parentId,
-              writerEmail: "lucas@naver.com",
+              writerEmail: "04smailing@naver.com",
               categoryNames: post.categoryTypes.map((category) => category.name),
             });
           }}
