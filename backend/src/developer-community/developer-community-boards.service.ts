@@ -1,8 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { Board, BoardType, Order } from './entities/board.entity';
-import { BoardRepository } from './boards.repository';
+import {
+  Board,
+  BoardType,
+  Order,
+} from './entities/developer-community-board.entity';
+import { BoardRepository } from './developer-community-boards.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
@@ -10,7 +14,7 @@ import {
   PaginationOptions,
   buildPaginator,
 } from 'typeorm-cursor-pagination';
-import { CategoryTypeRepository } from './category/category.repository';
+import { CategoryTypeRepository } from './developer-community-category/developer-community-category.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { cloneDeep } from 'lodash';
 

@@ -12,13 +12,13 @@ import {
   ParseArrayPipe,
   Headers,
 } from '@nestjs/common';
-import { BoardsService } from './boards.service';
+import { BoardsService } from './developer-community-boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { BoardType, Order } from './entities/board.entity';
+import { BoardType, Order } from './entities/developer-community-board.entity';
 import { Cursor } from 'typeorm-cursor-pagination';
 
-@Controller('boards')
+@Controller('developer-community-boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 

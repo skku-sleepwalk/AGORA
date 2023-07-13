@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CategoryType } from '../category/entities/category.entity';
+import { CategoryType } from '../developer-community-category/entities/developer-community-category.entity';
 import { User } from 'src/users/entities/user.entity';
 @Entity('Board')
 export class Board {
