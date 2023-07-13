@@ -2,6 +2,7 @@ import useSWRInfinite from "swr/infinite";
 import { GetBoardListResponse } from "../types/api/boards";
 import { stringify } from "querystring";
 import { fetcher } from "../utils/fetcher";
+import useAuth from "./useAuth";
 
 export interface useBoardListSettings {
   search?: string;
@@ -11,7 +12,7 @@ export interface useBoardListSettings {
 
 const getKey = (
   pageIndex: number,
-  previousPageData: GetBoardListResponse,
+  previousPageData: GetBoardListResponse | null,
   categories: string[],
   { search, parentId, boardType }: useBoardListSettings
 ) => {
@@ -31,19 +32,21 @@ const getKey = (
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
       boardType,
-      afterCursor: previousPageData.cursor.afterCursor,
+      afterCursor: previousPageData?.cursor.afterCursor,
       search,
     });
   }
-  if (search) return `http://localhost:8000/boards/search?${queryString}`;
-  if (parentId) return `http://localhost:8000/boards/getChild/${parentId}?${queryString}`;
-  else return `http://localhost:8000/boards/main?${queryString}`;
+  if (search) return `http://localhost:8000/developer-community-boards/search?${queryString}`;
+  if (parentId)
+    return `http://localhost:8000/developer-community-boards/getChild/${parentId}?${queryString}`;
+  else return `http://localhost:8000/developer-community-boards/main?${queryString}`;
 };
 
 function useBoardList(categories: string[], settings: useBoardListSettings = {}) {
+  const { token } = useAuth();
   const response = useSWRInfinite<GetBoardListResponse>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, categories, settings),
-    fetcher
+    (url) => fetcher(url, token)
   );
   const isLast = response.data?.[response.data.length - 1]?.cursor?.afterCursor === null;
   const isEmpty = response.data?.[0]?.data.length === 0;

@@ -1,11 +1,10 @@
-import { Board } from "./boards";
-
 export interface User {
   id: string;
   name: string;
   description: string | null;
   email: string;
   token: number;
+  rating: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

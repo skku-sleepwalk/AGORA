@@ -20,7 +20,6 @@ export interface Board {
 export interface PostBoardBody {
   title?: string;
   content: string;
-  writerEmail: string;
   parentId?: string;
   categoryNames: string[];
 }

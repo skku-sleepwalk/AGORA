@@ -7,9 +7,10 @@ import CommentSection from "./CommentSection/CommentSection";
 import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
+import useAuth from "../../../../../hooks/useAuth";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -18,9 +19,15 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
+  const { token, user } = useAuth();
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"});
+  const isliking = user
+    ? CheckIsliking({
+        likedUsers: post.likedUsers,
+        userId: user.id,
+      })
+    : false;
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -36,33 +43,35 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </TypographyStylesProvider>
           </Stack>
         </Stack>
-          <PostFooter
-            onEditClick={toggleCommentEditor}
-            onCommentClick={toggleCommentEditor}
-            onLikeClick={() => {
-              onLikeClick({boardId: post.id, userId: "fab03f34-4752-4a83-8fac-ebebb81c6952"})
-                .then(() => {
-                  mutatePost();
-                })
-                .catch((error) => {
-                  // 오류 처리
-                }); 
-              }}
-            commentCount={post.child}
-            likeCount={post.like}
-            isliking={isliking}
-          />
+        <PostFooter
+          onEditClick={toggleCommentEditor}
+          onCommentClick={toggleCommentEditor}
+          onLikeClick={() => {
+            onLikeClick({ boardId: post.id, token })
+              .then(() => {
+                mutatePost();
+              })
+              .catch((error) => {
+                // 오류 처리
+              });
+          }}
+          commentCount={post.child}
+          likeCount={post.like}
+          isliking={isliking}
+        />
         <CommentSection
           editorOpen={commentEditorOpened}
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
           onSubmitComment={async (content, parentId) => {
-            return uploadPost({
-              content,
-              parentId,
-              writerEmail: "lucas@naver.com",
-              categoryNames: post.categoryTypes.map((category) => category.name),
-            });
+            return uploadPost(
+              {
+                content,
+                parentId,
+                categoryNames: post.categoryTypes.map((category) => category.name),
+              },
+              token
+            );
           }}
         />
       </Stack>

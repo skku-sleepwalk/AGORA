@@ -6,6 +6,7 @@ import AppShell from "../components/common/AppShell/AppShell";
 import { Notifications } from "@mantine/notifications";
 import { SWRConfig } from "swr";
 import { fetcher } from "../utils/fetcher";
+import AuthProvider from "../components/common/AuthProvider/AuthProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -15,11 +16,13 @@ function MyApp({ Component, pageProps }: AppProps) {
           fetcher: fetcher,
         }}
       >
-        <FontStyle />
-        <Notifications />
-        <AppShell>
-          <Component {...pageProps} />
-        </AppShell>
+        <AuthProvider>
+          <FontStyle />
+          <Notifications />
+          <AppShell>
+            <Component {...pageProps} />
+          </AppShell>
+        </AuthProvider>
       </SWRConfig>
     </MantineProvider>
   );
