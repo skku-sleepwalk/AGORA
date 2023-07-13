@@ -15,6 +15,7 @@ import { Editor } from "@tiptap/react";
 import { uploadPost } from "../../../../utils/api/uploadPost";
 import { showNotification } from "../../../../utils/notifications";
 import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
 
 export interface Post {
   title: string;
@@ -34,6 +35,7 @@ function PostWriter() {
   });
   const editorRef = useRef<Editor>(null);
   const { mutatePost } = useContext(CommunityContext);
+  const { token } = useAuth();
 
   return (
     <>
@@ -75,12 +77,14 @@ function PostWriter() {
               content,
             };
 
-            uploadPost({
-              title: postData.title,
-              content: postData.content,
-              writerEmail: "04smailing@naver.com",
-              categoryNames: postData.category,
-            }).then(() => {
+            uploadPost(
+              {
+                title: postData.title,
+                content: postData.content,
+                categoryNames: postData.category,
+              },
+              token
+            ).then(() => {
               close();
               showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
               mutatePost();

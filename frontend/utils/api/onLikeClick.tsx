@@ -1,18 +1,23 @@
-import axios from 'axios';
-import { User } from '../../types/api/user';
+import axios from "axios";
+import { User } from "../../types/api/user";
+import useAuth from "../../hooks/useAuth";
+import { identity } from "@mantine/core/lib/Box/style-system-props/value-getters/get-default-value";
 
 // boardId와 userId를 받아 boards/like?에 patch하는 함수
 export interface LikeClickResponse {
   boardId: string;
-  userEmail: string;
+  token?: string;
 }
 
-export async function onLikeClick({ boardId, userEmail }: LikeClickResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/boards/like?boardId=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
+export async function onLikeClick({
+  boardId,
+  token,
+}: LikeClickResponse): Promise<void | undefined> {
+  const url = `http://localhost:8000/developer-community-boards/like?boardId=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const data = {};
   const headers = {
-    'Content-Type': 'application/json',  // 요청의 콘텐츠 유형 지정
-    'Authorization': userEmail
+    "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
+    Authorization: `${token}`,
   };
 
   try {
@@ -26,9 +31,15 @@ export async function onLikeClick({ boardId, userEmail }: LikeClickResponse): Pr
 }
 
 // boards/likedUsers에 user-id가 들어있는 지 확인하고 boolean 값을 반환하는 함수
-export function CheckIsliking({likedUsers, userEmail}: {likedUsers: User[], userEmail: string}): boolean {
+export function CheckIsliking({
+  likedUsers,
+  userId,
+}: {
+  likedUsers: User[];
+  userId: string;
+}): boolean {
   for (const entity of likedUsers) {
-    if (entity.email === userEmail) {
+    if (entity.id === userId) {
       return true;
     }
   }
