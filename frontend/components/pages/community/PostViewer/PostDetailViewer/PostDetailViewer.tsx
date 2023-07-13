@@ -4,13 +4,13 @@ import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
 import CardContainer from "../../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
-import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
 import React, { useContext, useState } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
+import { useDisclosure } from "@mantine/hooks";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -60,7 +60,6 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           isliking={isliking}
         />
         <CommentSection
-          editorOpen={commentEditorOpened}
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
           onSubmitComment={async (content, parentId) => {

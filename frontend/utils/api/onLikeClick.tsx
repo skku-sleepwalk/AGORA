@@ -1,6 +1,7 @@
 import axios from "axios";
 import { User } from "../../types/api/user";
 import useAuth from "../../hooks/useAuth";
+import { identity } from "@mantine/core/lib/Box/style-system-props/value-getters/get-default-value";
 
 // boardId와 userId를 받아 boards/like?에 patch하는 함수
 export interface LikeClickResponse {

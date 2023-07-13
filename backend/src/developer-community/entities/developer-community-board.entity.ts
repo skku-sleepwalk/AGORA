@@ -10,7 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CategoryType } from '../category/entities/category.entity';
+import { CategoryType } from '../developer-community-category/entities/developer-community-category.entity';
 import { User } from 'src/users/entities/user.entity';
 @Entity('Board')
 export class Board {
@@ -20,7 +20,7 @@ export class Board {
   @Column({ length: 32, nullable: true })
   title: string;
 
-  @Column()
+  @Column({ nullable: false })
   content: string;
 
   @Column({ nullable: false, default: 0 })
@@ -39,7 +39,7 @@ export class Board {
   deletedAt?: Date | null;
 
   @ManyToOne(() => User, (user) => user.boards)
-  readonly writer: User;
+  writer: User;
 
   @ManyToOne(() => Board, { nullable: true })
   parent: Board;

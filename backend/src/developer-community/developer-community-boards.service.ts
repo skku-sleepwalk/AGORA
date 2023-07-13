@@ -1,8 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
-import { Board, BoardType, Order } from './entities/board.entity';
-import { BoardRepository } from './boards.repository';
+import {
+  Board,
+  BoardType,
+  Order,
+} from './entities/developer-community-board.entity';
+import { BoardRepository } from './developer-community-boards.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { v4 as uuid } from 'uuid';
 import {
@@ -10,7 +14,7 @@ import {
   PaginationOptions,
   buildPaginator,
 } from 'typeorm-cursor-pagination';
-import { CategoryTypeRepository } from './category/category.repository';
+import { CategoryTypeRepository } from './developer-community-category/developer-community-category.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { cloneDeep } from 'lodash';
 
@@ -39,6 +43,7 @@ export class BoardsService {
   getBoardWithRelations(): SelectQueryBuilder<Board> {
     return this.boardRepository
       .createQueryBuilder('board')
+      .withDeleted()
       .leftJoinAndSelect('board.writer', 'writer')
       .leftJoinAndSelect('board.parent', 'parent')
       .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
@@ -116,7 +121,7 @@ export class BoardsService {
   ///////////////////////////{  READ  }/////////////////////////////////
   async getBoard(_cursor: Cursor, order: Order, categoryTypeNames: string[]) {
     const queryBuilder = this.getBoardWithRelations().where(
-      '(board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames))',
+      '(board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.deletedAt IS NULL)',
       { categoryNames: categoryTypeNames },
     );
     const paginateOption: PaginationOptions<Board> = cloneDeep(
@@ -133,6 +138,7 @@ export class BoardsService {
     }
     const paginator = buildPaginator(paginateOption);
     const { data, cursor } = await paginator.paginate(queryBuilder);
+
     return { data, cursor };
   }
 
@@ -151,25 +157,6 @@ export class BoardsService {
     search: string,
     boardType: BoardType,
   ) {
-    let queryBuilder: SelectQueryBuilder<Board>;
-    if (boardType === 'parent') {
-      queryBuilder = this.getBoardWithRelations().where(
-        '(board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
-        {
-          categoryNames: categoryTypeNames,
-          search: `%${search}%`,
-        },
-      );
-    } else {
-      queryBuilder = this.getBoardWithRelations().where(
-        '(board.parent IS NOT NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
-        {
-          categoryNames: categoryTypeNames,
-          search: `%${search}%`,
-        },
-      );
-    }
-
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
@@ -183,15 +170,48 @@ export class BoardsService {
       paginateOption.query.beforeCursor = _cursor.beforeCursor;
     }
     const paginator = buildPaginator(paginateOption);
-    const { data, cursor } = await paginator.paginate(queryBuilder);
-    return { data, cursor };
+    let queryBuilder: SelectQueryBuilder<Board>;
+    if (boardType === 'parent') {
+      queryBuilder = this.getBoardWithRelations().where(
+        '(board.deletedAt IS NULL) AND (board.parent IS NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+        {
+          categoryNames: categoryTypeNames,
+          search: `%${search}%`,
+        },
+      );
+      const { data, cursor } = await paginator.paginate(queryBuilder);
+      return { data, cursor };
+    } else {
+      queryBuilder = this.getBoardWithRelations().where(
+        '(board.deletedAt IS NULL) AND (board.parent IS NOT NULL) AND (categoryTypes.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+        {
+          categoryNames: categoryTypeNames,
+          search: `%${search}%`,
+        },
+      );
+      const { data, cursor } = await paginator.paginate(queryBuilder);
+      const modifiedData = data.map((board) => {
+        if (board.parent.deletedAt !== null) {
+          board.parent.title = null;
+          board.parent.content = null;
+          board.parent.like = null;
+          board.parent.child = null;
+          board.parent.likedUsers = null;
+        }
+        return board;
+      });
+
+      return { data, cursor };
+    }
   }
   async getChild(parentId: string, _cursor: Cursor, order: Order) {
-    const queryBuilder = this.getBoardWithRelations().where(
-      'board.parentId = :parentId',
-      { parentId: parentId },
+    const queryBuilder: SelectQueryBuilder<Board> =
+      this.getBoardWithRelations().where('board.parentId = :parentId', {
+        parentId: parentId,
+      });
+    const paginateOption: PaginationOptions<Board> = cloneDeep(
+      this.paginateOption,
     );
-    const paginateOption = cloneDeep(this.paginateOption);
     if (order) {
       this.paginateOption.paginationKeys = [order];
     }
@@ -203,6 +223,17 @@ export class BoardsService {
     }
     const paginator = buildPaginator(paginateOption);
     const { data, cursor } = await paginator.paginate(queryBuilder);
+    data.map((board) => {
+      if (board.deletedAt !== null) {
+        board.title = null;
+        board.content = null;
+        board.like = null;
+        board.child = null;
+        board.likedUsers = null;
+        board.writer = null;
+      }
+      return board;
+    });
     return { data, cursor };
   }
 
@@ -286,5 +317,6 @@ export class BoardsService {
         .getOne();
     }
     await this.boardRepository.softDelete(id);
+    return this.boardRepository.findOne(id);
   }
 }

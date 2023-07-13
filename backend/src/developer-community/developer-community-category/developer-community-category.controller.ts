@@ -7,10 +7,10 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
+import { CategoryService } from './developer-community-category.service';
 import { CreateCategoryTypeDto } from './dto/create-categoryTypes.dto';
 
-@Controller('category')
+@Controller('developer-community-category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

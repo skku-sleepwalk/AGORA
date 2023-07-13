@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
-import { IconChevronDown, IconChevronUp, IconHeart, IconMessage } from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconHeart, IconHeartFilled, IconMessage } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
@@ -19,8 +19,9 @@ import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
 import useBoardList from "../../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../../utils/notifications";
-import { useContext } from "react";
+import { createContext, useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
+import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 
 export interface CommentProps {
   post: Board;
@@ -32,12 +33,16 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const { classes } = useCommentStyles();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
-  const { data, setSize, size, isEmpty, mutate, isLast, isLoading } = useBoardList(
+  const { data, setSize, size, isEmpty, mutate: mutate, isLast, isLoading } = useBoardList(
     post.categoryTypes.map((category) => category.name),
     {
       parentId: post.id,
     }
   );
+
+  // boards/likedUsers에 현재 user-id가 들어있는 지 확인
+  const isliking = CheckIsliking({likedUsers: post.likedUsers, userEmail: "04smailing@naver.com"});
+  
   const { mutatePost } = useContext(CommunityContext);
 
   return (
@@ -49,8 +54,18 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           </TypographyStylesProvider>
           <Group spacing={8}>
             <Group spacing={5}>
-              <InvisibleButton>
-                <IconHeart size={22} color={theme.colors.gray[6]} />
+              <InvisibleButton onClick={() => {
+                onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
+                  .then(() => {
+                    mutate();
+                    mutatePost();
+                  })
+                  .catch((error) => {
+                    // 오류 처리
+                  }); 
+                }}>
+                {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
+                {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">
                 {post.like}
@@ -73,7 +88,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             <InvisibleButton onClick={toggleComment}>
               <Group spacing={5} align="center">
                 <Text color={theme.colors.gray[6]} size="sm">
-                  {commentOpen ? "댓글 접기" : "댓글 보기"}
+                  {commentOpen ? "답글 접기" : "답글 보기"}
                 </Text>
                 {commentOpen ? (
                   <IconChevronUp size={16} color={theme.colors.gray[6]} />
@@ -93,6 +108,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 mutatePost();
                 console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                commentOpen? null : toggleComment();
               });
             }}
           />
@@ -107,7 +123,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               align="center"
               className={classes.noComment}
             >
-              등록된 댓글이 없습니다.
+              등록된 답글이 없습니다.
             </Text>
           ) : (
             data?.map((data) => {

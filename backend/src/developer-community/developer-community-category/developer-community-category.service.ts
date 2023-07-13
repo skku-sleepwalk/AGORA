@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCategoryTypeDto } from './dto/create-categoryTypes.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CategoryType } from './entities/category.entity';
-import { CategoryTypeRepository } from './category.repository';
+import { CategoryType } from './entities/developer-community-category.entity';
+import { CategoryTypeRepository } from './developer-community-category.repository';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
