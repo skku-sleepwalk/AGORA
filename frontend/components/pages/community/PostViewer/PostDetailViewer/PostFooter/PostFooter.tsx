@@ -1,10 +1,10 @@
-import { Group, MultiSelect, Stack, Text, useMantineTheme } from "@mantine/core";
-import { IconBookmark, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
+import { Button, Group, MultiSelect, Stack, Text, useMantineTheme } from "@mantine/core";
+import { IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { CategoryNum, Values } from "../../../../../../constants/category";
 import { Category } from "../../../../../../types/api/category";
-import { theme } from "../../../../../../styles/theme";
+import { useSetState } from "@mantine/hooks";
 
 export interface PostFooterProps {
   onLikeClick?: () => void;
@@ -42,6 +42,8 @@ function PostFooter({
     });
   }
 
+  const [clickDot, setClickDot] = useSetState({ dot: false });
+
   return (
     <Stack spacing={0}>
       {!isEditing && 
@@ -72,13 +74,32 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        {(canEdit && !isEditing) && 
-        <InvisibleButton className={classes.editButton} onClick={onEditClick}>
-          <Group spacing={2}>
-            <Text color={theme.colors.gray[7]} className={classes.editText}>글 수정</Text>
-            <IconPencil size={20} color={theme.colors.gray[7]} />
-          </Group>
-        </InvisibleButton>}
+        <Group spacing={'xs'}>
+          {(canEdit && !isEditing) && 
+            <InvisibleButton className={classes.dotButton}
+              onClick={() => {
+                if (clickDot.dot) {
+                  setClickDot({dot: false});
+                }
+                else {
+                  setClickDot({dot: true});
+                }  
+              }}>
+              <IconDotsVertical/>
+            </InvisibleButton>
+          }
+          {(clickDot.dot && !isEditing) && 
+            <>
+              <Button className={classes.editButton} onClick={onEditClick}
+              leftIcon={<IconPencil size={18} stroke={2}/>}
+              > 글 수정 </Button>
+              <Button className={classes.editButton}
+              color="red"
+              leftIcon={<IconTrash size={18} stroke={2}/>}
+              > 글 삭제 </Button>
+            </>
+          }
+        </Group>
       </Group>
     </Stack>
   );

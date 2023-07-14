@@ -1,4 +1,4 @@
-import { Group, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
+import { Button, Group, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
@@ -14,7 +14,6 @@ import { useDisclosure, useSetState } from "@mantine/hooks";
 import RichEditor from "../../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
 import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
-
 import { Editor } from "@tiptap/react";
 import { useForm } from "@mantine/form";
 import { showNotification } from "../../../../../utils/notifications";
@@ -39,8 +38,8 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const [isEditing, setIsEditing] = useSetState({ Edit: false });
   const form = useForm({
     initialValues: {
-      title: "",
-      category: [] as string[],
+      title: post.title? post.title: "",
+      // category: post.categoryTypes.map((item) => item.name),
     },
   });
   const editorRef = useRef<Editor>(null);
@@ -69,18 +68,18 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   content,
                 };
 
-                uploadPost(
-                  {
-                    title: postData.title,
-                    content: postData.content,
-                    categoryNames: postData.category,
-                  },
-                  token
-                ).then(() => {
-                  close();
-                  showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
-                  mutatePost();
-                });
+                // uploadPost(
+                //   {
+                //     title: postData.title,
+                //     content: postData.content,
+                //     categoryNames: postData.category,
+                //   },
+                //   token
+                // ).then(() => {
+                //   close();
+                //   showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+                //   mutatePost();
+                // });
               })}
             >
               <Stack className={classes.editorContainer} spacing={17}>
@@ -96,12 +95,22 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 />
                 <RichEditor ref={editorRef} />
                 <CategorySelector
+                  defaultValue={post.categoryTypes.map((item) => item.name)}
                   onChange={(category) => {
                     form.setFieldValue("category", category);
                   }}
                 />
-                <Group position="right">
-                  <ButtonProgress CloseModal={close} type="submit" />
+                <Group position="right" spacing={'sm'}>
+                  <Button className={classes.editButton}
+                    variant="light" color="gray"
+                    onClick={() => {
+                      setIsEditing({Edit: false});
+                      
+                    }}
+                    >
+                      취소
+                    </Button>
+                  <Button className={classes.editButton} type="submit">수정</Button>
                 </Group>
               </Stack>
             </form>

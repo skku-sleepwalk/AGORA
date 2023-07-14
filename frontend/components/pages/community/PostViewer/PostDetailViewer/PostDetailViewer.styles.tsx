@@ -13,6 +13,12 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
 
   editorContainer: {
     width: 718,
-    padding: "19px 0px",
+    padding: "19px 0px 0px 0px",
   },
+
+  editButton: {
+    ".mantine-Button-label": {
+      fontWeight: "normal",
+    },
+  }
 }));

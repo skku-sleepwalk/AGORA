@@ -15,15 +15,26 @@ export const usePostFooterStyles = createStyles((theme) => ({
     borderBottom: `2px solid ${theme.colors.gray[9]}`,
   },
 
+  dotButton: {
+    height: 25,
+    borderRadius: 5,
+
+    "&:hover": {
+      backgroundColor: theme.colors.gray[1],
+    }
+  },
+
   editButton: {
-    height: 34,
-    padding: "2px 5px 2px 8px",
+    height: 25,
+    padding: "2px 8px",
 
     borderRadius: 5,
-    backgroundColor: theme.colors.gray[1],
-    // border: `1px solid ${theme.colors.gray[5]}`,
-    "&:hover": {
-      backgroundColor: theme.colors.gray[2],
+
+    ".mantine-Button-leftIcon": {
+      marginRight: 5,
+    },
+    ".mantine-Button-label": {
+      fontWeight: "normal",
     },
   },
 
