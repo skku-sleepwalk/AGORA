@@ -15,16 +15,19 @@ export const usePostFooterStyles = createStyles((theme) => ({
     borderBottom: `2px solid ${theme.colors.gray[9]}`,
   },
 
-  commentButton: {
-    width: 34,
+  editButton: {
     height: 34,
+    padding: "2px 5px 2px 8px",
+
     borderRadius: 5,
-    border: `2px solid ${theme.colors.gray[9]}`,
+    backgroundColor: theme.colors.gray[1],
+    // border: `1px solid ${theme.colors.gray[5]}`,
     "&:hover": {
       backgroundColor: theme.colors.gray[2],
     },
-    "&:active": {
-      backgroundColor: theme.colors.gray[3],
-    },
+  },
+
+  editText: {
+    fontWeight: 'normal',
   },
 }));

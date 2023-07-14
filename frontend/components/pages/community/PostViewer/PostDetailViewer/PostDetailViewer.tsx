@@ -59,6 +59,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
+          canEdit={user? post.writer.id === user.id: false}
         />
         <CommentSection
           parentId={post.id}

@@ -1,9 +1,10 @@
-import { Group, MultiSelect, Stack, Text } from "@mantine/core";
+import { Group, MultiSelect, Stack, Text, useMantineTheme } from "@mantine/core";
 import { IconBookmark, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { CategoryNum, Values } from "../../../../../../constants/category";
 import { Category } from "../../../../../../types/api/category";
+import { theme } from "../../../../../../styles/theme";
 
 export interface PostFooterProps {
   onCommentClick?: () => void;
@@ -15,6 +16,7 @@ export interface PostFooterProps {
   commentCount: number;
   likeCount: number;
   isliking: boolean;
+  canEdit: boolean;
 }
 
 function PostFooter({
@@ -26,8 +28,11 @@ function PostFooter({
   commentCount,
   likeCount,
   isliking,
+  canEdit,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
+  const theme = useMantineTheme();
+  
   let data = new Array();
   for (let i = 0; i < CategoryNum; i++) {
     const values = Values[i];
@@ -64,9 +69,13 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        <InvisibleButton className={classes.commentButton} onClick={onEditClick}>
-          <IconPencil size={25} />
-        </InvisibleButton>
+        {canEdit && 
+        <InvisibleButton className={classes.editButton} onClick={onEditClick}>
+          <Group spacing={2}>
+            <Text color={theme.colors.gray[7]} className={classes.editText}>글 수정</Text>
+            <IconPencil size={20} color={theme.colors.gray[7]} />
+          </Group>
+        </InvisibleButton>}
       </Group>
     </Stack>
   );
