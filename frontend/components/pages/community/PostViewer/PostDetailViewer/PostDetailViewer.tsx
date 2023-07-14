@@ -15,9 +15,10 @@ import deletePost from "../../../../../utils/api/deletepost";
 
 export interface PostDetailViewerProps {
   post: Board;
+  close: Function;
 }
 
-function PostDetailViewer({ post }: PostDetailViewerProps) {
+function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
   const { token, user } = useAuth();
@@ -61,7 +62,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           likeCount={post.like}
           isliking={isliking}
         />
-        <button onClick={() => deletePost(post.id)}>삭제</button>
+        <button onClick={() => deletePost(post.id).then(() => close)}>삭제</button>
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
