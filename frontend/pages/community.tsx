@@ -5,7 +5,7 @@ import { Stack } from "@mantine/core";
 import PostViewer from "../components/pages/community/PostViewer/PostViewer";
 import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
-import { SideBar } from "../components/pages/community/sidebar/SideBar";
+import { RightSidebar } from "../components/pages/community/RightSidebar/RightSidebar";
 import { CommunityCategory } from "../components/pages/community/CommunityCategory/CommunityCategory";
 import useBoardList from "../hooks/useBoardList";
 import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
@@ -72,7 +72,7 @@ function Community() {
           </Stack>
         }
         rightSection={
-          <SideBar
+          <RightSidebar
             onSearchSubmit={(text) => {
               console.log(text);
             }}

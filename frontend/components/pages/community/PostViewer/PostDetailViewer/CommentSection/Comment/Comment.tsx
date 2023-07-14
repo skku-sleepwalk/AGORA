@@ -55,7 +55,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           <Group spacing={8}>
             <Group spacing={5}>
               <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
+                onLikeClick({boardId: post.id, token: "04smailing@naver.com"})
                   .then(() => {
                     mutate();
                     mutatePost();
