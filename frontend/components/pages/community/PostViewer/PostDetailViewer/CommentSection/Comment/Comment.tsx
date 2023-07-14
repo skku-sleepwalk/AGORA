@@ -19,9 +19,10 @@ import { useDisclosure } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
 import useBoardList from "../../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../../utils/notifications";
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
+import useAuth from "../../../../../../../hooks/useAuth";
 
 export interface CommentProps {
   post: Board;
@@ -31,8 +32,11 @@ export interface CommentProps {
 function Comment({ post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
+  const { token, user } = useAuth();
+
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
+
   const { data, setSize, size, isEmpty, mutate: mutate, isLast, isLoading } = useBoardList(
     post.categoryTypes.map((category) => category.name),
     {
@@ -41,7 +45,12 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   );
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userEmail: "04smailing@naver.com"});
+  const isliking = user
+    ? CheckIsliking({
+        likedUsers: post.likedUsers,
+        userEmail: user.id,
+      })
+    : false;
   
   const { mutatePost } = useContext(CommunityContext);
 
@@ -55,7 +64,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           <Group spacing={8}>
             <Group spacing={5}>
               <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
+                onLikeClick({boardId: post.id, token})
                   .then(() => {
                     mutate();
                     mutatePost();

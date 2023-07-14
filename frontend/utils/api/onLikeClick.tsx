@@ -33,13 +33,13 @@ export async function onLikeClick({
 // boards/likedUsers에 user-id가 들어있는 지 확인하고 boolean 값을 반환하는 함수
 export function CheckIsliking({
   likedUsers,
-  userId,
+  userEmail,
 }: {
   likedUsers: User[];
-  userId: string;
+  userEmail: string;
 }): boolean {
   for (const entity of likedUsers) {
-    if (entity.id === userId) {
+    if (entity.id === userEmail) {
       return true;
     }
   }
