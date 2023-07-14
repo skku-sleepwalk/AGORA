@@ -25,7 +25,7 @@ export function RightSidebar({ onSearchSubmit }: RightSidebarProps) {
         <form
           onSubmit={form.onSubmit((values) => {
             if (values.searchKeyword.trim() === "") {
-              showError("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
+              showError("검색어를 입력해주세요.");
             }
             onSearchSubmit?.(values.searchKeyword);
             router.push(`?search=${values.searchKeyword}`);

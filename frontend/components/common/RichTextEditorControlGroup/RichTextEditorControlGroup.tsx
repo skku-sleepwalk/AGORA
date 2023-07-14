@@ -58,8 +58,8 @@ function RichTextEditorControlGroup({ editor }: RichTextEditorControlGroupProps)
                 const uploadPromises = files.map((file) =>
                   uploadImage(file).catch((e) => {
                     showError(
-                      `${file.name} 업로드중 문제가 발생했습니다.`,
-                      "잠시 후 다시 시도해주세요."
+                      "잠시 후 다시 시도해주세요.",
+                      `${file.name} 업로드중 문제가 발생했습니다.`
                     );
                     return Promise.resolve(null);
                   })

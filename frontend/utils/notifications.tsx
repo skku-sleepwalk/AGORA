@@ -15,8 +15,8 @@ export function showNotification(
 }
 
 export function showError(
-  title: string,
   message: string,
+  title?: string,
   option?: Omit<NotificationProps, "title" | "message">
 ) {
   notifications.show({

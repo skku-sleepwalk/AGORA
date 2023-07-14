@@ -2,7 +2,15 @@ import { createStyles } from "@mantine/core";
 
 export const useSearchBarStyles = createStyles((theme) => ({
   container: {
-    height: 46,
+    height: "2.875rem",
+    paddingLeft: "0.4rem",
+    paddingRight: "0.4rem",
+    paddingTop: "0.4rem",
+    paddingBottom: "0.4rem",
+  },
+
+  group: {
+    height: "100%",
   },
 
   input: {
@@ -11,25 +19,19 @@ export const useSearchBarStyles = createStyles((theme) => ({
     ".mantine-TextInput-wrapper": {
       height: "100%",
       width: "100%",
+      borderRadius: 15,
+      backgroundColor: "#F3F3F3",
     },
     ".mantine-TextInput-input": {
       height: "100%",
-      borderRadius: "23px 0 0 23px",
-      border: `1px solid ${theme.colors.gray[5]}`,
-      borderRight: "none",
+      border: "none",
+      backgroundColor: "transparent",
     },
   },
 
   searchButton: {
-    backgroundColor: theme.colors.gray[2],
-    border: `1px solid ${theme.colors.gray[5]}`,
-    borderRadius: "0 23px 23px 0",
+    borderRadius: 15,
     width: 76,
     height: "100%",
-  },
-
-  searchIcon: {
-    position: "relative",
-    left: -3,
   },
 }));

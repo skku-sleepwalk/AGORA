@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from "axios";
-import { showError } from "../notifications";
 import { PostUploadImageResponse } from "../../types/api/upload";
 
 export async function uploadImage(image: File): Promise<PostUploadImageResponse> {
