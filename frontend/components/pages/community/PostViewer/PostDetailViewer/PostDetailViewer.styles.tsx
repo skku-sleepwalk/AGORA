@@ -20,5 +20,14 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
     ".mantine-Button-label": {
       fontWeight: "normal",
     },
-  }
+  },
+
+  multiSelect: {
+    marginTop: 10,
+
+    ".mantine-MultiSelect-input": {
+      padding: 0,
+      border: 'none',
+    },
+  },
 }));

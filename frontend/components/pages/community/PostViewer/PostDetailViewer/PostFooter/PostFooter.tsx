@@ -1,16 +1,14 @@
-import { Button, Group, Menu, MultiSelect, Stack, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { Group, Menu, Stack, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
 import { IconBell, IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { CategoryNum, Values } from "../../../../../../constants/category";
-import { Category } from "../../../../../../types/api/category";
 
 export interface PostFooterProps {
   onLikeClick?: () => void;
   onShareClick?: () => void;
   onBookmarkClick?: () => void;
   onEditClick?: () => void;
-  categoryType: Category[];
   commentCount: number;
   likeCount: number;
   isliking: boolean;
@@ -23,7 +21,6 @@ function PostFooter({
   onShareClick,
   onBookmarkClick,
   onEditClick,
-  categoryType,
   commentCount,
   likeCount,
   isliking,
@@ -32,25 +29,9 @@ function PostFooter({
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
   const theme = useMantineTheme();
-  
-  let data = new Array();
-  for (let i = 0; i < CategoryNum; i++) {
-    const values = Values[i];
-    values.map((value) => {
-      data.push(value.label);
-    });
-  }
 
   return (
     <Stack spacing={0}>
-      {!isEditing && 
-        <MultiSelect
-        className={classes.multiSelect}
-        data={data}
-        defaultValue={categoryType.map((item) => item.name)}
-        readOnly
-        />
-      }
       <Group position="apart" className={classes.footer}>
         <Group spacing={13}>
           <Group spacing={8}>
