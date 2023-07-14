@@ -4,7 +4,8 @@ import { IconChecks, IconChevronDown, IconChevronUp } from "@tabler/icons-react"
 import { useCommunityCategoryStyles } from "./CommunityCategory.styles";
 import { Category, CategoryNum, Values } from "../../../../constants/category";
 import { useEffect } from "react";
-import { theme } from "../../../../styles/theme";
+import { all } from "axios";
+import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 
 export interface CommunityCategoryProps {
   onCategoryChange?: (category: string[]) => void;
@@ -23,7 +24,8 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
   }, [checked]);
 
   // 카테고리 모두 선택/해제 관련
-  const [state, setState] = useSetState({ checked: true, isChanging: false });
+  const [state, setState] = useSetState({ checked: false, isChanging: false });
+  let allCheckBox: boolean[] = new Array(CategoryNum);
 
   let CategoryItems = new Array(CategoryNum);
   for (let i = 0; i < CategoryNum; i++) {
@@ -33,6 +35,7 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
 
     const allChecked = values.every((value) => value.checked); // every : 모든 요소가 true면 true 반환
     const indeterminate = values.some((value) => value.checked) && !allChecked;
+    allCheckBox[i] = allChecked;
 
     const Items = values.map( // map : 각 요소에 대하여 그 값을 반환
       (
@@ -106,11 +109,16 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
       if (allChecked != state.checked) {
         ChangeCategoryItems();
       }
-      else if (!state.checked && indeterminate) {
-        ChangeCategoryItems();
-      }
       setState({ isChanging: false });
     }
+  }
+  
+  const allTrue = allCheckBox.every((item) => item === true);
+  if (!state.checked && allTrue) {
+    setState({checked: true});
+  }
+  else if (!allTrue && state.checked) {
+    setState({checked: false});
   }
 
   const CheckboxIcon: CheckboxProps['icon'] = ({ indeterminate, className }) => 
@@ -121,7 +129,7 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
       className={classes.allCheckBox}
       icon={CheckboxIcon}
       color="cyan"
-      label="카테고리 모두 선택/해제"
+      // label="카테고리 모두 선택/해제"
       checked={state.checked}
       onChange={() => {
         setState((current) => ({ checked: current.checked? false: true }));
@@ -132,8 +140,12 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
   
   return (
     <Container className={classes.CategoryContainer}>
-      <Text className={classes.CategoryText}>카테고리</Text>
-      {AllCheckBox}
+      <Group position="apart">
+        <Text className={classes.CategoryText}>카테고리</Text>
+        <InvisibleButton>
+          {AllCheckBox}
+        </InvisibleButton>
+      </Group>
       <Stack align="flex-start" spacing="md" className={classes.PaddingBottom}>
         {CategoryItems}
       </Stack>
