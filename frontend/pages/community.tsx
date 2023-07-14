@@ -13,6 +13,7 @@ import { useWindowScroll } from "@mantine/hooks";
 import { createContext, useEffect, useState } from "react";
 import { CategoryNum, Values } from "../constants/category";
 import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
+import { PopularPost } from "../components/pages/community/PopularPost/PopularPost";
 
 export const CommunityContext = createContext({
   mutatePost: () => {},
@@ -69,6 +70,7 @@ function Community() {
                 setcategory(category);
               }}
             />
+            <PopularPost/>
           </Stack>
         }
         rightSection={

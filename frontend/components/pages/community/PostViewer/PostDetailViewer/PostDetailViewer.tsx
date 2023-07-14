@@ -25,7 +25,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        token: user.id,
       })
     : false;
 
