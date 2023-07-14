@@ -2,10 +2,11 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserRepository } from './user.repository';
-import { User } from './entities/user.entity';
 import { validate } from 'class-validator';
 import { Connection } from 'typeorm';
 import { v4 as uuid } from 'uuid';
+import { cloneDeep } from 'lodash';
+
 @Injectable()
 export class UsersService {
   private readonly userRepository: UserRepository;
@@ -15,7 +16,6 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto) {
     const { name, description, email } = createUserDto;
-    const id = uuid();
     // 중복방지
     const byUserEmail = await this.userRepository.findOne({ email: email });
     if (byUserEmail != undefined) {
@@ -26,7 +26,7 @@ export class UsersService {
       );
     }
     const newUser = this.userRepository.create({
-      id,
+      id: uuid(),
       name,
       email,
       description,
@@ -63,9 +63,11 @@ export class UsersService {
   async update(id: string, updateUserDto: UpdateUserDto) {
     const toUpdateUser = await this.userRepository.findOne(id);
     const { name, email } = updateUserDto;
+    const createdAt = cloneDeep(toUpdateUser.createdAt);
+
     toUpdateUser.email = email;
     toUpdateUser.name = name;
-    toUpdateUser.updatedAt = new Date();
+    toUpdateUser.createdAt = createdAt;
     return await this.userRepository.save(toUpdateUser);
   }
 

@@ -1,4 +1,4 @@
-import { User } from "../user";
+import { User } from "./user";
 import { Category } from "./category";
 
 export interface Board {
@@ -14,12 +14,12 @@ export interface Board {
   writer: User;
   parent?: Board;
   categoryTypes: Category[];
+  likedUsers: User[];
 }
 
 export interface PostBoardBody {
   title?: string;
   content: string;
-  writerEmail: string;
   parentId?: string;
   categoryNames: string[];
 }

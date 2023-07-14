@@ -1,7 +1,7 @@
 import { Avatar, FocusTrap, Group, ScrollArea, Stack } from "@mantine/core";
 import { TextInput } from "@mantine/core";
 import { Modal } from "@mantine/core";
-import { useDisclosure, useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useWriteWritingStyles } from "./PostWriter.styles";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import UserInfo from "../../../common/UserInfo/UserInfo";
@@ -10,8 +10,12 @@ import RichEditor from "./RichEditor/RichEditor";
 import { ButtonProgress } from "./ButtonProgress/ButtonProgress";
 import CategorySelector from "./CategorySelector/CategorySelector";
 import { useForm } from "@mantine/form";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { Editor } from "@tiptap/react";
+import { uploadPost } from "../../../../utils/api/uploadPost";
+import { showNotification } from "../../../../utils/notifications";
+import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
 
 export interface Post {
   title: string;
@@ -19,11 +23,7 @@ export interface Post {
   category: string[];
 }
 
-export interface PostWriterProps {
-  onSubmit: (values: Post) => void;
-}
-
-function PostWriter({ onSubmit }: PostWriterProps) {
+function PostWriter() {
   const { classes } = useWriteWritingStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 50em)");
@@ -34,6 +34,8 @@ function PostWriter({ onSubmit }: PostWriterProps) {
     },
   });
   const editorRef = useRef<Editor>(null);
+  const { mutatePost } = useContext(CommunityContext);
+  const { token } = useAuth();
 
   return (
     <>
@@ -74,7 +76,19 @@ function PostWriter({ onSubmit }: PostWriterProps) {
               ...values,
               content,
             };
-            onSubmit(postData);
+
+            uploadPost(
+              {
+                title: postData.title,
+                content: postData.content,
+                categoryNames: postData.category,
+              },
+              token
+            ).then(() => {
+              close();
+              showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+              mutatePost();
+            });
           })}
         >
           <FocusTrap active={opened}>

@@ -1,4 +1,8 @@
-import { Board } from 'src/boards/entities/board.entity';
+import {
+  AssetStoreBoards,
+  AssetStoreReviews,
+} from 'src/asset-store/entities/asset-store.entity';
+import { Board } from 'src/developer-community/entities/developer-community-board.entity';
 import {
   Column,
   CreateDateColumn,
@@ -42,6 +46,21 @@ export class User {
   @OneToMany(() => Board, (board) => board.writer)
   boards: Board[];
 
+  @OneToMany(
+    () => AssetStoreBoards,
+    (assetStoreBoard) => assetStoreBoard.author,
+  )
+  AssetStoreBoards: AssetStoreBoards[];
+
+  @OneToMany(
+    () => AssetStoreReviews,
+    (assetSotreReviews) => assetSotreReviews.writer,
+  )
+  AssetStoreReviews: AssetStoreReviews[];
+
   @ManyToMany(() => Board)
   likedBoards: Board[];
+
+  @ManyToMany(() => AssetStoreBoards)
+  likedAssetStoreBoards: AssetStoreBoards[];
 }

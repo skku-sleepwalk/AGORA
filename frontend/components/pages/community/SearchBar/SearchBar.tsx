@@ -1,33 +1,38 @@
 import { Center, Group, TextInput, UnstyledButton } from "@mantine/core";
 import { useSearchBarStyles } from "./SearchBar.styles";
 import { IconSearch } from "@tabler/icons-react";
-import { useForm } from "@mantine/form";
-import { init } from "next/dist/compiled/@vercel/og/satori";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 export interface SearchBarProps {
   className?: string;
   onSubmit?: (text: string) => void;
+  defaultValue?: string;
 }
 
-function SearchBar({ className, onSubmit }: SearchBarProps) {
+function SearchBar({ className, onSubmit, defaultValue }: SearchBarProps) {
   const { classes, cx } = useSearchBarStyles();
-  const form = useForm({
-    initialValues: {
-      searchKeyword: "",
-    },
-  });
+  const [search, setSearch] = useState(defaultValue ?? "");
+  const router = useRouter();
+  const searchQuery = router.query.search;
+
+  useEffect(() => {
+    setSearch(searchQuery?.toString() ?? "");
+  }, [searchQuery]);
 
   return (
     <form
-      onSubmit={form.onSubmit((values) => {
-        onSubmit?.(values.searchKeyword);
-      })}
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit?.(search);
+      }}
     >
       <Group spacing={0} className={cx(classes.container, className)}>
         <TextInput
           placeholder="검색어를 입력해주세요."
           className={classes.input}
-          {...form.getInputProps("searchKeyword")}
+          value={search}
+          onChange={(event) => setSearch(event.currentTarget.value)}
         />
         <UnstyledButton variant="transparent" className={classes.searchButton} type="submit">
           <Center>

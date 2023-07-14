@@ -1,20 +1,19 @@
 import { MultiSelect } from "@mantine/core";
 import { useCategorySelectorStyles } from "./CategorySelector.styles";
 import { ComponentPropsWithoutRef } from "react";
+import { Category, CategoryNum, Values } from "../../../../../constants/category";
+import { useListState } from "@mantine/hooks";
 
-const data = [
-  { value: "C#", label: "C#", group: "개발" },
-  { value: "C++", label: "C++", group: "개발" },
-  { value: "Java", label: "Java", group: "개발" },
-  { value: "JavaScript", label: "JavaScript", group: "개발" },
-  { value: "Python", label: "Python", group: "개발" },
-  { value: "캐릭터", label: "캐릭터", group: "디자인" },
-  { value: "배경", label: "배경", group: "디자인" },
-  { value: "폰트", label: "폰트", group: "디자인" },
-  { value: "Unity 공모전", label: "Unity 공모전", group: "공모전" },
-  { value: "게임 공모전", label: "게임 공모전", group: "공모전" },
-  { value: "디자인 공모전", label: "디자인 공모전", group: "공모전" },
-];
+let data = new Array();
+
+for (let i = 0; i < CategoryNum; i++) {
+  const values = Values[i];
+  values.map(
+    ( value ) => {
+      data.push({ value: value.label, label: value.label, group: Category[i]});
+    }
+  )
+};
 
 export interface CategorySelectorProps
   extends Omit<ComponentPropsWithoutRef<typeof MultiSelect>, "data"> {}
