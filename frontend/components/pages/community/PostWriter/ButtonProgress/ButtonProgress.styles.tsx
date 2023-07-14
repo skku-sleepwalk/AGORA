@@ -17,5 +17,6 @@ export const useButtonProgressStyles = createStyles((theme) => ({
   label: {
     position: "relative",
     zIndex: 1,
+    fontWeight: "normal",
   },
 }));

@@ -4,10 +4,11 @@ import { Button, Progress } from "@mantine/core";
 import { useButtonProgressStyles } from "./ButtonProgress.styles";
 
 export interface ButtonProgressProps extends ComponentPropsWithoutRef<"button"> {
-  CloseModal: () => void;
+  CloseModal?: () => void;
+  text: string;
 }
 
-export function ButtonProgress({ CloseModal, ...others }: ButtonProgressProps) {
+export function ButtonProgress({ CloseModal, text, ...others }: ButtonProgressProps) {
   const { classes, theme } = useButtonProgressStyles();
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -19,7 +20,7 @@ export function ButtonProgress({ CloseModal, ...others }: ButtonProgressProps) {
       color={loaded ? "teal" : theme.primaryColor}
       {...others}
     >
-      <div className={classes.label}>{"글 작성"}</div>
+      <div className={classes.label}>{text}</div>
       {progress !== 0 && (
         <Progress
           value={progress}

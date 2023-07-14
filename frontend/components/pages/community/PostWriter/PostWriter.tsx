@@ -117,7 +117,7 @@ function PostWriter() {
                 }}
               />
               <Group position="right">
-                <ButtonProgress CloseModal={close} type="submit" />
+                <ButtonProgress CloseModal={close} text="글 작성" type="submit" />
               </Group>
             </Stack>
           </FocusTrap>
