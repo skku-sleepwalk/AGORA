@@ -33,12 +33,14 @@ export const usePopularPostStyles = createStyles((theme) => ({
     padding: '0px 7px',
     textAlign: 'left',
     justifyContent: 'flex-start',
+    backgroundColor: "#F3F3F3",
 
     ".mantine-Badge-root": {
       textDecoration: 'none',
     },
     ".mantine-Badge-inner": {
       fontWeight: 'normal',
+      color: "black",
     },
     "&:hover": {
       textDecoration: "none",

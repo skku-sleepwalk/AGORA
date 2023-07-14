@@ -55,7 +55,7 @@ export function PopularPost() {
             </Badge>
           </Box>
         </Group>
-        <Divider/>
+        <Divider color="#F3F3F3"/>
         {Items}
       </Stack>
     </Container>

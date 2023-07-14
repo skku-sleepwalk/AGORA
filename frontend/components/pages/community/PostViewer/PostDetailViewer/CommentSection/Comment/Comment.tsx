@@ -32,21 +32,23 @@ export interface CommentProps {
 function Comment({ post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
+  const { token, user } = useAuth();
+
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
+
   const { data, setSize, size, isEmpty, mutate: mutate, isLast, isLoading } = useBoardList(
     post.categoryTypes.map((category) => category.name),
     {
       parentId: post.id,
     }
   );
-  const { token, user } = useAuth();
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        token: user.id,
+        userEmail: user.id,
       })
     : false;
   

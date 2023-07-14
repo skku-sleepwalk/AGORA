@@ -25,7 +25,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        token: user.id,
+        userEmail: user.id,
       })
     : false;
 
@@ -55,6 +55,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 // 오류 처리
               });
           }}
+          categoryType={post.categoryTypes}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
