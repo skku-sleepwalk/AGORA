@@ -1,10 +1,9 @@
-import { Button, Group, MultiSelect, Stack, Text, useMantineTheme } from "@mantine/core";
-import { IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
+import { Button, Group, Menu, MultiSelect, Stack, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { IconBell, IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { CategoryNum, Values } from "../../../../../../constants/category";
 import { Category } from "../../../../../../types/api/category";
-import { useSetState } from "@mantine/hooks";
 
 export interface PostFooterProps {
   onLikeClick?: () => void;
@@ -42,8 +41,6 @@ function PostFooter({
     });
   }
 
-  const [clickDot, setClickDot] = useSetState({ dot: false });
-
   return (
     <Stack spacing={0}>
       {!isEditing && 
@@ -74,32 +71,40 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        <Group spacing={'xs'}>
-          {(canEdit && !isEditing) && 
-            <InvisibleButton className={classes.dotButton}
-              onClick={() => {
-                if (clickDot.dot) {
-                  setClickDot({dot: false});
+        {!isEditing &&
+          <Group>
+            <Menu shadow="md" width={120} 
+              position="bottom-end" offset={1}>
+              <Menu.Target>
+                <UnstyledButton className={classes.dotButton}>
+                  <IconDotsVertical/>
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {!canEdit &&
+                <Menu.Item
+                  icon={<IconBell size={18} stroke={2}/>}
+                  className={classes.menuItem}
+                > 신고하기 </Menu.Item>
                 }
-                else {
-                  setClickDot({dot: true});
-                }  
-              }}>
-              <IconDotsVertical/>
-            </InvisibleButton>
-          }
-          {(clickDot.dot && !isEditing) && 
-            <>
-              <Button className={classes.editButton} onClick={onEditClick}
-              leftIcon={<IconPencil size={18} stroke={2}/>}
-              > 글 수정 </Button>
-              <Button className={classes.editButton}
-              color="red"
-              leftIcon={<IconTrash size={18} stroke={2}/>}
-              > 글 삭제 </Button>
-            </>
-          }
-        </Group>
+                {canEdit &&
+                  <>
+                    <Menu.Item 
+                      onClick={onEditClick}
+                      icon={<IconPencil size={18} stroke={2}/>}
+                      className={classes.menuItem}
+                    > 수정하기 </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item
+                      icon={<IconTrash size={18} stroke={2}/>}
+                      className={classes.menuItem}
+                    > 삭제하기 </Menu.Item>
+                  </>
+                }
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
+        }
       </Group>
     </Stack>
   );

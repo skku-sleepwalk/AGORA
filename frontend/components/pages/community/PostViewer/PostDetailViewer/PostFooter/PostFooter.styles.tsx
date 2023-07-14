@@ -24,21 +24,7 @@ export const usePostFooterStyles = createStyles((theme) => ({
     }
   },
 
-  editButton: {
-    height: 25,
-    padding: "2px 8px",
-
-    borderRadius: 5,
-
-    ".mantine-Button-leftIcon": {
-      marginRight: 5,
-    },
-    ".mantine-Button-label": {
-      fontWeight: "normal",
-    },
-  },
-
-  editText: {
-    fontWeight: 'normal',
+  menuItem: {
+    padding: 5
   },
 }));

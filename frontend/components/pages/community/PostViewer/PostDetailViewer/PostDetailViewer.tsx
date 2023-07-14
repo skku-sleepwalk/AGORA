@@ -10,10 +10,9 @@ import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
-import { useDisclosure, useSetState } from "@mantine/hooks";
+import { useSetState } from "@mantine/hooks";
 import RichEditor from "../../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
-import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
 import { Editor } from "@tiptap/react";
 import { useForm } from "@mantine/form";
 import { showNotification } from "../../../../../utils/notifications";
@@ -24,7 +23,6 @@ export interface PostDetailViewerProps {
 
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
-  const [commentEditorOpened, { toggle: toggleCommentEditor }] = useDisclosure(false);
   const { token, user } = useAuth();
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
