@@ -7,7 +7,6 @@ import { Category } from "../../../../../../types/api/category";
 import { theme } from "../../../../../../styles/theme";
 
 export interface PostFooterProps {
-  onCommentClick?: () => void;
   onLikeClick?: () => void;
   onShareClick?: () => void;
   onBookmarkClick?: () => void;
@@ -16,6 +15,7 @@ export interface PostFooterProps {
   commentCount: number;
   likeCount: number;
   isliking: boolean;
+  isEditing: boolean;
   canEdit: boolean;
 }
 
@@ -28,6 +28,7 @@ function PostFooter({
   commentCount,
   likeCount,
   isliking,
+  isEditing,
   canEdit,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
@@ -43,12 +44,14 @@ function PostFooter({
 
   return (
     <Stack spacing={0}>
-      <MultiSelect
-      className={classes.multiSelect}
-      data={data}
-      defaultValue={categoryType.map((item) => item.name)}
-      readOnly
-      />
+      {!isEditing && 
+        <MultiSelect
+        className={classes.multiSelect}
+        data={data}
+        defaultValue={categoryType.map((item) => item.name)}
+        readOnly
+        />
+      }
       <Group position="apart" className={classes.footer}>
         <Group spacing={13}>
           <Group spacing={8}>
@@ -69,7 +72,7 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        {canEdit && 
+        {(canEdit && !isEditing) && 
         <InvisibleButton className={classes.editButton} onClick={onEditClick}>
           <Group spacing={2}>
             <Text color={theme.colors.gray[7]} className={classes.editText}>글 수정</Text>

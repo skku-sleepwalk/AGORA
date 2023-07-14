@@ -1,4 +1,4 @@
-import { Stack, Title, TypographyStylesProvider } from "@mantine/core";
+import { Group, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
@@ -6,11 +6,18 @@ import CardContainer from "../../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
 import { Board } from "../../../../../types/api/boards";
 import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useSetState } from "@mantine/hooks";
+import RichEditor from "../../PostWriter/RichEditor/RichEditor";
+import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
+import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
+
+import { Editor } from "@tiptap/react";
+import { useForm } from "@mantine/form";
+import { showNotification } from "../../../../../utils/notifications";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -28,6 +35,15 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         userEmail: user.id,
       })
     : false;
+  
+  const [isEditing, setIsEditing] = useSetState({ Edit: false });
+  const form = useForm({
+    initialValues: {
+      title: "",
+      category: [] as string[],
+    },
+  });
+  const editorRef = useRef<Editor>(null);
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -36,16 +52,62 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
       <Stack spacing={15}>
         <Stack spacing={14}>
           <PostHeader user={post.writer} date={post.createdAt} />
-          <Stack spacing={7}>
-            <Title order={3}>{post.title}</Title>
-            <TypographyStylesProvider>
-              <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
-            </TypographyStylesProvider>
-          </Stack>
+          {!isEditing.Edit &&
+            <Stack spacing={7}>
+              <Title order={3}>{post.title}</Title>
+              <TypographyStylesProvider>
+                <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+              </TypographyStylesProvider>
+            </Stack>
+          }
+          {isEditing.Edit &&
+            <form
+              onSubmit={form.onSubmit((values) => {
+                const content = editorRef.current!.getHTML();
+                const postData = {
+                  ...values,
+                  content,
+                };
+
+                uploadPost(
+                  {
+                    title: postData.title,
+                    content: postData.content,
+                    categoryNames: postData.category,
+                  },
+                  token
+                ).then(() => {
+                  close();
+                  showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+                  mutatePost();
+                });
+              })}
+            >
+              <Stack className={classes.editorContainer} spacing={17}>
+                <TextInput
+                  placeholder="멋진 제목을 입력해주세요."
+                  data-autofocus
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                    }
+                  }}
+                  {...form.getInputProps("title")}
+                />
+                <RichEditor ref={editorRef} />
+                <CategorySelector
+                  onChange={(category) => {
+                    form.setFieldValue("category", category);
+                  }}
+                />
+                <Group position="right">
+                  <ButtonProgress CloseModal={close} type="submit" />
+                </Group>
+              </Stack>
+            </form>
+          }
         </Stack>
         <PostFooter
-          onEditClick={toggleCommentEditor}
-          onCommentClick={toggleCommentEditor}
           onLikeClick={() => {
             onLikeClick({ boardId: post.id, token })
               .then(() => {
@@ -55,10 +117,14 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 // 오류 처리
               });
           }}
+          onEditClick={() => {
+            setIsEditing({Edit: true});
+          }}
           categoryType={post.categoryTypes}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
+          isEditing={isEditing.Edit}
           canEdit={user? post.writer.id === user.id: false}
         />
         <CommentSection

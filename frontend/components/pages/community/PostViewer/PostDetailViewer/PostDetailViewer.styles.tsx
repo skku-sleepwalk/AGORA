@@ -10,4 +10,9 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
     lineHeight: 1.5,
     padding: 0,
   },
+
+  editorContainer: {
+    width: 718,
+    padding: "19px 0px",
+  },
 }));
