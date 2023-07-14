@@ -53,8 +53,14 @@ export const useCommunityCategoryStyles = createStyles((theme) => ({
   },
 
   allCheckBox: {
-    marginBottom: "1rem",
-    padding: 0,
+    display: "block",
+    position: "relative",
+    paddingTop: "1.25rem",
+    paddingBottom: "0.938rem",
+    paddingRight: "0.5rem",
+
+    // marginBottom: "1rem",
+    // padding: 0,
 
     ".mantine-Checkbox-label": {
       color: theme.colors.gray[3],
