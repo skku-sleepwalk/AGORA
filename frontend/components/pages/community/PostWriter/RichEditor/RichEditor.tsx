@@ -12,11 +12,11 @@ import { forwardRef, useImperativeHandle } from "react";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import { lowlight } from "lowlight";
 
-export interface RichEditorProps {
-  content?: string;
+interface ChildProps {
+  content: string;
 }
 
-const RichEditor = forwardRef((props: RichEditorProps, ref) => {
+const RichEditor = forwardRef(({ content }: ChildProps, ref) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -30,7 +30,7 @@ const RichEditor = forwardRef((props: RichEditorProps, ref) => {
       }),
       Image,
     ],
-    content: props.content!== undefined? props.content: "",
+    content: content,
   });
   const { classes } = useRichEditorStyles();
 
