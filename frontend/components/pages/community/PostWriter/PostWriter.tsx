@@ -29,9 +29,10 @@ function PostWriter() {
   const [opened, { open, close }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 50em)");
   const [content, setcontent] = useState("");
+  const [title, settitle] = useState("");
   const form = useForm({
     initialValues: {
-      title: "",
+      title: title,
       category: [] as string[],
     },
   });
@@ -39,14 +40,6 @@ function PostWriter() {
   const { mutatePost } = useContext(CommunityContext);
   const { token } = useAuth();
   const [isKeepMounted, setIsKeepMounted] = useState(true);
-  const toggleKeepMounted = () => {
-    setIsKeepMounted(!isKeepMounted);
-  };
-  const [textValue, setTextValue] = useState("");
-
-  const handleClearClick = () => {
-    setTextValue("");
-  };
   return (
     <>
       <CardContainer className={classes.container}>
@@ -96,8 +89,8 @@ function PostWriter() {
               },
               token
             ).then(() => {
-              handleClearClick();
-              toggleKeepMounted();
+              form.setFieldValue("title", "");
+              setIsKeepMounted(false);
               close();
               showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
               mutatePost();
