@@ -64,7 +64,7 @@ function Community() {
     >
       <CommunityLayout
         leftSection={
-          <Stack spacing={16}>
+          <Stack spacing={'lg'}>
             <CommunityCategory
               onCategoryChange={(category) => {
                 setcategory(category);
@@ -81,7 +81,7 @@ function Community() {
           />
         }
       >
-        <Stack spacing={50}>
+        <Stack spacing={30}>
           {search ? (
             <Stack spacing={20}>
               <SearchBar
