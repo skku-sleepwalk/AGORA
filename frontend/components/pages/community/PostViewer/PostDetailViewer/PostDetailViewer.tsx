@@ -55,6 +55,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 // 오류 처리
               });
           }}
+          categoryType={post.categoryTypes}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
