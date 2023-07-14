@@ -11,7 +11,7 @@ import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
 import { useSetState } from "@mantine/hooks";
-import RichEditor, { RichEditorProps } from "../../PostWriter/RichEditor/RichEditor";
+import RichEditor from "../../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
 import { Editor } from "@tiptap/react";
 import { useForm } from "@mantine/form";
@@ -54,9 +54,6 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
     },
   });
   const editorRef = useRef<Editor>(null);
-  const initialContent: RichEditorProps = {
-    content: post.content,
-  }
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -109,7 +106,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   }}
                   {...form.getInputProps("title")}
                 />
-                <RichEditor ref={editorRef} {...initialContent}/>
+                <RichEditor ref={editorRef} content={post.content}/>
                 <CategorySelector
                   defaultValue={post.categoryTypes.map((item) => item.name)}
                   onChange={(category) => {
