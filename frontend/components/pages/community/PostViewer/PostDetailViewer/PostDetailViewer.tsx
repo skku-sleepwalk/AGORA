@@ -11,6 +11,7 @@ import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
 import { useDisclosure } from "@mantine/hooks";
+import deletePost from "../../../../../utils/api/deletepost";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -60,6 +61,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           likeCount={post.like}
           isliking={isliking}
         />
+        <button onClick={() => deletePost(post.id)}>삭제</button>
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
