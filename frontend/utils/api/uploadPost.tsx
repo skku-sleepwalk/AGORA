@@ -9,7 +9,6 @@ export async function uploadPost(post: PostBoardBody, token?: string): Promise<P
     {
       headers: {
         "Content-Type": "application/json",
-
         Authorization: `${token}`,
       },
     }
