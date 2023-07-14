@@ -5,6 +5,7 @@ import { useCommunityCategoryStyles } from "./CommunityCategory.styles";
 import { Category, CategoryNum, Values } from "../../../../constants/category";
 import { useEffect } from "react";
 import { all } from "axios";
+import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 
 export interface CommunityCategoryProps {
   onCategoryChange?: (category: string[]) => void;
@@ -128,7 +129,7 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
       className={classes.allCheckBox}
       icon={CheckboxIcon}
       color="cyan"
-      label="카테고리 모두 선택/해제"
+      // label="카테고리 모두 선택/해제"
       checked={state.checked}
       onChange={() => {
         setState((current) => ({ checked: current.checked? false: true }));
@@ -139,8 +140,12 @@ export function CommunityCategory({ onCategoryChange }: CommunityCategoryProps) 
   
   return (
     <Container className={classes.CategoryContainer}>
-      <Text className={classes.CategoryText}>카테고리</Text>
-      {AllCheckBox}
+      <Group position="apart">
+        <Text className={classes.CategoryText}>카테고리</Text>
+        <InvisibleButton>
+          {AllCheckBox}
+        </InvisibleButton>
+      </Group>
       <Stack align="flex-start" spacing="md" className={classes.PaddingBottom}>
         {CategoryItems}
       </Stack>
