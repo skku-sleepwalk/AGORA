@@ -42,6 +42,11 @@ function PostWriter() {
   const toggleKeepMounted = () => {
     setIsKeepMounted(!isKeepMounted);
   };
+  const [textValue, setTextValue] = useState("");
+
+  const handleClearClick = () => {
+    setTextValue("");
+  };
   return (
     <>
       <CardContainer className={classes.container}>
@@ -57,7 +62,7 @@ function PostWriter() {
           pos={"relative"}
           onFocus={(e) => {
             e.currentTarget.blur();
-            toggleKeepMounted();
+            setIsKeepMounted(true);
             open();
           }}
           className={classes.TextInput}
@@ -91,11 +96,11 @@ function PostWriter() {
               },
               token
             ).then(() => {
+              handleClearClick();
               toggleKeepMounted();
               close();
               showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
               mutatePost();
-              // setcontent("");
             });
           })}
         >
