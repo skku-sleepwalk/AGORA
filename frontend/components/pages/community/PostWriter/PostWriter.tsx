@@ -16,6 +16,7 @@ import { uploadPost } from "../../../../utils/api/uploadPost";
 import { showNotification } from "../../../../utils/notifications";
 import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
+import { useState } from "react";
 
 export interface Post {
   title: string;
@@ -27,16 +28,18 @@ function PostWriter() {
   const { classes } = useWriteWritingStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const isMobile = useMediaQuery("(max-width: 50em)");
+  const [content, setcontent] = useState("");
+  const [title, settitle] = useState("");
   const form = useForm({
     initialValues: {
-      title: "",
+      title: title,
       category: [] as string[],
     },
   });
   const editorRef = useRef<Editor>(null);
   const { mutatePost } = useContext(CommunityContext);
   const { token } = useAuth();
-
+  const [isKeepMounted, setIsKeepMounted] = useState(true);
   return (
     <>
       <CardContainer className={classes.container}>
@@ -52,6 +55,7 @@ function PostWriter() {
           pos={"relative"}
           onFocus={(e) => {
             e.currentTarget.blur();
+            setIsKeepMounted(true);
             open();
           }}
           className={classes.TextInput}
@@ -67,7 +71,7 @@ function PostWriter() {
         size="auto"
         scrollAreaComponent={ScrollArea.Autosize}
         centered
-        keepMounted
+        keepMounted={isKeepMounted}
       >
         <form
           onSubmit={form.onSubmit((values) => {
@@ -85,6 +89,8 @@ function PostWriter() {
               },
               token
             ).then(() => {
+              form.setFieldValue("title", "");
+              setIsKeepMounted(false);
               close();
               showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
               mutatePost();
@@ -104,14 +110,14 @@ function PostWriter() {
                 }}
                 {...form.getInputProps("title")}
               />
-              <RichEditor ref={editorRef} />
+              <RichEditor content={content} ref={editorRef} />
               <CategorySelector
                 onChange={(category) => {
                   form.setFieldValue("category", category);
                 }}
               />
               <Group position="right">
-                <ButtonProgress CloseModal={close} type="submit" />
+                <ButtonProgress CloseModal={close} text="글 작성" type="submit" />
               </Group>
             </Stack>
           </FocusTrap>

@@ -1,20 +1,19 @@
-import { Group, MultiSelect, Stack, Text } from "@mantine/core";
-import { IconBookmark, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
+import { Group, Menu, Stack, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { IconBell, IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { CategoryNum, Values } from "../../../../../../constants/category";
-import { Category } from "../../../../../../types/api/category";
 
 export interface PostFooterProps {
-  onCommentClick?: () => void;
   onLikeClick?: () => void;
   onShareClick?: () => void;
   onBookmarkClick?: () => void;
   onEditClick?: () => void;
-  categoryType: Category[];
   commentCount: number;
   likeCount: number;
   isliking: boolean;
+  isEditing: boolean;
+  canEdit: boolean;
 }
 
 function PostFooter({
@@ -22,28 +21,17 @@ function PostFooter({
   onShareClick,
   onBookmarkClick,
   onEditClick,
-  categoryType,
   commentCount,
   likeCount,
   isliking,
+  isEditing,
+  canEdit,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
-  let data = new Array();
-  for (let i = 0; i < CategoryNum; i++) {
-    const values = Values[i];
-    values.map((value) => {
-      data.push(value.label);
-    });
-  }
+  const theme = useMantineTheme();
 
   return (
     <Stack spacing={0}>
-      <MultiSelect
-      className={classes.multiSelect}
-      data={data}
-      defaultValue={categoryType.map((item) => item.name)}
-      readOnly
-      />
       <Group position="apart" className={classes.footer}>
         <Group spacing={13}>
           <Group spacing={8}>
@@ -64,9 +52,40 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        <InvisibleButton className={classes.commentButton} onClick={onEditClick}>
-          <IconPencil size={25} />
-        </InvisibleButton>
+        {!isEditing &&
+          <Group>
+            <Menu shadow="md" width={120} 
+              position="bottom-end" offset={1}>
+              <Menu.Target>
+                <UnstyledButton className={classes.dotButton}>
+                  <IconDotsVertical/>
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                {!canEdit &&
+                <Menu.Item
+                  icon={<IconBell size={18} stroke={2}/>}
+                  className={classes.menuItem}
+                > 신고하기 </Menu.Item>
+                }
+                {canEdit &&
+                  <>
+                    <Menu.Item 
+                      onClick={onEditClick}
+                      icon={<IconPencil size={18} stroke={2}/>}
+                      className={classes.menuItem}
+                    > 수정하기 </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item
+                      icon={<IconTrash size={18} stroke={2}/>}
+                      className={classes.menuItem}
+                    > 삭제하기 </Menu.Item>
+                  </>
+                }
+              </Menu.Dropdown>
+            </Menu>
+          </Group>
+        }
       </Group>
     </Stack>
   );
