@@ -1,24 +1,24 @@
 import axios from "axios";
 
 // boardId와 data, userId를 받아 boards/update?에 patch하는 함수
-export interface patchBoard {
-  title?: undefined | string
+export interface patchComment {
 	content: string
-	categoryNames?: string[]
 }
 
-export interface PatchPostResponse {
+export interface PatchPostComment {
+  parentId: string;
   boardId: string;
-  data: patchBoard;
+  data: patchComment;
   token?: string;
 }
 
-export async function patchPost({
+export async function patchComment({
+  parentId,
   boardId,
   data,
   token,
-}: PatchPostResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/developer-community-boards/update?id=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
+}: PatchPostComment): Promise<void | undefined> {
+  const url = `http://localhost:8000/developer-community-boards/getChild/${parentId}/update?id=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
     "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
     Authorization: `${token}`,

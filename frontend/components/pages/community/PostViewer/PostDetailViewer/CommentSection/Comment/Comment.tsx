@@ -1,4 +1,6 @@
 import {
+  Box,
+  Button,
   Center,
   Collapse,
   Divider,
@@ -15,7 +17,7 @@ import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
 import { IconBell, IconChevronDown, IconChevronUp, IconDots, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconTrash } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
-import CommentEditor from "../CommentEditor/CommentEditor";
+import CommentEditor, { CommentEditorPart } from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
 import { useDisclosure, useSetState } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
@@ -63,9 +65,23 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          <TypographyStylesProvider>
-            <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
-          </TypographyStylesProvider>
+          {!isEditing.Edit &&
+            <TypographyStylesProvider>
+              <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+            </TypographyStylesProvider>
+          }
+          {isEditing.Edit &&
+            <CommentEditorPart
+              onCancelClick={() => setIsEditing({Edit: false})}
+              onEditClick={() => {
+                setIsEditing({Edit: false});
+                mutate();
+                mutatePost();
+              }}
+              commentId={post.id}
+              content={post.content}
+            />
+          }
             <Group spacing={8}>
               <Group spacing={5}>
                 <InvisibleButton onClick={() => {
@@ -85,47 +101,53 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                   {post.like}
                 </Text>
               </Group>
-              <InvisibleButton onClick={toggleEditor}>
-                <Group spacing={5}>
-                  <IconMessage size={22} color={theme.colors.gray[6]} />
-                  <Text color={theme.colors.gray[6]} size="xs">
-                    답하기
-                  </Text>
-                </Group>
-              </InvisibleButton>
-              <Menu shadow="md" width={120} 
-                position="bottom-start" offset={1}>
-                <Menu.Target>
-                  <UnstyledButton className={classes.dotButton}>
-                    <IconDots size={22} color={theme.colors.gray[6]}/>
-                  </UnstyledButton>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  {!isEditing.canEdit &&
-                  <Menu.Item
-                    icon={<IconBell size={18} stroke={2}/>}
-                    className={classes.menuItem}
-                  > 신고하기 </Menu.Item>
-                  }
-                  {isEditing.canEdit &&
-                    <>
-                      <Menu.Item 
-                        onClick={() => {}}
-                        icon={<IconPencil size={18} stroke={2}/>}
-                        className={classes.menuItem}
-                      > 수정하기 </Menu.Item>
-                      <Menu.Divider />
-                      <Menu.Item
-                        onClick={() => {
-                          
-                        }}
-                        icon={<IconTrash size={18} stroke={2}/>}
-                        className={classes.menuItem}
-                      > 삭제하기 </Menu.Item>
-                    </>
-                  }
-                  </Menu.Dropdown>
-              </Menu>
+              {!isEditing.Edit &&
+              <>
+                <InvisibleButton onClick={toggleEditor}>
+                  <Group spacing={5}>
+                    <IconMessage size={22} color={theme.colors.gray[6]} />
+                    <Text color={theme.colors.gray[6]} size="xs">
+                      답하기
+                    </Text>
+                  </Group>
+                </InvisibleButton>
+                <Menu shadow="md" width={120} 
+                  position="bottom-start" offset={1}>
+                  <Menu.Target>
+                    <UnstyledButton className={classes.dotButton}>
+                      <IconDots size={22} color={theme.colors.gray[6]}/>
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    {!isEditing.canEdit &&
+                    <Menu.Item
+                      icon={<IconBell size={18} stroke={2}/>}
+                      className={classes.menuItem}
+                    > 신고하기 </Menu.Item>
+                    }
+                    {isEditing.canEdit &&
+                      <>
+                        <Menu.Item 
+                          onClick={() => {
+                            setIsEditing({Edit: true});
+                          }}
+                          icon={<IconPencil size={18} stroke={2}/>}
+                          className={classes.menuItem}
+                        > 수정하기 </Menu.Item>
+                        <Menu.Divider />
+                        <Menu.Item
+                          onClick={() => {
+
+                          }}
+                          icon={<IconTrash size={18} stroke={2}/>}
+                          className={classes.menuItem}
+                        > 삭제하기 </Menu.Item>
+                      </>
+                    }
+                    </Menu.Dropdown>
+                </Menu>
+              </>
+              }
             </Group>
         </Stack>
         <Divider

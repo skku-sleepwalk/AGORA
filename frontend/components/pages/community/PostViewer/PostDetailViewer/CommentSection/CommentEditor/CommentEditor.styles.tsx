@@ -26,6 +26,15 @@ export const useCommentEditorStyles = createStyles((theme) => ({
     },
   },
 
+  EditButton:{
+    height: 25,
+    fontSize: theme.fontSizes.xs,
+
+    ".mantine-Button-label": {
+      fontWeight: "normal",
+    },
+  },
+
   toolbarGroup: {
     width: "100%",
   },
