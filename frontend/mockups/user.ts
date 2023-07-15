@@ -7,6 +7,7 @@ export const MOCKUP_USER: User = {
   email: "qazxsw100415@gmail.com",
   description: "Hello, I am John Doe.",
   token: 1000,
+  rating: 0,
   updatedAt: "2021-01-01T00:00:00.000Z",
   deletedAt: null,
 };

@@ -131,7 +131,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                             setIsEditing({Edit: false});
                             setIsEditing({cancel: false});
                           }} > 취소 </Button>
-                        </Group>
+                      </Group>
                     </Stack>
                   </Alert>
                 }

@@ -1,8 +1,7 @@
-import { Alert, Button, Group, Menu, Stack, Text, UnstyledButton, useMantineTheme } from "@mantine/core";
+import { Alert, Button, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
 import { IconAlertCircle, IconBell, IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
-import { CategoryNum, Values } from "../../../../../../constants/category";
 import { useSetState } from "@mantine/hooks";
 
 export interface PostFooterProps {
@@ -29,7 +28,6 @@ function PostFooter({
   canEdit,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
-  const theme = useMantineTheme();
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
@@ -44,7 +42,7 @@ function PostFooter({
           }}
         >
           <Stack spacing={'xs'}>
-            게시글은 삭제하면 되돌릴 수 없습니다.
+            게시글을 삭제하면 되돌릴 수 없습니다.
             <Group position="right">
               <Button
                 variant="light" color="red"
@@ -77,7 +75,7 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        {!isEditing &&
+        {(!isEditing && !isDeleting.delete) &&
           <Group>
             <Menu shadow="md" width={120} 
               position="bottom-end" offset={1}>
