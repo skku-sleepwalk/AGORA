@@ -22,6 +22,10 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
     },
   },
 
+  cancelButton:{
+    border: `1px solid ${theme.colors.gray[6]}`,
+  },
+
   multiSelect: {
     marginTop: 10,
 
