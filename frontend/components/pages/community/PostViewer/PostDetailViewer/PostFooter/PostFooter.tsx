@@ -77,6 +77,7 @@ function PostFooter({
                     > 수정하기 </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
+                      onClick={() => {}}
                       icon={<IconTrash size={18} stroke={2}/>}
                       className={classes.menuItem}
                     > 삭제하기 </Menu.Item>

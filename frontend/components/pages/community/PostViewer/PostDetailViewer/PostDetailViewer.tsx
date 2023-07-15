@@ -1,4 +1,4 @@
-import { Button, Group, MultiSelect, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
+import { Alert, Button, Group, MultiSelect, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
@@ -19,6 +19,7 @@ import { showNotification } from "../../../../../utils/notifications";
 import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
 import { patchPost } from "../../../../../utils/api/patchPost";
 import { CategoryNum, Values } from "../../../../../constants/category";
+import { IconAlertCircle } from "@tabler/icons-react";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -46,7 +47,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
     : false;
   
   // Edit 관련
-  const [isEditing, setIsEditing] = useSetState({ Edit: false });
+  const [isEditing, setIsEditing] = useSetState({ Edit: false, cancel: false });
   const form = useForm({
     initialValues: {
       title: post.title? post.title: "",
@@ -113,17 +114,36 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                     form.setFieldValue("category", category);
                   }}
                 />
-                <Group position="right" spacing={'sm'}>
-                  <Button className={classes.editButton}
-                    variant="light" color="gray"
-                    onClick={() => {
-                      setIsEditing({Edit: false});
+                {isEditing.cancel &&
+                  <Alert icon={<IconAlertCircle size="1rem" />} title="게시글 수정을 취소하시겠습니까?" 
+                    color="red" withCloseButton
+                    onClose={() => {
+                      setIsEditing({cancel: false});
                     }}
-                    > 취소 </Button>
-                  <ButtonProgress text="수정" type="submit" 
-                    className={classes.editButton}
-                  />
-                </Group>
+                  >
+                    <Group position="apart">
+                      게시글 수정을 취소하면 현재 수정된 내용을 모두 잃습니다.
+                      <Button
+                        variant="subtle" color="red"
+                        onClick={() => {
+                          setIsEditing({Edit: false});
+                          setIsEditing({cancel: false});
+                        }} > 수정 취소 </Button>
+                    </Group>
+                  </Alert>
+                }
+                {!isEditing.cancel &&
+                  <Group position="right" spacing={'sm'}>
+                    <Button className={classes.editButton}
+                      variant="light" color="gray"
+                      onClick={() => {
+                        setIsEditing({cancel: true});
+                      }} > 취소 </Button>
+                    <ButtonProgress text="수정" type="submit" 
+                      className={classes.editButton}
+                    />
+                  </Group>
+                }
               </Stack>
             </form>
           }
