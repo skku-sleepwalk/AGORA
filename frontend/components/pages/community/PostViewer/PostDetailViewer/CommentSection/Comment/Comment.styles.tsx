@@ -21,4 +21,17 @@ export const useCommentStyles = createStyles((theme) => ({
   content: {
     lineHeight: 0.5,
   },
+
+  dotButton: {
+    height: 22,
+    borderRadius: 5,
+
+    "&:hover": {
+      backgroundColor: theme.colors.gray[1],
+    }
+  },
+
+  menuItem: {
+    padding: 5
+  },
 }));

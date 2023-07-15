@@ -4,18 +4,20 @@ import {
   Divider,
   Group,
   Loader,
+  Menu,
   Stack,
   Text,
   TypographyStylesProvider,
+  UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
-import { IconChevronDown, IconChevronUp, IconHeart, IconHeartFilled, IconMessage } from "@tabler/icons-react";
+import { IconBell, IconChevronDown, IconChevronUp, IconDots, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconTrash } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useSetState } from "@mantine/hooks";
 import { Board } from "../../../../../../../types/api/boards";
 import useBoardList from "../../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../../utils/notifications";
@@ -51,6 +53,9 @@ function Comment({ post, onSubmitComment }: CommentProps) {
         userEmail: user.id,
       })
     : false;
+
+  // Edit 관련
+  const [isEditing, setIsEditing] = useSetState({ Edit: false, canEdit: user? post.writer.id === user.id: false });
   
   const { mutatePost } = useContext(CommunityContext);
 
@@ -61,34 +66,67 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           <TypographyStylesProvider>
             <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
           </TypographyStylesProvider>
-          <Group spacing={8}>
-            <Group spacing={5}>
-              <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, token})
-                  .then(() => {
-                    mutate();
-                    mutatePost();
-                  })
-                  .catch((error) => {
-                    // 오류 처리
-                  }); 
-                }}>
-                {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
-                {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
-              </InvisibleButton>
-              <Text color={theme.colors.gray[6]} size="xs">
-                {post.like}
-              </Text>
-            </Group>
-            <InvisibleButton onClick={toggleEditor}>
+            <Group spacing={8}>
               <Group spacing={5}>
-                <IconMessage size={22} color={theme.colors.gray[6]} />
+                <InvisibleButton onClick={() => {
+                  onLikeClick({boardId: post.id, token})
+                    .then(() => {
+                      mutate();
+                      mutatePost();
+                    })
+                    .catch((error) => {
+                      // 오류 처리
+                    }); 
+                  }}>
+                  {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
+                  {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
+                </InvisibleButton>
                 <Text color={theme.colors.gray[6]} size="xs">
-                  답하기
+                  {post.like}
                 </Text>
               </Group>
-            </InvisibleButton>
-          </Group>
+              <InvisibleButton onClick={toggleEditor}>
+                <Group spacing={5}>
+                  <IconMessage size={22} color={theme.colors.gray[6]} />
+                  <Text color={theme.colors.gray[6]} size="xs">
+                    답하기
+                  </Text>
+                </Group>
+              </InvisibleButton>
+              <Menu shadow="md" width={120} 
+                position="bottom-start" offset={1}>
+                <Menu.Target>
+                  <UnstyledButton className={classes.dotButton}>
+                    <IconDots size={22} color={theme.colors.gray[6]}/>
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {!isEditing.canEdit &&
+                  <Menu.Item
+                    icon={<IconBell size={18} stroke={2}/>}
+                    className={classes.menuItem}
+                  > 신고하기 </Menu.Item>
+                  }
+                  {isEditing.canEdit &&
+                    <>
+                      <Menu.Item 
+                        onClick={() => {}}
+                        icon={<IconPencil size={18} stroke={2}/>}
+                        className={classes.menuItem}
+                      > 수정하기 </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        onClick={() => {
+                          
+                        }}
+                        icon={<IconTrash size={18} stroke={2}/>}
+                        className={classes.menuItem}
+                      > 삭제하기 </Menu.Item>
+                    </>
+                  }
+                  </Menu.Dropdown>
+              </Menu>
+            </Group>
         </Stack>
         <Divider
           className={classes.divider}
