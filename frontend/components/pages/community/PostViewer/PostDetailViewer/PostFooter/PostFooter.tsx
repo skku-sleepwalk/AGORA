@@ -75,7 +75,7 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        {!isEditing &&
+        {(!isEditing && !isDeleting.delete) &&
           <Group>
             <Menu shadow="md" width={120} 
               position="bottom-end" offset={1}>
