@@ -127,7 +127,10 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             </Group>
             {!isEditing.Edit &&
             <>
-              <InvisibleButton onClick={toggleEditor}>
+              <InvisibleButton onClick={() => {
+                toggleEditor();
+                (!editorOpen && !commentOpen)? toggleComment() : null;
+              }}>
                 <Group spacing={5}>
                   <IconMessage size={22} color={theme.colors.gray[6]} />
                   <Text color={theme.colors.gray[6]} size="xs">
