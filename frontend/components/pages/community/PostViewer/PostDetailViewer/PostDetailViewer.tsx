@@ -121,15 +121,18 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                       setIsEditing({cancel: false});
                     }}
                   >
-                    <Group position="apart">
+                    <Stack spacing={'xs'}>
                       게시글 수정을 취소하면 현재 수정된 내용을 모두 잃습니다.
-                      <Button
-                        variant="subtle" color="red"
-                        onClick={() => {
-                          setIsEditing({Edit: false});
-                          setIsEditing({cancel: false});
-                        }} > 수정 취소 </Button>
-                    </Group>
+                      <Group position="right">
+                        <Button
+                          variant="light" color="gray"
+                          className={classes.cancelButton}
+                          onClick={() => {
+                            setIsEditing({Edit: false});
+                            setIsEditing({cancel: false});
+                          }} > 취소 </Button>
+                        </Group>
+                    </Stack>
                   </Alert>
                 }
                 {!isEditing.cancel &&
