@@ -1,4 +1,13 @@
-import { Alert, Button, Group, MultiSelect, Stack, TextInput, Title, TypographyStylesProvider } from "@mantine/core";
+import {
+  Alert,
+  Button,
+  Group,
+  MultiSelect,
+  Stack,
+  TextInput,
+  Title,
+  TypographyStylesProvider,
+} from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
@@ -25,7 +34,6 @@ import { patchPost } from "../../../../../utils/api/patchPost";
 import { CategoryNum, Values } from "../../../../../constants/category";
 import { IconAlertCircle } from "@tabler/icons-react";
 
-
 export interface PostDetailViewerProps {
   post: Board;
   close: Function;
@@ -51,12 +59,12 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
         userEmail: user.id,
       })
     : false;
-  
+
   // Edit 관련
   const [isEditing, setIsEditing] = useSetState({ Edit: false, cancel: false });
   const form = useForm({
     initialValues: {
-      title: post.title? post.title: "",
+      title: post.title ? post.title : "",
       category: post.categoryTypes.map((item) => item.name),
     },
   });
@@ -69,15 +77,18 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
       <Stack spacing={15}>
         <Stack spacing={14}>
           <PostHeader user={post.writer} date={post.createdAt} />
-          {!isEditing.Edit &&
+          {!isEditing.Edit && (
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>
               <TypographyStylesProvider>
-                <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
               </TypographyStylesProvider>
             </Stack>
-          }
-          {isEditing.Edit &&
+          )}
+          {isEditing.Edit && (
             <form
               onSubmit={form.onSubmit((values) => {
                 const content = editorRef.current!.getHTML();
@@ -88,16 +99,15 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
 
                 patchPost({
                   boardId: post.id,
-                  data:{
+                  data: {
                     title: postData.title,
                     content: postData.content,
                     categoryNames: postData.category,
                   },
-                  token
-                }
-                ).then(() => {
+                  token,
+                }).then(() => {
                   showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
-                  setIsEditing({Edit: false});
+                  setIsEditing({ Edit: false });
                   mutatePost();
                 });
               })}
@@ -113,58 +123,70 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                   }}
                   {...form.getInputProps("title")}
                 />
-                <RichEditor ref={editorRef} content={post.content}/>
+                <RichEditor ref={editorRef} content={post.content} />
                 <CategorySelector
                   defaultValue={post.categoryTypes.map((item) => item.name)}
                   onChange={(category) => {
                     form.setFieldValue("category", category);
                   }}
                 />
-                {isEditing.cancel &&
-                  <Alert icon={<IconAlertCircle size="1rem" />} title="게시글 수정을 취소하시겠습니까?" 
-                    color="red" withCloseButton
+                {isEditing.cancel && (
+                  <Alert
+                    icon={<IconAlertCircle size="1rem" />}
+                    title="게시글 수정을 취소하시겠습니까?"
+                    color="red"
+                    withCloseButton
                     onClose={() => {
-                      setIsEditing({cancel: false});
+                      setIsEditing({ cancel: false });
                     }}
                   >
-                    <Stack spacing={'xs'}>
+                    <Stack spacing={"xs"}>
                       게시글 수정을 취소하면 현재 수정된 내용을 모두 잃습니다.
                       <Group position="right">
                         <Button
-                          variant="light" color="gray"
+                          variant="light"
+                          color="gray"
                           className={classes.cancelButton}
                           onClick={() => {
-                            setIsEditing({Edit: false});
-                            setIsEditing({cancel: false});
-                          }} > 취소 </Button>
+                            setIsEditing({ Edit: false });
+                            setIsEditing({ cancel: false });
+                          }}
+                        >
+                          {" "}
+                          취소{" "}
+                        </Button>
                       </Group>
                     </Stack>
                   </Alert>
-                }
-                {!isEditing.cancel &&
-                  <Group position="right" spacing={'sm'}>
-                    <Button className={classes.editButton}
-                      variant="light" color="gray"
-                      onClick={() => {
-                        setIsEditing({cancel: true});
-                      }} > 취소 </Button>
-                    <ButtonProgress text="수정" type="submit" 
+                )}
+                {!isEditing.cancel && (
+                  <Group position="right" spacing={"sm"}>
+                    <Button
                       className={classes.editButton}
-                    />
+                      variant="light"
+                      color="gray"
+                      onClick={() => {
+                        setIsEditing({ cancel: true });
+                      }}
+                    >
+                      {" "}
+                      취소{" "}
+                    </Button>
+                    <ButtonProgress text="수정" type="submit" className={classes.editButton} />
                   </Group>
-                }
+                )}
               </Stack>
             </form>
-          }
+          )}
         </Stack>
-        {!isEditing.Edit && 
+        {!isEditing.Edit && (
           <MultiSelect
-          className={classes.multiSelect}
-          data={data}
-          defaultValue={post.categoryTypes.map((item) => item.name)}
-          readOnly
+            className={classes.multiSelect}
+            data={data}
+            defaultValue={post.categoryTypes.map((item) => item.name)}
+            readOnly
           />
-        }
+        )}
         <PostFooter
           onLikeClick={() => {
             onLikeClick({ boardId: post.id, token })
@@ -176,15 +198,16 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
               });
           }}
           onEditClick={() => {
-            setIsEditing({Edit: true});
+            setIsEditing({ Edit: true });
           }}
+          postId={post.id}
+          closeFunction={close}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
           isEditing={isEditing.Edit}
-          canEdit={user? post.writer.id === user.id: false}
+          canEdit={user ? post.writer.id === user.id : false}
         />
-        <button onClick={() => deletePost(post.id).then(() => close)}>삭제</button>
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
