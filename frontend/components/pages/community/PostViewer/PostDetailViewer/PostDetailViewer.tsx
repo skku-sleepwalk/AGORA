@@ -19,6 +19,10 @@ import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
+
+import { useDisclosure } from "@mantine/hooks";
+import deletePost from "../../../../../utils/api/deletepost";
+
 import { useSetState } from "@mantine/hooks";
 import RichEditor from "../../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
@@ -32,9 +36,10 @@ import { IconAlertCircle } from "@tabler/icons-react";
 
 export interface PostDetailViewerProps {
   post: Board;
+  close: Function;
 }
 
-function PostDetailViewer({ post }: PostDetailViewerProps) {
+function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
 
@@ -195,6 +200,8 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           onEditClick={() => {
             setIsEditing({ Edit: true });
           }}
+          postId={post.id}
+          closeFunction={close}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
