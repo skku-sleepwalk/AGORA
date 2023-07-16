@@ -14,10 +14,6 @@ import Image from "@tiptap/extension-image";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
 import { User } from "../../../../../../../types/api/user";
-import { SyntheticEvent, forwardRef, useImperativeHandle } from "react";
-import { useRichEditorStyles } from "../../../../PostWriter/RichEditor/RichEditor.styles";
-import { ButtonProgress } from "../../../../PostWriter/ButtonProgress/ButtonProgress";
-import { patchPost } from "../../../../../../../utils/api/patchPost";
 import useAuth from "../../../../../../../hooks/useAuth";
 import { showNotification } from "../../../../../../../utils/notifications";
 import { patchComment } from "../../../../../../../utils/api/patchComment";
@@ -85,7 +81,13 @@ export interface CommentEditorPartProps {
   categoryNames: string[];
 }
 
-export function CommentEditorPart({ onCancelClick, onEditClick, commentId, content, categoryNames }: CommentEditorPartProps) {
+export function CommentEditorPart({
+  onCancelClick,
+  onEditClick,
+  commentId,
+  content,
+  categoryNames,
+}: CommentEditorPartProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -116,57 +118,68 @@ export function CommentEditorPart({ onCancelClick, onEditClick, commentId, conte
             <Group>
               <RichTextEditorControlGroup editor={editor} />
             </Group>
-            {!isCanceling.cancel &&
-              <Group spacing={'xs'}>
+            {!isCanceling.cancel && (
+              <Group spacing={"xs"}>
                 <Button
                   className={classes.EditButton}
-                  variant="light" color="gray"
+                  variant="light"
+                  color="gray"
                   onClick={() => {
-                    setIsCanceling({cancel: true});
+                    setIsCanceling({ cancel: true });
                   }}
-                > 취소 </Button>
+                >
+                  취소
+                </Button>
                 <Button
                   className={classes.EditButton}
                   onClick={() => {
                     // alert(editor!.getHTML());
                     patchComment({
                       boardId: commentId,
-                      data:{
+                      data: {
                         title: null,
                         content: editor!.getHTML(),
                         categoryNames,
                       },
-                      token
-                    }
-                    ).then(() => {
+                      token,
+                    }).then(() => {
                       showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
-                      onEditClick !== undefined? onEditClick(): null; 
+                      onEditClick !== undefined ? onEditClick() : null;
                     });
                   }}
-                > 수정 </Button>
+                >
+                  수정
+                </Button>
               </Group>
-            }
+            )}
           </Group>
         </RichTextEditor.Toolbar>
-        {isCanceling.cancel &&
-          <Alert className={classes.cancelAlert}
-            icon={<IconAlertCircle size="1rem" />} title="수정을 취소하시겠습니까?" 
-            color="red" withCloseButton
+        {isCanceling.cancel && (
+          <Alert
+            className={classes.cancelAlert}
+            icon={<IconAlertCircle size="1rem" />}
+            title="수정을 취소하시겠습니까?"
+            color="red"
+            withCloseButton
             onClose={() => {
-              setIsCanceling({cancel: false});
+              setIsCanceling({ cancel: false });
             }}
           >
-            <Stack spacing={'xs'}>
+            <Stack spacing={"xs"}>
               수정을 취소하면 현재 수정된 내용을 모두 잃습니다.
               <Group position="right">
                 <Button
-                  variant="light" color="gray"
+                  variant="light"
+                  color="gray"
                   className={classes.cancelButton}
-                  onClick={onCancelClick} > 취소 </Button>
+                  onClick={onCancelClick}
+                >
+                  취소
+                </Button>
               </Group>
             </Stack>
           </Alert>
-        }
+        )}
       </RichTextEditor>
     </Box>
   );
