@@ -110,8 +110,7 @@ function PostFooter({
               <Menu.Dropdown>
                 {!canEdit && (
                   <Menu.Item icon={<IconBell size={18} stroke={2} />} className={classes.menuItem}>
-                    {" "}
-                    신고하기{" "}
+                    신고하기
                   </Menu.Item>
                 )}
                 {canEdit && (
@@ -121,8 +120,7 @@ function PostFooter({
                       icon={<IconPencil size={18} stroke={2} />}
                       className={classes.menuItem}
                     >
-                      {" "}
-                      수정하기{" "}
+                      수정하기
                     </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
@@ -132,8 +130,7 @@ function PostFooter({
                       icon={<IconTrash size={18} stroke={2} />}
                       className={classes.menuItem}
                     >
-                      {" "}
-                      삭제하기{" "}
+                      삭제하기
                     </Menu.Item>
                   </>
                 )}

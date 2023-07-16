@@ -1,6 +1,5 @@
 import {
   Alert,
-  Box,
   Button,
   Center,
   Collapse,
@@ -16,7 +15,18 @@ import {
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
 import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
-import { IconAlertCircle, IconBell, IconChevronDown, IconChevronUp, IconDots, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconTrash } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconBell,
+  IconChevronDown,
+  IconChevronUp,
+  IconDots,
+  IconHeart,
+  IconHeartFilled,
+  IconMessage,
+  IconPencil,
+  IconTrash,
+} from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor, { CommentEditorPart } from "../CommentEditor/CommentEditor";
 import { MOCKUP_USER } from "../../../../../../../mockups/user";
@@ -42,7 +52,15 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
 
-  const { data, setSize, size, isEmpty, mutate: mutate, isLast, isLoading } = useBoardList(
+  const {
+    data,
+    setSize,
+    size,
+    isEmpty,
+    mutate: mutate,
+    isLast,
+    isLoading,
+  } = useBoardList(
     post.categoryTypes.map((category) => category.name),
     {
       parentId: post.id,
@@ -58,25 +76,28 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     : false;
 
   // Edit 관련
-  const [isEditing, setIsEditing] = useSetState({ Edit: false, canEdit: user? post.writer.id === user.id: false });
+  const [isEditing, setIsEditing] = useSetState({
+    Edit: false,
+    canEdit: user ? post.writer.id === user.id : false,
+  });
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
-  
+
   const { mutatePost } = useContext(CommunityContext);
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          {!isEditing.Edit &&
+          {!isEditing.Edit && (
             <TypographyStylesProvider>
               <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
             </TypographyStylesProvider>
-          }
-          {isEditing.Edit &&
+          )}
+          {isEditing.Edit && (
             <CommentEditorPart
-              onCancelClick={() => setIsEditing({Edit: false})}
+              onCancelClick={() => setIsEditing({ Edit: false })}
               onEditClick={() => {
-                setIsEditing({Edit: false});
+                setIsEditing({ Edit: false });
                 mutate();
                 mutatePost();
               }}
@@ -84,41 +105,49 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               content={post.content}
               categoryNames={post.categoryTypes.map((category) => category.name)}
             />
-          }
-          {isDeleting.delete &&
+          )}
+          {isDeleting.delete && (
             <Alert
-              icon={<IconAlertCircle size="1rem" />} title="댓글을 삭제하시겠습니까?" 
-              color="red" withCloseButton
+              icon={<IconAlertCircle size="1rem" />}
+              title="댓글을 삭제하시겠습니까?"
+              color="red"
+              withCloseButton
               onClose={() => {
-                setIsDeleting({delete: false});
+                setIsDeleting({ delete: false });
               }}
             >
-              <Stack spacing={'xs'}>
+              <Stack spacing={"xs"}>
                 댓글을 삭제하면 되돌릴 수 없습니다.
                 <Group position="right">
                   <Button
-                    variant="light" color="red"
+                    variant="light"
+                    color="red"
                     className={classes.deleteButton}
                     onClick={() => {
-                      setIsDeleting({delete: false});
+                      setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
-                    }} > 삭제 </Button>
-                  </Group>
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </Group>
               </Stack>
             </Alert>
-          }
+          )}
           <Group spacing={8}>
             <Group spacing={5}>
-              <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, token})
-                  .then(() => {
-                    mutate();
-                    mutatePost();
-                  })
-                  .catch((error) => {
-                    // 오류 처리
-                  }); 
-                }}>
+              <InvisibleButton
+                onClick={() => {
+                  onLikeClick({ boardId: post.id, token })
+                    .then(() => {
+                      mutate();
+                      mutatePost();
+                    })
+                    .catch((error) => {
+                      // 오류 처리
+                    });
+                }}
+              >
                 {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
                 {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
@@ -126,58 +155,65 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 {post.like}
               </Text>
             </Group>
-            {!isEditing.Edit &&
-            <>
-              <InvisibleButton onClick={() => {
-                toggleEditor();
-                (!editorOpen && !commentOpen)? toggleComment() : null;
-              }}>
-                <Group spacing={5}>
-                  <IconMessage size={22} color={theme.colors.gray[6]} />
-                  <Text color={theme.colors.gray[6]} size="xs">
-                    답하기
-                  </Text>
-                </Group>
-              </InvisibleButton>
-              {!isDeleting.delete &&
-              <Menu shadow="md" width={120} 
-                position="bottom-start" offset={1}>
-                <Menu.Target>
-                  <UnstyledButton className={classes.dotButton}>
-                    <IconDots size={22} color={theme.colors.gray[6]}/>
-                  </UnstyledButton>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  {!isEditing.canEdit &&
-                  <Menu.Item
-                    icon={<IconBell size={18} stroke={2}/>}
-                    className={classes.menuItem}
-                  > 신고하기 </Menu.Item>
-                  }
-                  {isEditing.canEdit &&
-                    <>
-                      <Menu.Item 
-                        onClick={() => {
-                          setIsEditing({Edit: true});
-                        }}
-                        icon={<IconPencil size={18} stroke={2}/>}
-                        className={classes.menuItem}
-                      > 수정하기 </Menu.Item>
-                      <Menu.Divider />
-                      <Menu.Item
-                        onClick={() => {
-                          setIsDeleting({delete: true});
-                        }}
-                        icon={<IconTrash size={18} stroke={2}/>}
-                        className={classes.menuItem}
-                      > 삭제하기 </Menu.Item>
-                    </>
-                  }
-                  </Menu.Dropdown>
-              </Menu>
-              }
-            </>
-            }
+            {!isEditing.Edit && (
+              <>
+                <InvisibleButton
+                  onClick={() => {
+                    toggleEditor();
+                    !editorOpen && !commentOpen ? toggleComment() : null;
+                  }}
+                >
+                  <Group spacing={5}>
+                    <IconMessage size={22} color={theme.colors.gray[6]} />
+                    <Text color={theme.colors.gray[6]} size="xs">
+                      답하기
+                    </Text>
+                  </Group>
+                </InvisibleButton>
+                {!isDeleting.delete && (
+                  <Menu shadow="md" width={120} position="bottom-start" offset={1}>
+                    <Menu.Target>
+                      <UnstyledButton className={classes.dotButton}>
+                        <IconDots size={22} color={theme.colors.gray[6]} />
+                      </UnstyledButton>
+                    </Menu.Target>
+                    <Menu.Dropdown>
+                      {!isEditing.canEdit && (
+                        <Menu.Item
+                          icon={<IconBell size={18} stroke={2} />}
+                          className={classes.menuItem}
+                        >
+                          신고하기
+                        </Menu.Item>
+                      )}
+                      {isEditing.canEdit && (
+                        <>
+                          <Menu.Item
+                            onClick={() => {
+                              setIsEditing({ Edit: true });
+                            }}
+                            icon={<IconPencil size={18} stroke={2} />}
+                            className={classes.menuItem}
+                          >
+                            수정하기
+                          </Menu.Item>
+                          <Menu.Divider />
+                          <Menu.Item
+                            onClick={() => {
+                              setIsDeleting({ delete: true });
+                            }}
+                            icon={<IconTrash size={18} stroke={2} />}
+                            className={classes.menuItem}
+                          >
+                            삭제하기
+                          </Menu.Item>
+                        </>
+                      )}
+                    </Menu.Dropdown>
+                  </Menu>
+                )}
+              </>
+            )}
           </Group>
         </Stack>
         <Divider
@@ -207,7 +243,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 mutatePost();
                 console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
-                commentOpen? null : toggleComment();
+                commentOpen ? null : toggleComment();
                 toggleEditor();
               });
             }}
