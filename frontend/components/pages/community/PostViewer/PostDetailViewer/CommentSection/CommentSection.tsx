@@ -45,7 +45,6 @@ function CommentSection({ parentId, categoryNames, onSubmitComment }: CommentSec
         }}
       />
       {commentData?.map((data) => {
-        if (data === undefined) return null;
         return data.data.map((data) => (
           <Comment
             key={data.id}

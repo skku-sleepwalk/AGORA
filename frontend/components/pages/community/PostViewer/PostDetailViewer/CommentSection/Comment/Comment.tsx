@@ -69,19 +69,19 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   );
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  // const isliking = user
-  //   ? CheckIsliking({
-  //       likedUsers: post.likedUsers,
-  //       userEmail: user.id,
-  //     })
-  //   : false;
+  const isliking = user
+    ? CheckIsliking({
+        likedUsers: post.likedUsers,
+        userEmail: user.id,
+      })
+    : false;
 
   // Edit 관련
   const [isEditing, setIsEditing] = useSetState({
     Edit: false,
     canEdit: user ? user.id === user.id : false,
   });
-  // post.writer.id
+  // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
@@ -153,8 +153,8 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     });
                 }}
               >
-                {/* {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
-                {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />} */}
+                {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
+                {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">
                 {post.like}
