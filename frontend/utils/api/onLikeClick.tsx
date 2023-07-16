@@ -38,6 +38,9 @@ export function CheckIsliking({
   likedUsers: User[];
   userEmail: string;
 }): boolean {
+  if (likedUsers === undefined) {
+    return false;
+  }
   for (const entity of likedUsers) {
     if (entity.id === userEmail) {
       return true;

@@ -15,11 +15,7 @@ interface CommentSectionProps {
   onSubmitComment?: (content: string, parentId: string) => Promise<any>;
 }
 
-function CommentSection({
-  parentId,
-  categoryNames,
-  onSubmitComment,
-}: CommentSectionProps) {
+function CommentSection({ parentId, categoryNames, onSubmitComment }: CommentSectionProps) {
   const { classes } = useCommentSectionStyles();
   const {
     data: commentData,
@@ -49,6 +45,7 @@ function CommentSection({
         }}
       />
       {commentData?.map((data) => {
+        if (data === undefined) return null;
         return data.data.map((data) => (
           <Comment
             key={data.id}
