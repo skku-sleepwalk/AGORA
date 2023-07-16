@@ -82,6 +82,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               }}
               commentId={post.id}
               content={post.content}
+              categoryNames={post.categoryTypes.map((category) => category.name)}
             />
           }
           {isDeleting.delete &&
