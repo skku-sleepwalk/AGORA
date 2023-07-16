@@ -19,18 +19,30 @@ function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
-        user: {
-          id: "d073aac2-0b31-405a-adce-1dcdf9aaa78f",
-          name: "루카스",
-          description: "루카스스님 한판해요",
-          email: "lucas@naver.com",
+        user: 
+        {
+          id: "fab03f34-4752-4a83-8fac-ebebb81c6952",
+          name: "반야",
+          description: "쉬고 싶은 레이디",
+          email: "04smailing@naver.com",
           token: 0,
           rating: 0,
-          createdAt: "2023-07-13T02:13:31.014Z",
-          updatedAt: "2023-07-13T02:13:31.014Z",
-          deletedAt: null,
+          createdAt: "2023-07-13T20:49:47.705Z",
+          updatedAt: "2023-07-13T20:49:47.705Z",
+          deletedAt: null
         },
-        token: "lucas@naver.com",
+        // {
+        //   id: "d640c184-c7ba-4bf2-a552-aedb30474643",
+        //   name: "루카스",
+        //   description: null,
+        //   email: "lucas@naver.com",
+        //   token: 0,
+        //   rating: 0,
+        //   createdAt: "2023-07-13T20:49:47.705Z",
+        //   updatedAt: "2023-07-13T20:49:47.705Z",
+        //   deletedAt: null
+        // },
+        token: "04smailing@naver.com",
       }}
     >
       {children}

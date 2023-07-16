@@ -10,4 +10,28 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
     lineHeight: 1.5,
     padding: 0,
   },
+
+  editorContainer: {
+    width: 718,
+    padding: "19px 0px 0px 0px",
+  },
+
+  editButton: {
+    ".mantine-Button-label": {
+      fontWeight: "normal",
+    },
+  },
+
+  cancelButton:{
+    border: `1px solid ${theme.colors.gray[6]}`,
+  },
+
+  multiSelect: {
+    marginTop: 10,
+
+    ".mantine-MultiSelect-input": {
+      padding: 0,
+      border: 'none',
+    },
+  },
 }));

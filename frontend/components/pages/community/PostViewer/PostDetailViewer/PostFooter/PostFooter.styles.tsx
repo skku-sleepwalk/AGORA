@@ -1,13 +1,12 @@
 import { createStyles } from "@mantine/core";
 
 export const usePostFooterStyles = createStyles((theme) => ({
-  multiSelect: {
-    marginTop: 10,
+  deleteAlert:{
+    marginBottom: '1rem',
+  },
 
-    ".mantine-MultiSelect-input": {
-      padding: 0,
-      border: 'none',
-    },
+  deleteButton:{
+    border: `1px solid ${theme.colors.red[6]}`,
   },
 
   footer: {
@@ -15,16 +14,16 @@ export const usePostFooterStyles = createStyles((theme) => ({
     borderBottom: `2px solid ${theme.colors.gray[9]}`,
   },
 
-  commentButton: {
-    width: 34,
-    height: 34,
+  dotButton: {
+    height: 25,
     borderRadius: 5,
-    border: `2px solid ${theme.colors.gray[9]}`,
+
     "&:hover": {
-      backgroundColor: theme.colors.gray[2],
-    },
-    "&:active": {
-      backgroundColor: theme.colors.gray[3],
-    },
+      backgroundColor: theme.colors.gray[1],
+    }
+  },
+
+  menuItem: {
+    padding: 5
   },
 }));
