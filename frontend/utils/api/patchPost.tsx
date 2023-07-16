@@ -2,9 +2,9 @@ import axios from "axios";
 
 // boardId와 data, userId를 받아 boards/update?에 patch하는 함수
 export interface patchBoard {
-  title?: undefined | string
+  title: undefined | string
 	content: string
-	categoryNames?: string[]
+	categoryNames: string[]
 }
 
 export interface PatchPostResponse {

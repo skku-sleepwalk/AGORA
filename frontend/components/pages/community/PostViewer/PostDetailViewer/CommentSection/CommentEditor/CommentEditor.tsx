@@ -82,9 +82,10 @@ export interface CommentEditorPartProps {
   onEditClick?: () => void;
   commentId: string;
   content: string;
+  categoryNames: string[];
 }
 
-export const CommentEditorPart = forwardRef(({ onCancelClick, onEditClick, commentId, content }: CommentEditorPartProps, ref) => {
+export function CommentEditorPart({ onCancelClick, onEditClick, commentId, content, categoryNames }: CommentEditorPartProps) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -127,18 +128,20 @@ export const CommentEditorPart = forwardRef(({ onCancelClick, onEditClick, comme
                 <Button
                   className={classes.EditButton}
                   onClick={() => {
-                    alert(editor!.getHTML());
-                    // patchPost({
-                    //   boardId: commentId,
-                    //   data:{
-                    //     content: editor!.getHTML(),
-                    //   },
-                    //   token
-                    // }
-                    // ).then(() => {
-                    //   showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
-                    //   // onEditClick;
-                    // });
+                    // alert(editor!.getHTML());
+                    patchComment({
+                      boardId: commentId,
+                      data:{
+                        title: null,
+                        content: editor!.getHTML(),
+                        categoryNames,
+                      },
+                      token
+                    }
+                    ).then(() => {
+                      showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
+                      onEditClick !== undefined? onEditClick(): null; 
+                    });
                   }}
                 > 수정 </Button>
               </Group>
@@ -167,4 +170,4 @@ export const CommentEditorPart = forwardRef(({ onCancelClick, onEditClick, comme
       </RichTextEditor>
     </Box>
   );
-});
+}
