@@ -1,5 +1,16 @@
 import { Alert, Button, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
-import { IconAlertCircle, IconBell, IconBookmark, IconDotsVertical, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare, IconTrash } from "@tabler/icons-react";
+import {
+  IconAlertCircle,
+  IconBell,
+  IconBookmark,
+  IconDotsVertical,
+  IconHeart,
+  IconHeartFilled,
+  IconMessage,
+  IconPencil,
+  IconShare,
+  IconTrash,
+} from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { useSetState } from "@mantine/hooks";
@@ -33,28 +44,36 @@ function PostFooter({
 
   return (
     <Stack spacing={0}>
-      {isDeleting.delete &&
-        <Alert className={classes.deleteAlert}
-          icon={<IconAlertCircle size="1rem" />} title="게시글을 삭제하시겠습니까?" 
-          color="red" withCloseButton
+      {isDeleting.delete && (
+        <Alert
+          className={classes.deleteAlert}
+          icon={<IconAlertCircle size="1rem" />}
+          title="게시글을 삭제하시겠습니까?"
+          color="red"
+          withCloseButton
           onClose={() => {
-            setIsDeleting({delete: false});
+            setIsDeleting({ delete: false });
           }}
         >
-          <Stack spacing={'xs'}>
+          <Stack spacing={"xs"}>
             게시글을 삭제하면 되돌릴 수 없습니다.
             <Group position="right">
               <Button
-                variant="light" color="red"
+                variant="light"
+                color="red"
                 className={classes.deleteButton}
                 onClick={() => {
-                  setIsDeleting({delete: false});
+                  setIsDeleting({ delete: false });
                   // 게시글 삭제시 함수
-                }} > 삭제 </Button>
-              </Group>
+                }}
+              >
+                {" "}
+                삭제{" "}
+              </Button>
+            </Group>
           </Stack>
         </Alert>
-      }
+      )}
       <Group position="apart" className={classes.footer}>
         <Group spacing={13}>
           <Group spacing={8}>
@@ -63,7 +82,7 @@ function PostFooter({
           </Group>
           <Group spacing={8}>
             <InvisibleButton onClick={onLikeClick}>
-              {isliking && <IconHeartFilled size={25} color="#fd0061"/>}
+              {isliking && <IconHeartFilled size={25} color="#fd0061" />}
               {!isliking && <IconHeart size={25} />}
             </InvisibleButton>
             <Text>{likeCount}</Text>
@@ -75,43 +94,45 @@ function PostFooter({
             <IconBookmark size={25} />
           </InvisibleButton>
         </Group>
-        {(!isEditing && !isDeleting.delete) &&
+        {!isEditing && !isDeleting.delete && (
           <Group>
-            <Menu shadow="md" width={120} 
-              position="bottom-end" offset={1}>
+            <Menu shadow="md" width={120} position="bottom-end" offset={1}>
               <Menu.Target>
                 <UnstyledButton className={classes.dotButton}>
-                  <IconDotsVertical/>
+                  <IconDotsVertical />
                 </UnstyledButton>
               </Menu.Target>
               <Menu.Dropdown>
-                {!canEdit &&
-                <Menu.Item
-                  icon={<IconBell size={18} stroke={2}/>}
-                  className={classes.menuItem}
-                > 신고하기 </Menu.Item>
-                }
-                {canEdit &&
+                {!canEdit && (
+                  <Menu.Item icon={<IconBell size={18} stroke={2} />} className={classes.menuItem}>
+                    신고하기
+                  </Menu.Item>
+                )}
+                {canEdit && (
                   <>
-                    <Menu.Item 
+                    <Menu.Item
                       onClick={onEditClick}
-                      icon={<IconPencil size={18} stroke={2}/>}
+                      icon={<IconPencil size={18} stroke={2} />}
                       className={classes.menuItem}
-                    > 수정하기 </Menu.Item>
+                    >
+                      수정하기
+                    </Menu.Item>
                     <Menu.Divider />
                     <Menu.Item
                       onClick={() => {
-                        setIsDeleting({delete: true});
+                        setIsDeleting({ delete: true });
                       }}
-                      icon={<IconTrash size={18} stroke={2}/>}
+                      icon={<IconTrash size={18} stroke={2} />}
                       className={classes.menuItem}
-                    > 삭제하기 </Menu.Item>
+                    >
+                      삭제하기
+                    </Menu.Item>
                   </>
-                }
+                )}
               </Menu.Dropdown>
             </Menu>
           </Group>
-        }
+        )}
       </Group>
     </Stack>
   );

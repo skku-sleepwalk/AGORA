@@ -5,7 +5,7 @@ export const useCommentStyles = createStyles((theme) => ({
     paddingBottom: 4,
   },
 
-  deleteButton:{
+  deleteButton: {
     border: `1px solid ${theme.colors.red[6]}`,
   },
 
@@ -32,10 +32,10 @@ export const useCommentStyles = createStyles((theme) => ({
 
     "&:hover": {
       backgroundColor: theme.colors.gray[1],
-    }
+    },
   },
 
   menuItem: {
-    padding: 5
+    padding: 5,
   },
 }));

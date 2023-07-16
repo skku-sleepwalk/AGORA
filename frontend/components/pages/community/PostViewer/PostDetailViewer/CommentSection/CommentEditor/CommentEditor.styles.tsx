@@ -26,7 +26,7 @@ export const useCommentEditorStyles = createStyles((theme) => ({
     },
   },
 
-  EditButton:{
+  EditButton: {
     height: 25,
     fontSize: theme.fontSizes.xs,
 
@@ -40,10 +40,10 @@ export const useCommentEditorStyles = createStyles((theme) => ({
   },
 
   cancelAlert: {
-    margin: '0.625rem 1rem'
+    margin: "0.625rem 1rem",
   },
 
-  cancelButton:{
+  cancelButton: {
     height: 25,
     border: `1px solid ${theme.colors.gray[6]}`,
     fontSize: theme.fontSizes.xs,

@@ -22,7 +22,7 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
     },
   },
 
-  cancelButton:{
+  cancelButton: {
     border: `1px solid ${theme.colors.gray[6]}`,
   },
 
@@ -31,7 +31,7 @@ export const usePostDetailViewerStyles = createStyles((theme) => ({
 
     ".mantine-MultiSelect-input": {
       padding: 0,
-      border: 'none',
+      border: "none",
     },
   },
 }));
