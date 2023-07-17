@@ -44,6 +44,13 @@ export const usePostViewerStyles = createStyles(
       overflow: "hidden",
     },
 
+    multiSelect: {
+      ".mantine-MultiSelect-input": {
+        padding: 0,
+        border: "none",
+      },
+    },
+
     modal: {
       ".mantine-Modal-body": {
         padding: 0,
@@ -57,8 +64,8 @@ export const usePostViewerStyles = createStyles(
     },
     imageModal: {
       ".mantine-Modal-content": {
-        backgroundColor: 'transparent',
-        boxShadow: 'none'
+        backgroundColor: "transparent",
+        boxShadow: "none",
       },
     },
   })

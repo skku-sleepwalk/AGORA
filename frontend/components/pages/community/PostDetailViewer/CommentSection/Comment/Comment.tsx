@@ -14,7 +14,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
-import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import {
   IconAlertCircle,
   IconBell,
@@ -29,18 +29,18 @@ import {
 } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor, { CommentEditorPart } from "../CommentEditor/CommentEditor";
-import { MOCKUP_USER } from "../../../../../../../mockups/user";
+import { MOCKUP_USER } from "../../../../../../mockups/user";
 import { useDisclosure, useSetState } from "@mantine/hooks";
-import { Board } from "../../../../../../../types/api/boards";
-import useBoardList from "../../../../../../../hooks/useBoardList";
-import { showNotification } from "../../../../../../../utils/notifications";
+import { Board } from "../../../../../../types/api/boards";
+import useBoardList from "../../../../../../hooks/useBoardList";
+import { showNotification } from "../../../../../../utils/notifications";
 import { useContext } from "react";
-import { CommunityContext } from "../../../../../../../pages/community";
-import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
-import useAuth from "../../../../../../../hooks/useAuth";
+import { CommunityContext } from "../../../../../../pages/community";
+import { CheckIsliking, onLikeClick } from "../../../../../../utils/api/onLikeClick";
+import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
-import deletePost from "../../../../../../../utils/api/deletepost";
-import { ModalContext } from "../../../PostViewer";
+import deletePost from "../../../../../../utils/api/deletepost";
+import { ModalContext } from "../../../PostViewer/PostViewer";
 
 export interface CommentProps {
   post: Board;
@@ -54,7 +54,6 @@ function Comment({ post, onSubmitComment }: CommentProps) {
 
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
-
   const {
     data,
     setSize,
@@ -74,20 +73,27 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        userId: user.id,
       })
     : false;
 
   // Edit 관련
+  let writerID = post.writer?.id;
+  //예외처리
+  if (post.writer?.id === null) {
+    writerID = "";
+  }
+  //예외처리
   const [isEditing, setIsEditing] = useSetState({
     Edit: false,
-    canEdit: user ? post.writer.id === user.id : false,
+    canEdit: user ? writerID === user.id : false,
   });
   // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
+
   const { mutateComment } = useContext(CommentContext);
   const { canCloseModal } = useContext(ModalContext);
 
@@ -146,9 +152,16 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     className={classes.deleteButton}
                     onClick={() => {
                       setIsDeleting({ delete: false });
-                      // 댓글 삭제시 함수
-                      deletePost(post.id);
-                      mutateComment();
+
+                      // 댓글 삭제시 함수mutate();
+                      //비동기
+
+                      deletePost(post.id).then(() => {
+                        mutate();
+
+                        mutateComment();
+                        showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
+                      });
                     }}
                   >
                     삭제
