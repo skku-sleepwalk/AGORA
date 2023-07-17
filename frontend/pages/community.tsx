@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import CommunityLayout from "../components/pages/community/CommunityLayout/CommunityLayout";
 import PostWriter from "../components/pages/community/PostWriter/PostWriter";
-import { Stack } from "@mantine/core";
+import { Stack, Text, useMantineTheme } from "@mantine/core";
 import PostViewer from "../components/pages/community/PostViewer/PostViewer";
 import SearchBar from "../components/pages/community/SearchBar/SearchBar";
 import SearchTab from "../components/pages/community/SearchTab/SearchTab";
@@ -20,6 +20,7 @@ export const CommunityContext = createContext({
 });
 
 function Community() {
+  const theme = useMantineTheme();
   const router = useRouter();
   const search = router.query.search;
 
@@ -40,6 +41,7 @@ function Community() {
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
+    isEmpty,
   } = useBoardList(categorystrings, {
     search: search ? search.toString() : undefined,
     boardType: tab == "post" ? "parent" : "child",
@@ -95,6 +97,11 @@ function Community() {
                   setTab(tab);
                 }}
               />
+              {isEmpty && (
+                <Text color={theme.colors.gray[4]}>
+                  '{search.toString()}'로 검색된 검색 결과가 없습니다.
+                </Text>
+              )}
             </Stack>
           ) : (
             <PostWriter />
