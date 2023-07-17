@@ -1,7 +1,14 @@
 import { Center, Group, Text } from "@mantine/core";
-import { IconBookmark, IconHeart, IconHeartFilled, IconMessage, IconPencil, IconShare } from "@tabler/icons-react";
+import {
+  IconBookmark,
+  IconHeart,
+  IconHeartFilled,
+  IconMessage,
+  IconPencil,
+  IconShare,
+} from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
-import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 
 export interface PostFooterProps {
   onCommentClick?: () => void;
@@ -34,7 +41,7 @@ function PostFooter({
         </Group>
         <Group spacing={8}>
           <InvisibleButton onClick={onLikeClick}>
-            {isliking && <IconHeartFilled size={25} color="#fd0061"/>}
+            {isliking && <IconHeartFilled size={25} color="#fd0061" />}
             {!isliking && <IconHeart size={25} />}
           </InvisibleButton>
           <Text>{likeCount}</Text>

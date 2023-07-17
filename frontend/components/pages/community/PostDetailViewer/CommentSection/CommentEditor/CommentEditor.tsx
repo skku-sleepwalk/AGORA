@@ -12,8 +12,8 @@ import { lowlight } from "lowlight";
 import { Box, Button, Group } from "@mantine/core";
 import Image from "@tiptap/extension-image";
 import CommentFrame from "../CommentFrame/CommentFrame";
-import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
-import { User } from "../../../../../../../types/api/user";
+import RichTextEditorControlGroup from "../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
+import { User } from "../../../../../../types/api/user";
 
 export interface CommentEditorProps {
   user: User;

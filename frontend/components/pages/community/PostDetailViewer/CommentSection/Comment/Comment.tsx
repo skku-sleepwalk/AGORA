@@ -10,18 +10,25 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
-import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
-import { IconChevronDown, IconChevronUp, IconHeart, IconHeartFilled, IconMessage } from "@tabler/icons-react";
+import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
+import {
+  IconChevronDown,
+  IconChevronUp,
+  IconHeart,
+  IconHeartFilled,
+  IconMessage,
+} from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor from "../CommentEditor/CommentEditor";
-import { MOCKUP_USER } from "../../../../../../../mockups/user";
+import { MOCKUP_USER } from "../../../../../../mockups/user";
 import { useDisclosure } from "@mantine/hooks";
-import { Board } from "../../../../../../../types/api/boards";
-import useBoardList from "../../../../../../../hooks/useBoardList";
-import { showNotification } from "../../../../../../../utils/notifications";
+import { Board } from "../../../../../../types/api/boards";
+import useBoardList from "../../../../../../hooks/useBoardList";
+import { showNotification } from "../../../../../../utils/notifications";
 import { createContext, useContext } from "react";
-import { CommunityContext } from "../../../../../../../pages/community";
-import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../../../pages/community";
+import { CheckIsliking, onLikeClick } from "../../../../../../utils/api/onLikeClick";
+import useAuth from "../../../../../../hooks/useAuth";
 
 export interface CommentProps {
   post: Board;
@@ -33,16 +40,28 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const { classes } = useCommentStyles();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
-  const { data, setSize, size, isEmpty, mutate: mutate, isLast, isLoading } = useBoardList(
+  const {
+    data,
+    setSize,
+    size,
+    isEmpty,
+    mutate: mutate,
+    isLast,
+    isLoading,
+  } = useBoardList(
     post.categoryTypes.map((category) => category.name),
     {
       parentId: post.id,
     }
   );
+  const { user } = useAuth();
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = CheckIsliking({likedUsers: post.likedUsers, userEmail: "04smailing@naver.com"});
-  
+  const isliking = CheckIsliking({
+    likedUsers: post.likedUsers,
+    userId: user?.id,
+  });
+
   const { mutatePost } = useContext(CommunityContext);
 
   return (
@@ -54,16 +73,18 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           </TypographyStylesProvider>
           <Group spacing={8}>
             <Group spacing={5}>
-              <InvisibleButton onClick={() => {
-                onLikeClick({boardId: post.id, userEmail: "04smailing@naver.com"})
-                  .then(() => {
-                    mutate();
-                    mutatePost();
-                  })
-                  .catch((error) => {
-                    // 오류 처리
-                  }); 
-                }}>
+              <InvisibleButton
+                onClick={() => {
+                  onLikeClick({ boardId: post.id, token: user?.email })
+                    .then(() => {
+                      mutate();
+                      mutatePost();
+                    })
+                    .catch((error) => {
+                      // 오류 처리
+                    });
+                }}
+              >
                 {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
                 {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
@@ -108,7 +129,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 mutatePost();
                 console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
-                commentOpen? null : toggleComment();
+                commentOpen ? null : toggleComment();
               });
             }}
           />

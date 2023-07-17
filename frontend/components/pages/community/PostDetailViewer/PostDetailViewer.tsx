@@ -2,14 +2,14 @@ import { Stack, Title, TypographyStylesProvider } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
 import PostFooter from "./PostFooter/PostFooter";
-import CardContainer from "../../../../common/CardContainer/CardContainer";
+import CardContainer from "../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
-import { Board } from "../../../../../types/api/boards";
-import { uploadPost } from "../../../../../utils/api/uploadPost";
+import { Board } from "../../../../types/api/boards";
+import { uploadPost } from "../../../../utils/api/uploadPost";
 import React, { useContext, useState } from "react";
-import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
-import { CommunityContext } from "../../../../../pages/community";
-import useAuth from "../../../../../hooks/useAuth";
+import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
 import { useDisclosure } from "@mantine/hooks";
 
 export interface PostDetailViewerProps {
