@@ -139,11 +139,14 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     className={classes.deleteButton}
                     onClick={() => {
                       setIsDeleting({ delete: false });
-                      // 댓글 삭제시 함수
+                      // 댓글 삭제시 함수mutate();
+                      //비동기
 
-                      deletePost(post.id);
-                      mutate();
-                      mutatePost();
+                      deletePost(post.id).then(() => {
+                        mutate();
+                        mutatePost();
+                        showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
+                      });
                     }}
                   >
                     {" "}
