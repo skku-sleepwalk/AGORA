@@ -10,33 +10,34 @@ import {
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
-import PostFooter from "./PostFooter/PostFooter";
-import CardContainer from "../../../../common/CardContainer/CardContainer";
+import CardContainer from "../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
-import { Board } from "../../../../../types/api/boards";
-import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useRef } from "react";
-import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
-import { CommunityContext } from "../../../../../pages/community";
-import useAuth from "../../../../../hooks/useAuth";
-import { useSetState } from "@mantine/hooks";
-import RichEditor from "../../PostWriter/RichEditor/RichEditor";
-import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
-import { Editor } from "@tiptap/react";
+import { Board } from "../../../../types/api/boards";
+import { uploadPost } from "../../../../utils/api/uploadPost";
+import React, { useContext, useRef, useState } from "react";
+import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
+import { useDisclosure, useSetState } from "@mantine/hooks";
+import { CategoryNum, Values } from "../../../../constants/category";
 import { useForm } from "@mantine/form";
-import { showNotification } from "../../../../../utils/notifications";
-import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
-import { patchPost } from "../../../../../utils/api/patchPost";
-import { CategoryNum, Values } from "../../../../../constants/category";
+import { Editor } from "@tiptap/react";
+import { patchPost } from "../../../../utils/api/patchPost";
+import { showNotification } from "../../../../utils/notifications";
+import RichEditor from "../PostWriter/RichEditor/RichEditor";
+import CategorySelector from "../PostWriter/CategorySelector/CategorySelector";
 import { IconAlertCircle } from "@tabler/icons-react";
-import { ModalContext } from "../PostViewer";
+import { mutate } from "swr";
+import { ButtonProgress } from "../PostWriter/ButtonProgress/ButtonProgress";
+import PostFooter from "./PostFooter/PostFooter";
+import { ModalContext } from "../PostViewer/PostViewer";
 
 export interface PostDetailViewerProps {
   post: Board;
-  close: Function;
+  // close: Function;
 }
 
-function PostDetailViewer({ post, close }: PostDetailViewerProps) {
+function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
 
@@ -53,7 +54,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        userId: user.id,
       })
     : false;
 
@@ -69,6 +70,12 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const { canCloseModal } = useContext(ModalContext);
 
   const { mutatePost } = useContext(CommunityContext);
+
+  const postData: Board = post;
+  const mutatePostDetail = async () => {
+    mutate(`http://localhost:8000/developer-community-boards/id/${post.id}`, postData);
+    post = postData;
+  };
 
   return (
     <CardContainer className={classes.postContainer}>
@@ -107,6 +114,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                   showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
                   setIsEditing({ Edit: false });
                   mutatePost();
+                  mutatePostDetail();
                 });
               })}
             >
@@ -196,6 +204,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
             onLikeClick({ boardId: post.id, token })
               .then(() => {
                 mutatePost();
+                mutatePostDetail();
               })
               .catch((error) => {
                 // 오류 처리
@@ -206,7 +215,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
             canCloseModal();
           }}
           postId={post.id}
-          closeFunction={close}
+          // closeFunction={close}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}

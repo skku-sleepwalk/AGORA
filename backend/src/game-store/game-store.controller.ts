@@ -13,6 +13,7 @@ import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
+import { CreateGameStoreGenreDto } from './dto/create-game-genre.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -29,6 +30,13 @@ export class GameStoreController {
     );
   }
 
+  @Post('genre')
+  createGameStoreGenre(
+    @Body() createGameStoreGenreDto: CreateGameStoreGenreDto,
+  ) {
+    return this.gameStoreService.createGameStoreGenre(createGameStoreGenreDto);
+  }
+
   @Post('boards')
   createGameStoreBoard(
     @Headers('authorization') writerEmail: string,
@@ -40,7 +48,7 @@ export class GameStoreController {
     );
   }
 
-  @Post('category')
+  @Post('boards/category')
   createGameStoreBoardCategory(
     @Body() createGameStoreBoardCategoryDto: CreateGameStoreBoardCategoryDto,
   ) {

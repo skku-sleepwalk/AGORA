@@ -1,13 +1,13 @@
 import { Center, Loader, Stack, Text } from "@mantine/core";
 import CommentEditor from "./CommentEditor/CommentEditor";
 import Comment from "./Comment/Comment";
-import { MOCKUP_USER } from "../../../../../../mockups/user";
+import { MOCKUP_USER } from "../../../../../mockups/user";
 import { useCommentSectionStyles } from "./CommentSection.styles";
-import useBoardList from "../../../../../../hooks/useBoardList";
+import useBoardList from "../../../../../hooks/useBoardList";
 import { createContext, useContext, useEffect } from "react";
-import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
-import { showNotification } from "../../../../../../utils/notifications";
-import { CommunityContext } from "../../../../../../pages/community";
+import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import { showNotification } from "../../../../../utils/notifications";
+import { CommunityContext } from "../../../../../pages/community";
 
 interface CommentSectionProps {
   parentId: string;

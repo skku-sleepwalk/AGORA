@@ -3,7 +3,11 @@ import {
   AssetStoreReviews,
 } from 'src/asset-store/entities/asset-store.entity';
 import { Board } from 'src/developer-community/entities/developer-community-board.entity';
-import { GameStoreBoard } from 'src/game-store/entities/game-store-board.entity';
+import {
+  GameStoreBoard,
+  GameStoreBoardLikeRelation,
+} from 'src/game-store/entities/game-store-board.entity';
+import { GameStore } from 'src/game-store/entities/game-store.entity';
 import {
   Column,
   CreateDateColumn,
@@ -47,8 +51,14 @@ export class User {
   @OneToMany(() => Board, (board) => board.writer)
   boards: Board[];
 
+  @OneToMany(() => GameStore, (board) => board.author)
+  gameStores: Array<GameStore>;
+
   @OneToMany(() => GameStoreBoard, (board) => board.writer)
   gameStoreBoards: Array<GameStoreBoard>;
+
+  @OneToMany(() => GameStoreBoardLikeRelation, (relation) => relation.user)
+  gameStoreBoardLikeRelations: Array<GameStoreBoardLikeRelation>;
 
   @OneToMany(() => AssetStoreBoards, (board) => board.author)
   AssetStoreBoards: AssetStoreBoards[];
@@ -61,6 +71,9 @@ export class User {
 
   @ManyToMany(() => Board)
   likedBoards: Board[];
+
+  @ManyToMany(() => GameStore)
+  likeGames: Array<GameStore>;
 
   @ManyToMany(() => AssetStoreBoards)
   likedAssetStoreBoards: AssetStoreBoards[];
