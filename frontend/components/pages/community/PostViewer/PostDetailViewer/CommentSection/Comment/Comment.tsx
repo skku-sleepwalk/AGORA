@@ -76,9 +76,9 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     : false;
 
   // Edit 관련
-  let writerID = post.writer.id;
+  let writerID = post.writer?.id;
   //예외처리
-  if (post.writer.id === null) {
+  if (post.writer?.id === null) {
     writerID = "";
   }
   //예외처리
@@ -91,23 +91,22 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
-  let commentContent = post.content;
-  if (post.content === null) {
-    commentContent = "(삭제된 게시물 입니다.)";
-  }
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          {!isEditing.Edit && (
-            <TypographyStylesProvider>
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{ __html: commentContent }}
-              />
-            </TypographyStylesProvider>
-          )}
+          {!isEditing.Edit &&
+            (post.content !== null ? (
+              <TypographyStylesProvider>
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </TypographyStylesProvider>
+            ) : (
+              <Text color={theme.colors.gray[4]}>(삭제된 게시글입니다.)</Text>
+            ))}
           {isEditing.Edit && (
             <CommentEditorPart
               onCancelClick={() => setIsEditing({ Edit: false })}
