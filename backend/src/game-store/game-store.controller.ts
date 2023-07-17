@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Headers,
+  Query,
 } from '@nestjs/common';
 import { GameStoreService } from './game-store.service';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
@@ -73,6 +74,14 @@ export class GameStoreController {
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
     return this.gameStoreService.update(+id, updateGameStoreDto);
+  }
+
+  @Patch('like')
+  gameStoreLikeUpdate(
+    @Headers('Authorization') userEmail: string,
+    @Query('gameStoreId') gameStoreId: string,
+  ) {
+    return this.gameStoreService.gameStoreLikeUpdate(gameStoreId, userEmail);
   }
 
   @Delete(':id')

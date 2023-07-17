@@ -1,12 +1,15 @@
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { GameStoreBoard, likeAction } from './game-store-board.entity';
 
@@ -52,6 +55,9 @@ export class GameStore {
   developer: string;
 
   @Column({ nullable: false, default: 0 })
+  like: number;
+
+  @Column({ nullable: false, default: 0 })
   price: number;
 
   @Column({ nullable: false, type: 'json' })
@@ -65,14 +71,23 @@ export class GameStore {
 
   @ManyToMany(() => User)
   @JoinTable()
-  likedUser: Array<User>;
+  likedUsers: Array<User>;
 
   @ManyToMany(() => GameStoreGenre)
   @JoinTable()
-  genres: Array<GameStoreGenre>;
+  readonly genres: Array<GameStoreGenre>;
 
   @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
   gameStoreBoards: Array<GameStoreBoard>;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
 }
 
 @Entity('GameStoreGenre')

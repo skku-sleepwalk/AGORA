@@ -15,7 +15,8 @@ import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreGenreDto } from './dto/create-game-genre.dto';
-import { GameStoreGenre } from './entities/game-store.entity';
+import { GameStore, GameStoreGenre } from './entities/game-store.entity';
+import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class GameStoreService {
@@ -41,6 +42,15 @@ export class GameStoreService {
     this.gameStoreBoardLikeRelationRepository = connection.getCustomRepository(
       GameStoreBoardLikeRelationRepository,
     );
+  }
+
+  getGameStoreWithRelations(): SelectQueryBuilder<GameStore> {
+    return this.gameStoreRepository
+      .createQueryBuilder('gameStore')
+      .withDeleted()
+      .leftJoinAndSelect('gameStore.author', 'author')
+      .leftJoinAndSelect('gameStore.likedUsers', 'likedUsers')
+      .leftJoinAndSelect('gameStore.genres', 'genres');
   }
 
   getBoardWithRelations(): SelectQueryBuilder<GameStoreBoard> {
@@ -115,6 +125,7 @@ export class GameStoreService {
       genres: [],
       author,
       cost,
+      likedUsers: [],
     });
 
     for (const genreName of genreNames) {
@@ -192,6 +203,28 @@ export class GameStoreService {
 
   update(id: number, updateGameStoreDto: UpdateGameStoreDto) {
     return `This action updates a #${id} gameStore`;
+  }
+
+  async gameStoreLikeUpdate(gameStoreId: string, userEmail: string) {
+    const queryBuilder = this.getGameStoreWithRelations();
+    const gameStore: GameStore = await queryBuilder
+      .where('gameStore.id = :gameStoreId', { gameStoreId })
+      .getOne();
+
+    const createdAt = cloneDeep(gameStore.createdAt);
+    if (!gameStore.likedUsers.map((user) => user.email).includes(userEmail)) {
+      gameStore.likedUsers.push(
+        await this.userRepository.findOne({ email: userEmail }),
+      );
+      gameStore.like += 1;
+    } else {
+      gameStore.likedUsers = gameStore.likedUsers.filter(
+        (user) => user.email != userEmail,
+      );
+      gameStore.like -= 1;
+    }
+    gameStore.createdAt = createdAt;
+    return this.gameStoreRepository.save(gameStore);
   }
 
   remove(id: number) {
