@@ -38,6 +38,7 @@ import { useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../../hooks/useAuth";
+import { CommentContext } from "../CommentSection";
 
 export interface CommentProps {
   post: Board;
@@ -83,6 +84,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
+  const { mutateComment } = useContext(CommentContext);
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
@@ -98,8 +100,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               onCancelClick={() => setIsEditing({ Edit: false })}
               onEditClick={() => {
                 setIsEditing({ Edit: false });
-                mutate();
-                mutatePost();
+                mutateComment();
               }}
               commentId={post.id}
               content={post.content}
@@ -126,6 +127,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     onClick={() => {
                       setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
+                      mutateComment();
                     }}
                   >
                     삭제
@@ -140,8 +142,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 onClick={() => {
                   onLikeClick({ boardId: post.id, token })
                     .then(() => {
-                      mutate();
-                      mutatePost();
+                      mutateComment();
                     })
                     .catch((error) => {
                       // 오류 처리
