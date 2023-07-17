@@ -1,4 +1,4 @@
-import { Alert, Button, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Alert, Button, Center, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
 import {
   IconAlertCircle,
   IconBell,
@@ -12,9 +12,11 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { usePostFooterStyles } from "./PostFooter.styles";
-import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import deletePost from "../../../../../utils/api/deletepost";
 import { useSetState } from "@mantine/hooks";
-import deletePost from "../../../../../../utils/api/deletepost";
+import { useRouter } from "next/router";
+
 export interface PostFooterProps {
   onLikeClick?: () => void;
   onShareClick?: () => void;
@@ -26,7 +28,7 @@ export interface PostFooterProps {
   isEditing: boolean;
   canEdit: boolean;
   postId: string;
-  closeFunction: Function;
+  // closeFunction: Function;
 }
 
 function PostFooter({
@@ -40,9 +42,10 @@ function PostFooter({
   isEditing,
   canEdit,
   postId,
-  closeFunction,
-}: PostFooterProps) {
+}: // closeFunction,
+PostFooterProps) {
   const { classes } = usePostFooterStyles();
+  const router = useRouter();
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
@@ -69,11 +72,13 @@ function PostFooter({
                 onClick={() => {
                   setIsDeleting({ delete: false });
                   // 게시글 삭제시 함수
-                  deletePost(postId).then(() => closeFunction);
+                  deletePost(postId).then(() => {
+                    // closeFunction();
+                    router.push("/community");
+                  });
                 }}
               >
-                {" "}
-                삭제{" "}
+                삭제
               </Button>
             </Group>
           </Stack>

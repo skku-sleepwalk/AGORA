@@ -1,18 +1,18 @@
 import { useRouter } from "next/router";
-import CommunityLayout from "../components/pages/community/CommunityLayout/CommunityLayout";
-import PostWriter from "../components/pages/community/PostWriter/PostWriter";
+import CommunityLayout from "../../components/pages/community/CommunityLayout/CommunityLayout";
+import PostWriter from "../../components/pages/community/PostWriter/PostWriter";
 import { Stack, Text, useMantineTheme } from "@mantine/core";
-import PostViewer from "../components/pages/community/PostViewer/PostViewer";
-import SearchBar from "../components/pages/community/SearchBar/SearchBar";
-import SearchTab from "../components/pages/community/SearchTab/SearchTab";
-import { SideBar } from "../components/pages/community/sidebar/SideBar";
-import { CommunityCategory } from "../components/pages/community/CommunityCategory/CommunityCategory";
-import useBoardList from "../hooks/useBoardList";
-import { LoadingPost } from "../components/pages/community/LoadingPost/LoadingPost";
+import PostViewer from "../../components/pages/community/PostViewer/PostViewer";
+import SearchBar from "../../components/pages/community/SearchBar/SearchBar";
+import SearchTab from "../../components/pages/community/SearchTab/SearchTab";
+import { SideBar } from "../../components/pages/community/sidebar/SideBar";
+import useBoardList from "../../hooks/useBoardList";
+import { LoadingPost } from "../../components/pages/community/LoadingPost/LoadingPost";
 import { useWindowScroll } from "@mantine/hooks";
 import { createContext, useEffect, useState } from "react";
-import { CategoryNum, Values } from "../constants/category";
-import { extractThumbnailUrl } from "../utils/api/ViewPhotos";
+import { CategoryNum, Values } from "../../constants/category";
+import { extractThumbnailUrl } from "../../utils/api/ViewPhotos";
+import { CommunityCategory } from "../../components/pages/community/CommunityCategory/CommunityCategory";
 
 export const CommunityContext = createContext({
   mutatePost: () => {},

@@ -7,22 +7,22 @@ import {
   Container,
   Image,
   UnstyledButton,
-  ScrollArea,
   MultiSelect,
   Group,
-  useMantineTheme,
 } from "@mantine/core";
-import PostHeader from "./PostHeader/PostHeader";
+import PostHeader from "../PostHeader/PostHeader";
 import { usePostViewerStyles } from "./PostViewer.styles";
 import { useClickOutside, useDisclosure, useSetState } from "@mantine/hooks";
-import PostDetailViewer from "./PostDetailViewer/PostDetailViewer";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { Board } from "../../../../types/api/boards";
 import { PhotoViewer } from "../../../common/PhotoViewer/PhotoViewer";
 import { extractImageSrc, removeImgTags } from "../../../../utils/api/ViewPhotos";
+import { useRouter } from "next/router";
 import { createContext, useContext } from "react";
-import { showError } from "../../../../utils/notifications";
 import { CategoryNum, Values } from "../../../../constants/category";
+import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
 import {
   IconBookmark,
   IconHeart,
@@ -31,9 +31,7 @@ import {
   IconShare,
 } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-import useAuth from "../../../../hooks/useAuth";
-import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
-import { CommunityContext } from "../../../../pages/community";
+import { showError } from "../../../../utils/notifications";
 
 export interface PostViewerProps {
   post: Board;
@@ -47,13 +45,15 @@ export const ModalContext = createContext({
 function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const maxContentHeight = thumbnailUrl ? 50 : 150;
   const { classes } = usePostViewerStyles({ maxContentHeight });
-  const theme = useMantineTheme();
-  const { token, user } = useAuth();
-
-  const [opened, { open, close }] = useDisclosure(false); // modal of PostDetailViewer
+  const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
+  const router = useRouter();
+  const { user, token } = useAuth();
   const [state, setState] = useSetState({ modalClickOutside: true });
+
+  const imageSrcArray = extractImageSrc(post.content);
+  const removeImgTag = removeImgTags(post.content);
   const canCloseModal = () => {
-    setState((prevState) => ({
+    useSetState((prevState: any) => ({
       modalClickOutside: !prevState.modalClickOutside,
     }));
   };
@@ -62,11 +62,6 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
       showError("수정 중에는 게시글을 떠날 수 없습니다.", null);
     }
   });
-
-  const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
-
-  const imageSrcArray = extractImageSrc(post.content);
-  const removeImgTag = removeImgTags(post.content);
 
   // 모든 Category 이름 배열로 반환
   const data: string[] = [];
@@ -81,7 +76,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        userId: user.id,
       })
     : false;
 
@@ -93,7 +88,11 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
         canCloseModal,
       }}
     >
-      <UnstyledButton onClick={open}>
+      <UnstyledButton
+        onClick={() => {
+          router.push(`/community/${post.id}`);
+        }}
+      >
         <CardContainer className={classes.postContainer}>
           <Stack spacing={14}>
             <PostHeader user={post.writer} date={post.createdAt} />
@@ -185,19 +184,6 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
           </Stack>
         </CardContainer>
       </UnstyledButton>
-      <Modal
-        opened={opened}
-        onClose={close}
-        className={classes.modal}
-        size="auto"
-        centered
-        scrollAreaComponent={ScrollArea.Autosize}
-        closeOnClickOutside={state.modalClickOutside}
-      >
-        <div ref={modalRef}>
-          <PostDetailViewer post={post} close={close} />
-        </div>
-      </Modal>
     </ModalContext.Provider>
   );
 }

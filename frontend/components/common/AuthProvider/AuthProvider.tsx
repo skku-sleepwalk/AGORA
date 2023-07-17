@@ -19,8 +19,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
-        user: 
-        {
+        user: {
           id: "fab03f34-4752-4a83-8fac-ebebb81c6952",
           name: "반야",
           description: "쉬고 싶은 레이디",
@@ -29,7 +28,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           rating: 0,
           createdAt: "2023-07-13T20:49:47.705Z",
           updatedAt: "2023-07-13T20:49:47.705Z",
-          deletedAt: null
+          deletedAt: null,
         },
         // {
         //   id: "d640c184-c7ba-4bf2-a552-aedb30474643",

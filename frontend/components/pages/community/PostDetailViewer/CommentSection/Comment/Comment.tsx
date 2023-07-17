@@ -14,7 +14,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import CommentFrame from "../CommentFrame/CommentFrame";
-import InvisibleButton from "../../../../../../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import {
   IconAlertCircle,
   IconBell,
@@ -29,18 +29,18 @@ import {
 } from "@tabler/icons-react";
 import { useCommentStyles } from "./Comment.styles";
 import CommentEditor, { CommentEditorPart } from "../CommentEditor/CommentEditor";
-import { MOCKUP_USER } from "../../../../../../../mockups/user";
+import { MOCKUP_USER } from "../../../../../../mockups/user";
 import { useDisclosure, useSetState } from "@mantine/hooks";
-import { Board } from "../../../../../../../types/api/boards";
-import useBoardList from "../../../../../../../hooks/useBoardList";
-import { showNotification } from "../../../../../../../utils/notifications";
+import { Board } from "../../../../../../types/api/boards";
+import useBoardList from "../../../../../../hooks/useBoardList";
+import { showNotification } from "../../../../../../utils/notifications";
 import { useContext } from "react";
-import { CommunityContext } from "../../../../../../../pages/community";
-import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
-import useAuth from "../../../../../../../hooks/useAuth";
+import { CommunityContext } from "../../../../../../pages/community";
+import { CheckIsliking, onLikeClick } from "../../../../../../utils/api/onLikeClick";
+import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
-import deletePost from "../../../../../../../utils/api/deletepost";
-import { ModalContext } from "../../../PostViewer";
+import deletePost from "../../../../../../utils/api/deletepost";
+import { ModalContext } from "../../../PostViewer/PostViewer";
 
 export interface CommentProps {
   post: Board;
@@ -54,7 +54,6 @@ function Comment({ post, onSubmitComment }: CommentProps) {
 
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
-
   const {
     data,
     setSize,
@@ -74,7 +73,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        userId: user.id,
       })
     : false;
 

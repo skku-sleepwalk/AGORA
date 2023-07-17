@@ -12,12 +12,12 @@ import { lowlight } from "lowlight";
 import { Alert, Box, Button, Group, Stack } from "@mantine/core";
 import Image from "@tiptap/extension-image";
 import CommentFrame from "../CommentFrame/CommentFrame";
-import RichTextEditorControlGroup from "../../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
-import { User } from "../../../../../../../types/api/user";
-import useAuth from "../../../../../../../hooks/useAuth";
-import { showNotification } from "../../../../../../../utils/notifications";
-import { patchComment } from "../../../../../../../utils/api/patchComment";
+import RichTextEditorControlGroup from "../../../../../common/RichTextEditorControlGroup/RichTextEditorControlGroup";
+import { User } from "../../../../../../types/api/user";
+import { patchComment } from "../../../../../../utils/api/patchComment";
+import { showNotification } from "../../../../../../utils/notifications";
 import { IconAlertCircle } from "@tabler/icons-react";
+import useAuth from "../../../../../../hooks/useAuth";
 import { useSetState } from "@mantine/hooks";
 
 export interface CommentEditorProps {

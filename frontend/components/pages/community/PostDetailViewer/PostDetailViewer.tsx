@@ -10,33 +10,33 @@ import {
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
-import PostFooter from "./PostFooter/PostFooter";
-import CardContainer from "../../../../common/CardContainer/CardContainer";
+import CardContainer from "../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
-import { Board } from "../../../../../types/api/boards";
-import { uploadPost } from "../../../../../utils/api/uploadPost";
-import React, { useContext, useRef } from "react";
-import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
-import { CommunityContext } from "../../../../../pages/community";
-import useAuth from "../../../../../hooks/useAuth";
-import { useSetState } from "@mantine/hooks";
-import RichEditor from "../../PostWriter/RichEditor/RichEditor";
-import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
-import { Editor } from "@tiptap/react";
+import { Board } from "../../../../types/api/boards";
+import { uploadPost } from "../../../../utils/api/uploadPost";
+import React, { useContext, useRef, useState } from "react";
+import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { CommunityContext } from "../../../../pages/community";
+import useAuth from "../../../../hooks/useAuth";
+import { useDisclosure, useSetState } from "@mantine/hooks";
+import { CategoryNum, Values } from "../../../../constants/category";
 import { useForm } from "@mantine/form";
-import { showNotification } from "../../../../../utils/notifications";
-import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
-import { patchPost } from "../../../../../utils/api/patchPost";
-import { CategoryNum, Values } from "../../../../../constants/category";
+import { Editor } from "@tiptap/react";
+import { ModalContext } from "../PostViewer/PostViewer";
+import { patchPost } from "../../../../utils/api/patchPost";
+import { showNotification } from "../../../../utils/notifications";
+import RichEditor from "../PostWriter/RichEditor/RichEditor";
+import CategorySelector from "../PostWriter/CategorySelector/CategorySelector";
 import { IconAlertCircle } from "@tabler/icons-react";
-import { ModalContext } from "../PostViewer";
+import { ButtonProgress } from "../PostWriter/ButtonProgress/ButtonProgress";
+import PostFooter from "./PostFooter/PostFooter";
 
 export interface PostDetailViewerProps {
   post: Board;
-  close: Function;
+  // close: Function;
 }
 
-function PostDetailViewer({ post, close }: PostDetailViewerProps) {
+function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
 
@@ -53,7 +53,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const isliking = user
     ? CheckIsliking({
         likedUsers: post.likedUsers,
-        userEmail: user.id,
+        userId: user.id,
       })
     : false;
 
@@ -206,7 +206,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
             canCloseModal();
           }}
           postId={post.id}
-          closeFunction={close}
+          // closeFunction={close}
           commentCount={post.child}
           likeCount={post.like}
           isliking={isliking}
