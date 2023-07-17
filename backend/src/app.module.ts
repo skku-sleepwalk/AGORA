@@ -9,6 +9,7 @@ import { join } from 'path';
 import { UploadModule } from 'src/upload/upload.module';
 import { AssetStoreModule } from './asset-store/asset-store.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GameStoreModule } from './game-store/game-store.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
+    GameStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],
