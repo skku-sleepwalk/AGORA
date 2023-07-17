@@ -78,7 +78,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   // Edit 관련
   const [isEditing, setIsEditing] = useSetState({
     Edit: false,
-    canEdit: user ? user.id === user.id : false,
+    canEdit: user ? post.writer.id === user.id : false,
   });
   // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
 
