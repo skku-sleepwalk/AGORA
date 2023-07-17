@@ -22,7 +22,7 @@ function CommentFrame({ children, user, withoutLeftBorder = false }: CommentFram
       <Container className={classes.commentWrapper}>
         <Stack spacing={0} className={classes.commentContainer}>
           <Title order={6} className={classes.userName}>
-            {user.name}
+            {user?.name}
           </Title>
           {children}
         </Stack>

@@ -29,7 +29,7 @@ export class Board {
   @Column({ nullable: false, default: 0 })
   child: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
   @UpdateDateColumn()

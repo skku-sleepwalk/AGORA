@@ -1,6 +1,5 @@
 import {
   Alert,
-  Box,
   Button,
   Center,
   Collapse,
@@ -82,9 +81,14 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     canEdit: user ? user.id === user.id : false,
   });
   // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
+
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
+  let commentContent = post.content;
+  if (post.content === null) {
+    commentContent = "(삭제된 게시물 입니다.)";
+  }
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
@@ -92,7 +96,10 @@ function Comment({ post, onSubmitComment }: CommentProps) {
         <Stack spacing={10} className={classes.comment}>
           {!isEditing.Edit && (
             <TypographyStylesProvider>
-              <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div
+                className={classes.content}
+                dangerouslySetInnerHTML={{ __html: commentContent }}
+              />
             </TypographyStylesProvider>
           )}
           {isEditing.Edit && (
@@ -105,6 +112,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               }}
               commentId={post.id}
               content={post.content}
+              categoryNames={post.categoryTypes.map((category) => category.name)}
             />
           )}
           {isDeleting.delete && (
@@ -127,6 +135,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     onClick={() => {
                       setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
+
                       deletePost(post.id);
                       mutate();
                       mutatePost();
