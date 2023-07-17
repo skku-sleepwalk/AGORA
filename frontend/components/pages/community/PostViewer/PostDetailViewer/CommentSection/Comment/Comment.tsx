@@ -39,6 +39,7 @@ import { CommunityContext } from "../../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
+import deletePost from "../../../../../../../utils/api/deletepost";
 
 export interface CommentProps {
   post: Board;
@@ -81,10 +82,17 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     Edit: false,
     canEdit: user ? post.writer.id === user.id : false,
   });
+  // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
+
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
   const { mutateComment } = useContext(CommentContext);
+
+  let commentContent = post.content;
+  if (post.content === null) {
+    commentContent = "(삭제된 게시물 입니다.)";
+  }
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
@@ -92,7 +100,10 @@ function Comment({ post, onSubmitComment }: CommentProps) {
         <Stack spacing={10} className={classes.comment}>
           {!isEditing.Edit && (
             <TypographyStylesProvider>
-              <div className={classes.content} dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div
+                className={classes.content}
+                dangerouslySetInnerHTML={{ __html: commentContent }}
+              />
             </TypographyStylesProvider>
           )}
           {isEditing.Edit && (
@@ -127,6 +138,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     onClick={() => {
                       setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
+                      deletePost(post.id);
                       mutateComment();
                     }}
                   >
