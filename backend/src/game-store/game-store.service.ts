@@ -100,10 +100,10 @@ export class GameStoreService {
       snsUrls,
       shortDescription,
       genreNames,
+      cost,
     } = createGameStoreDto;
 
     const author = await this.userRepository.findOne({ email: authorEmail });
-
     const newGameStore = this.gameStoreRepository.create({
       id: uuid(),
       title,
@@ -114,6 +114,7 @@ export class GameStoreService {
       distributor,
       genres: [],
       author,
+      cost,
     });
 
     for (const genreName of genreNames) {
@@ -124,7 +125,7 @@ export class GameStoreService {
       }
     }
 
-    return 'This action adds a new gameStore';
+    return this.gameStoreRepository.save(newGameStore);
   }
 
   createGameStoreGenre(createGameStoreGenreDto: CreateGameStoreGenreDto) {
@@ -137,7 +138,7 @@ export class GameStoreService {
     writerEmail: string,
     createGameStoreBoardsDto: CreateGameStoreBoardDto,
   ) {
-    const { title, content, parentId, categoryNames } =
+    const { title, content, parentId, categoryNames, gameStoreId } =
       createGameStoreBoardsDto;
 
     const writer = await this.userRepository.findOne({ email: writerEmail });
@@ -145,10 +146,12 @@ export class GameStoreService {
       throw new Error(`User with email ${writerEmail} not found.`);
     }
 
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
     const parent: GameStoreBoard | null = parentId
       ? await this.getParentBoard(parentId)
       : null;
     await this.incrementChildCount(parent);
+
     const newBoard = this.gameStoreBoardRepository.create({
       id: uuid(),
       title,
@@ -156,6 +159,7 @@ export class GameStoreService {
       writer,
       parent,
       categoryTypes: [],
+      gameStore,
     });
 
     for (const categoryName of categoryNames) {

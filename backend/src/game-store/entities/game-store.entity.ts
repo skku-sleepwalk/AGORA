@@ -8,7 +8,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { likeAction } from './game-store-board.entity';
+import { GameStoreBoard, likeAction } from './game-store-board.entity';
 
 export interface SNSUrls {
   youtube?: string;
@@ -25,9 +25,10 @@ export interface shortDescription {
 
 export interface Cost {
   price: number;
-  saleStart: Date;
-  saleEnd: Date;
-  salePercentage: number;
+  isSale: boolean;
+  saleStart?: Date;
+  saleEnd?: Date;
+  salePercentage?: number;
 }
 
 @Entity('GameStore')
@@ -69,6 +70,9 @@ export class GameStore {
   @ManyToMany(() => GameStoreGenre)
   @JoinTable()
   genres: Array<GameStoreGenre>;
+
+  @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
+  gameStoreBoards: Array<GameStoreBoard>;
 }
 
 @Entity('GameStoreGenre')

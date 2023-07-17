@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import {
+  Cost,
   GameStoreGenre,
   SNSUrls,
   shortDescription,
@@ -39,4 +40,8 @@ export class CreateGameStoreDto {
   @IsNotEmpty()
   @IsArray()
   genreNames: Array<string>;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  cost: Cost;
 }
