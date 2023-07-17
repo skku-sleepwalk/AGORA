@@ -79,9 +79,15 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     : false;
 
   // Edit 관련
+  let writerID = post.writer.id;
+  //예외처리
+  if (post.writer.id === null) {
+    writerID = "";
+  }
+  //예외처리
   const [isEditing, setIsEditing] = useSetState({
     Edit: false,
-    canEdit: user ? post.writer.id === user.id : false,
+    canEdit: user ? writerID === user.id : false,
   });
   // post.writer.id 현재 편의를 위해 억지로 변경함 좌측 추후 이걸로 변경 필요요
 
