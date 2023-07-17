@@ -3,8 +3,8 @@ import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
 
 export function showNotification(
-  title: string,
-  message: string,
+  title: string | null,
+  message: string | null,
   option?: Omit<NotificationProps, "title" | "message">
 ) {
   notifications.show({
@@ -15,8 +15,8 @@ export function showNotification(
 }
 
 export function showError(
-  title: string,
-  message: string,
+  title: string | null,
+  message: string | null,
   option?: Omit<NotificationProps, "title" | "message">
 ) {
   notifications.show({

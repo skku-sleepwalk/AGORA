@@ -40,6 +40,7 @@ import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLik
 import useAuth from "../../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../../utils/api/deletepost";
+import { ModalContext } from "../../../PostViewer";
 
 export interface CommentProps {
   post: Board;
@@ -88,6 +89,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
 
   const { mutatePost } = useContext(CommunityContext);
   const { mutateComment } = useContext(CommentContext);
+  const { canCloseModal } = useContext(ModalContext);
 
   let commentContent = post.content;
   if (post.content === null) {
@@ -108,10 +110,14 @@ function Comment({ post, onSubmitComment }: CommentProps) {
           )}
           {isEditing.Edit && (
             <CommentEditorPart
-              onCancelClick={() => setIsEditing({ Edit: false })}
+              onCancelClick={() => {
+                setIsEditing({ Edit: false });
+                canCloseModal();
+              }}
               onEditClick={() => {
                 setIsEditing({ Edit: false });
                 mutateComment();
+                canCloseModal();
               }}
               commentId={post.id}
               content={post.content}
@@ -204,6 +210,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                           <Menu.Item
                             onClick={() => {
                               setIsEditing({ Edit: true });
+                              canCloseModal();
                             }}
                             icon={<IconPencil size={18} stroke={2} />}
                             className={classes.menuItem}
