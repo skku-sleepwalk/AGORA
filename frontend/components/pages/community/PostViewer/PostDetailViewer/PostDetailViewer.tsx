@@ -29,6 +29,7 @@ import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
 import { patchPost } from "../../../../../utils/api/patchPost";
 import { CategoryNum, Values } from "../../../../../constants/category";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { ModalContext } from "../PostViewer";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -65,6 +66,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
     },
   });
   const editorRef = useRef<Editor>(null);
+  const { canCloseModal } = useContext(ModalContext);
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -146,6 +148,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                           onClick={() => {
                             setIsEditing({ Edit: false });
                             setIsEditing({ cancel: false });
+                            canCloseModal();
                           }}
                         >
                           취소
@@ -166,7 +169,14 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                     >
                       취소
                     </Button>
-                    <ButtonProgress text="수정" type="submit" className={classes.editButton} />
+                    <ButtonProgress
+                      text="수정"
+                      type="submit"
+                      className={classes.editButton}
+                      onClick={() => {
+                        canCloseModal();
+                      }}
+                    />
                   </Group>
                 )}
               </Stack>
@@ -193,6 +203,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
           }}
           onEditClick={() => {
             setIsEditing({ Edit: true });
+            canCloseModal();
           }}
           postId={post.id}
           closeFunction={close}
