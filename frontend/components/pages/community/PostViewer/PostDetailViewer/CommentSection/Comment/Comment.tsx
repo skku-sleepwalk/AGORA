@@ -38,7 +38,10 @@ import { useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../../hooks/useAuth";
+import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../../utils/api/deletepost";
+import { ModalContext } from "../../../PostViewer";
+
 export interface CommentProps {
   post: Board;
   onSubmitComment?: (content: string, parentId: string) => Promise<any>;
@@ -92,6 +95,14 @@ function Comment({ post, onSubmitComment }: CommentProps) {
 
   const { mutatePost } = useContext(CommunityContext);
 
+  const { mutateComment } = useContext(CommentContext);
+  const { canCloseModal } = useContext(ModalContext);
+
+  let commentContent = post.content;
+  if (post.content === null) {
+    commentContent = "(삭제된 게시물 입니다.)";
+  }
+
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
@@ -109,11 +120,14 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             ))}
           {isEditing.Edit && (
             <CommentEditorPart
-              onCancelClick={() => setIsEditing({ Edit: false })}
+              onCancelClick={() => {
+                setIsEditing({ Edit: false });
+                canCloseModal();
+              }}
               onEditClick={() => {
                 setIsEditing({ Edit: false });
-                mutate();
-                mutatePost();
+                mutateComment();
+                canCloseModal();
               }}
               commentId={post.id}
               content={post.content}
@@ -139,18 +153,19 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     className={classes.deleteButton}
                     onClick={() => {
                       setIsDeleting({ delete: false });
+
                       // 댓글 삭제시 함수mutate();
                       //비동기
 
                       deletePost(post.id).then(() => {
                         mutate();
-                        mutatePost();
+
+                        mutateComment();
                         showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
                       });
                     }}
                   >
-                    {" "}
-                    삭제{" "}
+                    삭제
                   </Button>
                 </Group>
               </Stack>
@@ -162,8 +177,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 onClick={() => {
                   onLikeClick({ boardId: post.id, token })
                     .then(() => {
-                      mutate();
-                      mutatePost();
+                      mutateComment();
                     })
                     .catch((error) => {
                       // 오류 처리
@@ -205,8 +219,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                           icon={<IconBell size={18} stroke={2} />}
                           className={classes.menuItem}
                         >
-                          {" "}
-                          신고하기{" "}
+                          신고하기
                         </Menu.Item>
                       )}
                       {isEditing.canEdit && (
@@ -214,12 +227,12 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                           <Menu.Item
                             onClick={() => {
                               setIsEditing({ Edit: true });
+                              canCloseModal();
                             }}
                             icon={<IconPencil size={18} stroke={2} />}
                             className={classes.menuItem}
                           >
-                            {" "}
-                            수정하기{" "}
+                            수정하기
                           </Menu.Item>
                           <Menu.Divider />
                           <Menu.Item
@@ -229,8 +242,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                             icon={<IconTrash size={18} stroke={2} />}
                             className={classes.menuItem}
                           >
-                            {" "}
-                            삭제하기{" "}
+                            삭제하기
                           </Menu.Item>
                         </>
                       )}

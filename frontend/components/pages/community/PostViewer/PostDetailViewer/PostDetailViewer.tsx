@@ -19,10 +19,6 @@ import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
-
-import { useDisclosure } from "@mantine/hooks";
-import deletePost from "../../../../../utils/api/deletepost";
-
 import { useSetState } from "@mantine/hooks";
 import RichEditor from "../../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../../PostWriter/CategorySelector/CategorySelector";
@@ -33,6 +29,7 @@ import { ButtonProgress } from "../../PostWriter/ButtonProgress/ButtonProgress";
 import { patchPost } from "../../../../../utils/api/patchPost";
 import { CategoryNum, Values } from "../../../../../constants/category";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { ModalContext } from "../PostViewer";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -44,10 +41,10 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
   const { token, user } = useAuth();
 
   // 모든 Category 이름 배열로 반환
-  let data = new Array();
+  const data: string[] = [];
   for (let i = 0; i < CategoryNum; i++) {
     const values = Values[i];
-    values.map((value) => {
+    values.forEach((value) => {
       data.push(value.label);
     });
   }
@@ -69,6 +66,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
     },
   });
   const editorRef = useRef<Editor>(null);
+  const { canCloseModal } = useContext(ModalContext);
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -150,10 +148,10 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                           onClick={() => {
                             setIsEditing({ Edit: false });
                             setIsEditing({ cancel: false });
+                            canCloseModal();
                           }}
                         >
-                          {" "}
-                          취소{" "}
+                          취소
                         </Button>
                       </Group>
                     </Stack>
@@ -169,10 +167,16 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
                         setIsEditing({ cancel: true });
                       }}
                     >
-                      {" "}
-                      취소{" "}
+                      취소
                     </Button>
-                    <ButtonProgress text="수정" type="submit" className={classes.editButton} />
+                    <ButtonProgress
+                      text="수정"
+                      type="submit"
+                      className={classes.editButton}
+                      onClick={() => {
+                        canCloseModal();
+                      }}
+                    />
                   </Group>
                 )}
               </Stack>
@@ -183,7 +187,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
           <MultiSelect
             className={classes.multiSelect}
             data={data}
-            defaultValue={post.categoryTypes.map((item) => item.name)}
+            value={post.categoryTypes.map((item) => item.name)}
             readOnly
           />
         )}
@@ -199,6 +203,7 @@ function PostDetailViewer({ post, close }: PostDetailViewerProps) {
           }}
           onEditClick={() => {
             setIsEditing({ Edit: true });
+            canCloseModal();
           }}
           postId={post.id}
           closeFunction={close}
