@@ -79,9 +79,9 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     : false;
 
   // Edit 관련
-  let writerID = post.writer.id;
+  let writerID = post.writer?.id;
   //예외처리
-  if (post.writer.id === null) {
+  if (post.writer?.id === null) {
     writerID = "";
   }
   //예외처리
@@ -94,6 +94,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
+
   const { mutateComment } = useContext(CommentContext);
   const { canCloseModal } = useContext(ModalContext);
 
@@ -106,14 +107,17 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          {!isEditing.Edit && (
-            <TypographyStylesProvider>
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{ __html: commentContent }}
-              />
-            </TypographyStylesProvider>
-          )}
+          {!isEditing.Edit &&
+            (post.content !== null ? (
+              <TypographyStylesProvider>
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </TypographyStylesProvider>
+            ) : (
+              <Text color={theme.colors.gray[4]}>(삭제된 게시글입니다.)</Text>
+            ))}
           {isEditing.Edit && (
             <CommentEditorPart
               onCancelClick={() => {
@@ -149,9 +153,16 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     className={classes.deleteButton}
                     onClick={() => {
                       setIsDeleting({ delete: false });
-                      // 댓글 삭제시 함수
-                      deletePost(post.id);
-                      mutateComment();
+
+                      // 댓글 삭제시 함수mutate();
+                      //비동기
+
+                      deletePost(post.id).then(() => {
+                        mutate();
+
+                        mutateComment();
+                        showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
+                      });
                     }}
                   >
                     삭제
