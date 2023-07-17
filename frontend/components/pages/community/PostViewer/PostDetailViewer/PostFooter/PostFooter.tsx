@@ -14,7 +14,7 @@ import {
 import { usePostFooterStyles } from "./PostFooter.styles";
 import InvisibleButton from "../../../../../common/InvisibleButton/InvisibleButton";
 import { useSetState } from "@mantine/hooks";
-
+import deletePost from "../../../../../../utils/api/deletepost";
 export interface PostFooterProps {
   onLikeClick?: () => void;
   onShareClick?: () => void;
@@ -25,6 +25,8 @@ export interface PostFooterProps {
   isliking: boolean;
   isEditing: boolean;
   canEdit: boolean;
+  postId: string;
+  closeFunction: Function;
 }
 
 function PostFooter({
@@ -37,6 +39,8 @@ function PostFooter({
   isliking,
   isEditing,
   canEdit,
+  postId,
+  closeFunction,
 }: PostFooterProps) {
   const { classes } = usePostFooterStyles();
 
@@ -65,6 +69,7 @@ function PostFooter({
                 onClick={() => {
                   setIsDeleting({ delete: false });
                   // 게시글 삭제시 함수
+                  deletePost(postId).then(() => closeFunction);
                 }}
               >
                 {" "}
