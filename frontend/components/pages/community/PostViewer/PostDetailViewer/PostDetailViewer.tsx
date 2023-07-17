@@ -39,10 +39,10 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { token, user } = useAuth();
 
   // 모든 Category 이름 배열로 반환
-  let data = new Array();
+  const data: string[] = [];
   for (let i = 0; i < CategoryNum; i++) {
     const values = Values[i];
-    values.map((value) => {
+    values.forEach((value) => {
       data.push(value.label);
     });
   }
@@ -147,8 +147,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                             setIsEditing({ cancel: false });
                           }}
                         >
-                          {" "}
-                          취소{" "}
+                          취소
                         </Button>
                       </Group>
                     </Stack>
@@ -164,8 +163,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                         setIsEditing({ cancel: true });
                       }}
                     >
-                      {" "}
-                      취소{" "}
+                      취소
                     </Button>
                     <ButtonProgress text="수정" type="submit" className={classes.editButton} />
                   </Group>
@@ -178,7 +176,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           <MultiSelect
             className={classes.multiSelect}
             data={data}
-            defaultValue={post.categoryTypes.map((item) => item.name)}
+            value={post.categoryTypes.map((item) => item.name)}
             readOnly
           />
         )}
