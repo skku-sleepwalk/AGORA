@@ -5,23 +5,23 @@ import {
   GameStoreBoardCategoryRepository,
   GameStoreBoardLikeRelationRepository,
   GameStoreBoardRepository,
+  GameStoreGenreRepository,
   GameStoreRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
-import { PaginationOptions } from 'typeorm-cursor-pagination';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
-import {
-  GameStoreBoard,
-  GameStoreBoardCategory,
-} from './entities/game-store-board.entity';
+import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
+import { CreateGameStoreGenreDto } from './dto/create-game-genre.dto';
+import { GameStoreGenre } from './entities/game-store.entity';
 
 @Injectable()
 export class GameStoreService {
   private readonly userRepository: UserRepository;
   private readonly gameStoreRepository: GameStoreRepository;
+  private readonly gameStoreGenereRepository: GameStoreGenreRepository;
   private readonly gameStoreBoardRepository: GameStoreBoardRepository;
   private readonly gameStoreBoardLikeRelationRepository: GameStoreBoardLikeRelationRepository;
   private readonly gameStoreBoardCategoryRepository: GameStoreBoardCategoryRepository;
@@ -31,6 +31,9 @@ export class GameStoreService {
       connection.getCustomRepository(GameStoreRepository);
     this.gameStoreBoardRepository = connection.getCustomRepository(
       GameStoreBoardRepository,
+    );
+    this.gameStoreGenereRepository = connection.getCustomRepository(
+      GameStoreGenreRepository,
     );
     this.gameStoreBoardCategoryRepository = connection.getCustomRepository(
       GameStoreBoardCategoryRepository,
@@ -85,8 +88,49 @@ export class GameStoreService {
     }
   }
 
-  createGameStore(authorEmail: string, createGameStoreDto: CreateGameStoreDto) {
+  async createGameStore(
+    authorEmail: string,
+    createGameStoreDto: CreateGameStoreDto,
+  ) {
+    const {
+      title,
+      description,
+      distributor,
+      developer,
+      snsUrls,
+      shortDescription,
+      genreNames,
+    } = createGameStoreDto;
+
+    const author = await this.userRepository.findOne({ email: authorEmail });
+
+    const newGameStore = this.gameStoreRepository.create({
+      id: uuid(),
+      title,
+      description,
+      shortDescription,
+      snsUrls,
+      developer,
+      distributor,
+      genres: [],
+      author,
+    });
+
+    for (const genreName of genreNames) {
+      const genre: GameStoreGenre =
+        await this.gameStoreGenereRepository.findOne({ name: genreName });
+      if (genre) {
+        newGameStore.genres.push(genre);
+      }
+    }
+
     return 'This action adds a new gameStore';
+  }
+
+  createGameStoreGenre(createGameStoreGenreDto: CreateGameStoreGenreDto) {
+    const { name } = createGameStoreGenreDto;
+    const newGenre = this.gameStoreGenereRepository.create({ name });
+    return this.gameStoreGenereRepository.save(newGenre);
   }
 
   async createGameStoreBoards(
@@ -126,15 +170,14 @@ export class GameStoreService {
     return this.gameStoreBoardRepository.save(newBoard);
   }
 
-  async createGameStoreBoardCategory(
+  createGameStoreBoardCategory(
     createGameStoreBoardCategoryDto: CreateGameStoreBoardCategoryDto,
   ) {
     const { name } = createGameStoreBoardCategoryDto;
-    const newCategory = this.gameStoreBoardCategoryRepository.create({
-      name,
-    });
+    const newCategory = this.gameStoreBoardCategoryRepository.create({ name });
     return this.gameStoreBoardCategoryRepository.save(newCategory);
   }
+
   findAll() {
     return `This action returns all gameStore`;
   }
