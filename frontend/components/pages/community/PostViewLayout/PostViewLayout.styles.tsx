@@ -12,6 +12,7 @@ export const usePostViewLayoutStyles = createStyles((theme) => ({
     width: "100%",
     flexDirection: "column",
     alignItems: "center",
+    paddingTop: 20,
   },
 
   rightContainer: {

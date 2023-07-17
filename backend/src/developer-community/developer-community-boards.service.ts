@@ -190,13 +190,11 @@ export class BoardsService {
         },
       );
       const { data, cursor } = await paginator.paginate(queryBuilder);
-      const modifiedData = data.map((board) => {
+      data.map((board) => {
         if (board.parent.deletedAt !== null) {
           board.parent.title = null;
           board.parent.content = null;
-          board.parent.like = null;
           board.parent.child = null;
-          board.parent.likedUsers = null;
         }
         return board;
       });
@@ -227,9 +225,7 @@ export class BoardsService {
       if (board.deletedAt !== null) {
         board.title = null;
         board.content = null;
-        board.like = null;
         board.child = null;
-        board.likedUsers = null;
         board.writer = null;
       }
       return board;

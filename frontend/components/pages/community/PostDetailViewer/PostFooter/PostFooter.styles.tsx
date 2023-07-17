@@ -1,21 +1,29 @@
 import { createStyles } from "@mantine/core";
 
 export const usePostFooterStyles = createStyles((theme) => ({
+  deleteAlert:{
+    marginBottom: '1rem',
+  },
+
+  deleteButton:{
+    border: `1px solid ${theme.colors.red[6]}`,
+  },
+
   footer: {
-    padding: "10px 5px",
+    padding: "0px 5px 5px 5px",
     borderBottom: `2px solid ${theme.colors.gray[9]}`,
   },
 
-  commentButton: {
-    width: 34,
-    height: 34,
+  dotButton: {
+    height: 25,
     borderRadius: 5,
-    border: `2px solid ${theme.colors.gray[9]}`,
+
     "&:hover": {
-      backgroundColor: theme.colors.gray[2],
-    },
-    "&:active": {
-      backgroundColor: theme.colors.gray[3],
-    },
+      backgroundColor: theme.colors.gray[1],
+    }
+  },
+
+  menuItem: {
+    padding: 5
   },
 }));

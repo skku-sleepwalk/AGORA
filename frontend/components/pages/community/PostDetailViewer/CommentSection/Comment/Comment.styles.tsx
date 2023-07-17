@@ -5,6 +5,10 @@ export const useCommentStyles = createStyles((theme) => ({
     paddingBottom: 4,
   },
 
+  deleteButton: {
+    border: `1px solid ${theme.colors.red[6]}`,
+  },
+
   divider: {
     marginBottom: 4,
   },
@@ -20,5 +24,18 @@ export const useCommentStyles = createStyles((theme) => ({
 
   content: {
     lineHeight: 0.5,
+  },
+
+  dotButton: {
+    height: 22,
+    borderRadius: 5,
+
+    "&:hover": {
+      backgroundColor: theme.colors.gray[1],
+    },
+  },
+
+  menuItem: {
+    padding: 5,
   },
 }));
