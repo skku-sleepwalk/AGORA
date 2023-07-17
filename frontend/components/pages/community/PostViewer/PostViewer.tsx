@@ -61,7 +61,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                     className={classes.imageModal}
                     withCloseButton={false}
                   >
-                    <PhotoViewer imageSrc={imageSrcArray} />
+                    <PhotoViewer imageSrc={imageSrcArray}/>
                   </Modal>
                   <Image
                     onClick={(e) => {
@@ -89,7 +89,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
         centered
         scrollAreaComponent={ScrollArea.Autosize}
       >
-        <PostDetailViewer post={post} close={close} />
+        <PostDetailViewer post={post} />
       </Modal>
     </>
   );
