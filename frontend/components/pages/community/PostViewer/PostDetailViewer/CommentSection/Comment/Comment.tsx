@@ -38,7 +38,9 @@ import { useContext } from "react";
 import { CommunityContext } from "../../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../../hooks/useAuth";
+import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../../utils/api/deletepost";
+
 export interface CommentProps {
   post: Board;
   onSubmitComment?: (content: string, parentId: string) => Promise<any>;
@@ -85,6 +87,8 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
+  const { mutateComment } = useContext(CommentContext);
+
   let commentContent = post.content;
   if (post.content === null) {
     commentContent = "(삭제된 게시물 입니다.)";
@@ -107,8 +111,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               onCancelClick={() => setIsEditing({ Edit: false })}
               onEditClick={() => {
                 setIsEditing({ Edit: false });
-                mutate();
-                mutatePost();
+                mutateComment();
               }}
               commentId={post.id}
               content={post.content}
@@ -135,14 +138,11 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     onClick={() => {
                       setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
-
                       deletePost(post.id);
-                      mutate();
-                      mutatePost();
+                      mutateComment();
                     }}
                   >
-                    {" "}
-                    삭제{" "}
+                    삭제
                   </Button>
                 </Group>
               </Stack>
@@ -154,8 +154,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 onClick={() => {
                   onLikeClick({ boardId: post.id, token })
                     .then(() => {
-                      mutate();
-                      mutatePost();
+                      mutateComment();
                     })
                     .catch((error) => {
                       // 오류 처리
@@ -197,8 +196,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                           icon={<IconBell size={18} stroke={2} />}
                           className={classes.menuItem}
                         >
-                          {" "}
-                          신고하기{" "}
+                          신고하기
                         </Menu.Item>
                       )}
                       {isEditing.canEdit && (
@@ -210,8 +208,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                             icon={<IconPencil size={18} stroke={2} />}
                             className={classes.menuItem}
                           >
-                            {" "}
-                            수정하기{" "}
+                            수정하기
                           </Menu.Item>
                           <Menu.Divider />
                           <Menu.Item
@@ -221,8 +218,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                             icon={<IconTrash size={18} stroke={2} />}
                             className={classes.menuItem}
                           >
-                            {" "}
-                            삭제하기{" "}
+                            삭제하기
                           </Menu.Item>
                         </>
                       )}
