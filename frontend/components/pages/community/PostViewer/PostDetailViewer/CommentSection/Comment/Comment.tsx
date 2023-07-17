@@ -100,14 +100,17 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
-          {!isEditing.Edit && (
-            <TypographyStylesProvider>
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{ __html: commentContent }}
-              />
-            </TypographyStylesProvider>
-          )}
+          {!isEditing.Edit &&
+            (post.content !== null ? (
+              <TypographyStylesProvider>
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+              </TypographyStylesProvider>
+            ) : (
+              <Text color={theme.colors.gray[4]}>(삭제된 댓글입니다.)</Text>
+            ))}
           {isEditing.Edit && (
             <CommentEditorPart
               onCancelClick={() => {
@@ -189,49 +192,50 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     </Text>
                   </Group>
                 </InvisibleButton>
-                {!isDeleting.delete && (
-                  <Menu shadow="md" width={120} position="bottom-start" offset={1}>
-                    <Menu.Target>
-                      <UnstyledButton className={classes.dotButton}>
-                        <IconDots size={22} color={theme.colors.gray[6]} />
-                      </UnstyledButton>
-                    </Menu.Target>
-                    <Menu.Dropdown>
-                      {!isEditing.canEdit && (
-                        <Menu.Item
-                          icon={<IconBell size={18} stroke={2} />}
-                          className={classes.menuItem}
-                        >
-                          신고하기
-                        </Menu.Item>
-                      )}
-                      {isEditing.canEdit && (
-                        <>
+                {!isDeleting.delete &&
+                  (post.content !== null ? (
+                    <Menu shadow="md" width={120} position="bottom-start" offset={1}>
+                      <Menu.Target>
+                        <UnstyledButton className={classes.dotButton}>
+                          <IconDots size={22} color={theme.colors.gray[6]} />
+                        </UnstyledButton>
+                      </Menu.Target>
+                      <Menu.Dropdown>
+                        {!isEditing.canEdit && (
                           <Menu.Item
-                            onClick={() => {
-                              setIsEditing({ Edit: true });
-                              canCloseModal();
-                            }}
-                            icon={<IconPencil size={18} stroke={2} />}
+                            icon={<IconBell size={18} stroke={2} />}
                             className={classes.menuItem}
                           >
-                            수정하기
+                            신고하기
                           </Menu.Item>
-                          <Menu.Divider />
-                          <Menu.Item
-                            onClick={() => {
-                              setIsDeleting({ delete: true });
-                            }}
-                            icon={<IconTrash size={18} stroke={2} />}
-                            className={classes.menuItem}
-                          >
-                            삭제하기
-                          </Menu.Item>
-                        </>
-                      )}
-                    </Menu.Dropdown>
-                  </Menu>
-                )}
+                        )}
+                        {isEditing.canEdit && (
+                          <>
+                            <Menu.Item
+                              onClick={() => {
+                                setIsEditing({ Edit: true });
+                                canCloseModal();
+                              }}
+                              icon={<IconPencil size={18} stroke={2} />}
+                              className={classes.menuItem}
+                            >
+                              수정하기
+                            </Menu.Item>
+                            <Menu.Divider />
+                            <Menu.Item
+                              onClick={() => {
+                                setIsDeleting({ delete: true });
+                              }}
+                              icon={<IconTrash size={18} stroke={2} />}
+                              className={classes.menuItem}
+                            >
+                              삭제하기
+                            </Menu.Item>
+                          </>
+                        )}
+                      </Menu.Dropdown>
+                    </Menu>
+                  ) : null)}
               </>
             )}
           </Group>
