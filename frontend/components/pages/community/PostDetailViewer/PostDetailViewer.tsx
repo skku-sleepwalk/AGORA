@@ -14,7 +14,7 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 import CommentSection from "./CommentSection/CommentSection";
 import { Board } from "../../../../types/api/boards";
 import { uploadPost } from "../../../../utils/api/uploadPost";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
@@ -26,11 +26,13 @@ import { patchPost } from "../../../../utils/api/patchPost";
 import { showNotification } from "../../../../utils/notifications";
 import RichEditor from "../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../PostWriter/CategorySelector/CategorySelector";
-import { IconAlertCircle } from "@tabler/icons-react";
+import { IconAlertCircle, IconChevronLeft } from "@tabler/icons-react";
 import { mutate } from "swr";
 import { ButtonProgress } from "../PostWriter/ButtonProgress/ButtonProgress";
 import PostFooter from "./PostFooter/PostFooter";
-import { ModalContext } from "../PostViewer/PostViewer";
+import { ModalContext, provideText } from "../PostViewer/PostViewer";
+import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
+import { useRouter } from "next/router";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -40,6 +42,7 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
+  const router = useRouter();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
 
   // 모든 Category 이름 배열로 반환
@@ -70,6 +73,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const editorRef = useRef<Editor>(null);
   const { canCloseModal } = useContext(ModalContext);
 
+  // post가 post인지 child인지 확인
+  const postType = post.parent === null ? "post" : "child";
+
   const { mutatePost } = useContext(CommunityContext);
 
   const postData: Board = post;
@@ -82,6 +88,20 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
     <CardContainer className={classes.postContainer}>
       <Stack spacing={15}>
         <Stack spacing={14}>
+          {postType === "child" && (
+            <InvisibleButton
+              center={false}
+              onClick={(e) => {
+                e.stopPropagation();
+                router.replace(`http://localhost:3000/community/${post.parent?.id}`);
+              }}
+            >
+              <Group spacing={0}>
+                <IconChevronLeft color="#228be6" />
+                {provideText(post)}
+              </Group>
+            </InvisibleButton>
+          )}
           <PostHeader user={post.writer} date={post.createdAt} />
           {!isEditing.Edit && (
             <Stack spacing={7}>
@@ -89,7 +109,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               <TypographyStylesProvider>
                 <div
                   className={classes.content}
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: post.content !== null ? post.content : "(삭제된 게시물 입니다.)",
+                  }}
                 />
               </TypographyStylesProvider>
             </Stack>
@@ -192,40 +214,42 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </form>
           )}
         </Stack>
-        {!isEditing.Edit && (
-          <MultiSelect
-            className={classes.multiSelect}
-            data={data}
-            value={post.categoryTypes.map((item) => item.name)}
-            readOnly
+        <Stack spacing={0}>
+          {!isEditing.Edit && (
+            <MultiSelect
+              className={classes.multiSelect}
+              data={data}
+              value={post.categoryTypes.map((item) => item.name)}
+              readOnly
+            />
+          )}
+          <PostFooter
+            onCommentClick={() => {
+              toggleEditor();
+            }}
+            onLikeClick={() => {
+              onLikeClick({ boardId: post.id, token })
+                .then(() => {
+                  mutatePost();
+                  mutatePostDetail();
+                })
+                .catch((error) => {
+                  // 오류 처리
+                });
+            }}
+            onEditClick={() => {
+              setIsEditing({ Edit: true });
+              canCloseModal();
+            }}
+            postId={post.id}
+            // closeFunction={close}
+            commentCount={post.child}
+            likeCount={post.like}
+            isliking={isliking}
+            isEditing={isEditing.Edit}
+            canEdit={user ? post.writer.id === user.id : false}
           />
-        )}
-        <PostFooter
-          onCommentClick={() => {
-            toggleEditor();
-          }}
-          onLikeClick={() => {
-            onLikeClick({ boardId: post.id, token })
-              .then(() => {
-                mutatePost();
-                mutatePostDetail();
-              })
-              .catch((error) => {
-                // 오류 처리
-              });
-          }}
-          onEditClick={() => {
-            setIsEditing({ Edit: true });
-            canCloseModal();
-          }}
-          postId={post.id}
-          // closeFunction={close}
-          commentCount={post.child}
-          likeCount={post.like}
-          isliking={isliking}
-          isEditing={isEditing.Edit}
-          canEdit={user ? post.writer.id === user.id : false}
-        />
+        </Stack>
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
