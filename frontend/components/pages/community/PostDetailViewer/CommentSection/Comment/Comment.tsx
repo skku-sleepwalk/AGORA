@@ -152,13 +152,10 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                     className={classes.deleteButton}
                     onClick={() => {
                       setIsDeleting({ delete: false });
-
-                      // 댓글 삭제시 함수mutate();
+                      // 댓글 삭제시 함수
                       //비동기
-
                       deletePost(post.id).then(() => {
                         mutate();
-
                         mutateComment();
                         showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
                       });

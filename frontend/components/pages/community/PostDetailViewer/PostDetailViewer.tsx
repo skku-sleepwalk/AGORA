@@ -6,6 +6,7 @@ import {
   Stack,
   TextInput,
   Title,
+  Text,
   TypographyStylesProvider,
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
@@ -102,18 +103,22 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               </Group>
             </InvisibleButton>
           )}
-          <PostHeader user={post.writer} date={post.createdAt} />
+          {post.writer !== null ? <PostHeader user={post.writer} date={post.createdAt} /> : null}
           {!isEditing.Edit && (
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>
-              <TypographyStylesProvider>
-                <div
-                  className={classes.content}
-                  dangerouslySetInnerHTML={{
-                    __html: post.content !== null ? post.content : "(삭제된 게시물 입니다.)",
-                  }}
-                />
-              </TypographyStylesProvider>
+              {post.content !== null ? (
+                <TypographyStylesProvider>
+                  <div
+                    className={classes.content}
+                    dangerouslySetInnerHTML={{
+                      __html: post.content,
+                    }}
+                  />
+                </TypographyStylesProvider>
+              ) : (
+                <Text color="gray">(삭제된 게시물 입니다.)</Text>
+              )}
             </Stack>
           )}
           {isEditing.Edit && (
@@ -246,8 +251,8 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             commentCount={post.child}
             likeCount={post.like}
             isliking={isliking}
-            isEditing={isEditing.Edit}
-            canEdit={user ? post.writer.id === user.id : false}
+            isEditing={post.content !== null ? isEditing.Edit : true}
+            canEdit={user && post.writer !== null ? post.writer.id === user.id : false}
           />
         </Stack>
         <CommentSection
