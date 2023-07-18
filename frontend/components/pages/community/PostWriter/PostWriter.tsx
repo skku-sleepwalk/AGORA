@@ -58,7 +58,6 @@ function PostWriter() {
             e.currentTarget.blur();
             setIsKeepMounted(true);
             open();
-            setcategorychange(false);
           }}
           className={classes.TextInput}
           value={form.values.title}
@@ -84,6 +83,10 @@ function PostWriter() {
             };
             if (categorychanged === false || postData.category.length === 0) {
               showNotification("카테고리 없음", "카테고리를 1개 이상 추가해주세요.");
+            } else if (postData.content === "<p></p>") {
+              showNotification("본문 없음", "본문 내용을 추가해주세요.");
+            } else if (postData.title === "") {
+              showNotification("제목 없음", "제목을 추가해주세요.");
             } else {
               uploadPost(
                 {
@@ -98,6 +101,7 @@ function PostWriter() {
                 close();
                 showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
                 mutatePost();
+                setcategorychange(false);
               });
             }
           })}
