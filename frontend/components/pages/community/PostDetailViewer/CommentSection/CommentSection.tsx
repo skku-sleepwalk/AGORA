@@ -1,4 +1,4 @@
-import { Center, Loader, Stack, Text } from "@mantine/core";
+import { Center, Collapse, Loader, Stack, Text } from "@mantine/core";
 import CommentEditor from "./CommentEditor/CommentEditor";
 import Comment from "./Comment/Comment";
 import { MOCKUP_USER } from "../../../../../mockups/user";
@@ -12,6 +12,7 @@ import { CommunityContext } from "../../../../../pages/community";
 interface CommentSectionProps {
   parentId: string;
   categoryNames: string[];
+  editorOpen: boolean;
   onSubmitComment?: (content: string, parentId: string) => Promise<any>;
 }
 
@@ -19,7 +20,12 @@ export const CommentContext = createContext({
   mutateComment: () => {},
 });
 
-function CommentSection({ parentId, categoryNames, onSubmitComment }: CommentSectionProps) {
+function CommentSection({
+  parentId,
+  categoryNames,
+  editorOpen,
+  onSubmitComment,
+}: CommentSectionProps) {
   const { classes } = useCommentSectionStyles();
   const {
     data: commentData,
@@ -43,16 +49,19 @@ function CommentSection({ parentId, categoryNames, onSubmitComment }: CommentSec
       }}
     >
       <Stack spacing={0} className={classes.commentSection}>
-        <CommentEditor
-          user={MOCKUP_USER}
-          onSubmit={async (content) => {
-            return onSubmitComment?.(content, parentId).then(() => {
-              mutateComment();
-              mutatePost();
-              showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
-            });
-          }}
-        />
+        <Collapse in={editorOpen}>
+          <CommentEditor
+            user={MOCKUP_USER}
+            placeholder={"댓글을 작성해주세요."}
+            onSubmit={async (content) => {
+              return onSubmitComment?.(content, parentId).then(() => {
+                mutateComment();
+                mutatePost();
+                showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
+              });
+            }}
+          />
+        </Collapse>
         {commentData?.map((data) => {
           return data.data.map((data) => (
             <Comment

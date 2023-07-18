@@ -8,6 +8,7 @@ import Subscript from "@tiptap/extension-subscript";
 import Highlight from "@tiptap/extension-highlight";
 import { RichTextEditor } from "@mantine/tiptap";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import Placeholder from "@tiptap/extension-placeholder";
 import { lowlight } from "lowlight";
 import { Alert, Box, Button, Group, Stack } from "@mantine/core";
 import Image from "@tiptap/extension-image";
@@ -22,10 +23,11 @@ import { useSetState } from "@mantine/hooks";
 
 export interface CommentEditorProps {
   user: User;
+  placeholder: string;
   onSubmit?: (content: string) => Promise<any>;
 }
 
-function CommentEditor({ user, onSubmit }: CommentEditorProps) {
+function CommentEditor({ user, placeholder, onSubmit }: CommentEditorProps) {
   const { classes } = useCommentEditorStyles();
   const editor = useEditor({
     extensions: [
@@ -38,6 +40,7 @@ function CommentEditor({ user, onSubmit }: CommentEditorProps) {
       CodeBlockLowlight.configure({
         lowlight,
       }),
+      Placeholder.configure({ placeholder: placeholder }),
       Image,
     ],
   });
