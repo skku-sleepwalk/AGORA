@@ -274,6 +274,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
         <Collapse in={editorOpen}>
           <CommentEditor
             user={MOCKUP_USER}
+            placeholder={"답글을 작성해주세요."}
             onSubmit={async (content) => {
               return onSubmitComment?.(content, post.id).then(() => {
                 mutate();
