@@ -119,12 +119,12 @@ export class GameStoreService {
       title,
       description,
       shortDescription,
-      snsUrls,
       developer,
       distributor,
       genres: [],
       author,
       cost,
+      snsUrls,
       likedUsers: [],
     });
 
