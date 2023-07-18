@@ -137,18 +137,22 @@ export function CommentEditorPart({
                   className={classes.EditButton}
                   onClick={() => {
                     // alert(editor!.getHTML());
-                    patchComment({
-                      boardId: commentId,
-                      data: {
-                        title: null,
-                        content: editor!.getHTML(),
-                        categoryNames,
-                      },
-                      token,
-                    }).then(() => {
-                      showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
-                      onEditClick !== undefined ? onEditClick() : null;
-                    });
+                    if (editor!.getHTML() === "<p></p>") {
+                      showNotification("댓글 없음", "댓글 내용을 입력해 주세요.");
+                    } else {
+                      patchComment({
+                        boardId: commentId,
+                        data: {
+                          title: null,
+                          content: editor!.getHTML(),
+                          categoryNames,
+                        },
+                        token,
+                      }).then(() => {
+                        showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
+                        onEditClick !== undefined ? onEditClick() : null;
+                      });
+                    }
                   }}
                 >
                   수정
