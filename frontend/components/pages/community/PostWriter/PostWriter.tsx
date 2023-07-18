@@ -40,6 +40,7 @@ function PostWriter() {
   const { mutatePost } = useContext(CommunityContext);
   const { token } = useAuth();
   const [isKeepMounted, setIsKeepMounted] = useState(true);
+  const [categorychanged, setcategorychange] = useState(false);
   return (
     <>
       <CardContainer className={classes.container}>
@@ -57,6 +58,7 @@ function PostWriter() {
             e.currentTarget.blur();
             setIsKeepMounted(true);
             open();
+            setcategorychange(false);
           }}
           className={classes.TextInput}
           value={form.values.title}
@@ -80,21 +82,24 @@ function PostWriter() {
               ...values,
               content,
             };
-
-            uploadPost(
-              {
-                title: postData.title,
-                content: postData.content,
-                categoryNames: postData.category,
-              },
-              token
-            ).then(() => {
-              form.setFieldValue("title", "");
-              setIsKeepMounted(false);
-              close();
-              showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
-              mutatePost();
-            });
+            if (categorychanged === false || postData.category.length === 0) {
+              showNotification("카테고리 없음", "카테고리를 1개 이상 추가해주세요.");
+            } else {
+              uploadPost(
+                {
+                  title: postData.title,
+                  content: postData.content,
+                  categoryNames: postData.category,
+                },
+                token
+              ).then(() => {
+                form.setFieldValue("title", "");
+                setIsKeepMounted(false);
+                close();
+                showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+                mutatePost();
+              });
+            }
           })}
         >
           <FocusTrap active={opened}>
@@ -114,6 +119,7 @@ function PostWriter() {
               <CategorySelector
                 onChange={(category) => {
                   form.setFieldValue("category", category);
+                  setcategorychange(true);
                 }}
               />
               <Group position="right">

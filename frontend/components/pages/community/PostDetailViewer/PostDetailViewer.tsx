@@ -18,7 +18,7 @@ import React, { useContext, useRef } from "react";
 import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
-import { useSetState } from "@mantine/hooks";
+import { useDisclosure, useSetState } from "@mantine/hooks";
 import { CategoryNum, Values } from "../../../../constants/category";
 import { useForm } from "@mantine/form";
 import { Editor } from "@tiptap/react";
@@ -43,6 +43,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
   const router = useRouter();
+  const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
 
   // 모든 Category 이름 배열로 반환
   const data: string[] = [];
@@ -223,6 +224,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             />
           )}
           <PostFooter
+            onCommentClick={() => {
+              toggleEditor();
+            }}
             onLikeClick={() => {
               onLikeClick({ boardId: post.id, token })
                 .then(() => {
@@ -249,6 +253,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
+          editorOpen={editorOpen}
           onSubmitComment={async (content, parentId) => {
             return uploadPost(
               {

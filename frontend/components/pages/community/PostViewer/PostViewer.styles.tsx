@@ -26,12 +26,13 @@ export const usePostViewerStyles = createStyles(
         width: "100%",
         height: "2em",
         background:
-          "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 100%)",
+          "linear-gradient(to bottom, rgba(252, 252, 254, 0), rgba(252, 252, 254, 1) 100%)",
       },
     },
 
     content: {
       lineHeight: 1.5,
+      marginBottom: "0px !important",
       maxHeight: maxContentHeight,
       overflow: "hidden",
       borderBottom: "none",
@@ -45,9 +46,13 @@ export const usePostViewerStyles = createStyles(
     },
 
     multiSelect: {
+      ".mantine-MultiSelect-values": {
+        backgroundColor: "transparent",
+      },
       ".mantine-MultiSelect-input": {
         padding: 0,
         border: "none",
+        backgroundColor: "transparent",
       },
     },
 

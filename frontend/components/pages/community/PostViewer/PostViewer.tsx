@@ -46,7 +46,10 @@ export const ModalContext = createContext({
 // HTML 태그 제거 및 문자열 길이를 제한하는 함수
 function extractText(htmlString: string): string {
   const cleanHtml = htmlString.replace(/<.*?>/g, "");
-  const truncatedText = cleanHtml.slice(0, 20);
+  let truncatedText = cleanHtml.slice(0, 20);
+  if (cleanHtml.length > 20) {
+    truncatedText += "...";
+  }
 
   return truncatedText;
 }
