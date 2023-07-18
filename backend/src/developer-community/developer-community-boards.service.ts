@@ -156,10 +156,15 @@ export class BoardsService {
       });
 
     const board: Board = await queryBuilder.getOne();
+    if (board.deletedAt) {
+      board.title = null;
+      board.content = null;
+      board.writer = null;
+    }
     if (board.parent && board.parent.deletedAt) {
       board.parent.title = null;
       board.parent.content = null;
-      board.parent.child = null;
+      board.parent.writer = null;
     }
     return board;
   }
@@ -207,7 +212,7 @@ export class BoardsService {
         if (board.parent.deletedAt !== null) {
           board.parent.title = null;
           board.parent.content = null;
-          board.parent.child = null;
+          board.parent.writer = null;
         }
         return board;
       });
@@ -237,7 +242,6 @@ export class BoardsService {
       if (board.deletedAt !== null) {
         board.title = null;
         board.content = null;
-        board.child = null;
         board.writer = null;
       }
       return board;
@@ -387,7 +391,7 @@ export class BoardsService {
         id,
       })
       .getMany();
-    if (children) {
+    if (children.length !== 0) {
       await this.boardRepository.softDelete(id);
     } else {
       await this.boardRepository.delete(id);
