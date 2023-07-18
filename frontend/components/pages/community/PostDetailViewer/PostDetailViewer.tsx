@@ -6,7 +6,9 @@ import {
   Stack,
   TextInput,
   Title,
+  Text,
   TypographyStylesProvider,
+  useMantineTheme,
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
@@ -41,6 +43,8 @@ export interface PostDetailViewerProps {
 
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
+  const theme = useMantineTheme();
+
   const { token, user } = useAuth();
   const router = useRouter();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
@@ -102,18 +106,22 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               </Group>
             </InvisibleButton>
           )}
-          <PostHeader user={post.writer} date={post.createdAt} />
+          {post.writer !== null ? <PostHeader user={post.writer} date={post.createdAt} /> : null}
           {!isEditing.Edit && (
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>
-              <TypographyStylesProvider>
-                <div
-                  className={classes.content}
-                  dangerouslySetInnerHTML={{
-                    __html: post.content !== null ? post.content : "(삭제된 게시물 입니다.)",
-                  }}
-                />
-              </TypographyStylesProvider>
+              {post.content !== null ? (
+                <TypographyStylesProvider>
+                  <div
+                    className={classes.content}
+                    dangerouslySetInnerHTML={{
+                      __html: post.content,
+                    }}
+                  />
+                </TypographyStylesProvider>
+              ) : (
+                <Text color={theme.colors.gray[4]}>(삭제된 게시물 입니다.)</Text>
+              )}
             </Stack>
           )}
           {isEditing.Edit && (
@@ -124,21 +132,28 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   ...values,
                   content,
                 };
-
-                patchPost({
-                  boardId: post.id,
-                  data: {
-                    title: postData.title,
-                    content: postData.content,
-                    categoryNames: postData.category,
-                  },
-                  token,
-                }).then(() => {
-                  showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
-                  setIsEditing({ Edit: false });
-                  mutatePost();
-                  mutatePostDetail();
-                });
+                if (postData.category.length === 0) {
+                  showNotification("카테고리 없음", "카테고리를 1개 이상 추가해주세요.");
+                } else if (postData.content === "<p></p>") {
+                  showNotification("본문 없음", "본문 내용을 추가해주세요.");
+                } else if (postData.title === "") {
+                  showNotification("제목 없음", "제목을 추가해주세요.");
+                } else {
+                  patchPost({
+                    boardId: post.id,
+                    data: {
+                      title: postData.title,
+                      content: postData.content,
+                      categoryNames: postData.category,
+                    },
+                    token,
+                  }).then(() => {
+                    showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
+                    setIsEditing({ Edit: false });
+                    mutatePost();
+                    mutatePostDetail();
+                  });
+                }
               })}
             >
               <Stack className={classes.editorContainer} spacing={17}>
@@ -246,8 +261,8 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             commentCount={post.child}
             likeCount={post.like}
             isliking={isliking}
-            isEditing={isEditing.Edit}
-            canEdit={user ? post.writer.id === user.id : false}
+            isEditing={post.content !== null ? isEditing.Edit : true}
+            canEdit={user && post.writer !== null ? post.writer.id === user.id : false}
           />
         </Stack>
         <CommentSection
@@ -255,14 +270,18 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
           categoryNames={post.categoryTypes.map((category) => category.name)}
           editorOpen={editorOpen}
           onSubmitComment={async (content, parentId) => {
-            return uploadPost(
-              {
-                content,
-                parentId,
-                categoryNames: post.categoryTypes.map((category) => category.name),
-              },
-              token
-            );
+            if (content === "<p></p>") {
+              return showNotification("댓글 없음", "댓글 내용을 입력해 주세요.");
+            } else {
+              return uploadPost(
+                {
+                  content,
+                  parentId,
+                  categoryNames: post.categoryTypes.map((category) => category.name),
+                },
+                token
+              );
+            }
           }}
         />
       </Stack>
