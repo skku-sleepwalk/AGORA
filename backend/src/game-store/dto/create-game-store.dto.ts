@@ -1,16 +1,5 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import {
-  Cost,
-  GameStoreGenre,
-  SNSUrls,
-  ShortDescription,
-} from '../entities/game-store.entity';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Cost, SNSUrls, ShortDescription } from '../entities/game-store.entity';
 
 export class CreateGameStoreDto {
   @IsNotEmpty()

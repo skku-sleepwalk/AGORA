@@ -25,7 +25,7 @@ export class BoardsController {
   @Post()
   @UsePipes(ValidationPipe)
   create(
-    @Headers('authorization') writerEmail: string,
+    @Headers('Authorization') writerEmail: string,
     @Body() createBoardDto: CreateBoardDto,
   ) {
     return this.boardsService.createBoard(writerEmail, createBoardDto);

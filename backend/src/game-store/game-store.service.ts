@@ -12,7 +12,7 @@ import {
   ShortDescriptionRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
-import { Connection, SelectQueryBuilder } from 'typeorm';
+import { Connection, QueryBuilder, SelectQueryBuilder } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
@@ -255,9 +255,23 @@ export class GameStoreService {
   findAll() {
     return `This action returns all gameStore`;
   }
+  findOneGameStore(id: string) {
+    const queryBuilder: SelectQueryBuilder<GameStore> =
+      this.getGameStoreWithRelations();
+    const gameStore = queryBuilder.where('gameStore.id = :id', { id });
 
-  findOne(id: number) {
-    return `This action returns a #${id} gameStore`;
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    return gameStore;
   }
 
   update(id: number, updateGameStoreDto: UpdateGameStoreDto) {
@@ -275,7 +289,7 @@ export class GameStoreService {
         {
           message: '입력한 데이터가 올바르지 않습니다.',
           error: {
-            gameStoreId: '해당 ID를 가진 게임 스토어가 존재하지 않습니다.',
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
           },
         },
         HttpStatus.BAD_REQUEST,
@@ -289,7 +303,7 @@ export class GameStoreService {
         {
           message: '입력한 데이터가 올바르지 않습니다.',
           error: {
-            userEamil: `Email이 ${userEmail}인 게시물을 찾을 수 없습니다.`,
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
           },
         },
         HttpStatus.BAD_REQUEST,

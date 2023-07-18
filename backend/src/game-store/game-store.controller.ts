@@ -22,7 +22,7 @@ export class GameStoreController {
 
   @Post()
   createGameStore(
-    @Headers('authorization') authorEmail: string,
+    @Headers('Authorization') authorEmail: string,
     @Body() createGameStoreDto: CreateGameStoreDto,
   ) {
     return this.gameStoreService.createGameStore(
@@ -40,7 +40,7 @@ export class GameStoreController {
 
   @Post('boards')
   createGameStoreBoard(
-    @Headers('authorization') writerEmail: string,
+    @Headers('Authorization') writerEmail: string,
     @Body() createGameStoreBoardDto: CreateGameStoreBoardDto,
   ) {
     return this.gameStoreService.createGameStoreBoards(
@@ -63,9 +63,9 @@ export class GameStoreController {
     return this.gameStoreService.findAll();
   }
 
-  @Get(':id')
+  @Get('/id/:id')
   findOne(@Param('id') id: string) {
-    return this.gameStoreService.findOne(+id);
+    return this.gameStoreService.findOneGameStore(id);
   }
 
   @Patch()
@@ -79,7 +79,7 @@ export class GameStoreController {
   @Patch('/like')
   gameStoreLikeUpdate(
     @Headers('Authorization') userEmail: string,
-    @Query('gameStoreId') gameStoreId: string,
+    @Query('id') gameStoreId: string,
   ) {
     return this.gameStoreService.gameStoreLikeUpdate(gameStoreId, userEmail);
   }

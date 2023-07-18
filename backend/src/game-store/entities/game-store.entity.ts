@@ -111,6 +111,12 @@ export class SNSUrls {
   @Column({ nullable: true })
   facebook: string | null;
 
+  @Column({ nullable: true })
+  instagram: string | null;
+
+  @Column({ nullable: true })
+  customPage: string | null;
+
   @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)
   gameStore: GameStore;
 }
