@@ -54,6 +54,7 @@ function CommentSection({
             user={MOCKUP_USER}
             placeholder={"댓글을 작성해주세요."}
             onSubmit={async (content) => {
+
               if (content === "<p></p>") {
                 return showNotification("댓글 내용 없음", "댓글 내용을 작성해주세요.");
               } else {
@@ -63,6 +64,7 @@ function CommentSection({
                   showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
                 });
               }
+
             }}
           />
         </Collapse>
