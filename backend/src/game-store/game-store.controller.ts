@@ -14,7 +14,8 @@ import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
-import { CreateGameStoreGenreDto } from './dto/create-game-genre.dto';
+import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
+import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -31,11 +32,20 @@ export class GameStoreController {
     );
   }
 
-  @Post('genre')
-  createGameStoreGenre(
-    @Body() createGameStoreGenreDto: CreateGameStoreGenreDto,
+  @Post('tags')
+  createGameStoreTag(@Body() createGameStoreTagDto: CreateGameStoreTagDto) {
+    return this.gameStoreService.createGameStoreTag(createGameStoreTagDto);
+  }
+
+  @Post('reviews')
+  createGameStoreReview(
+    @Headers('Authorization') writerEmail: string,
+    @Body() createGameStoreReviewDto: CreateGameStoreReviewDto,
   ) {
-    return this.gameStoreService.createGameStoreGenre(createGameStoreGenreDto);
+    return this.gameStoreService.createGameStoreReview(
+      writerEmail,
+      createGameStoreReviewDto,
+    );
   }
 
   @Post('boards')
@@ -61,6 +71,18 @@ export class GameStoreController {
   @Get()
   findAll() {
     return this.gameStoreService.findAll();
+  }
+
+  @Get('/tag')
+  findByTag(
+    @Query('name') tagName: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+  ) {
+    return this.gameStoreService.getGameStoreByTag(
+      { afterCursor, beforeCursor },
+      tagName,
+    );
   }
 
   @Get('/id/:id')

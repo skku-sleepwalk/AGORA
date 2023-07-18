@@ -7,10 +7,11 @@ import {
 import {
   Cost,
   GameStore,
-  GameStoreGenre,
+  GameStoreTag,
   SNSUrls,
   ShortDescription,
 } from './entities/game-store.entity';
+import { GameStoreReview } from './entities/game-store-review.entity';
 
 @EntityRepository(GameStore)
 export class GameStoreRepository extends Repository<GameStore> {}
@@ -21,11 +22,14 @@ export class ShortDescriptionRepository extends Repository<ShortDescription> {}
 @EntityRepository(SNSUrls)
 export class SNSUrlsRepository extends Repository<SNSUrls> {}
 
-@EntityRepository(GameStoreGenre)
-export class GameStoreGenreRepository extends Repository<GameStoreGenre> {}
-
 @EntityRepository(Cost)
 export class CostRepository extends Repository<Cost> {}
+
+@EntityRepository(GameStoreTag)
+export class GameStoreTagRepository extends Repository<GameStoreTag> {}
+
+@EntityRepository(GameStoreReview)
+export class GameStoreReviewRepository extends Repository<GameStoreReview> {}
 
 @EntityRepository(GameStoreBoard)
 export class GameStoreBoardRepository extends Repository<GameStoreBoard> {}

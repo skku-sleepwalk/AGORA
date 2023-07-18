@@ -13,8 +13,6 @@ import {
 } from 'typeorm';
 import { GameStore } from './game-store.entity';
 
-export type likeAction = 'like' | 'unlike';
-
 @Entity('GameStoreBoard')
 export class GameStoreBoard {
   @PrimaryGeneratedColumn('uuid')

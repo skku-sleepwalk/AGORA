@@ -7,7 +7,11 @@ import {
   GameStoreBoard,
   GameStoreBoardLikeRelation,
 } from 'src/game-store/entities/game-store-board.entity';
-import { GameStore } from 'src/game-store/entities/game-store.entity';
+import { GameStoreReview } from 'src/game-store/entities/game-store-review.entity';
+import {
+  GameStore,
+  PlayTimeRelation,
+} from 'src/game-store/entities/game-store.entity';
 import {
   Column,
   CreateDateColumn,
@@ -53,6 +57,15 @@ export class User {
 
   @OneToMany(() => GameStore, (board) => board.author)
   gameStores: Array<GameStore>;
+
+  @OneToMany(() => PlayTimeRelation, (relation) => relation.user)
+  playtimeRelations: Array<PlayTimeRelation>;
+
+  @OneToMany(() => GameStoreReview, (review) => review.writer)
+  gameStoreReviews: Array<GameStoreReview>;
+
+  @OneToMany(() => GameStoreBoardLikeRelation, (relation) => relation.user)
+  gameStoreReviewLikeRelations: Array<GameStoreBoardLikeRelation>;
 
   @OneToMany(() => GameStoreBoard, (board) => board.writer)
   gameStoreBoards: Array<GameStoreBoard>;

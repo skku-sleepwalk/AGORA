@@ -15,8 +15,10 @@ import {
   Relation,
 } from 'typeorm';
 import { GameStoreBoard } from './game-store-board.entity';
-import { Exclude, Transform } from 'class-transformer';
+import { TagType } from '../dto/create-game-tag.dto';
+import { GameStoreReview } from './game-store-review.entity';
 
+export type tagType = '장르' | '분위기' | '그래픽';
 @Entity('GameStore')
 export class GameStore {
   @PrimaryGeneratedColumn('uuid')
@@ -59,12 +61,18 @@ export class GameStore {
   @JoinTable()
   likedUsers: Array<User>;
 
-  @ManyToMany(() => GameStoreGenre)
+  @ManyToMany(() => GameStoreTag)
   @JoinTable()
-  readonly genres: Array<GameStoreGenre>;
+  readonly tags: Array<GameStoreTag>;
 
   @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
   gameStoreBoards: Array<GameStoreBoard>;
+
+  @OneToMany(() => GameStoreReview, (review) => review.gameStore)
+  gameStoreReview: Array<GameStoreReview>;
+
+  @OneToMany(() => PlayTimeRelation, (relation) => relation.gameStore)
+  playtimeRelations: Array<PlayTimeRelation>;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -142,38 +150,38 @@ export class Cost {
   saledPrice: number;
 
   @Column({ nullable: true })
-  saleStart: Date;
+  saleStartAt: Date;
 
   @Column({ nullable: true })
-  saleEnd: Date;
+  saleEndAt: Date;
 
   @OneToOne(() => GameStore, (gameStore) => gameStore.cost)
   gameStore: GameStore;
 }
 
-@Entity('GameStoreGenre')
-export class GameStoreGenre {
+@Entity('GameStoreTag')
+export class GameStoreTag {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
   @Column({ unique: true, nullable: false })
   readonly name: string;
 
+  @Column({ nullable: false })
+  readonly tagType: TagType;
+
   @ManyToMany(() => GameStore)
   gameStore: Array<GameStore>;
 }
 
-// @Entity('GameStoreReviewLikeRelation')
-// export class GameStoreReviewLikeRelation {
-//   @PrimaryGeneratedColumn('uuid')
-//   readonly id: string;
+@Entity('PlayTimeRelation')
+export class PlayTimeRelation {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
 
-//     @ManyToOne(() => GameStore, (board) => board.likeRelations)
-//     readonly gameStore: GameStore;
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.playtimeRelations)
+  readonly gameStore: GameStore;
 
-//   @ManyToOne(() => User, (user) => user.gameStoreLikeRelations)
-//   readonly user: User;
-
-//   @Column({ nullable: false })
-//   likeAction: likeAction;
-// }
+  @ManyToOne(() => User, (user) => user.playtimeRelations)
+  readonly user: User;
+}
