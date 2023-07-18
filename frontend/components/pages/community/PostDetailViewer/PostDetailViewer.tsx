@@ -6,7 +6,6 @@ import {
   Stack,
   TextInput,
   Title,
-  Text,
   TypographyStylesProvider,
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
