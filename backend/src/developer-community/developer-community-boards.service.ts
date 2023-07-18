@@ -149,12 +149,19 @@ export class BoardsService {
     return { data, cursor };
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     const queryBuilder: SelectQueryBuilder<Board> =
       this.getBoardWithRelations().andWhere('board.id = :boardId', {
         boardId: id,
       });
-    return queryBuilder.getOne();
+
+    const board: Board = await queryBuilder.getOne();
+    if (!board.parent.deletedAt) {
+      board.parent.title = null;
+      board.parent.content = null;
+      board.parent.child = null;
+    }
+    return board;
   }
 
   async searhBoards(
