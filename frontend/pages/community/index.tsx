@@ -97,7 +97,7 @@ function Community() {
               />
               {isEmpty && (
                 <Text color={theme.colors.gray[4]}>
-                  '{search.toString()}'로 검색된 검색 결과가 없습니다.
+                  '{search.toString()}'로 검색된 결과가 없습니다.
                 </Text>
               )}
             </Stack>
