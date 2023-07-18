@@ -39,9 +39,9 @@ export class GameStore {
   @Column({ nullable: false, default: 0 })
   price: number;
 
-  @OneToOne(() => shortDescription)
+  @OneToOne(() => ShortDescription)
   @JoinColumn()
-  shortDescription: Relation<shortDescription>;
+  shortDescription: Relation<ShortDescription>;
 
   @OneToOne(() => SNSUrls)
   @JoinColumn()
@@ -75,8 +75,8 @@ export class GameStore {
   deletedAt?: Date | null;
 }
 
-@Entity('shortDescription')
-export class shortDescription {
+@Entity('ShortDescription')
+export class ShortDescription {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
@@ -85,6 +85,9 @@ export class shortDescription {
 
   @Column({ nullable: false })
   content: string;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.shortDescription)
+  gameStore: GameStore;
 }
 
 @Entity('SNSUrls')
@@ -106,6 +109,9 @@ export class SNSUrls {
 
   @Column({ nullable: true })
   facebook: string | null;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)
+  gameStore: GameStore;
 }
 
 @Entity('Cost')
@@ -133,6 +139,9 @@ export class Cost {
 
   @Column({ nullable: true })
   saleEnd: Date;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.cost)
+  gameStore: GameStore;
 }
 
 @Entity('GameStoreGenre')

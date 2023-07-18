@@ -9,7 +9,7 @@ import {
   Cost,
   GameStoreGenre,
   SNSUrls,
-  shortDescription,
+  ShortDescription,
 } from '../entities/game-store.entity';
 
 export class CreateGameStoreDto {
@@ -35,7 +35,7 @@ export class CreateGameStoreDto {
 
   @IsNotEmpty()
   @ValidateNested()
-  shortDescription: shortDescription;
+  shortDescription: ShortDescription;
 
   @IsNotEmpty()
   @IsArray()

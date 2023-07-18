@@ -2,26 +2,36 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import {
+  CostRepository,
   GameStoreBoardCategoryRepository,
   GameStoreBoardLikeRelationRepository,
   GameStoreBoardRepository,
   GameStoreGenreRepository,
   GameStoreRepository,
+  SNSUrlsRepository,
+  ShortDescriptionRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
-import { Connection, SelectQueryBuilder } from 'typeorm';
+import { Connection, SelectQueryBuilder, getRepository } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreGenreDto } from './dto/create-game-genre.dto';
-import { GameStore, GameStoreGenre } from './entities/game-store.entity';
+import {
+  GameStore,
+  GameStoreGenre,
+  SNSUrls,
+} from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
 
 @Injectable()
 export class GameStoreService {
   private readonly userRepository: UserRepository;
   private readonly gameStoreRepository: GameStoreRepository;
+  private readonly shortDesriptionRepository: ShortDescriptionRepository;
+  private readonly snsUrlsRepository: SNSUrlsRepository;
+  private readonly costRepository: CostRepository;
   private readonly gameStoreGenereRepository: GameStoreGenreRepository;
   private readonly gameStoreBoardRepository: GameStoreBoardRepository;
   private readonly gameStoreBoardLikeRelationRepository: GameStoreBoardLikeRelationRepository;
@@ -33,6 +43,11 @@ export class GameStoreService {
     this.gameStoreBoardRepository = connection.getCustomRepository(
       GameStoreBoardRepository,
     );
+    this.shortDesriptionRepository = connection.getCustomRepository(
+      ShortDescriptionRepository,
+    );
+    this.snsUrlsRepository = connection.getCustomRepository(SNSUrlsRepository);
+    this.costRepository = connection.getCustomRepository(CostRepository);
     this.gameStoreGenereRepository = connection.getCustomRepository(
       GameStoreGenreRepository,
     );
@@ -50,7 +65,10 @@ export class GameStoreService {
       .withDeleted()
       .leftJoinAndSelect('gameStore.author', 'author')
       .leftJoinAndSelect('gameStore.likedUsers', 'likedUsers')
-      .leftJoinAndSelect('gameStore.genres', 'genres');
+      .leftJoinAndSelect('gameStore.genres', 'genres')
+      .leftJoinAndSelect('gameStore.shortDescription', 'shortDescription')
+      .leftJoinAndSelect('gameStore.snsUrls', 'snsUrls')
+      .leftJoinAndSelect('gameStore.cost', 'cost');
   }
 
   getBoardWithRelations(): SelectQueryBuilder<GameStoreBoard> {

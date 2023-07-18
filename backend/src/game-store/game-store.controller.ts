@@ -68,15 +68,15 @@ export class GameStoreController {
     return this.gameStoreService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
-    @Param('id') id: string,
+    @Query('id') id: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
     return this.gameStoreService.update(+id, updateGameStoreDto);
   }
 
-  @Patch('like')
+  @Patch('/like')
   gameStoreLikeUpdate(
     @Headers('Authorization') userEmail: string,
     @Query('gameStoreId') gameStoreId: string,
