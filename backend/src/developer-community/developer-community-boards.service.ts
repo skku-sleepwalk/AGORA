@@ -156,7 +156,7 @@ export class BoardsService {
       });
 
     const board: Board = await queryBuilder.getOne();
-    if (board.parent && !board.parent.deletedAt) {
+    if (board.parent && board.parent.deletedAt) {
       board.parent.title = null;
       board.parent.content = null;
       board.parent.child = null;
