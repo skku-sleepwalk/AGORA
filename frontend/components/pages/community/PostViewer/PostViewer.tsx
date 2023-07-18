@@ -25,6 +25,7 @@ import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
 import {
   IconBookmark,
+  IconChevronLeft,
   IconHeart,
   IconHeartFilled,
   IconMessage,
@@ -42,9 +43,31 @@ export const ModalContext = createContext({
   canCloseModal: () => {},
 });
 
+// HTML 태그 제거 및 문자열 길이를 제한하는 함수
+function extractText(htmlString: string): string {
+  const cleanHtml = htmlString.replace(/<.*?>/g, "");
+  let truncatedText = cleanHtml.slice(0, 20);
+  if (cleanHtml.length > 20) {
+    truncatedText += "...";
+  }
+
+  return truncatedText;
+}
+
+// 사용할 <Text>를 반환하는 함수
+export function provideText(post: Board) {
+  if (post.parent?.title !== null) {
+    return <Text color="#228be6">{post.parent?.title}</Text>;
+  } else if (post.parent?.content === null || post.parent?.content === undefined) {
+    return <Text color="gray">(삭제된 게시물 입니다.)</Text>;
+  }
+  return <Text color="#228be6">{extractText(post.parent?.content)}</Text>;
+}
+
 function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const maxContentHeight = thumbnailUrl ? 50 : 150;
   const { classes } = usePostViewerStyles({ maxContentHeight });
+
   const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
   const router = useRouter();
   const { user, token } = useAuth();
@@ -80,6 +103,9 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
       })
     : false;
 
+  // post가 post인지 child인지 확인
+  const postType = post.parent === null ? "post" : "child";
+
   const { mutatePost } = useContext(CommunityContext);
 
   return (
@@ -95,6 +121,20 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
       >
         <CardContainer className={classes.postContainer}>
           <Stack spacing={14}>
+            {postType === "child" && (
+              <InvisibleButton
+                center={false}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.replace(`http://localhost:3000/community/${post.parent?.id}`);
+                }}
+              >
+                <Group spacing={0}>
+                  <IconChevronLeft color="#228be6" />
+                  {provideText(post)}
+                </Group>
+              </InvisibleButton>
+            )}
             <PostHeader user={post.writer} date={post.createdAt} />
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>

@@ -26,7 +26,7 @@ export const usePostViewerStyles = createStyles(
         width: "100%",
         height: "2em",
         background:
-          "linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1) 100%)",
+          "linear-gradient(to bottom, rgba(252, 252, 254, 0), rgba(252, 252, 254, 1) 100%)",
       },
     },
 
@@ -35,6 +35,10 @@ export const usePostViewerStyles = createStyles(
       maxHeight: maxContentHeight,
       overflow: "hidden",
       borderBottom: "none",
+      paddingBottom: "1.5rem",
+      "*": {
+        marginBottom: "0px !important",
+      },
     },
 
     thumbnail: {

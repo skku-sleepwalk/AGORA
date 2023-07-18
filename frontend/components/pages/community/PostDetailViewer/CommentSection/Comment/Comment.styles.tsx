@@ -23,7 +23,10 @@ export const useCommentStyles = createStyles((theme) => ({
   },
 
   content: {
-    lineHeight: 0.5,
+    lineHeight: 1.5,
+    "*": {
+      marginBottom: "0px !important",
+    },
   },
 
   dotButton: {
