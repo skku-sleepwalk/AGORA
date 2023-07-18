@@ -41,6 +41,7 @@ import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../utils/api/deletepost";
 import { ModalContext } from "../../../PostViewer/PostViewer";
+import { useRouter } from "next/router";
 
 export interface CommentProps {
   post: Board;
@@ -51,6 +52,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const { token, user } = useAuth();
+  const router = useRouter();
 
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
@@ -59,7 +61,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
     setSize,
     size,
     isEmpty,
-    mutate: mutate,
+    mutate: mutateCommentList,
     isLast,
     isLoading,
   } = useBoardList(
@@ -93,14 +95,9 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
   const { mutatePost } = useContext(CommunityContext);
-
   const { mutateComment } = useContext(CommentContext);
-  const { canCloseModal } = useContext(ModalContext);
 
-  let commentContent = post.content;
-  if (post.content === null) {
-    commentContent = "(삭제된 게시물 입니다.)";
-  }
+  const { canCloseModal } = useContext(ModalContext);
 
   return (
     <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
@@ -155,7 +152,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                       // 댓글 삭제시 함수
                       //비동기
                       deletePost(post.id).then(() => {
-                        mutate();
+                        mutateCommentList();
                         mutateComment();
                         showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
                       });
@@ -174,6 +171,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                   onLikeClick({ boardId: post.id, token })
                     .then(() => {
                       mutateComment();
+                      mutateCommentList();
                     })
                     .catch((error) => {
                       // 오류 처리
@@ -274,7 +272,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             placeholder={"답글을 작성해주세요."}
             onSubmit={async (content) => {
               return onSubmitComment?.(content, post.id).then(() => {
-                mutate();
+                mutateCommentList();
                 mutatePost();
                 console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");

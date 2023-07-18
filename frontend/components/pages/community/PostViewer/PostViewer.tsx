@@ -59,7 +59,7 @@ export function provideText(post: Board) {
   if (post.parent?.title !== null) {
     return <Text color="#228be6">{post.parent?.title}</Text>;
   } else if (post.parent?.content === null || post.parent?.content === undefined) {
-    return <Text color="gray">(삭제된 게시물 입니다.)</Text>;
+    return <Text color="#ced4da">(삭제된 게시물 입니다.)</Text>;
   }
   return <Text color="#228be6">{extractText(post.parent?.content)}</Text>;
 }

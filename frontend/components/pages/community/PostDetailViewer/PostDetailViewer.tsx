@@ -8,6 +8,7 @@ import {
   Title,
   Text,
   TypographyStylesProvider,
+  useMantineTheme,
 } from "@mantine/core";
 import { usePostDetailViewerStyles } from "./PostDetailViewer.styles";
 import PostHeader from "../PostHeader/PostHeader";
@@ -42,6 +43,8 @@ export interface PostDetailViewerProps {
 
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
+  const theme = useMantineTheme();
+
   const { token, user } = useAuth();
   const router = useRouter();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
@@ -117,7 +120,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   />
                 </TypographyStylesProvider>
               ) : (
-                <Text color="gray">(삭제된 게시물 입니다.)</Text>
+                <Text color={theme.colors.gray[4]}>(삭제된 게시물 입니다.)</Text>
               )}
             </Stack>
           )}
