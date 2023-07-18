@@ -4,15 +4,17 @@ export const usePostViewLayoutStyles = createStyles((theme) => ({
   container: {
     display: "flex",
     width: "100%",
+    gap: 83,
     height: "100%",
   },
 
   mainContainer: {
     display: "flex",
-    width: "100%",
     flexDirection: "column",
     alignItems: "center",
-    paddingTop: 20,
+    padding: 20,
+    flexGrow: 1,
+    gap: 39,
   },
 
   rightContainer: {

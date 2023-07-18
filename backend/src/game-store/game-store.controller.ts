@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Headers,
+  Query,
 } from '@nestjs/common';
 import { GameStoreService } from './game-store.service';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
@@ -21,7 +22,7 @@ export class GameStoreController {
 
   @Post()
   createGameStore(
-    @Headers('authorization') authorEmail: string,
+    @Headers('Authorization') authorEmail: string,
     @Body() createGameStoreDto: CreateGameStoreDto,
   ) {
     return this.gameStoreService.createGameStore(
@@ -39,7 +40,7 @@ export class GameStoreController {
 
   @Post('boards')
   createGameStoreBoard(
-    @Headers('authorization') writerEmail: string,
+    @Headers('Authorization') writerEmail: string,
     @Body() createGameStoreBoardDto: CreateGameStoreBoardDto,
   ) {
     return this.gameStoreService.createGameStoreBoards(
@@ -62,17 +63,25 @@ export class GameStoreController {
     return this.gameStoreService.findAll();
   }
 
-  @Get(':id')
+  @Get('/id/:id')
   findOne(@Param('id') id: string) {
-    return this.gameStoreService.findOne(+id);
+    return this.gameStoreService.findOneGameStore(id);
   }
 
-  @Patch(':id')
+  @Patch()
   update(
-    @Param('id') id: string,
+    @Query('id') id: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
     return this.gameStoreService.update(+id, updateGameStoreDto);
+  }
+
+  @Patch('/like')
+  gameStoreLikeUpdate(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreId: string,
+  ) {
+    return this.gameStoreService.gameStoreLikeUpdate(gameStoreId, userEmail);
   }
 
   @Delete(':id')

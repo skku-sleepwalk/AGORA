@@ -25,7 +25,7 @@ export class BoardsController {
   @Post()
   @UsePipes(ValidationPipe)
   create(
-    @Headers('authorization') writerEmail: string,
+    @Headers('Authorization') writerEmail: string,
     @Body() createBoardDto: CreateBoardDto,
   ) {
     return this.boardsService.createBoard(writerEmail, createBoardDto);
@@ -109,7 +109,7 @@ export class BoardsController {
   @Patch('/update')
   @UsePipes(ValidationPipe)
   update(
-    @Headers('authorization') userEmail: string,
+    @Headers('Authorization') userEmail: string,
     @Query('id') id: string,
     @Body() updateBoardDto: UpdateBoardDto,
   ) {
@@ -118,7 +118,7 @@ export class BoardsController {
 
   @Patch('/like')
   likeUpdate(
-    @Headers('authorization') userEmail: string,
+    @Headers('Authorization') userEmail: string,
     @Query('boardId') boardId: string,
   ) {
     return this.boardsService.likeUpdate(boardId, userEmail);

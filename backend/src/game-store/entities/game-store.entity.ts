@@ -1,34 +1,21 @@
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
+  Relation,
 } from 'typeorm';
-import { likeAction } from './game-store-board.entity';
-
-export interface SNSUrls {
-  youtube?: string;
-  twitch?: string;
-  twitter?: string;
-  discord?: string;
-  facebook?: string;
-}
-
-export interface shortDescription {
-  imageUrl: string;
-  content: string;
-}
-
-export interface Cost {
-  price: number;
-  saleStart: Date;
-  saleEnd: Date;
-  salePercentage: number;
-}
+import { GameStoreBoard } from './game-store-board.entity';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity('GameStore')
 export class GameStore {
@@ -37,9 +24,6 @@ export class GameStore {
 
   @Column({ nullable: false })
   title: string;
-
-  @Column({ nullable: false, type: 'json' })
-  shortDescription: shortDescription;
 
   @Column({ nullable: false })
   description: string;
@@ -51,24 +35,120 @@ export class GameStore {
   developer: string;
 
   @Column({ nullable: false, default: 0 })
-  price: number;
+  like: number;
 
-  @Column({ nullable: false, type: 'json' })
-  cost: Cost;
+  @OneToOne(
+    () => ShortDescription,
+    (shortDescription) => shortDescription.gameStore,
+  )
+  @JoinColumn()
+  shortDescription: Relation<ShortDescription>;
 
-  @Column({ nullable: false, type: 'json' })
-  readonly snsUrls: SNSUrls;
+  @OneToOne(() => SNSUrls, (snsUrls) => snsUrls.gameStore)
+  @JoinColumn()
+  snsUrls: Relation<SNSUrls>;
+
+  @OneToOne(() => Cost, (cost) => cost.gameStore)
+  @JoinColumn()
+  cost: Relation<Cost>;
 
   @ManyToOne(() => User, (user) => user.gameStoreBoards)
   readonly author: User;
 
   @ManyToMany(() => User)
   @JoinTable()
-  likedUser: Array<User>;
+  likedUsers: Array<User>;
 
   @ManyToMany(() => GameStoreGenre)
   @JoinTable()
-  genres: Array<GameStoreGenre>;
+  readonly genres: Array<GameStoreGenre>;
+
+  @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
+  gameStoreBoards: Array<GameStoreBoard>;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date | null;
+}
+
+@Entity('ShortDescription')
+export class ShortDescription {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ nullable: false })
+  imageUrl: string;
+
+  @Column({ nullable: false })
+  content: string;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.shortDescription)
+  gameStore: GameStore;
+}
+
+@Entity('SNSUrls')
+export class SNSUrls {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ nullable: true })
+  youtube: string | null;
+
+  @Column({ nullable: true })
+  twitch: string | null;
+
+  @Column({ nullable: true })
+  twitter: string | null;
+
+  @Column({ nullable: true })
+  discord: string | null;
+
+  @Column({ nullable: true })
+  facebook: string | null;
+
+  @Column({ nullable: true })
+  instagram: string | null;
+
+  @Column({ nullable: true })
+  customPage: string | null;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)
+  gameStore: GameStore;
+}
+
+@Entity('Cost')
+export class Cost {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @Column('bool', { nullable: false })
+  isFree: boolean;
+
+  @Column({ nullable: true, default: 0 })
+  defaultPrice: number;
+
+  @Column('bool', { nullable: true, default: false })
+  isSale: boolean;
+
+  @Column({ nullable: true })
+  salePercentage: number;
+
+  @Column({ nullable: true })
+  saledPrice: number;
+
+  @Column({ nullable: true })
+  saleStart: Date;
+
+  @Column({ nullable: true })
+  saleEnd: Date;
+
+  @OneToOne(() => GameStore, (gameStore) => gameStore.cost)
+  gameStore: GameStore;
 }
 
 @Entity('GameStoreGenre')

@@ -16,4 +16,8 @@ export class CreateGameStoreBoardDto {
   @IsOptional()
   @IsArray()
   readonly categoryNames: Array<string>;
+
+  @IsNotEmpty()
+  @IsString()
+  gameStoreId: string;
 }

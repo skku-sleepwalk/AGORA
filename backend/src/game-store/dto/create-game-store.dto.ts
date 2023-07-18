@@ -1,15 +1,5 @@
-import {
-  IsArray,
-  IsNotEmpty,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
-import {
-  GameStoreGenre,
-  SNSUrls,
-  shortDescription,
-} from '../entities/game-store.entity';
+import { IsArray, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { Cost, SNSUrls, ShortDescription } from '../entities/game-store.entity';
 
 export class CreateGameStoreDto {
   @IsNotEmpty()
@@ -34,9 +24,13 @@ export class CreateGameStoreDto {
 
   @IsNotEmpty()
   @ValidateNested()
-  shortDescription: shortDescription;
+  shortDescription: ShortDescription;
 
   @IsNotEmpty()
   @IsArray()
   genreNames: Array<string>;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  cost: Cost;
 }

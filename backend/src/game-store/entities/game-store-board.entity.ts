@@ -11,6 +11,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { GameStore } from './game-store.entity';
 
 export type likeAction = 'like' | 'unlike';
 
@@ -45,6 +46,9 @@ export class GameStoreBoard {
     (relation) => relation.gameStoreBoard,
   )
   likeRelation: Array<GameStoreBoardLikeRelation>;
+
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreBoards)
+  gameStore: GameStore;
 
   @ManyToOne(() => User, (user) => user.boards)
   writer: User;
