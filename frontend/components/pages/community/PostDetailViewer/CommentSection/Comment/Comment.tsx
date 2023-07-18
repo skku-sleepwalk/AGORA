@@ -41,7 +41,6 @@ import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../utils/api/deletepost";
 import { ModalContext } from "../../../PostViewer/PostViewer";
-import { useRouter } from "next/router";
 
 export interface CommentProps {
   post: Board;
@@ -52,7 +51,6 @@ function Comment({ post, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const { token, user } = useAuth();
-  const router = useRouter();
 
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
@@ -94,13 +92,12 @@ function Comment({ post, onSubmitComment }: CommentProps) {
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
-  const { mutatePost } = useContext(CommunityContext);
   const { mutateComment } = useContext(CommentContext);
 
   const { canCloseModal } = useContext(ModalContext);
 
   return (
-    <CommentFrame user={post.writer} withoutLeftBorder={!commentOpen}>
+    <CommentFrame user={post.writer} date={post.createdAt} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
           {!isEditing.Edit &&
@@ -273,8 +270,6 @@ function Comment({ post, onSubmitComment }: CommentProps) {
             onSubmit={async (content) => {
               return onSubmitComment?.(content, post.id).then(() => {
                 mutateCommentList();
-                mutatePost();
-                console.log(mutatePost);
                 showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
                 commentOpen ? null : toggleComment();
                 toggleEditor();

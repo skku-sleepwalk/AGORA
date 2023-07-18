@@ -46,7 +46,7 @@ function CommentEditor({ user, placeholder, onSubmit }: CommentEditorProps) {
   });
 
   return (
-    <CommentFrame user={user} withoutLeftBorder>
+    <CommentFrame user={user} date={null} withoutLeftBorder>
       <Box className={classes.editorWrapper}>
         <RichTextEditor editor={editor} className={classes.commentEditor}>
           <RichTextEditor.Content />

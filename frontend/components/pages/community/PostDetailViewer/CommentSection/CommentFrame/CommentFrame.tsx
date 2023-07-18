@@ -1,14 +1,16 @@
-import { Avatar, Container, Group, Stack, Title } from "@mantine/core";
+import { Avatar, Container, Group, Stack, Title, Text } from "@mantine/core";
 import { useCommentFrameStyles } from "./CommentFrame.styles";
 import { User } from "../../../../../../types/api/user";
+import { getRelativeTime } from "../../../../../../utils/getRelativeTime";
 
 export interface CommentFrameProps {
   children: React.ReactNode;
   user: User;
+  date: string | null;
   withoutLeftBorder?: boolean;
 }
 
-function CommentFrame({ children, user, withoutLeftBorder = false }: CommentFrameProps) {
+function CommentFrame({ children, user, date, withoutLeftBorder = false }: CommentFrameProps) {
   const { classes } = useCommentFrameStyles({ withoutLeftBorder });
 
   return (
@@ -25,9 +27,16 @@ function CommentFrame({ children, user, withoutLeftBorder = false }: CommentFram
       )}
       <Container className={classes.commentWrapper}>
         <Stack spacing={0} className={classes.commentContainer}>
-          <Title order={6} className={classes.userName}>
-            {user?.name}
-          </Title>
+          <Group spacing={"xs"}>
+            <Title order={6} className={classes.userName}>
+              {user?.name}
+            </Title>
+            {user && date !== null && (
+              <Text size="xs" color="gray" className={classes.date}>
+                {getRelativeTime(date)}
+              </Text>
+            )}
+          </Group>
           {children}
         </Stack>
       </Container>

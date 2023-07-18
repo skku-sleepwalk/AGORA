@@ -32,6 +32,10 @@ export const useCommentFrameStyles = createStyles(
       paddingLeft: withoutLeftBorder ? 10 : 8,
     },
 
+    date: {
+      paddingBottom: "0.3rem",
+    },
+
     userName: {
       marginBottom: 6,
     },
