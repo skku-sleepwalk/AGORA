@@ -277,9 +277,12 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 mutate();
                 mutatePost();
                 console.log(mutatePost);
-                showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                if (content !== "<p></p>") {
+                  showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                  toggleEditor();
+                }
+
                 commentOpen ? null : toggleComment();
-                toggleEditor();
               });
             }}
           />
