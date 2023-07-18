@@ -272,10 +272,15 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
             placeholder={"답글을 작성해주세요."}
             onSubmit={async (content) => {
               return onSubmitComment?.(content, post.id).then(() => {
+                mutate();
+                mutatePost();
                 mutateCommentList();
-                showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                console.log(mutatePost);
+                if (content !== "<p></p>") {
+                  showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                  toggleEditor();
+                }
                 commentOpen ? null : toggleComment();
-                toggleEditor();
               });
             }}
           />
