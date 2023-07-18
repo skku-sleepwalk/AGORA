@@ -213,37 +213,39 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             </form>
           )}
         </Stack>
-        {!isEditing.Edit && (
-          <MultiSelect
-            className={classes.multiSelect}
-            data={data}
-            value={post.categoryTypes.map((item) => item.name)}
-            readOnly
+        <Stack spacing={0}>
+          {!isEditing.Edit && (
+            <MultiSelect
+              className={classes.multiSelect}
+              data={data}
+              value={post.categoryTypes.map((item) => item.name)}
+              readOnly
+            />
+          )}
+          <PostFooter
+            onLikeClick={() => {
+              onLikeClick({ boardId: post.id, token })
+                .then(() => {
+                  mutatePost();
+                  mutatePostDetail();
+                })
+                .catch((error) => {
+                  // 오류 처리
+                });
+            }}
+            onEditClick={() => {
+              setIsEditing({ Edit: true });
+              canCloseModal();
+            }}
+            postId={post.id}
+            // closeFunction={close}
+            commentCount={post.child}
+            likeCount={post.like}
+            isliking={isliking}
+            isEditing={isEditing.Edit}
+            canEdit={user ? post.writer.id === user.id : false}
           />
-        )}
-        <PostFooter
-          onLikeClick={() => {
-            onLikeClick({ boardId: post.id, token })
-              .then(() => {
-                mutatePost();
-                mutatePostDetail();
-              })
-              .catch((error) => {
-                // 오류 처리
-              });
-          }}
-          onEditClick={() => {
-            setIsEditing({ Edit: true });
-            canCloseModal();
-          }}
-          postId={post.id}
-          // closeFunction={close}
-          commentCount={post.child}
-          likeCount={post.like}
-          isliking={isliking}
-          isEditing={isEditing.Edit}
-          canEdit={user ? post.writer.id === user.id : false}
-        />
+        </Stack>
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
