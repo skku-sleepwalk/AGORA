@@ -57,7 +57,15 @@ export class BoardsService {
     // User check
     const writer = await this.userRepository.findOne({ email: writerEmail });
     if (!writer) {
-      throw new Error(`User with email ${writerEmail} not found.`);
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            writerEmail: `이메일이 ${writerEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     // Parent check
@@ -127,15 +135,14 @@ export class BoardsService {
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
-    if (order) {
-      paginateOption.paginationKeys = [order];
-    }
-    if (_cursor.afterCursor) {
-      paginateOption.query.afterCursor = _cursor.afterCursor;
-    }
-    if (_cursor.beforeCursor) {
-      paginateOption.query.beforeCursor = _cursor.beforeCursor;
-    }
+    paginateOption.paginationKeys = order
+      ? [order]
+      : paginateOption.paginationKeys;
+    paginateOption.query.afterCursor =
+      _cursor.afterCursor || paginateOption.query.afterCursor;
+    paginateOption.query.beforeCursor =
+      _cursor.beforeCursor || paginateOption.query.beforeCursor;
+
     const paginator = buildPaginator(paginateOption);
     const { data, cursor } = await paginator.paginate(queryBuilder);
 
@@ -160,15 +167,14 @@ export class BoardsService {
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
-    if (order) {
-      paginateOption.paginationKeys = [order];
-    }
-    if (_cursor.afterCursor) {
-      paginateOption.query.afterCursor = _cursor.afterCursor;
-    }
-    if (_cursor.beforeCursor) {
-      paginateOption.query.beforeCursor = _cursor.beforeCursor;
-    }
+    paginateOption.paginationKeys = order
+      ? [order]
+      : paginateOption.paginationKeys;
+    paginateOption.query.afterCursor =
+      _cursor.afterCursor || paginateOption.query.afterCursor;
+    paginateOption.query.beforeCursor =
+      _cursor.beforeCursor || paginateOption.query.beforeCursor;
+
     const paginator = buildPaginator(paginateOption);
     let queryBuilder: SelectQueryBuilder<Board>;
     if (boardType === 'parent') {
@@ -210,15 +216,14 @@ export class BoardsService {
     const paginateOption: PaginationOptions<Board> = cloneDeep(
       this.paginateOption,
     );
-    if (order) {
-      this.paginateOption.paginationKeys = [order];
-    }
-    if (_cursor.afterCursor) {
-      paginateOption.query.afterCursor = _cursor.afterCursor;
-    }
-    if (_cursor.beforeCursor) {
-      paginateOption.query.beforeCursor = _cursor.beforeCursor;
-    }
+    paginateOption.paginationKeys = order
+      ? [order]
+      : paginateOption.paginationKeys;
+    paginateOption.query.afterCursor =
+      _cursor.afterCursor || paginateOption.query.afterCursor;
+    paginateOption.query.beforeCursor =
+      _cursor.beforeCursor || paginateOption.query.beforeCursor;
+
     const paginator = buildPaginator(paginateOption);
     const { data, cursor } = await paginator.paginate(queryBuilder);
     data.map((board) => {
@@ -246,35 +251,80 @@ export class BoardsService {
     updateEmail: string,
   ) {
     const toUpdateBoard = await this.findOne(id);
-    const { title, content, categoryNames } = updateBoardDto;
-    if (updateEmail === toUpdateBoard.writer.email) {
-      const createdAt = cloneDeep(toUpdateBoard.createdAt);
-
-      toUpdateBoard.title = title;
-      toUpdateBoard.content = content;
-      toUpdateBoard.categoryTypes = [];
-      toUpdateBoard.createdAt = createdAt;
-      for (const categoryName of categoryNames) {
-        const categoryType = await this.categoryTypeRepository.findOne({
-          name: categoryName,
-        });
-        if (categoryType) {
-          toUpdateBoard.categoryTypes.push(categoryType);
-        }
-      }
-      return await this.boardRepository.save(toUpdateBoard);
-    } else {
+    if (!toUpdateBoard) {
       throw new HttpException(
-        { message: 'Not a writter error' },
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
         HttpStatus.BAD_REQUEST,
       );
     }
+
+    if (updateEmail !== toUpdateBoard.writer.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            writerEmail: `${updateEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const { title, content, categoryNames } = updateBoardDto;
+
+    const createdAt = cloneDeep(toUpdateBoard.createdAt);
+
+    toUpdateBoard.title = title;
+    toUpdateBoard.content = content;
+    toUpdateBoard.categoryTypes = [];
+    toUpdateBoard.createdAt = createdAt;
+    for (const categoryName of categoryNames) {
+      const categoryType = await this.categoryTypeRepository.findOne({
+        name: categoryName,
+      });
+      if (categoryType) {
+        toUpdateBoard.categoryTypes.push(categoryType);
+      }
+    }
+    return await this.boardRepository.save(toUpdateBoard);
   }
+
   async likeUpdate(boardId: string, userEmail: string) {
     const queryBuilder = this.getBoardWithRelations();
     const board: Board = await queryBuilder
       .where('board.id = :boardId', { boardId })
       .getOne();
+
+    if (!board) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            boardId: `ID가 ${boardId}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = this.userRepository.findOne({ email: userEmail });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     const createdAt = cloneDeep(board.createdAt);
     if (!board.likedUsers.map((user) => user.email).includes(userEmail)) {
@@ -291,12 +341,25 @@ export class BoardsService {
     board.createdAt = createdAt;
     return this.boardRepository.save(board);
   }
+
   ///////////////////////////{  DELETE  }/////////////////////////////////
   async remove(id: string) {
     const queryBuilder = this.getBoardWithRelations();
     const toDeleteBoard = await queryBuilder
       .where('board.id = :id', { id })
       .getOne();
+
+    if (!toDeleteBoard) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     let currentParent = toDeleteBoard.parent;
     while (currentParent) {
@@ -312,6 +375,7 @@ export class BoardsService {
         })
         .getOne();
     }
+
     await this.boardRepository.softDelete(id);
     return this.boardRepository.findOne(id);
   }

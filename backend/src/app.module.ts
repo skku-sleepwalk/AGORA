@@ -25,7 +25,6 @@ import { GameStoreModule } from './game-store/game-store.module';
         database: 'board-app',
         entities: ['dist/**/**.entity{.ts,.js}'],
         synchronize: true,
-        logging: true,
         timezone: configService.get<string>('APP_TIMEZONE'), // ConfigService를 사용하여 타임존 값을 읽어옴})
       }),
       inject: [ConfigService],

@@ -12,7 +12,7 @@ import {
   ShortDescriptionRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
-import { Connection, SelectQueryBuilder, getRepository } from 'typeorm';
+import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
@@ -132,19 +132,40 @@ export class GameStoreService {
     } = createGameStoreDto;
 
     const author = await this.userRepository.findOne({ email: authorEmail });
+    if (!author) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            authorEmail: '작성자를 찾을 수 없습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const newGameStore = this.gameStoreRepository.create({
       id: uuid(),
+      author,
       title,
       description,
-      shortDescription,
       developer,
       distributor,
       genres: [],
-      author,
-      cost,
-      snsUrls,
       likedUsers: [],
     });
+    newGameStore.shortDescription = await this.shortDesriptionRepository.save(
+      this.shortDesriptionRepository.create({
+        id: uuid(),
+        ...shortDescription,
+      }),
+    );
+    newGameStore.cost = await this.costRepository.save(
+      this.costRepository.create({ id: uuid(), ...cost }),
+    );
+    newGameStore.snsUrls = await this.snsUrlsRepository.save(
+      this.snsUrlsRepository.create({ id: uuid(), ...snsUrls }),
+    );
 
     for (const genreName of genreNames) {
       const genre: GameStoreGenre =
@@ -172,10 +193,30 @@ export class GameStoreService {
 
     const writer = await this.userRepository.findOne({ email: writerEmail });
     if (!writer) {
-      throw new Error(`User with email ${writerEmail} not found.`);
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            writerEmail: `이메일이 ${writerEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: `ID가 ${gameStoreId}인 게임 스토어를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     const parent: GameStoreBoard | null = parentId
       ? await this.getParentBoard(parentId)
       : null;
@@ -229,19 +270,43 @@ export class GameStoreService {
       .where('gameStore.id = :gameStoreId', { gameStoreId })
       .getOne();
 
-    const createdAt = cloneDeep(gameStore.createdAt);
-    if (!gameStore.likedUsers.map((user) => user.email).includes(userEmail)) {
-      gameStore.likedUsers.push(
-        await this.userRepository.findOne({ email: userEmail }),
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임 스토어가 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
       );
+    }
+
+    const createdAt = cloneDeep(gameStore.createdAt);
+    const user = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (!gameStore.likedUsers.map((user) => user.email).includes(user.email)) {
+      gameStore.likedUsers.push(user);
       gameStore.like += 1;
     } else {
       gameStore.likedUsers = gameStore.likedUsers.filter(
-        (user) => user.email != userEmail,
+        (likedUser) => likedUser.email !== user.email,
       );
       gameStore.like -= 1;
     }
     gameStore.createdAt = createdAt;
+
     return this.gameStoreRepository.save(gameStore);
   }
 

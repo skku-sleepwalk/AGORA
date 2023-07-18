@@ -15,6 +15,7 @@ import {
   Relation,
 } from 'typeorm';
 import { GameStoreBoard } from './game-store-board.entity';
+import { Exclude, Transform } from 'class-transformer';
 
 @Entity('GameStore')
 export class GameStore {
@@ -36,15 +37,18 @@ export class GameStore {
   @Column({ nullable: false, default: 0 })
   like: number;
 
-  @OneToOne(() => ShortDescription)
+  @OneToOne(
+    () => ShortDescription,
+    (shortDescription) => shortDescription.gameStore,
+  )
   @JoinColumn()
   shortDescription: Relation<ShortDescription>;
 
-  @OneToOne(() => SNSUrls)
+  @OneToOne(() => SNSUrls, (snsUrls) => snsUrls.gameStore)
   @JoinColumn()
   snsUrls: Relation<SNSUrls>;
 
-  @OneToOne(() => Cost)
+  @OneToOne(() => Cost, (cost) => cost.gameStore)
   @JoinColumn()
   cost: Relation<Cost>;
 
@@ -75,7 +79,7 @@ export class GameStore {
 @Entity('ShortDescription')
 export class ShortDescription {
   @PrimaryGeneratedColumn('uuid')
-  readonly id: string;
+  id: string;
 
   @Column({ nullable: false })
   imageUrl: string;
@@ -90,7 +94,7 @@ export class ShortDescription {
 @Entity('SNSUrls')
 export class SNSUrls {
   @PrimaryGeneratedColumn('uuid')
-  readonly id: string;
+  id: string;
 
   @Column({ nullable: true })
   youtube: string | null;
