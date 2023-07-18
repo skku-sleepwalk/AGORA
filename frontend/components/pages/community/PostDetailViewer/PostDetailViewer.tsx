@@ -22,14 +22,15 @@ import { useDisclosure, useSetState } from "@mantine/hooks";
 import { CategoryNum, Values } from "../../../../constants/category";
 import { useForm } from "@mantine/form";
 import { Editor } from "@tiptap/react";
-import { ModalContext } from "../PostViewer/PostViewer";
 import { patchPost } from "../../../../utils/api/patchPost";
 import { showNotification } from "../../../../utils/notifications";
 import RichEditor from "../PostWriter/RichEditor/RichEditor";
 import CategorySelector from "../PostWriter/CategorySelector/CategorySelector";
 import { IconAlertCircle } from "@tabler/icons-react";
+import { mutate } from "swr";
 import { ButtonProgress } from "../PostWriter/ButtonProgress/ButtonProgress";
 import PostFooter from "./PostFooter/PostFooter";
+import { ModalContext } from "../PostViewer/PostViewer";
 
 export interface PostDetailViewerProps {
   post: Board;
@@ -70,6 +71,12 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
 
   const { mutatePost } = useContext(CommunityContext);
 
+  const postData: Board = post;
+  const mutatePostDetail = async () => {
+    mutate(`http://localhost:8000/developer-community-boards/id/${post.id}`, postData);
+    post = postData;
+  };
+
   return (
     <CardContainer className={classes.postContainer}>
       <Stack spacing={15}>
@@ -107,6 +114,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
                   setIsEditing({ Edit: false });
                   mutatePost();
+                  mutatePostDetail();
                 });
               })}
             >
@@ -196,6 +204,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             onLikeClick({ boardId: post.id, token })
               .then(() => {
                 mutatePost();
+                mutatePostDetail();
               })
               .catch((error) => {
                 // 오류 처리
