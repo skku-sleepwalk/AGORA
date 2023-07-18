@@ -36,9 +36,6 @@ export class GameStore {
   @Column({ nullable: false, default: 0 })
   like: number;
 
-  @Column({ nullable: false, default: 0 })
-  price: number;
-
   @OneToOne(() => ShortDescription)
   @JoinColumn()
   shortDescription: Relation<ShortDescription>;
