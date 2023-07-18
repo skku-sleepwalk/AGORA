@@ -375,8 +375,15 @@ export class BoardsService {
         })
         .getOne();
     }
-
-    await this.boardRepository.softDelete(id);
-    return this.boardRepository.findOne(id);
+    const children: Array<Board> = await queryBuilder
+      .where('board.parent.id = :id', {
+        id,
+      })
+      .getMany();
+    if (children) {
+      await this.boardRepository.softDelete(id);
+    } else {
+      await this.boardRepository.delete(id);
+    }
   }
 }
