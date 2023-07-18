@@ -31,7 +31,7 @@ export function SideBar({ onSearchSubmit }: SideBarProps) {
               showError("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
             } else {
               onSearchSubmit?.(values.searchKeyword);
-              router.push(`?search=${values.searchKeyword}`);
+              router.replace(`http://localhost:3000/community?search=${values.searchKeyword}`);
             }
           })}
         >
