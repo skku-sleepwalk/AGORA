@@ -45,9 +45,13 @@ export const usePostViewerStyles = createStyles(
     },
 
     multiSelect: {
+      ".mantine-MultiSelect-values": {
+        backgroundColor: "transparent",
+      },
       ".mantine-MultiSelect-input": {
         padding: 0,
         border: "none",
+        backgroundColor: "transparent",
       },
     },
 
