@@ -32,10 +32,10 @@ export const usePostViewerStyles = createStyles(
 
     content: {
       lineHeight: 1.5,
-      marginBottom: "0px !important",
       maxHeight: maxContentHeight,
       overflow: "hidden",
       borderBottom: "none",
+      paddingBottom: "1.5rem",
       "*": {
         marginBottom: "0px !important",
       },
