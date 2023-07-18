@@ -35,7 +35,7 @@ export function RightSidebar({ onSearchSubmit }: RightSidebarProps) {
               showError("검색어를 입력해주세요.", null);
             }
             onSearchSubmit?.(values.searchKeyword);
-            router.push(`?search=${values.searchKeyword}`);
+            router.replace(`http://localhost:3000/community?search=${values.searchKeyword}`);
           })}
         >
           <TextInput
