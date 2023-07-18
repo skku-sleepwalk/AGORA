@@ -35,7 +35,6 @@ import { Board } from "../../../../../../types/api/boards";
 import useBoardList from "../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../utils/notifications";
 import { useContext } from "react";
-import { CommunityContext } from "../../../../../../pages/community";
 import { CheckIsliking, onLikeClick } from "../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
@@ -44,10 +43,11 @@ import { ModalContext } from "../../../PostViewer/PostViewer";
 
 export interface CommentProps {
   post: Board;
+  mutateReply?: () => void;
   onSubmitComment?: (content: string, parentId: string) => Promise<any>;
 }
 
-function Comment({ post, onSubmitComment }: CommentProps) {
+function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
   const { token, user } = useAuth();
@@ -119,6 +119,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
               }}
               onEditClick={() => {
                 setIsEditing({ Edit: false });
+                mutateReply !== undefined ? mutateReply() : null;
                 mutateComment();
                 canCloseModal();
               }}
@@ -149,6 +150,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                       // 댓글 삭제시 함수
                       //비동기
                       deletePost(post.id).then(() => {
+                        mutateReply !== undefined ? mutateReply() : null;
                         mutateCommentList();
                         mutateComment();
                         showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
@@ -167,6 +169,7 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 onClick={() => {
                   onLikeClick({ boardId: post.id, token })
                     .then(() => {
+                      mutateReply !== undefined ? mutateReply() : null;
                       mutateComment();
                       mutateCommentList();
                     })
@@ -295,6 +298,10 @@ function Comment({ post, onSubmitComment }: CommentProps) {
                 <Comment
                   key={data.id}
                   post={data}
+                  mutateReply={() => {
+                    mutateComment();
+                    mutateCommentList();
+                  }}
                   onSubmitComment={async (content, parentId) => {
                     return onSubmitComment?.(content, parentId);
                   }}
