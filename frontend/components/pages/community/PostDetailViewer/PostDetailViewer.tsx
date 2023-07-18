@@ -40,6 +40,7 @@ export interface PostDetailViewerProps {
 function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const { token, user } = useAuth();
+  const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
 
   // 모든 Category 이름 배열로 반환
   const data: string[] = [];
@@ -201,6 +202,9 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             />
           )}
           <PostFooter
+            onCommentClick={() => {
+              toggleEditor();
+            }}
             onLikeClick={() => {
               onLikeClick({ boardId: post.id, token })
                 .then(() => {
@@ -227,6 +231,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
         <CommentSection
           parentId={post.id}
           categoryNames={post.categoryTypes.map((category) => category.name)}
+          editorOpen={editorOpen}
           onSubmitComment={async (content, parentId) => {
             return uploadPost(
               {

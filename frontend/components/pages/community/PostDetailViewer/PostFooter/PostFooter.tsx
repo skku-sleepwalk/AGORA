@@ -18,6 +18,7 @@ import { useSetState } from "@mantine/hooks";
 import { useRouter } from "next/router";
 
 export interface PostFooterProps {
+  onCommentClick?: () => void;
   onLikeClick?: () => void;
   onShareClick?: () => void;
   onBookmarkClick?: () => void;
@@ -32,6 +33,7 @@ export interface PostFooterProps {
 }
 
 function PostFooter({
+  onCommentClick,
   onLikeClick,
   onShareClick,
   onBookmarkClick,
@@ -87,7 +89,7 @@ PostFooterProps) {
       <Group position="apart" className={classes.footer}>
         <Group spacing={13}>
           <Group spacing={8}>
-            <IconMessage size={25} />
+            <IconMessage size={25} onClick={onCommentClick} />
             <Text>{commentCount}</Text>
           </Group>
           <Group spacing={8}>
