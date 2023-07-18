@@ -24,7 +24,9 @@ export const useCommentStyles = createStyles((theme) => ({
 
   content: {
     lineHeight: 1.5,
-    marginBottom: "0px !important",
+    "*": {
+      marginBottom: "0px !important",
+    },
   },
 
   dotButton: {

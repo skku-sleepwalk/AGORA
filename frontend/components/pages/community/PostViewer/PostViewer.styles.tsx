@@ -36,6 +36,9 @@ export const usePostViewerStyles = createStyles(
       maxHeight: maxContentHeight,
       overflow: "hidden",
       borderBottom: "none",
+      "*": {
+        marginBottom: "0px !important",
+      },
     },
 
     thumbnail: {
