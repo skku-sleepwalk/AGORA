@@ -7,10 +7,17 @@ import {
 import {
   Cost,
   GameStore,
-  GameStoreGenre,
+  GameStoreTag,
+  PlayTimeRelation,
   SNSUrls,
   ShortDescription,
 } from './entities/game-store.entity';
+import {
+  GameStoreReview,
+  GameStoreReviewComment,
+  GameStoreReviewCommentLikeRelation,
+  GameStoreReviewLikeRelation,
+} from './entities/game-store-review.entity';
 
 @EntityRepository(GameStore)
 export class GameStoreRepository extends Repository<GameStore> {}
@@ -21,11 +28,26 @@ export class ShortDescriptionRepository extends Repository<ShortDescription> {}
 @EntityRepository(SNSUrls)
 export class SNSUrlsRepository extends Repository<SNSUrls> {}
 
-@EntityRepository(GameStoreGenre)
-export class GameStoreGenreRepository extends Repository<GameStoreGenre> {}
-
 @EntityRepository(Cost)
 export class CostRepository extends Repository<Cost> {}
+
+@EntityRepository(GameStoreTag)
+export class GameStoreTagRepository extends Repository<GameStoreTag> {}
+
+@EntityRepository(PlayTimeRelation)
+export class PlayTimeRelationRepository extends Repository<PlayTimeRelation> {}
+
+@EntityRepository(GameStoreReview)
+export class GameStoreReviewRepository extends Repository<GameStoreReview> {}
+
+@EntityRepository(GameStoreReviewLikeRelation)
+export class GameStoreReviewLikeRelationRepository extends Repository<GameStoreReviewLikeRelation> {}
+
+@EntityRepository(GameStoreReviewComment)
+export class GameStoreReviewCommentRepository extends Repository<GameStoreReviewComment> {}
+
+@EntityRepository(GameStoreReviewCommentLikeRelation)
+export class GameStoreReviewCommentLikeRelationRepository extends Repository<GameStoreReviewCommentLikeRelation> {}
 
 @EntityRepository(GameStoreBoard)
 export class GameStoreBoardRepository extends Repository<GameStoreBoard> {}

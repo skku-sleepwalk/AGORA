@@ -28,7 +28,7 @@ export class CreateGameStoreDto {
 
   @IsNotEmpty()
   @IsArray()
-  genreNames: Array<string>;
+  tagNames: Array<string>;
 
   @IsNotEmpty()
   @ValidateNested()

@@ -144,6 +144,7 @@ export class BoardsService {
       _cursor.beforeCursor || paginateOption.query.beforeCursor;
 
     const paginator = buildPaginator(paginateOption);
+    console.log(paginator);
     const { data, cursor } = await paginator.paginate(queryBuilder);
 
     return { data, cursor };
