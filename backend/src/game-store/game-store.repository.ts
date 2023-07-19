@@ -15,6 +15,7 @@ import {
 import {
   GameStoreReview,
   GameStoreReviewComment,
+  GameStoreReviewCommentLikeRelation,
   GameStoreReviewLikeRelation,
 } from './entities/game-store-review.entity';
 
@@ -39,11 +40,14 @@ export class PlayTimeRelationRepository extends Repository<PlayTimeRelation> {}
 @EntityRepository(GameStoreReview)
 export class GameStoreReviewRepository extends Repository<GameStoreReview> {}
 
+@EntityRepository(GameStoreReviewLikeRelation)
+export class GameStoreReviewLikeRelationRepository extends Repository<GameStoreReviewLikeRelation> {}
+
 @EntityRepository(GameStoreReviewComment)
 export class GameStoreReviewCommentRepository extends Repository<GameStoreReviewComment> {}
 
-@EntityRepository(GameStoreReviewLikeRelation)
-export class GameStoreReviewLikeRelationRepository extends Repository<GameStoreReviewLikeRelation> {}
+@EntityRepository(GameStoreReviewCommentLikeRelation)
+export class GameStoreReviewCommentLikeRelationRepository extends Repository<GameStoreReviewCommentLikeRelation> {}
 
 @EntityRepository(GameStoreBoard)
 export class GameStoreBoardRepository extends Repository<GameStoreBoard> {}

@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConsoleLogger,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import {
@@ -14,14 +19,12 @@ import {
   GameStoreReviewLikeRelationRepository,
   GameStoreReviewCommentRepository,
   PlayTimeRelationRepository,
+  GameStoreReviewCommentLikeRelationRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
-import {
-  GameStoreBoard,
-  GameStoreBoardLikeRelation,
-} from './entities/game-store-board.entity';
+import { GameStoreBoard } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
@@ -40,6 +43,7 @@ import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
 import {
   GameStoreReview,
   GameStoreReviewComment,
+  GameStoreReviewCommentLikeRelation,
   GameStoreReviewLikeRelation,
   LikeAction,
 } from './entities/game-store-review.entity';
@@ -61,6 +65,7 @@ export class GameStoreService {
   private readonly gameStoreReviewRepository: GameStoreReviewRepository;
   private readonly gameStoreReviewLikeRelationRepository: GameStoreReviewLikeRelationRepository;
   private readonly gameStoreReviewCommentRepository: GameStoreReviewCommentRepository;
+  private readonly gameStoreReviewCommentLikeRelationRepository: GameStoreReviewCommentLikeRelationRepository;
 
   private readonly gameStoreBoardRepository: GameStoreBoardRepository;
   private readonly gameStoreBoardLikeRelationRepository: GameStoreBoardLikeRelationRepository;
@@ -92,6 +97,10 @@ export class GameStoreService {
     this.gameStoreReviewCommentRepository = connection.getCustomRepository(
       GameStoreReviewCommentRepository,
     );
+    this.gameStoreReviewCommentLikeRelationRepository =
+      connection.getCustomRepository(
+        GameStoreReviewCommentLikeRelationRepository,
+      );
 
     this.gameStoreBoardRepository = connection.getCustomRepository(
       GameStoreBoardRepository,
@@ -324,6 +333,7 @@ export class GameStoreService {
     const newComment: GameStoreReviewComment =
       this.gameStoreReviewCommentRepository.create({
         id: uuid(),
+        writer,
         content,
         review,
       });
@@ -600,8 +610,8 @@ export class GameStoreService {
   ) {
     const review: GameStoreReview = await this.gameStoreReviewRepository
       .createQueryBuilder('review')
-      .leftJoinAndSelect('review.likeRelation', 'likeRelation')
-      .leftJoinAndSelect('likeRelation.user', 'user')
+      .leftJoinAndSelect('review.likeRelations', 'likeRelations')
+      .leftJoinAndSelect('likeRelations.user', 'user')
       .where('review.id = :gameStoreReviewId', { gameStoreReviewId })
       .getOne();
 
@@ -630,7 +640,7 @@ export class GameStoreService {
       );
     }
 
-    const relation: GameStoreReviewLikeRelation =
+    let relation: GameStoreReviewLikeRelation =
       await this.gameStoreReviewLikeRelationRepository
         .createQueryBuilder('relation')
         .leftJoinAndSelect('relation.gameStoreReview', 'gameStoreReview')
@@ -644,37 +654,126 @@ export class GameStoreService {
     const createdAt: Date = review.createdAt;
 
     if (!relation) {
-      // 새로운 좋아요, 싫어요 눌렀을 시
-      const newRelation = this.gameStoreReviewLikeRelationRepository.create({
-        id: uuid(),
-        user,
-        likeAction,
-      });
-      this.gameStoreReviewLikeRelationRepository.save(newRelation);
-      review.likeRelation.push(newRelation);
+      review.likeRelations.push(
+        (relation = await this.gameStoreReviewLikeRelationRepository.save(
+          this.gameStoreReviewLikeRelationRepository.create({
+            id: uuid(),
+            user,
+            likeAction,
+          }),
+        )),
+      );
+      likeAction === 'like'
+        ? (review.likeCount += 1)
+        : (review.unlikeCount += 1);
+    } else if (!relation.likeAction) {
+      relation.likeAction = likeAction;
       likeAction === 'like'
         ? (review.likeCount += 1)
         : (review.unlikeCount += 1);
     } else if (relation.likeAction === likeAction) {
-      // 좋아요, 싫어요 취소 시
-      review.likeRelation = review.likeRelation.filter(
-        (relation) => relation.user.email !== user.email,
-      );
-      this.gameStoreReviewLikeRelationRepository.delete(relation);
+      relation.likeAction = null;
       likeAction === 'like'
         ? (review.likeCount -= 1)
         : (review.unlikeCount -= 1);
     } else if (relation.likeAction !== likeAction) {
-      // 반대거 눌렀을 시
-      relation.likeAction = relation.likeAction !== 'like' ? 'like' : 'unlike';
+      relation.likeAction = likeAction;
       likeAction === 'like'
         ? ((review.likeCount += 1), (review.unlikeCount -= 1))
         : ((review.likeCount -= 1), (review.unlikeCount += 1));
-      this.gameStoreReviewLikeRelationRepository.save(relation);
     }
 
     review.createdAt = createdAt;
-    return this.gameStoreReviewRepository.save(review);
+    await this.gameStoreReviewLikeRelationRepository.save(relation);
+    return await this.gameStoreReviewRepository.save(review);
+  }
+  async updateGameStoreReviewCommentLike(
+    gameStoreReviewCommentId: string,
+    userEmail: string,
+    likeAction: LikeAction,
+  ) {
+    const comment: GameStoreReviewComment =
+      await this.gameStoreReviewCommentRepository
+        .createQueryBuilder('comment')
+        .leftJoinAndSelect('comment.writer', 'writer')
+        .leftJoinAndSelect('comment.likeRelations', 'likeRelations')
+        .leftJoinAndSelect('likeRelations.user', 'user')
+        .where('comment.id = :gameStoreReviewCommentId')
+        .setParameters({ gameStoreReviewCommentId })
+        .getOne();
+
+    if (!comment) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 후기 댓글이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    let relation: GameStoreReviewCommentLikeRelation =
+      await this.gameStoreReviewCommentLikeRelationRepository
+        .createQueryBuilder('relation')
+        .leftJoinAndSelect('relation.comment', 'comment')
+        .leftJoinAndSelect('relation.user', 'user')
+        .where(
+          '(comment.id = :gameStoreReviewCommentId) AND (user.email = :userEmail)',
+          { gameStoreReviewCommentId, userEmail },
+        )
+        .getOne();
+
+    const createdAt: Date = comment.createdAt;
+
+    if (!relation) {
+      comment.likeRelations.push(
+        (relation =
+          await this.gameStoreReviewCommentLikeRelationRepository.save(
+            this.gameStoreReviewCommentLikeRelationRepository.create({
+              id: uuid(),
+              user,
+              likeAction,
+            }),
+          )),
+      );
+      likeAction === 'like'
+        ? (comment.likeCount += 1)
+        : (comment.unlikeCount += 1);
+    } else if (!relation.likeAction) {
+      relation.likeAction = likeAction;
+      likeAction === 'like'
+        ? (comment.likeCount += 1)
+        : (comment.unlikeCount += 1);
+    } else if (relation.likeAction === likeAction) {
+      relation.likeAction = null;
+      likeAction === 'like'
+        ? (comment.likeCount -= 1)
+        : (comment.unlikeCount -= 1);
+    } else if (relation.likeAction !== likeAction) {
+      relation.likeAction = likeAction;
+      likeAction === 'like'
+        ? ((comment.likeCount += 1), (comment.unlikeCount -= 1))
+        : ((comment.likeCount -= 1), (comment.unlikeCount += 1));
+    }
+
+    comment.createdAt = createdAt;
+    await this.gameStoreReviewCommentLikeRelationRepository.save(relation);
+    return await this.gameStoreReviewCommentRepository.save(comment);
   }
 
   remove(id: number) {
