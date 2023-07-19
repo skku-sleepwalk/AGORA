@@ -11,11 +11,16 @@ import {
   SNSUrlsRepository,
   ShortDescriptionRepository,
   GameStoreReviewRepository,
+  GameStoreReviewLikeRelationRepository,
+  GameStoreReviewCommentRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
-import { GameStoreBoard } from './entities/game-store-board.entity';
+import {
+  GameStoreBoard,
+  GameStoreBoardLikeRelation,
+} from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
@@ -27,23 +32,35 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
-import { GameStoreReview } from './entities/game-store-review.entity';
+import {
+  GameStoreReview,
+  GameStoreReviewComment,
+  GameStoreReviewLikeRelation,
+  likeAction,
+} from './entities/game-store-review.entity';
+import { User } from 'src/users/entities/user.entity';
+import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 
 @Injectable()
 export class GameStoreService {
   private readonly userRepository: UserRepository;
+
   private readonly gameStoreRepository: GameStoreRepository;
   private readonly shortDesriptionRepository: ShortDescriptionRepository;
   private readonly snsUrlsRepository: SNSUrlsRepository;
   private readonly costRepository: CostRepository;
   private readonly gameStoreTagRepository: GameStoreTagRepository;
   private readonly gameStoreReviewRepository: GameStoreReviewRepository;
+  private readonly gameStoreReviewLikeRelationRepository: GameStoreReviewLikeRelationRepository;
+  private readonly gameStoreReviewCommentRepository: GameStoreReviewCommentRepository;
+
   private readonly gameStoreBoardRepository: GameStoreBoardRepository;
   private readonly gameStoreBoardLikeRelationRepository: GameStoreBoardLikeRelationRepository;
   private readonly gameStoreBoardCategoryRepository: GameStoreBoardCategoryRepository;
 
   constructor(private readonly connection: Connection) {
     this.userRepository = connection.getCustomRepository(UserRepository);
+
     this.gameStoreRepository =
       connection.getCustomRepository(GameStoreRepository);
     this.shortDesriptionRepository = connection.getCustomRepository(
@@ -54,9 +71,17 @@ export class GameStoreService {
     this.gameStoreTagRepository = connection.getCustomRepository(
       GameStoreTagRepository,
     );
+
     this.gameStoreReviewRepository = connection.getCustomRepository(
       GameStoreReviewRepository,
     );
+    this.gameStoreReviewLikeRelationRepository = connection.getCustomRepository(
+      GameStoreReviewLikeRelationRepository,
+    );
+    this.gameStoreReviewCommentRepository = connection.getCustomRepository(
+      GameStoreReviewCommentRepository,
+    );
+
     this.gameStoreBoardRepository = connection.getCustomRepository(
       GameStoreBoardRepository,
     );
@@ -200,7 +225,7 @@ export class GameStoreService {
   }
 
   async createGameStoreTag(createGameStoreTagDto: CreateGameStoreTagDto) {
-    const { name } = createGameStoreTagDto;
+    const { name, tagType } = createGameStoreTagDto;
     if (await this.gameStoreTagRepository.findOne({ name })) {
       throw new HttpException(
         {
@@ -212,7 +237,7 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const newGenre = this.gameStoreTagRepository.create({ name });
+    const newGenre = this.gameStoreTagRepository.create({ name, tagType });
     return this.gameStoreTagRepository.save(newGenre);
   }
 
@@ -251,6 +276,23 @@ export class GameStoreService {
       gameStore,
       content,
     });
+    return this.gameStoreReviewRepository.save(newReview);
+  }
+
+  async createGameStoreReviewComment(
+    writerEmail: string,
+    createGameStoreReviewCommentDto: CreateGameStoreReviewCommentDto,
+  ) {
+    const { reviewId, content } = createGameStoreReviewCommentDto;
+    const review = await this.gameStoreReviewRepository.findOne(reviewId);
+    const writer = await this.userRepository.findOne({ email: writerEmail });
+    const newComment: GameStoreReviewComment =
+      this.gameStoreReviewCommentRepository.create({
+        id: uuid(),
+        content,
+        review,
+      });
+    return this.gameStoreReviewCommentRepository.save(newComment);
   }
 
   async createGameStoreBoards(
@@ -321,7 +363,7 @@ export class GameStoreService {
     return this.gameStoreBoardCategoryRepository.save(newCategory);
   }
 
-  async getGameStoreByTag(_cursor: Cursor, tagName: string) {
+  async findGameStoreByTag(_cursor: Cursor, tagName: string) {
     const tag = this.gameStoreTagRepository.findOne({ name: tagName });
     if (!tag) {
       throw new HttpException(
@@ -426,6 +468,91 @@ export class GameStoreService {
     gameStore.createdAt = createdAt;
 
     return this.gameStoreRepository.save(gameStore);
+  }
+
+  async gameStoreReviewLikeUpdate(
+    gameStoreReviewId: string,
+    userEmail: string,
+    likeAction: likeAction,
+  ) {
+    const review: GameStoreReview = await this.gameStoreReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.likeRelation', 'likeRelation')
+      .leftJoinAndSelect('likeRelation.user', 'user')
+      .leftJoinAndSelect('review.writer', 'writer')
+      .where('review.id = :gameStoreReviewId', { gameStoreReviewId })
+      .getOne();
+
+    if (!review) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 후기가 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const relation: GameStoreReviewLikeRelation =
+      await this.gameStoreReviewLikeRelationRepository
+        .createQueryBuilder('relation')
+        .leftJoinAndSelect('relation.gameStoreReview', 'gameStoreReview')
+        .leftJoinAndSelect('relation.user', 'user')
+        .where(
+          '(gameStoreReview.id = :gameStoreReviewId) AND (user.email = :userEmail)',
+          { gameStoreReviewId, userEmail },
+        )
+        .getOne();
+
+    const createdAt: Date = review.createdAt;
+
+    if (!relation) {
+      // 새로운 좋아요, 싫어요 눌렀을 시
+      const newRelation = this.gameStoreReviewLikeRelationRepository.create({
+        id: uuid(),
+        user,
+        likeAction,
+      });
+      this.gameStoreReviewLikeRelationRepository.save(newRelation);
+      review.likeRelation.push(newRelation);
+      likeAction === 'like'
+        ? (review.likeCount += 1)
+        : (review.unlikeCount += 1);
+    } else if (relation.likeAction === likeAction) {
+      // 좋아요, 싫어요 취소 시
+      review.likeRelation = review.likeRelation.filter(
+        (relation) => relation.user.email !== user.email,
+      );
+      this.gameStoreReviewLikeRelationRepository.delete(relation);
+      likeAction === 'like'
+        ? (review.likeCount -= 1)
+        : (review.unlikeCount -= 1);
+    } else if (relation.likeAction !== likeAction) {
+      // 반대거 눌렀을 시
+      relation.likeAction = relation.likeAction !== 'like' ? 'like' : 'unlike';
+      likeAction === 'like'
+        ? ((review.likeCount += 1), (review.unlikeCount -= 1))
+        : ((review.likeCount -= 1), (review.unlikeCount += 1));
+      this.gameStoreReviewLikeRelationRepository.save(relation);
+    }
+
+    review.createdAt = createdAt;
+    return this.gameStoreReviewRepository.save(review);
   }
 
   remove(id: number) {

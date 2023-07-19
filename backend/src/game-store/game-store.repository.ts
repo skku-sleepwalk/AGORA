@@ -11,7 +11,11 @@ import {
   SNSUrls,
   ShortDescription,
 } from './entities/game-store.entity';
-import { GameStoreReview } from './entities/game-store-review.entity';
+import {
+  GameStoreReview,
+  GameStoreReviewComment,
+  GameStoreReviewLikeRelation,
+} from './entities/game-store-review.entity';
 
 @EntityRepository(GameStore)
 export class GameStoreRepository extends Repository<GameStore> {}
@@ -30,6 +34,12 @@ export class GameStoreTagRepository extends Repository<GameStoreTag> {}
 
 @EntityRepository(GameStoreReview)
 export class GameStoreReviewRepository extends Repository<GameStoreReview> {}
+
+@EntityRepository(GameStoreReviewComment)
+export class GameStoreReviewCommentRepository extends Repository<GameStoreReviewComment> {}
+
+@EntityRepository(GameStoreReviewLikeRelation)
+export class GameStoreReviewLikeRelationRepository extends Repository<GameStoreReviewLikeRelation> {}
 
 @EntityRepository(GameStoreBoard)
 export class GameStoreBoardRepository extends Repository<GameStoreBoard> {}

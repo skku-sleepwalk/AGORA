@@ -16,6 +16,8 @@ import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
 import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
+import { likeAction } from './entities/game-store-review.entity';
+import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -48,6 +50,16 @@ export class GameStoreController {
     );
   }
 
+  @Post('reviews/comment')
+  createGameStoreReviewComment(
+    @Headers('Authorization') writerEmail: string,
+    @Body() createGameStoreReviewCommentDto: CreateGameStoreReviewCommentDto,
+  ) {
+    return this.gameStoreService.createGameStoreReviewComment(
+      writerEmail,
+      createGameStoreReviewCommentDto,
+    );
+  }
   @Post('boards')
   createGameStoreBoard(
     @Headers('Authorization') writerEmail: string,
@@ -79,7 +91,7 @@ export class GameStoreController {
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
-    return this.gameStoreService.getGameStoreByTag(
+    return this.gameStoreService.findGameStoreByTag(
       { afterCursor, beforeCursor },
       tagName,
     );
@@ -104,6 +116,19 @@ export class GameStoreController {
     @Query('id') gameStoreId: string,
   ) {
     return this.gameStoreService.gameStoreLikeUpdate(gameStoreId, userEmail);
+  }
+
+  @Patch('/reviews/like')
+  gameStoreReviewLikeUpdate(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewId: string,
+    @Query('action') likeAction: likeAction,
+  ) {
+    return this.gameStoreService.gameStoreReviewLikeUpdate(
+      gameStoreReviewId,
+      userEmail,
+      likeAction,
+    );
   }
 
   @Delete(':id')

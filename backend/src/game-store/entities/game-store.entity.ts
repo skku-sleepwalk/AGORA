@@ -15,7 +15,6 @@ import {
   Relation,
 } from 'typeorm';
 import { GameStoreBoard } from './game-store-board.entity';
-import { TagType } from '../dto/create-game-tag.dto';
 import { GameStoreReview } from './game-store-review.entity';
 
 export type tagType = '장르' | '분위기' | '그래픽';
@@ -168,7 +167,7 @@ export class GameStoreTag {
   readonly name: string;
 
   @Column({ nullable: false })
-  readonly tagType: TagType;
+  readonly tagType: tagType;
 
   @ManyToMany(() => GameStore)
   gameStore: Array<GameStore>;
@@ -184,4 +183,7 @@ export class PlayTimeRelation {
 
   @ManyToOne(() => User, (user) => user.playtimeRelations)
   readonly user: User;
+
+  @Column({ nullable: false })
+  playTime: number;
 }
