@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { GameStore } from './game-store.entity';
 
-export type likeAction = 'like' | 'unlike';
+export type LikeAction = 'like' | 'unlike';
 
 @Entity('GameStoreReview')
 export class GameStoreReview {
@@ -64,7 +64,7 @@ export class GameStoreReviewLikeRelation {
   user: User;
 
   @Column({ nullable: false })
-  likeAction: likeAction;
+  likeAction: LikeAction;
 }
 
 @Entity('GameStoreReviewComment')

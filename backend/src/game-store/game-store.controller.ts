@@ -16,8 +16,9 @@ import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
 import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
-import { likeAction } from './entities/game-store-review.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
+import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
+import { LikeAction } from './entities/game-store-review.entity';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -37,6 +38,14 @@ export class GameStoreController {
   @Post('tags')
   createGameStoreTag(@Body() createGameStoreTagDto: CreateGameStoreTagDto) {
     return this.gameStoreService.createGameStoreTag(createGameStoreTagDto);
+  }
+
+  @Post('playtimeRelations')
+  createPlaytimeRelations(
+    @Headers('Authorization') userEmail: string,
+    @Query('gameStoreId') gameStoreId: string,
+  ) {
+    return this.gameStoreService.createPlayTimeRelation(userEmail, gameStoreId);
   }
 
   @Post('reviews')
@@ -97,6 +106,18 @@ export class GameStoreController {
     );
   }
 
+  @Get('/reviews')
+  findGameStoreReview(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('gameStoreId') gameStoreId: string,
+  ) {
+    return this.gameStoreService.findGameStoreReview(
+      { afterCursor, beforeCursor },
+      gameStoreId,
+    );
+  }
+
   @Get('/id/:id')
   findOne(@Param('id') id: string) {
     return this.gameStoreService.findOneGameStore(id);
@@ -111,20 +132,31 @@ export class GameStoreController {
   }
 
   @Patch('/like')
-  gameStoreLikeUpdate(
+  updateGameStoreLike(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreId: string,
   ) {
-    return this.gameStoreService.gameStoreLikeUpdate(gameStoreId, userEmail);
+    return this.gameStoreService.updateGameStoreLike(gameStoreId, userEmail);
+  }
+
+  @Patch('/playtimeRelation')
+  updatePlaytimeRelation(
+    @Headers('Authorization') userEmail: string,
+    @Body() updatePlaytimeRelationDto: UpdatePlaytimeRelationDto,
+  ) {
+    this.gameStoreService.updatePlaytimeRelation(
+      userEmail,
+      updatePlaytimeRelationDto,
+    );
   }
 
   @Patch('/reviews/like')
-  gameStoreReviewLikeUpdate(
+  updateGameStoreReviewLike(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreReviewId: string,
-    @Query('action') likeAction: likeAction,
+    @Query('action') likeAction: LikeAction,
   ) {
-    return this.gameStoreService.gameStoreReviewLikeUpdate(
+    return this.gameStoreService.updateGameStoreReviewLike(
       gameStoreReviewId,
       userEmail,
       likeAction,

@@ -36,7 +36,7 @@ export class GameStore {
   developer: string;
 
   @Column({ nullable: false, default: 0 })
-  like: number;
+  likeCount: number;
 
   @OneToOne(
     () => ShortDescription,
@@ -184,6 +184,6 @@ export class PlayTimeRelation {
   @ManyToOne(() => User, (user) => user.playtimeRelations)
   readonly user: User;
 
-  @Column({ nullable: false })
+  @Column({ nullable: false, default: 0 })
   playTime: number;
 }

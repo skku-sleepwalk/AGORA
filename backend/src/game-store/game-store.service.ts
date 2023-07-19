@@ -13,6 +13,7 @@ import {
   GameStoreReviewRepository,
   GameStoreReviewLikeRelationRepository,
   GameStoreReviewCommentRepository,
+  PlayTimeRelationRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
@@ -24,7 +25,11 @@ import {
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
-import { GameStore, GameStoreTag } from './entities/game-store.entity';
+import {
+  GameStore,
+  GameStoreTag,
+  PlayTimeRelation,
+} from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
 import {
   Cursor,
@@ -36,10 +41,11 @@ import {
   GameStoreReview,
   GameStoreReviewComment,
   GameStoreReviewLikeRelation,
-  likeAction,
+  LikeAction,
 } from './entities/game-store-review.entity';
 import { User } from 'src/users/entities/user.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
+import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -50,6 +56,8 @@ export class GameStoreService {
   private readonly snsUrlsRepository: SNSUrlsRepository;
   private readonly costRepository: CostRepository;
   private readonly gameStoreTagRepository: GameStoreTagRepository;
+  private readonly playTimeRelationRepository: PlayTimeRelationRepository;
+
   private readonly gameStoreReviewRepository: GameStoreReviewRepository;
   private readonly gameStoreReviewLikeRelationRepository: GameStoreReviewLikeRelationRepository;
   private readonly gameStoreReviewCommentRepository: GameStoreReviewCommentRepository;
@@ -70,6 +78,9 @@ export class GameStoreService {
     this.costRepository = connection.getCustomRepository(CostRepository);
     this.gameStoreTagRepository = connection.getCustomRepository(
       GameStoreTagRepository,
+    );
+    this.playTimeRelationRepository = connection.getCustomRepository(
+      PlayTimeRelationRepository,
     );
 
     this.gameStoreReviewRepository = connection.getCustomRepository(
@@ -241,6 +252,30 @@ export class GameStoreService {
     return this.gameStoreTagRepository.save(newGenre);
   }
 
+  async createPlayTimeRelation(userEmail: string, gameStoreId: string) {
+    const user = await this.userRepository.findOne({ email: userEmail });
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
+    if (await this.playTimeRelationRepository.findOne({ user, gameStore })) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId:
+              '해당 user와 gameStore간의 playtimeRelation은 이미 존재합니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const newRelation = this.playTimeRelationRepository.create({
+      id: uuid(),
+      user,
+      gameStore,
+    });
+
+    return this.playTimeRelationRepository.save(newRelation);
+  }
+
   async createGameStoreReview(
     writerEmail: string,
     createGameStoreReviewDto: CreateGameStoreReviewDto,
@@ -395,6 +430,51 @@ export class GameStoreService {
     return { data, cursor };
   }
 
+  async findGameStoreReview(_cursor: Cursor, gameStoreId: string) {
+    const gameStore = this.getGameStoreWithRelations()
+      .where('gamestore.id = :gameStoreId', { gameStoreId })
+      .getOne();
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const queryBuilder: SelectQueryBuilder<GameStoreReview> =
+      this.gameStoreReviewRepository
+        .createQueryBuilder('review')
+        .leftJoinAndSelect('review.writer', 'writer')
+        .leftJoinAndSelect('writer.playtimeRelations', 'playtimeRelations')
+        .where('playtimeRelations.gameStore = :gameStoreId', { gameStoreId });
+
+    const paginationOption: PaginationOptions<GameStoreReview> = {
+      entity: GameStoreReview,
+      paginationKeys: ['createdAt'],
+      query: {
+        afterCursor: null,
+        beforeCursor: null,
+        limit: 5,
+        order: 'DESC',
+      },
+    };
+
+    paginationOption.query.afterCursor =
+      _cursor.afterCursor || paginationOption.query.afterCursor;
+    paginationOption.query.beforeCursor =
+      _cursor.beforeCursor || paginationOption.query.beforeCursor;
+
+    const paginator = buildPaginator(paginationOption);
+    paginator.setAlias('review');
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
+  }
+
   findAll() {
     return `This action returns all gameStore`;
   }
@@ -422,7 +502,7 @@ export class GameStoreService {
     return `This action updates a #${id} gameStore`;
   }
 
-  async gameStoreLikeUpdate(gameStoreId: string, userEmail: string) {
+  async updateGameStoreLike(gameStoreId: string, userEmail: string) {
     const queryBuilder: SelectQueryBuilder<GameStore> =
       this.getGameStoreWithRelations();
 
@@ -458,28 +538,70 @@ export class GameStoreService {
 
     if (!gameStore.likedUsers.map((user) => user.email).includes(user.email)) {
       gameStore.likedUsers.push(user);
-      gameStore.like += 1;
+      gameStore.likeCount += 1;
     } else {
       gameStore.likedUsers = gameStore.likedUsers.filter(
         (likedUser) => likedUser.email !== user.email,
       );
-      gameStore.like -= 1;
+      gameStore.likeCount -= 1;
     }
     gameStore.createdAt = createdAt;
 
     return this.gameStoreRepository.save(gameStore);
   }
 
-  async gameStoreReviewLikeUpdate(
+  async updatePlaytimeRelation(
+    userEmail: string,
+    updatePlaytimeRelation: UpdatePlaytimeRelationDto,
+  ) {
+    const { gameStoreId, additionalPlayTime } = updatePlaytimeRelation;
+    const gameStore: GameStore = await this.gameStoreRepository.findOne(
+      gameStoreId,
+    );
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEmail: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    let relation: PlayTimeRelation =
+      await this.playTimeRelationRepository.findOne({
+        user,
+        gameStore,
+      });
+    if (!relation) {
+      relation = await this.createPlayTimeRelation(userEmail, gameStoreId);
+    }
+    relation.playTime += additionalPlayTime;
+    return this.playTimeRelationRepository.save(relation);
+  }
+
+  async updateGameStoreReviewLike(
     gameStoreReviewId: string,
     userEmail: string,
-    likeAction: likeAction,
+    likeAction: LikeAction,
   ) {
     const review: GameStoreReview = await this.gameStoreReviewRepository
       .createQueryBuilder('review')
       .leftJoinAndSelect('review.likeRelation', 'likeRelation')
       .leftJoinAndSelect('likeRelation.user', 'user')
-      .leftJoinAndSelect('review.writer', 'writer')
       .where('review.id = :gameStoreReviewId', { gameStoreReviewId })
       .getOne();
 
