@@ -1,6 +1,6 @@
-import CardContainer from "../../components/common/CardContainer/CardContainer";
+import { SmallPosts } from "../../components/pages/game/SmallPosts";
 
 function Game() {
-  return <CardContainer>kkk</CardContainer>;
+  return <SmallPosts></SmallPosts>;
 }
 export default Game;
