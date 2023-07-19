@@ -38,6 +38,9 @@ export class GameStore {
   @Column({ nullable: false, default: 0 })
   likeCount: number;
 
+  @Column('float', { nullable: false, default: 0 })
+  rating: number;
+
   @OneToOne(
     () => ShortDescription,
     (shortDescription) => shortDescription.gameStore,

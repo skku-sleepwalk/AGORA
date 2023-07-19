@@ -225,6 +225,7 @@ export class GameStoreService {
         ...shortDescription,
       }),
     );
+
     newGameStore.cost = await this.costRepository.save(
       this.costRepository.create({ id: uuid(), ...cost }),
     );
@@ -289,7 +290,7 @@ export class GameStoreService {
     writerEmail: string,
     createGameStoreReviewDto: CreateGameStoreReviewDto,
   ) {
-    const { gameStoreId, content } = createGameStoreReviewDto;
+    const { gameStoreId, content, rating } = createGameStoreReviewDto;
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
     if (!gameStore) {
       throw new HttpException(
@@ -302,6 +303,18 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const reviews = await this.gameStoreReviewRepository.find({
+      gameStore: gameStore,
+    });
+
+    gameStore.rating = parseFloat(
+      (
+        (reviews.reduce((sum, review) => sum + review.rating, 0) + rating) /
+        (reviews.length + 1)
+      ).toFixed(1),
+    );
+
+    await this.gameStoreRepository.save(gameStore);
     const writer = await this.userRepository.findOne({ email: writerEmail });
     if (!writer) {
       throw new HttpException(
@@ -314,11 +327,13 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const newReview: GameStoreReview = this.gameStoreReviewRepository.create({
       id: uuid(),
       writer,
       gameStore,
       content,
+      rating,
     });
     return this.gameStoreReviewRepository.save(newReview);
   }

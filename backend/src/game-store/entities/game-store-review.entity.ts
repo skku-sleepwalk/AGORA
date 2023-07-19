@@ -42,6 +42,9 @@ export class GameStoreReview {
   @Column({ nullable: false, default: 0 })
   unlikeCount: number;
 
+  @Column({ nullable: false })
+  rating: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
