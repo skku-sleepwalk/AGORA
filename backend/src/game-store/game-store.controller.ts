@@ -183,7 +183,7 @@ export class GameStoreController {
   }
 
   @Patch('/reviews/comments/like')
-  updateGameStoreCommentReviewLike(
+  updateGameStoreReviewCommentLike(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreReviewCommentId: string,
     @Query('action') likeAction: LikeAction,
@@ -194,6 +194,18 @@ export class GameStoreController {
       likeAction,
     );
   }
+
+  @Patch('/boards/like')
+  updateGameStoreBoardLike(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreBoardId: string,
+  ) {
+    return this.gameStoreService.updateGameStoreBoardLike(
+      gameStoreBoardId,
+      userEmail,
+    );
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gameStoreService.remove(+id);

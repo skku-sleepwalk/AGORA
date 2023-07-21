@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GameStore } from './game-store.entity';
+import { LikeAction } from './game-store-review.entity';
 
 @Entity('GameStoreBoard')
 export class GameStoreBoard {
@@ -25,7 +26,7 @@ export class GameStoreBoard {
   content: string;
 
   @Column({ nullable: false, default: 0 })
-  like: number;
+  likeCount: number;
 
   @Column({ nullable: false, default: 0 })
   child: number;
@@ -43,7 +44,7 @@ export class GameStoreBoard {
     () => GameStoreBoardLikeRelation,
     (relation) => relation.gameStoreBoard,
   )
-  likeRelation: Array<GameStoreBoardLikeRelation>;
+  likeRelations: Array<GameStoreBoardLikeRelation>;
 
   @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreBoards)
   gameStore: GameStore;
@@ -84,4 +85,7 @@ export class GameStoreBoardLikeRelation {
 
   @ManyToOne(() => User, { nullable: false })
   readonly user: User;
+
+  @Column({ nullable: true, default: null })
+  likeAction: LikeAction;
 }

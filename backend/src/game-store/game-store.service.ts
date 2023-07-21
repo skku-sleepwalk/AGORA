@@ -1,9 +1,4 @@
-import {
-  ConsoleLogger,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import {
@@ -24,7 +19,10 @@ import {
 import { UserRepository } from 'src/users/user.repository';
 import { Connection, SelectQueryBuilder } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
-import { GameStoreBoard } from './entities/game-store-board.entity';
+import {
+  GameStoreBoard,
+  GameStoreBoardLikeRelation,
+} from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
@@ -32,7 +30,6 @@ import {
   GameStore,
   GameStoreTag,
   PlayTimeRelation,
-  SNSUrls,
 } from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
 import {
@@ -851,16 +848,25 @@ export class GameStoreService {
         : (review.unlikeCount += 1);
     } else if (!relation.likeAction) {
       relation.likeAction = likeAction;
+      review.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = likeAction;
       likeAction === 'like'
         ? (review.likeCount += 1)
         : (review.unlikeCount += 1);
     } else if (relation.likeAction === likeAction) {
       relation.likeAction = null;
+      review.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = null;
       likeAction === 'like'
         ? (review.likeCount -= 1)
         : (review.unlikeCount -= 1);
     } else if (relation.likeAction !== likeAction) {
       relation.likeAction = likeAction;
+      review.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = likeAction;
       likeAction === 'like'
         ? ((review.likeCount += 1), (review.unlikeCount -= 1))
         : ((review.likeCount -= 1), (review.unlikeCount += 1));
@@ -939,16 +945,25 @@ export class GameStoreService {
         : (comment.unlikeCount += 1);
     } else if (!relation.likeAction) {
       relation.likeAction = likeAction;
+      comment.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = likeAction;
       likeAction === 'like'
         ? (comment.likeCount += 1)
         : (comment.unlikeCount += 1);
     } else if (relation.likeAction === likeAction) {
       relation.likeAction = null;
+      comment.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = null;
       likeAction === 'like'
         ? (comment.likeCount -= 1)
         : (comment.unlikeCount -= 1);
     } else if (relation.likeAction !== likeAction) {
       relation.likeAction = likeAction;
+      comment.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = likeAction;
       likeAction === 'like'
         ? ((comment.likeCount += 1), (comment.unlikeCount -= 1))
         : ((comment.likeCount -= 1), (comment.unlikeCount += 1));
@@ -957,6 +972,85 @@ export class GameStoreService {
     comment.createdAt = createdAt;
     await this.gameStoreReviewCommentLikeRelationRepository.save(relation);
     return await this.gameStoreReviewCommentRepository.save(comment);
+  }
+
+  async updateGameStoreBoardLike(gameStoreBoardId: string, userEmail: string) {
+    const board: GameStoreBoard = await this.gameStoreBoardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.likeRelations', 'likeRelations')
+      .leftJoinAndSelect('likeRelations.user', 'user')
+      .where('board.id = :gameStoreBoardId', { gameStoreBoardId })
+      .getOne();
+
+    if (!board) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 게시글이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    let relation: GameStoreBoardLikeRelation =
+      await this.gameStoreBoardLikeRelationRepository
+        .createQueryBuilder('relation')
+        .leftJoinAndSelect('relation.gameStoreBoard', 'gameStoreBoard')
+        .leftJoinAndSelect('relation.user', 'user')
+        .where(
+          '(gameStoreBoard.id = :gameStoreBoardId) AND (user.email = :userEmail)',
+          { gameStoreBoardId, userEmail },
+        )
+        .getOne();
+
+    const createdAt: Date = board.createdAt;
+
+    if (!relation) {
+      board.likeRelations.push(
+        (relation = await this.gameStoreBoardLikeRelationRepository.save(
+          this.gameStoreBoardLikeRelationRepository.create({
+            id: uuid(),
+            user,
+            likeAction: 'like',
+            gameStoreBoard: board,
+          }),
+        )),
+      );
+      board.likeCount += 1;
+    } else if (relation.likeAction === null) {
+      board.likeCount += 1;
+      board.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = 'like';
+      relation.likeAction = 'like';
+    } else if (relation.likeAction === 'like') {
+      console.log(board.likeRelations);
+      relation.likeAction = null;
+      board.likeCount -= 1;
+      board.likeRelations.filter(
+        (relation) => relation.id === relation.id,
+      )[0].likeAction = null;
+    }
+    console.log(relation);
+
+    board.createdAt = createdAt;
+    await this.gameStoreBoardLikeRelationRepository.save(relation);
+    return await this.gameStoreBoardRepository.save(board);
   }
 
   remove(id: number) {
