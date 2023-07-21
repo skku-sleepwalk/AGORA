@@ -13,20 +13,24 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     justifyContent: "space-between",
     width: "100%",
     height: "auto",
-    padding: 20,
-    gap: 40,
+    padding: 40,
+    paddingTop: 60,
+    gap: 20,
   },
 
   PhotoContainer: {
+    position: "relative",
+    overflow: "hidden",
     margin: 0,
     aspectRatio: "8 / 5",
     width: 800,
   },
 
-  summaryContainer: {
+  infoContainer: {
     margin: 0,
-    width: 400,
+    width: 430,
     height: 500,
+    flexGrow: 1,
   },
 
   tapContainer: {

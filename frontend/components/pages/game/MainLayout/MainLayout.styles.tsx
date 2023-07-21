@@ -13,8 +13,8 @@ export const useMainLayoutStyles = createStyles((theme) => ({
   },
 
   upContainer: {
+    aspectRatio: "5 / 2",
     width: "100%",
-    height: "32rem",
   },
 
   mainContainer: {

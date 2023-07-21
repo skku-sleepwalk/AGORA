@@ -2,7 +2,7 @@ import { useGameLayoutStyles } from "./GameLayout.styles";
 
 export interface CommunityLayoutProps {
   photoSection?: React.ReactNode;
-  summarySection?: React.ReactNode;
+  InfoSection?: React.ReactNode;
   tapSection?: React.ReactNode;
   children?: React.ReactNode;
   rightSection?: React.ReactNode;
@@ -10,7 +10,7 @@ export interface CommunityLayoutProps {
 
 function GameLayout({
   photoSection,
-  summarySection,
+  InfoSection,
   tapSection,
   children,
   rightSection,
@@ -21,7 +21,7 @@ function GameLayout({
     <div className={classes.container}>
       <div className={classes.topContainer}>
         <div className={classes.PhotoContainer}>{photoSection}</div>
-        <div className={classes.summaryContainer}>{summarySection}</div>
+        <div className={classes.infoContainer}>{InfoSection}</div>
       </div>
       <div className={classes.tapContainer}>{tapSection}</div>
       <div className={classes.bottomContainer}>

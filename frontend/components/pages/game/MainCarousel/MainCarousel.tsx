@@ -1,5 +1,15 @@
 import { useRef, useState } from "react";
-import { Avatar, BackgroundImage, Box, Container, Group, Stack, Text } from "@mantine/core";
+import {
+  Avatar,
+  BackgroundImage,
+  Image,
+  Box,
+  Group,
+  Stack,
+  Text,
+  Center,
+  Container,
+} from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
@@ -23,7 +33,12 @@ function processString(input: string): string {
   return processedString;
 }
 
-export function MainCarousel() {
+interface MainCarouselProps {
+  isMain?: boolean;
+  isInfo?: boolean;
+}
+
+export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
   const { classes, cx } = useMainCarouselStyles();
 
   const TRANSITION_DURATION = 200;
@@ -36,24 +51,37 @@ export function MainCarousel() {
 
   const GameCarouselSlides = values.map((value) => (
     <Carousel.Slide>
-      <BackgroundImage
-        className={classes.backgroundImage}
-        w={"100%"}
-        h={"100%"}
-        component="a"
-        href={value.href}
-        src={value.src}
-      >
-        <Stack className={classes.gameIntro} spacing={"2rem"}>
-          <Group>
-            <Avatar radius={"md"} src={value.src} />
-            <Text color="#fff" size={"1.8rem"}>
-              {value.gameName}
-            </Text>
-          </Group>
-          <Box className={classes.gameExplain}>{processString(value.gameExplain)}</Box>
-        </Stack>
-      </BackgroundImage>
+      {isMain && (
+        <BackgroundImage
+          className={classes.backgroundImage}
+          component="a"
+          href={value.href}
+          src={value.src}
+          h={"100%"}
+        >
+          <Stack className={classes.gameIntro} spacing={"2rem"}>
+            <Group>
+              <Avatar radius={"md"} src={value.src} />
+              <Text color="#fff" size={"1.8rem"}>
+                {value.gameName}
+              </Text>
+            </Group>
+            <Box className={classes.gameExplain}>{processString(value.gameExplain)}</Box>
+          </Stack>
+        </BackgroundImage>
+      )}
+      {isInfo && (
+        <Container className={classes.imageContainer}>
+          <Image
+            className={classes.image}
+            w={"100%"}
+            h={"100%"}
+            radius={"lg"}
+            fit="contain"
+            src={value.src}
+          />
+        </Container>
+      )}
     </Carousel.Slide>
   ));
 
@@ -61,7 +89,6 @@ export function MainCarousel() {
     <Carousel
       className={classes.carousel}
       slideSize="100%"
-      height="30rem"
       slideGap="md"
       loop
       draggable={false}
