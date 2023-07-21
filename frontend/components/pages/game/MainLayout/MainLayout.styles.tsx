@@ -2,21 +2,17 @@ import { createStyles } from "@mantine/core";
 
 export const useMainLayoutStyles = createStyles((theme) => ({
   container: {
-    display: "flex",
-    flexDirection: "column",
     width: "100%",
-    gap: 83,
-    height: "100%",
   },
 
   tapContainer: {
-    position: "fixed",
+    position: "relative",
     width: "100%",
     height: "3rem",
+    zIndex: 100,
   },
 
   upContainer: {
-    marginTop: "3rem",
     width: "100%",
     height: "32rem",
   },
