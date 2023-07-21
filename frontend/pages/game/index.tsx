@@ -6,7 +6,7 @@ import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 function Game() {
   return (
     <MainLayout tapSection={<MainTab />} upSection={<MainCarousel />}>
-      <CardContainer w={"100%"} h={"40rem"}>
+      <CardContainer w={"100%"} h={"50rem"}>
         main
       </CardContainer>
     </MainLayout>

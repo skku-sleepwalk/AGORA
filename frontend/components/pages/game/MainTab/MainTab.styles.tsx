@@ -9,18 +9,21 @@ export const useMainTabStyles = createStyles((theme) => ({
     backgroundColor: "white",
   },
   tabList: {
+    boxSizing: "border-box",
     width: "100%",
-    borderBottom: "0.1rem solid black",
+    height: "3rem",
+    borderBottom: "none",
     alignSelf: "flex-end",
+    boxShadow: `0px 3px 10px rgba(0, 0, 0, 0.2)`,
   },
   tabItem: {
     boxSizing: "border-box",
-    height: "2.5rem",
+    height: "3rem",
     width: "7rem",
     fontSize: "1rem",
     "&:hover": {
       backgroundColor: "transparent",
-      borderBottom: "0.1rem solid black",
+      borderBottom: "none",
     },
   },
   tabItemActive: {

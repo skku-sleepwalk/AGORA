@@ -2,8 +2,6 @@ import { createStyles } from "@mantine/core";
 
 export const useMainLayoutStyles = createStyles((theme) => ({
   container: {
-    // display: "flex",
-    // flexDirection: "column",
     width: "100%",
   },
 
@@ -11,6 +9,7 @@ export const useMainLayoutStyles = createStyles((theme) => ({
     position: "relative",
     width: "100%",
     height: "3rem",
+    zIndex: 100,
   },
 
   upContainer: {
