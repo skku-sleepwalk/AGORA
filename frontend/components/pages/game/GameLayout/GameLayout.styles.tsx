@@ -50,7 +50,7 @@ export const useGameLayoutStyles = createStyles((theme) => ({
   },
 
   rightContainer: {
-    width: 300,
+    width: 350,
     margin: 0,
   },
 }));
