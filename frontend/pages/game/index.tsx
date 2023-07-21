@@ -1,3 +1,4 @@
+
 import CardContainer from "../../components/common/CardContainer/CardContainer";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
@@ -38,5 +39,6 @@ function Game() {
       </CardContainer>
     </GameLayout>
   );
+
 }
 export default Game;
