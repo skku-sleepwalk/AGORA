@@ -59,7 +59,7 @@ export class GameStoreController {
     );
   }
 
-  @Post('reviews/comment')
+  @Post('reviews/comments')
   createGameStoreReviewComment(
     @Headers('Authorization') writerEmail: string,
     @Body() createGameStoreReviewCommentDto: CreateGameStoreReviewCommentDto,
@@ -125,10 +125,15 @@ export class GameStoreController {
 
   @Patch()
   update(
-    @Query('id') id: string,
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreId: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
-    return this.gameStoreService.update(+id, updateGameStoreDto);
+    return this.gameStoreService.updateGameStore(
+      userEmail,
+      gameStoreId,
+      updateGameStoreDto,
+    );
   }
 
   @Patch('/like')
@@ -163,6 +168,18 @@ export class GameStoreController {
     );
   }
 
+  @Patch('/reviews/comments/like')
+  updateGameStoreCommentReviewLike(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewCommentId: string,
+    @Query('action') likeAction: LikeAction,
+  ) {
+    return this.gameStoreService.updateGameStoreReviewCommentLike(
+      gameStoreReviewCommentId,
+      userEmail,
+      likeAction,
+    );
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.gameStoreService.remove(+id);

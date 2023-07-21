@@ -10,6 +10,7 @@ import {
 import {
   GameStoreReview,
   GameStoreReviewComment,
+  GameStoreReviewCommentLikeRelation,
 } from 'src/game-store/entities/game-store-review.entity';
 import {
   GameStore,
@@ -72,6 +73,12 @@ export class User {
 
   @OneToMany(() => GameStoreReviewComment, (comment) => comment.writer)
   gameStoreReviewComments: Array<GameStoreReviewComment>;
+
+  @OneToMany(
+    () => GameStoreReviewCommentLikeRelation,
+    (relation) => relation.user,
+  )
+  gameStoreReviewCommentLikeRelations: Array<GameStoreReviewCommentLikeRelation>;
 
   @OneToMany(() => GameStoreBoard, (board) => board.writer)
   gameStoreBoards: Array<GameStoreBoard>;
