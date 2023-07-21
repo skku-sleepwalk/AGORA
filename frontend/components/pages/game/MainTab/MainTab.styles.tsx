@@ -18,8 +18,8 @@ export const useMainTabStyles = createStyles((theme) => ({
   },
   tabItem: {
     boxSizing: "border-box",
-    height: "3rem",
     width: "7rem",
+    height: "3rem",
     fontSize: "1rem",
     "&:hover": {
       backgroundColor: "transparent",
@@ -31,6 +31,21 @@ export const useMainTabStyles = createStyles((theme) => ({
     borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
     "&:hover": {
       borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
+    },
+  },
+  button: {
+    position: "absolute",
+    top: "0.35rem",
+    right: "2rem",
+    // float: "right",
+    borderColor: "black",
+
+    "&:hover": {
+      backgroundColor: "transparent",
+    },
+    ".mantine-Button-inner": {
+      fontWeight: "normal",
+      color: "black",
     },
   },
 }));
