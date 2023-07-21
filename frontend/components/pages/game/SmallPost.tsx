@@ -49,13 +49,9 @@ export default function () {
         사그레스
       </Text>
 
-      <Group spacing={30} align="flex-start">
+      <Group spacing={63} align="flex-start">
         <UserInfoSmall user={hardcodedUser} />
         <Group spacing={0}>
-          <Group spacing={5}>
-            <Rating value={value} fractions={2} size="xs" readOnly />
-            <Text size={"xs"}>{value}</Text>
-          </Group>
           <Group spacing={5}>
             <IconHeart size={15} stroke={1.3} />
             <Text size={"xs"}>(1010)</Text>
@@ -68,7 +64,7 @@ export default function () {
         </Text>
       </div>
 
-      <div style={{ marginTop: "250px" }}>1</div>
+      <div style={{ marginTop: "200px" }}>1</div>
     </CardContainer>
   );
 }
