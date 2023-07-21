@@ -74,8 +74,8 @@ export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
         <Container className={classes.imageContainer}>
           <Image
             className={classes.image}
-            w={"100%"}
-            h={"100%"}
+            width={"100%"}
+            height={"100%"}
             radius={"lg"}
             fit="contain"
             src={value.src}

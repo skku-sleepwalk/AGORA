@@ -17,6 +17,7 @@ export const useMainCarouselStyles = createStyles((theme) => ({
   },
 
   image: {
+    height: "100%",
     ".mantine-Image-imageWrapper, .mantine-Image-figure, .mantine-Image-image": {
       height: "100%",
     },
