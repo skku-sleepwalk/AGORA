@@ -125,10 +125,15 @@ export class GameStoreController {
 
   @Patch()
   update(
-    @Query('id') id: string,
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreId: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
-    return this.gameStoreService.update(+id, updateGameStoreDto);
+    return this.gameStoreService.updateGameStore(
+      userEmail,
+      gameStoreId,
+      updateGameStoreDto,
+    );
   }
 
   @Patch('/like')

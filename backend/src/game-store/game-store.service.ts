@@ -32,6 +32,7 @@ import {
   GameStore,
   GameStoreTag,
   PlayTimeRelation,
+  SNSUrls,
 } from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
 import {
@@ -528,8 +529,104 @@ export class GameStoreService {
     return gameStore;
   }
 
-  update(id: number, updateGameStoreDto: UpdateGameStoreDto) {
-    return `This action updates a #${id} gameStore`;
+  async updateGameStore(
+    userEmail: string,
+    gameStoreId: string,
+    updateGameStoreDto: UpdateGameStoreDto,
+  ) {
+    const {
+      title,
+      description,
+      distributor,
+      developer,
+      snsUrls,
+      cost,
+      shortDescription,
+    } = updateGameStoreDto;
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const gameStore: GameStore = await this.getGameStoreWithRelations()
+      .where('gamestore.id = :id', { id: gameStoreId })
+      .getOne();
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (user.id !== gameStore.author.id) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    gameStore.title = title;
+    gameStore.description = description;
+    gameStore.distributor = distributor;
+    gameStore.developer = developer;
+
+    for (const key in gameStore.snsUrls) {
+      if (!Object.keys(snsUrls).includes(key) && key !== 'id') {
+        snsUrls[key] = null;
+      }
+      if (key !== 'id') {
+        gameStore.snsUrls[key] = snsUrls[key];
+      }
+    }
+    await this.snsUrlsRepository.update(
+      gameStore.snsUrls.id,
+      gameStore.snsUrls,
+    );
+
+    gameStore.price = cost.isFree
+      ? 0
+      : !cost.isSale
+      ? cost.defaultPrice
+      : cost.saledPrice;
+    for (const key in gameStore.cost) {
+      if (!Object.keys(cost).includes(key) && key !== 'id') {
+        cost[key] = null;
+      }
+      if (key !== 'id') {
+        gameStore.cost[key] = cost[key];
+      }
+    }
+
+    await this.costRepository.update(gameStore.cost.id, gameStore.cost);
+
+    gameStore.shortDescription.content = shortDescription.content;
+    gameStore.shortDescription.imageUrl = shortDescription.imageUrl;
+    await this.shortDesriptionRepository.update(
+      gameStore.shortDescription.id,
+      gameStore.shortDescription,
+    );
+    this.shortDesriptionRepository.findOne(gameStore.shortDescription.id);
+    return await this.gameStoreRepository.save(gameStore);
   }
 
   async updateGameStoreLike(gameStoreId: string, userEmail: string) {

@@ -109,25 +109,25 @@ export class SNSUrls {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   youtube: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   twitch: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   twitter: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   discord: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   facebook: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   instagram: string | null;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, default: null })
   customPage: string | null;
 
   @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)
