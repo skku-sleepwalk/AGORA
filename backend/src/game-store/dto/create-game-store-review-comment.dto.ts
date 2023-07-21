@@ -4,7 +4,7 @@ import { CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from 'typeorm';
 export class CreateGameStoreReviewCommentDto {
   @IsNotEmpty()
   @IsString()
-  reviewId: string;
+  readonly reviewId: string;
 
   @IsNotEmpty()
   @IsString()

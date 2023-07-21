@@ -49,6 +49,8 @@ import { User } from 'src/users/entities/user.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { UpdateGameStoreReviewCommentDto } from './dto/update-game-store-review-comment.dto';
+import { UpdateGameStoreBoardDto } from './dto/update-game-store-board.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -876,6 +878,50 @@ export class GameStoreService {
     await this.gameStoreReviewLikeRelationRepository.save(relation);
     return await this.gameStoreReviewRepository.save(review);
   }
+
+  async updateGameStoreReviewComment(
+    userEmail: string,
+    gameStoreReviewCommentId: string,
+    updateGameStoreReviewCommentDto: UpdateGameStoreReviewCommentDto,
+  ) {
+    const { content } = updateGameStoreReviewCommentDto;
+    const queryBuilder = this.gameStoreReviewCommentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.writer', 'writer');
+    const comment: GameStoreReviewComment = await queryBuilder
+      .where('comment.id = :id', { id: gameStoreReviewCommentId })
+      .getOne();
+
+    if (!comment) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 후기 댓글이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (user.id !== comment.writer.id) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    comment.content = content;
+
+    return this.gameStoreReviewCommentRepository.save(comment);
+  }
+
   async updateGameStoreReviewCommentLike(
     gameStoreReviewCommentId: string,
     userEmail: string,
@@ -972,6 +1018,72 @@ export class GameStoreService {
     comment.createdAt = createdAt;
     await this.gameStoreReviewCommentLikeRelationRepository.save(relation);
     return await this.gameStoreReviewCommentRepository.save(comment);
+  }
+
+  async updateGameStoreBoard(
+    userEmail: string,
+    gameStoreBoardId: string,
+    updateGameStoreBoardDto: UpdateGameStoreBoardDto,
+  ) {
+    const board = await this.gameStoreBoardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .where('board.id = :gameStoreBoardId', { gameStoreBoardId })
+      .getOne();
+    if (!board) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${gameStoreBoardId}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = await this.userRepository.findOne({ email: userEmail });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (userEmail !== board.writer.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            writerEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const createdAt = cloneDeep(board.createdAt);
+
+    const { title, content, categoryNames } = updateGameStoreBoardDto;
+    board.title = title;
+    board.content = content;
+    board.categoryTypes = [];
+    board.createdAt = createdAt;
+    for (const categoryName of categoryNames) {
+      const categoryType = await this.gameStoreBoardCategoryRepository.findOne({
+        name: categoryName,
+      });
+      if (categoryType) {
+        board.categoryTypes.push(categoryType);
+      }
+    }
+    return await this.gameStoreBoardRepository.save(board);
   }
 
   async updateGameStoreBoardLike(gameStoreBoardId: string, userEmail: string) {

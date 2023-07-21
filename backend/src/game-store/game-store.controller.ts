@@ -20,6 +20,8 @@ import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { LikeAction } from './entities/game-store-review.entity';
 import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { UpdateGameStoreReviewCommentDto } from './dto/update-game-store-review-comment.dto';
+import { UpdateGameStoreBoardDto } from './dto/update-game-store-board.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -182,6 +184,18 @@ export class GameStoreController {
     );
   }
 
+  @Patch('reviews/comments')
+  updateGameStoreReviewComment(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewCommentId: string,
+    @Body() updateGameStoreReviewCommentDto: UpdateGameStoreReviewCommentDto,
+  ) {
+    return this.gameStoreService.updateGameStoreReviewComment(
+      userEmail,
+      gameStoreReviewCommentId,
+      updateGameStoreReviewCommentDto,
+    );
+  }
   @Patch('/reviews/comments/like')
   updateGameStoreReviewCommentLike(
     @Headers('Authorization') userEmail: string,
@@ -192,6 +206,19 @@ export class GameStoreController {
       gameStoreReviewCommentId,
       userEmail,
       likeAction,
+    );
+  }
+
+  @Patch('/boards')
+  updateGameStoreBoard(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewCommentId: string,
+    @Body() updateGameStoreBoardDto: UpdateGameStoreBoardDto,
+  ) {
+    return this.gameStoreService.updateGameStoreBoard(
+      userEmail,
+      gameStoreReviewCommentId,
+      updateGameStoreBoardDto,
     );
   }
 
