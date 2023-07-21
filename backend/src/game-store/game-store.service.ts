@@ -734,9 +734,34 @@ export class GameStoreService {
     const review: GameStoreReview = await queryBuilder
       .where('review.id = :id', { id: gameStoreReviewId })
       .getOne();
+
+    if (!review) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 후기가 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (user.id !== review.writer.id) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
     review.content = content;
     review.rating = rating;
-
     const reviews = await queryBuilder
       .where('(gameStore.id = :gameStoreId) AND (review.id <> :reviewId)', {
         gameStoreId: review.gameStore.id,
