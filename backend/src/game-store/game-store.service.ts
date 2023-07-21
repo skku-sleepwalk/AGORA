@@ -218,6 +218,11 @@ export class GameStoreService {
       distributor,
       tags: [],
       likedUsers: [],
+      price: cost.isFree
+        ? 0
+        : !cost.isSale
+        ? cost.defaultPrice
+        : cost.saledPrice,
     });
     newGameStore.shortDescription = await this.shortDesriptionRepository.save(
       this.shortDesriptionRepository.create({
