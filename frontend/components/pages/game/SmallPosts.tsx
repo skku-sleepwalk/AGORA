@@ -21,7 +21,7 @@ export function SmallPosts() {
           align="start"
           slidesToScroll={5}
           slideGap="lg"
-          height={350}
+          height="25rem"
           withIndicators
           controlSize={30}
           maw={1400}
@@ -33,37 +33,37 @@ export function SmallPosts() {
 <div style={{ width: "230px", marginLeft: "30px", marginTop: "17px" }}>
   </div> */}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>{" "}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>{" "}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>{" "}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>{" "}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>{" "}
           <Carousel.Slide>
-            <div style={{ marginTop: "17px" }}>
+            <div style={{ marginTop: "20px" }}>
               <SmallPost />
             </div>
           </Carousel.Slide>
