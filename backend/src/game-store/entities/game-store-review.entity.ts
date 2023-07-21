@@ -21,7 +21,7 @@ export class GameStoreReview {
   @ManyToOne(() => User, (user) => user.gameStoreReviews)
   readonly writer: User;
 
-  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreReview)
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreReviews)
   readonly gameStore: GameStore;
 
   @OneToMany(

@@ -74,7 +74,7 @@ export class GameStore {
   gameStoreBoards: Array<GameStoreBoard>;
 
   @OneToMany(() => GameStoreReview, (review) => review.gameStore)
-  gameStoreReview: Array<GameStoreReview>;
+  gameStoreReviews: Array<GameStoreReview>;
 
   @OneToMany(() => PlayTimeRelation, (relation) => relation.gameStore)
   playtimeRelations: Array<PlayTimeRelation>;
@@ -109,25 +109,25 @@ export class SNSUrls {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   youtube: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   twitch: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   twitter: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   discord: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   facebook: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   instagram: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   customPage: string | null;
 
   @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)

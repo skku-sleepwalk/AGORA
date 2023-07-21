@@ -19,6 +19,7 @@ import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { LikeAction } from './entities/game-store-review.entity';
+import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -123,8 +124,8 @@ export class GameStoreController {
     return this.gameStoreService.findOneGameStore(id);
   }
 
-  @Patch()
-  update(
+  @Patch('/game')
+  updateGameStore(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreId: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
@@ -152,6 +153,19 @@ export class GameStoreController {
     this.gameStoreService.updatePlaytimeRelation(
       userEmail,
       updatePlaytimeRelationDto,
+    );
+  }
+
+  @Patch('/reviews')
+  updateGameStoreReview(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewId: string,
+    @Body() updateGameStoreReviewDto: updateGameStoreReviewDto,
+  ) {
+    return this.gameStoreService.updateGameStoreReview(
+      userEmail,
+      gameStoreReviewId,
+      updateGameStoreReviewDto,
     );
   }
 

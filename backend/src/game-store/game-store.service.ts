@@ -51,6 +51,7 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
+import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -718,6 +719,46 @@ export class GameStoreService {
     }
     relation.playTime += additionalPlayTime;
     return this.playTimeRelationRepository.save(relation);
+  }
+
+  async updateGameStoreReview(
+    userEmail: string,
+    gameStoreReviewId: string,
+    updateGameStoreReviewDto: updateGameStoreReviewDto,
+  ) {
+    const { content, rating } = updateGameStoreReviewDto;
+    const queryBuilder = this.gameStoreReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.writer', 'writer')
+      .leftJoinAndSelect('review.gameStore', 'gameStore');
+    const review: GameStoreReview = await queryBuilder
+      .where('review.id = :id', { id: gameStoreReviewId })
+      .getOne();
+    review.content = content;
+    review.rating = rating;
+
+    const reviews = await queryBuilder
+      .where('(gameStore.id = :gameStoreId) AND (review.id <> :reviewId)', {
+        gameStoreId: review.gameStore.id,
+        reviewId: review.id,
+      })
+      .getMany();
+
+    console.log(reviews);
+
+    review.gameStore.rating = parseFloat(
+      (
+        (reviews.reduce((sum, review) => sum + review.rating, 0) + rating) /
+        (reviews.length + 1)
+      ).toFixed(1),
+    );
+
+    await this.gameStoreRepository.update(
+      review.gameStore.id,
+      review.gameStore,
+    );
+
+    return this.gameStoreReviewRepository.save(review);
   }
 
   async updateGameStoreReviewLike(
