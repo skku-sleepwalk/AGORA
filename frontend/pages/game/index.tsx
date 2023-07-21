@@ -6,17 +6,14 @@ import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 
 function Game() {
   return (
-    // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel />}>
+    // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
     //   <CardContainer w={"100%"} h={"50rem"}>
     //     main
     //   </CardContainer>
     // </MainLayout>
+
     <GameLayout
-      photoSection={
-        <CardContainer w={"100%"} h={"100%"}>
-          photo
-        </CardContainer>
-      }
+      photoSection={<MainCarousel isInfo={true} />}
       summarySection={
         <CardContainer w={"100%"} h={"100%"}>
           summary

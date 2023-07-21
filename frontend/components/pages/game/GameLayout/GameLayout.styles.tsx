@@ -14,6 +14,7 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     width: "100%",
     height: "auto",
     padding: 20,
+    paddingTop: 60,
     gap: 40,
   },
 
@@ -21,6 +22,8 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     margin: 0,
     aspectRatio: "8 / 5",
     width: 800,
+    position: "relative",
+    overflow: "hidden",
   },
 
   summaryContainer: {
