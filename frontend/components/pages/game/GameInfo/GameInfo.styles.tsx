@@ -5,8 +5,12 @@ export const useGameInfoStyles = createStyles((theme) => ({
     cursor: "default",
   },
 
-  group: {
+  alignTop: {
     alignItems: "flex-start",
+  },
+
+  alignBottom: {
+    alignItems: "flex-end",
   },
 
   grayText: {
@@ -15,6 +19,8 @@ export const useGameInfoStyles = createStyles((theme) => ({
   },
 
   blueText: {
+    position: "absolute",
+    marginLeft: "6.5rem",
     color: theme.colors.blue[4],
     textDecoration: "underLine",
     "&:hover": {

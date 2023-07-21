@@ -52,9 +52,9 @@ export function GameInfo() {
           <Text fz={16}>(1679)</Text>
         </Group>
       </Group>
-      <Group position="apart" className={classes.group}>
+      <Group position="apart" className={classes.alignTop}>
         <Stack spacing={"xs"}>
-          <Group spacing={"lg"}>
+          <Group spacing={"2rem"}>
             <Text className={classes.grayText} fw={"bold"}>
               개발사
             </Text>
@@ -62,7 +62,7 @@ export function GameInfo() {
               Concerned Ape
             </Text>
           </Group>
-          <Group spacing={"lg"}>
+          <Group spacing={"2rem"}>
             <Text className={classes.grayText} fw={"bold"}>
               배급사
             </Text>
@@ -109,23 +109,23 @@ export function GameInfo() {
       <br />
       <Divider />
       <br />
-      <Group spacing={"lg"}>
+      <Group spacing={"2rem"}>
         <Text className={classes.grayText} fw={"bold"}>
           장르
         </Text>
-        <Group spacing={"0.5rem"}>
-          <Text className={classes.blueText} fw={"bold"} component="a" href="https://mantine.dev">
+        <Group spacing={"0.5rem"} className={classes.blueText}>
+          <Text fw={"bold"} component="a" href="https://mantine.dev">
             인디,
           </Text>
-          <Text className={classes.blueText} fw={"bold"} component="a" href="https://mantine.dev">
+          <Text fw={"bold"} component="a" href="https://mantine.dev">
             RPG,
           </Text>
-          <Text className={classes.blueText} fw={"bold"} component="a" href="https://mantine.dev">
+          <Text fw={"bold"} component="a" href="https://mantine.dev">
             시뮬레이션
           </Text>
         </Group>
       </Group>
-      <Group spacing={"lg"}>
+      <Group spacing={"2rem"}>
         <Text className={classes.grayText} fw={"bold"}>
           이용 등급
         </Text>
@@ -152,7 +152,7 @@ export function GameInfo() {
       <Group className={classes.marginLeft} position="apart">
         <Button className={classes.sellButton}>
           <Stack spacing={"xs"}>
-            <Group position="center">
+            <Group position="center" spacing={"xs"} className={classes.alignBottom}>
               {true && (
                 <Text fz={12} fw={"normal"} td="line-through">
                   ￦ 16,000
