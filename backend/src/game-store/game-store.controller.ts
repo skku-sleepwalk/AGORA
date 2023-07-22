@@ -26,6 +26,7 @@ import { UpdateGameStoreReviewDto } from './dto/update-game-store-review.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
 import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
 import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
+import { CreateGameStoreShoppingCartItemDto } from './dto/create-game-store-shoppingCartItem.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -73,6 +74,18 @@ export class GameStoreController {
     return this.gameStoreService.createPlayTimeRelation(
       userEmail,
       createPlaytimeRelationDto,
+    );
+  }
+
+  @Post('shoppingCartItems')
+  createGameStoreShoppingCartItem(
+    @Headers('Authorization') userEmail: string,
+    @Body()
+    createGameStoreShoppingCartItemDto: CreateGameStoreShoppingCartItemDto,
+  ) {
+    return this.gameStoreService.createGameStoreShoppingCartItem(
+      userEmail,
+      createGameStoreShoppingCartItemDto,
     );
   }
 

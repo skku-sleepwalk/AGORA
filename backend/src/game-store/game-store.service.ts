@@ -65,6 +65,7 @@ import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
 import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
 import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
 import { CreateGameStoreShoppingCartItemDto } from './dto/create-game-store-shoppingCartItem.dto';
+import { UpdateGameStoreShoppingCartItemDto } from './dto/update-game-store-shoppingCartItem.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -531,7 +532,7 @@ export class GameStoreService {
     }
 
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
-
+    console.log(gameStore);
     if (!gameStore) {
       throw new HttpException(
         {
@@ -549,6 +550,12 @@ export class GameStoreService {
         user,
         gameStore,
       });
+    const _user = await this.userRepository.findOne({
+      relations: ['gameStoreShoppingCartItems'],
+      where: { email: userEmail },
+    });
+    _user.gameStoreShoppingCartItems.push(newShoppingCartItem);
+    await this.userRepository.save(_user);
     return this.gameStoreShoppingCartItemRepository.save(newShoppingCartItem);
   }
 
@@ -708,6 +715,7 @@ export class GameStoreService {
       .leftJoinAndSelect('gamestore.shortDescription', 'shortDescription')
       .leftJoinAndSelect('gamestore.genres', 'genres')
       .leftJoinAndSelect('gamestore.popularTags', 'popularTags')
+      .leftJoinAndSelect('gamestore.likedUsers', 'likedUsers')
       .where('genres.name = :genreName', { genreName });
 
     const paginationOption: PaginationOptions<GameStore> = cloneDeep(
@@ -1037,6 +1045,51 @@ export class GameStoreService {
       (await this.calculateTotalPlaytime(user)) + additionalPlaytime;
     await this.userRepository.save(user); // user 저장 추가
     return this.playTimeRelationRepository.save(relation);
+  }
+
+  async updateGameStoreShoppingCartItem(
+    userEmail: string,
+    updateGameStoreShoppingCartItemDto: UpdateGameStoreShoppingCartItemDto,
+  ) {
+    const { gameStoreId } = updateGameStoreShoppingCartItemDto;
+    const user = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEmail: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const shoppingCartItem: GameStoreShoppingCartItem =
+      await this.gameStoreShoppingCartItemRepository.findOne({
+        user,
+        gameStore,
+      });
+
+    if (shoppingCartItem) {
+      this.gameStoreShoppingCartItemRepository.delete(shoppingCartItem);
+    } else {
+      this.createGameStoreShoppingCartItem(userEmail, { gameStoreId });
+    }
   }
 
   async updateGameStoreReview(
