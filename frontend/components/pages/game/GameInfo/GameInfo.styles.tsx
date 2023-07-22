@@ -55,6 +55,7 @@ export const useGameInfoStyles = createStyles((theme) => ({
   sellButton: {
     width: "17rem",
     height: "4.7rem",
+    flexGrow: 1,
   },
   passButton: {
     width: "7rem",

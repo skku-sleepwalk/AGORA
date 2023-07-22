@@ -1,3 +1,4 @@
+import { useMediaQuery } from "@mantine/hooks";
 import { useGameLayoutStyles } from "./GameLayout.styles";
 
 export interface CommunityLayoutProps {
@@ -15,7 +16,9 @@ function GameLayout({
   children,
   rightSection,
 }: CommunityLayoutProps) {
-  const { classes } = useGameLayoutStyles();
+  const { classes, cx } = useGameLayoutStyles();
+
+  const smallScreen = useMediaQuery("(max-width: 880px)");
 
   return (
     <div className={classes.container}>
@@ -25,8 +28,12 @@ function GameLayout({
       </div>
       <div className={classes.tapContainer}>{tapSection}</div>
       <div className={classes.bottomContainer}>
-        <div className={classes.mainContainer}>{children}</div>
-        <div className={classes.rightContainer}>{rightSection}</div>
+        <div className={cx(smallScreen ? classes.mainContainer_S : classes.mainContainer_B)}>
+          {children}
+        </div>
+        <div className={cx(smallScreen ? classes.rightContainer_S : classes.rightContainer_B)}>
+          {rightSection}
+        </div>
       </div>
     </div>
   );
