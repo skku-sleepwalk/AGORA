@@ -188,7 +188,7 @@ export function GameInfo() {
             </Center>
             <Center>
               <Text fz={12} fw={"normal"}>
-                마지맞 플레이 2분 전
+                마지막 플레이 2분 전
               </Text>
             </Center>
           </Stack>
