@@ -35,13 +35,12 @@ export const useGameInfoStyles = createStyles((theme) => ({
   },
 
   multiSelect: {
-    maxWidth: "24rem",
-    maxHeight: "2.25rem",
-    overflow: "hidden",
-
+    height: "4.3rem",
     ".mantine-MultiSelect-input": {
       border: "none",
       padding: 0,
+      backgroundColor: "#fcfcfe",
+      cursor: "default",
     },
     ".mantine-MultiSelect-value": {
       height: "1.8rem",
@@ -63,6 +62,14 @@ export const useGameInfoStyles = createStyles((theme) => ({
     },
   },
 
+  marginTop: {
+    marginTop: "0.65rem",
+  },
+
+  marginBottom: {
+    marginBottom: "0.65rem",
+  },
+
   marginLeft: {
     marginLeft: "0.5rem",
     marginRight: "0.5rem",
@@ -73,6 +80,7 @@ export const useGameInfoStyles = createStyles((theme) => ({
     height: "4.7rem",
     flexGrow: 1,
   },
+
   passButton: {
     width: "7rem",
     height: "4.7rem",

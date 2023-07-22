@@ -9,9 +9,10 @@ import {
   Button,
   Badge,
   Center,
+  Box,
 } from "@mantine/core";
 import { useGameInfoStyles } from "./GameInfo.styles";
-import { IconHeart } from "@tabler/icons-react";
+import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useState } from "react";
 
@@ -28,7 +29,7 @@ export function GameInfo() {
   };
 
   return (
-    <Stack spacing={"xs"} className={classes.stack}>
+    <Stack spacing={"1rem"} className={classes.stack}>
       <Group position="apart">
         <Group>
           <Avatar
@@ -44,16 +45,17 @@ export function GameInfo() {
         </Group>
         <Group spacing={"xs"}>
           <InvisibleButton onClick={handleIsLiking}>
-            {/* {isLiking ? ( */}
-            <Image width={"2rem"} height={"2rem"} src="../../../public/HeartFilled.png" />
-            {/* ) : (
+            {isLiking ? (
+              // <Image width={"2rem"} height={"2rem"} src="../../../public/HeartFilled.png" />
+              <IconHeartFilled size={"2rem"} stroke={1} />
+            ) : (
               <IconHeart size={"2rem"} stroke={1} />
-            )} */}
+            )}
           </InvisibleButton>
           <Text fz={16}>(1679)</Text>
         </Group>
       </Group>
-      <Group position="apart" className={classes.alignTop}>
+      <Group position="apart" className={cx(classes.alignTop, classes.marginBottom)}>
         <Stack spacing={"xs"}>
           <Group spacing={"2rem"}>
             <Text className={classes.grayText} fw={"bold"}>
@@ -107,10 +109,8 @@ export function GameInfo() {
           )}
         </InvisibleButton>
       </Group>
-      <br />
       <Divider />
-      <br />
-      <Group spacing={"2rem"}>
+      <Group spacing={"2rem"} className={classes.marginTop}>
         <Text className={classes.grayText} fw={"bold"}>
           장르
         </Text>
@@ -134,14 +134,11 @@ export function GameInfo() {
           12세 이용가
         </Text>
       </Group>
-      <br />
-      <Text className={classes.grayText} fw={"bold"}>
+      <Text className={cx(classes.grayText, classes.marginBottom)} fw={"bold"}>
         출시일: 2016년 2월 17일
       </Text>
-      <br />
       <Divider />
-      <br />
-      <Text className={classes.marginLeft} fw={"bold"}>
+      <Text className={cx(classes.marginLeft, classes.marginTop)} fw={"bold"}>
         이 게임의 인기 태그 :
       </Text>
       <Group spacing={0}>
@@ -154,6 +151,7 @@ export function GameInfo() {
             "힐링",
             "끊을 줄 모르는",
             "최고인",
+            "잊을 수 없는",
           ]}
           value={[
             "농장 시뮬레이션",
@@ -162,6 +160,7 @@ export function GameInfo() {
             "힐링",
             "끊을 줄 모르는",
             "최고인",
+            "잊을 수 없는",
           ]}
           readOnly
         />
