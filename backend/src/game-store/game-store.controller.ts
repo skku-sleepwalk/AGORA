@@ -97,6 +97,7 @@ export class GameStoreController {
       createGameStoreReviewCommentDto,
     );
   }
+
   @Post('boards')
   createGameStoreBoard(
     @Headers('Authorization') writerEmail: string,

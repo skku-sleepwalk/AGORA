@@ -31,8 +31,6 @@ import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-c
 import {
   GameStore,
   GameStoreGenre,
-  GameStoreTag,
-  GameStoreTagRelation,
   PlayTimeRelation,
 } from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
@@ -136,7 +134,7 @@ export class GameStoreService {
       .withDeleted()
       .leftJoinAndSelect('gamestore.author', 'author')
       .leftJoinAndSelect('gamestore.likedUsers', 'likedUsers')
-      .leftJoinAndSelect('gamestore.tags', 'tags')
+      .leftJoinAndSelect('gamestore.popularTags', 'popularTags')
       .leftJoinAndSelect('gamestore.shortDescription', 'shortDescription')
       .leftJoinAndSelect('gamestore.snsUrls', 'snsUrls')
       .leftJoinAndSelect('gamestore.cost', 'cost');
@@ -198,6 +196,59 @@ export class GameStoreService {
     }
   }
 
+  async updatePopularTags(gameStoreId: string): Promise<GameStore> {
+    // 게임 스토어를 찾습니다.
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId, {
+      relations: [
+        'gameStoreTagRelations',
+        'gameStoreTagRelations.tag',
+        'popularTags',
+      ],
+    });
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          error: {
+            gameStoreId,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // 모든 태그 관계와 해당 태그들을 가져옵니다.
+    const allRelations = gameStore.gameStoreTagRelations;
+    const allTags = allRelations.map((relation) => relation.tag);
+
+    // 태그별 관계 개수를 세기 위해 맵을 사용합니다.
+    const tagCountMap = new Map<string, number>();
+
+    // 모든 관계를 순회하며 태그별 관계 개수를 셉니다.
+    for (const relation of allRelations) {
+      const tagName = relation.tag.name;
+      tagCountMap.set(tagName, (tagCountMap.get(tagName) || 0) + 1);
+    }
+
+    // 태그별 관계 개수를 기준으로 내림차순으로 정렬합니다.
+    const sortedTags = allTags.sort((tagA, tagB) => {
+      const countA = tagCountMap.get(tagA.name) || 0;
+      const countB = tagCountMap.get(tagB.name) || 0;
+      return countB - countA;
+    });
+
+    // 상위 3개의 태그를 추출하여 리턴합니다.
+    const popularTags = sortedTags.slice(0, 3).map((tag) => tag.name);
+    gameStore.popularTags.push(
+      ...(await this.gameStoreTagRepository.find({
+        name: In(popularTags),
+      })),
+    );
+
+    return await this.gameStoreRepository.save(gameStore);
+  }
+
   async createGameStore(
     authorEmail: string,
     createGameStoreDto: CreateGameStoreDto,
@@ -240,6 +291,7 @@ export class GameStoreService {
         : !cost.isSale
         ? cost.defaultPrice
         : cost.saledPrice,
+      popularTags: [],
     });
     newGameStore.shortDescription = await this.shortDesriptionRepository.save(
       this.shortDesriptionRepository.create({
@@ -313,7 +365,9 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
+
     const gameStore = await this.gameStoreRepository.findOne(id);
+
     if (!gameStore) {
       throw new HttpException(
         {
@@ -383,6 +437,8 @@ export class GameStoreService {
 
     // 추가한 관계들을 유지한 관계들과 합쳐서 리턴
     const updatedRelations = [...toKeepRelations, ...toAddRelations];
+
+    await this.updatePopularTags(gameStore.id);
 
     return updatedRelations;
   }

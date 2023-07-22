@@ -68,6 +68,10 @@ export class GameStore {
   @JoinTable()
   readonly genres: Array<GameStoreGenre>;
 
+  @ManyToMany(() => GameStoreTag, (tag) => tag.popularedGameStores)
+  @JoinTable()
+  popularTags: Array<GameStoreTag>;
+
   @OneToMany(() => GameStoreTagRelation, (relation) => relation.gameStore)
   readonly gameStoreTagRelations: Array<GameStoreTagRelation>;
 
@@ -202,6 +206,9 @@ export class GameStoreTag {
 
   @OneToMany(() => GameStoreTagRelation, (relation) => relation.tag)
   readonly relations: Array<GameStoreTagRelation>;
+
+  @ManyToMany(() => GameStore, (gameStore) => gameStore.popularTags)
+  popularedGameStores: Array<GameStore>;
 }
 
 @Entity('GameStoreTagRelation')
