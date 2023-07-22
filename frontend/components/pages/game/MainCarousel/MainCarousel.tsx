@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Avatar,
   BackgroundImage,
@@ -39,7 +39,16 @@ interface MainCarouselProps {
 }
 
 export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
-  const { classes, cx } = useMainCarouselStyles();
+  // 배경 이미지 내부, 태그들의 크기/위치 자동 조절 용
+  const widthRef = useRef<HTMLAnchorElement>(null);
+  const [width, setWidth] = useState<number>(1440);
+  useEffect(() => {
+    if (widthRef.current) {
+      setWidth(widthRef.current.clientWidth);
+    }
+  }, []);
+
+  const { classes, cx } = useMainCarouselStyles({ width });
 
   const TRANSITION_DURATION = 200;
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -54,15 +63,16 @@ export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
       {isMain && (
         <BackgroundImage
           className={classes.backgroundImage}
+          ref={widthRef}
           component="a"
           href={value.href}
           src={value.src}
           h={"100%"}
         >
-          <Stack className={classes.gameIntro} spacing={"2rem"}>
+          <Stack className={classes.gameIntro} spacing={`${(2 * width) / 1440}rem`}>
             <Group>
-              <Avatar radius={"md"} src={value.src} />
-              <Text color="#fff" size={"1.8rem"}>
+              <Avatar radius={"md"} size={`${(2.4 * width) / 1440}rem`} src={value.src} />
+              <Text color="#fff" size={`${(1.8 * width) / 1440}rem`}>
                 {value.gameName}
               </Text>
             </Group>
@@ -93,8 +103,12 @@ export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
       loop
       draggable={false}
       withIndicators
-      previousControlIcon={<IconChevronLeft color="white" size={"3rem"}></IconChevronLeft>}
-      nextControlIcon={<IconChevronRight color="white" size={"3rem"}></IconChevronRight>}
+      previousControlIcon={
+        <IconChevronLeft color="white" size={`${(3 * width) / 1440}rem`}></IconChevronLeft>
+      }
+      nextControlIcon={
+        <IconChevronRight color="white" size={`${(3 * width) / 1440}rem`}></IconChevronRight>
+      }
       getEmblaApi={setEmbla}
       plugins={[autoplay.current]}
       onMouseEnter={autoplay.current.stop}

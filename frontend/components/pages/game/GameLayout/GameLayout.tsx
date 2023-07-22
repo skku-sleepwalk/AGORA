@@ -18,7 +18,7 @@ function GameLayout({
 }: CommunityLayoutProps) {
   const { classes, cx } = useGameLayoutStyles();
 
-  const smallScreen = useMediaQuery("(max-width: 880px)");
+  const smallScreen = useMediaQuery("(max-width: 780px)");
 
   return (
     <div className={classes.container}>
