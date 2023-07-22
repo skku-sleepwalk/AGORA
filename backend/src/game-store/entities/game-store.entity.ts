@@ -1,4 +1,7 @@
-import { User } from 'src/users/entities/user.entity';
+import {
+  GameStoreShoppingCartItem,
+  User,
+} from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -83,6 +86,9 @@ export class GameStore {
 
   @OneToMany(() => PlayTimeRelation, (relation) => relation.gameStore)
   playtimeRelations: Array<PlayTimeRelation>;
+
+  @OneToMany(() => GameStoreShoppingCartItem, (item) => item.gameStore)
+  shoppingCartItems: GameStoreShoppingCartItem[];
 
   @CreateDateColumn()
   createdAt: Date;

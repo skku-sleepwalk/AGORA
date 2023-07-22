@@ -18,7 +18,10 @@ import {
   GameStoreTagRepository,
   GameStoreTagRelationRepository,
 } from './game-store.repository';
-import { UserRepository } from 'src/users/user.repository';
+import {
+  GameStoreShoppingCartItemRepository,
+  UserRepository,
+} from 'src/users/user.repository';
 import { Connection, In, SelectQueryBuilder, getManager } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import {
@@ -48,7 +51,10 @@ import {
   GameStoreReviewLikeRelation,
   LikeAction,
 } from './entities/game-store-review.entity';
-import { User } from 'src/users/entities/user.entity';
+import {
+  GameStoreShoppingCartItem,
+  User,
+} from 'src/users/entities/user.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { UpdateGameStoreReviewDto } from './dto/update-game-store-review.dto';
@@ -58,6 +64,7 @@ import { CreateGameStoreGenreDto } from './dto/create-game-store-genre.dto';
 import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
 import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
 import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
+import { CreateGameStoreShoppingCartItemDto } from './dto/create-game-store-shoppingCartItem.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -71,6 +78,7 @@ export class GameStoreService {
   private readonly gameStoreTagRepository: GameStoreTagRepository;
   private readonly gameStoreTagRelationRepository: GameStoreTagRelationRepository;
   private readonly playTimeRelationRepository: PlayTimeRelationRepository;
+  private readonly gameStoreShoppingCartItemRepository: GameStoreShoppingCartItemRepository;
 
   private readonly gameStoreReviewRepository: GameStoreReviewRepository;
   private readonly gameStoreReviewLikeRelationRepository: GameStoreReviewLikeRelationRepository;
@@ -102,6 +110,9 @@ export class GameStoreService {
     );
     this.playTimeRelationRepository = connection.getCustomRepository(
       PlayTimeRelationRepository,
+    );
+    this.gameStoreShoppingCartItemRepository = connection.getCustomRepository(
+      GameStoreShoppingCartItemRepository,
     );
 
     this.gameStoreReviewRepository = connection.getCustomRepository(
@@ -248,6 +259,14 @@ export class GameStoreService {
     );
 
     return await this.gameStoreRepository.save(gameStore);
+  }
+
+  // 총 재생 시간 계산 메서드 추가
+  async calculateTotalPlaytime(user: User): Promise<number> {
+    const relations = await this.playTimeRelationRepository.find({
+      where: { user },
+    });
+    return relations.reduce((total, relation) => total + relation.playTime, 0);
   }
 
   async createGameStore(
@@ -449,8 +468,30 @@ export class GameStoreService {
     createPlaytimeRelationDto: CreatePlaytimeRelationDto,
   ) {
     const { gameStoreId } = createPlaytimeRelationDto;
-    const user = await this.userRepository.findOne({ email: userEmail });
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const user = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEmail: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     if (await this.playTimeRelationRepository.findOne({ user, gameStore })) {
       throw new HttpException(
         {
@@ -468,8 +509,47 @@ export class GameStoreService {
       user,
       gameStore,
     });
-
     return this.playTimeRelationRepository.save(newRelation);
+  }
+
+  async createGameStoreShoppingCartItem(
+    userEmail: string,
+    createGameStoreShoppingCartItemDto: CreateGameStoreShoppingCartItemDto,
+  ) {
+    const { gameStoreId } = createGameStoreShoppingCartItemDto;
+    const user = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEmail: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    const newShoppingCartItem: GameStoreShoppingCartItem =
+      this.gameStoreShoppingCartItemRepository.create({
+        id: uuid(),
+        user,
+        gameStore,
+      });
+    return this.gameStoreShoppingCartItemRepository.save(newShoppingCartItem);
   }
 
   async createGameStoreReview(
@@ -913,7 +993,7 @@ export class GameStoreService {
     userEmail: string,
     updatePlaytimeRelation: UpdatePlaytimeRelationDto,
   ) {
-    const { gameStoreId, additionalPlayTime } = updatePlaytimeRelation;
+    const { gameStoreId, additionalPlaytime } = updatePlaytimeRelation;
     const gameStore: GameStore = await this.gameStoreRepository.findOne(
       gameStoreId,
     );
@@ -948,7 +1028,14 @@ export class GameStoreService {
     if (!relation) {
       relation = await this.createPlayTimeRelation(userEmail, { gameStoreId });
     }
-    relation.playTime += additionalPlayTime;
+    relation.playTime += additionalPlaytime;
+    if (user.totalPlaytime) {
+      user.totalPlaytime = 0;
+    }
+
+    user.totalPlaytime =
+      (await this.calculateTotalPlaytime(user)) + additionalPlaytime;
+    await this.userRepository.save(user); // user 저장 추가
     return this.playTimeRelationRepository.save(relation);
   }
 

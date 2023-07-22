@@ -200,7 +200,7 @@ export class GameStoreController {
     return this.gameStoreService.updateGameStoreLike(gameStoreId, userEmail);
   }
 
-  @Patch('/playtimeRelation')
+  @Patch('/playtimeRelations')
   updatePlaytimeRelation(
     @Headers('Authorization') userEmail: string,
     @Body() updatePlaytimeRelationDto: UpdatePlaytimeRelationDto,
