@@ -35,6 +35,10 @@ export const useGameInfoStyles = createStyles((theme) => ({
   },
 
   multiSelect: {
+    maxWidth: "24rem",
+    maxHeight: "2.25rem",
+    overflow: "hidden",
+
     ".mantine-MultiSelect-input": {
       border: "none",
       padding: 0,
@@ -44,6 +48,18 @@ export const useGameInfoStyles = createStyles((theme) => ({
       backgroundColor: theme.colors.blue[1],
       color: theme.colors.blue[6],
       fontWeight: "bold",
+    },
+  },
+
+  addButton: {
+    height: "1.8rem",
+    padding: "0px 8px",
+    backgroundColor: theme.colors.blue[1],
+    color: theme.colors.blue[6],
+    fontSize: "1.2rem",
+
+    "&:hover": {
+      backgroundColor: theme.colors.blue[2],
     },
   },
 

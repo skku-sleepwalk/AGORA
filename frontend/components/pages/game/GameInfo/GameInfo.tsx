@@ -5,12 +5,13 @@ import {
   Stack,
   Divider,
   MultiSelect,
+  Image,
   Button,
   Badge,
   Center,
 } from "@mantine/core";
 import { useGameInfoStyles } from "./GameInfo.styles";
-import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useState } from "react";
 
@@ -43,11 +44,11 @@ export function GameInfo() {
         </Group>
         <Group spacing={"xs"}>
           <InvisibleButton onClick={handleIsLiking}>
-            {isLiking ? (
-              <IconHeartFilled size={"2rem"} stroke={1} />
-            ) : (
+            {/* {isLiking ? ( */}
+            <Image width={"2rem"} height={"2rem"} src="../../../public/HeartFilled.png" />
+            {/* ) : (
               <IconHeart size={"2rem"} stroke={1} />
-            )}
+            )} */}
           </InvisibleButton>
           <Text fz={16}>(1679)</Text>
         </Group>
@@ -143,12 +144,29 @@ export function GameInfo() {
       <Text className={classes.marginLeft} fw={"bold"}>
         이 게임의 인기 태그 :
       </Text>
-      <MultiSelect
-        className={cx(classes.marginLeft, classes.multiSelect)}
-        data={["농장 시뮬레이션", "생활 시뮬레이션", "픽셀 그래픽"]}
-        value={["농장 시뮬레이션", "생활 시뮬레이션", "픽셀 그래픽"]}
-        readOnly
-      />
+      <Group spacing={0}>
+        <MultiSelect
+          className={cx(classes.marginLeft, classes.multiSelect)}
+          data={[
+            "농장 시뮬레이션",
+            "생활 시뮬레이션",
+            "픽셀 그래픽",
+            "힐링",
+            "끊을 줄 모르는",
+            "최고인",
+          ]}
+          value={[
+            "농장 시뮬레이션",
+            "생활 시뮬레이션",
+            "픽셀 그래픽",
+            "힐링",
+            "끊을 줄 모르는",
+            "최고인",
+          ]}
+          readOnly
+        />
+        <Button className={classes.addButton}>+</Button>
+      </Group>
       {true && (
         <Group className={classes.marginLeft} position="apart">
           <Button className={classes.sellButton}>
