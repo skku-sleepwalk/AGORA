@@ -123,15 +123,47 @@ export class GameStoreController {
     return this.gameStoreService.findAll();
   }
 
-  @Get('/tag')
-  findByTag(
-    @Query('name') tagName: string,
+  @Get('/findByGenre')
+  findByGenre(
+    @Query('name') genreName: string,
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
-    return this.gameStoreService.findGameStoreByTag(
+    return this.gameStoreService.findGameStoreByGenre(
       { afterCursor, beforeCursor },
-      tagName,
+      genreName,
+    );
+  }
+
+  @Get('/searchGameStore')
+  searchGameStore(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('search') search: string,
+    @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
+    genreNames: string[],
+  ) {
+    return this.gameStoreService.searchGameStore(
+      { afterCursor, beforeCursor },
+      search,
+      genreNames,
+    );
+  }
+
+  @Get('/id/:id')
+  findOne(@Param('id') id: string) {
+    return this.gameStoreService.findOneGameStore(id);
+  }
+
+  @Get('/searchTag')
+  searchGameStoreTag(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('search') search: string,
+  ) {
+    return this.gameStoreService.searchGameStoreTag(
+      { afterCursor, beforeCursor },
+      search,
     );
   }
 
@@ -145,11 +177,6 @@ export class GameStoreController {
       { afterCursor, beforeCursor },
       gameStoreId,
     );
-  }
-
-  @Get('/id/:id')
-  findOne(@Param('id') id: string) {
-    return this.gameStoreService.findOneGameStore(id);
   }
 
   @Patch('/game')

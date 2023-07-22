@@ -31,6 +31,7 @@ import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-c
 import {
   GameStore,
   GameStoreGenre,
+  GameStoreTag,
   PlayTimeRelation,
 } from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
@@ -608,14 +609,14 @@ export class GameStoreService {
     return this.gameStoreBoardCategoryRepository.save(newCategory);
   }
 
-  async findGameStoreByTag(_cursor: Cursor, tagName: string) {
-    const tag = this.gameStoreGenreRepository.findOne({ name: tagName });
-    if (!tag) {
+  async findGameStoreByGenre(_cursor: Cursor, genreName: string) {
+    const genre = this.gameStoreGenreRepository.findOne({ name: genreName });
+    if (!genre) {
       throw new HttpException(
         {
           message: '입력한 데이터가 올바르지 않습니다.',
           error: {
-            tagName: `name이 ${tagName}인 태그를 찾을 수 없습니다.`,
+            genreName: `name이 ${genreName}인 장르를 찾을 수 없습니다.`,
           },
         },
         HttpStatus.BAD_REQUEST,
@@ -625,8 +626,9 @@ export class GameStoreService {
     const queryBuilder = this.gameStoreRepository
       .createQueryBuilder('gamestore')
       .leftJoinAndSelect('gamestore.shortDescription', 'shortDescription')
-      .leftJoinAndSelect('gamestore.tags', 'tags')
-      .where('tags.name = :tagName', { tagName });
+      .leftJoinAndSelect('gamestore.genres', 'genres')
+      .leftJoinAndSelect('gamestore.popularTags', 'popularTags')
+      .where('genres.name = :genreName', { genreName });
 
     const paginationOption: PaginationOptions<GameStore> = cloneDeep(
       this.gameStorePaginationOption,
@@ -636,6 +638,57 @@ export class GameStoreService {
     paginationOption.query.beforeCursor =
       _cursor.beforeCursor || paginationOption.query.beforeCursor;
     const paginator = buildPaginator(paginationOption);
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
+  }
+
+  async searchGameStore(
+    _cursor: Cursor,
+    search: string,
+    genreNames: Array<string>,
+  ) {
+    const queryBuilder = this.gameStoreRepository
+      .createQueryBuilder('gameStore')
+      .leftJoinAndSelect('gameStore.shortDescription', 'shortDescription')
+      .leftJoinAndSelect('gameStore.likedUsers', 'likedUsers')
+      .leftJoinAndSelect('gameStore.cost', 'cost')
+      .leftJoinAndSelect('gameStore.genres', 'genres')
+      .where(
+        '(genres.name IN (:...genreNames)) AND (gameStore.title LIKE :search OR gameStore.description LIKE :search OR shortDescription.content LIKE :search)',
+        { genreNames, search: `%${search}%` },
+      );
+    const paginationOption: PaginationOptions<GameStore> = {
+      entity: GameStore,
+      paginationKeys: ['likeCount'],
+      query: {
+        afterCursor: _cursor.afterCursor || null,
+        beforeCursor: _cursor.beforeCursor || null,
+        limit: 10,
+        order: 'DESC',
+      },
+    };
+    const paginator = buildPaginator(paginationOption);
+    paginator.setAlias('gameStore');
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    return { data, cursor };
+  }
+
+  async searchGameStoreTag(_cursor: Cursor, search: string) {
+    const queryBuilder = this.gameStoreTagRepository
+      .createQueryBuilder('tag')
+      .where('tag.name LIKE :search', { search: `%${search}%` });
+    const paginationOption: PaginationOptions<GameStoreTag> = {
+      entity: GameStoreTag,
+      paginationKeys: ['name'],
+      query: {
+        afterCursor: _cursor.afterCursor || null,
+        beforeCursor: _cursor.beforeCursor || null,
+        limit: 10,
+        order: 'ASC',
+      },
+    };
+    const paginator = buildPaginator(paginationOption);
+    paginator.setAlias('tag');
     const { data, cursor } = await paginator.paginate(queryBuilder);
     return { data, cursor };
   }
