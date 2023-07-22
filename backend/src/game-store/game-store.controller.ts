@@ -8,20 +8,24 @@ import {
   Delete,
   Headers,
   Query,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { GameStoreService } from './game-store.service';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
-import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
 import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { LikeAction } from './entities/game-store-review.entity';
-import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
 import { UpdateGameStoreReviewCommentDto } from './dto/update-game-store-review-comment.dto';
 import { UpdateGameStoreBoardDto } from './dto/update-game-store-board.dto';
+import { CreateGameStoreGenreDto } from './dto/create-game-store-genre.dto';
+import { UpdateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
+import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
+import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -38,17 +42,38 @@ export class GameStoreController {
     );
   }
 
+  @Post('genres')
+  createGameStoreGenre(
+    @Body() createGameStoreGenreDto: CreateGameStoreGenreDto,
+  ) {
+    return this.gameStoreService.createGameStoreGenre(createGameStoreGenreDto);
+  }
+
   @Post('tags')
   createGameStoreTag(@Body() createGameStoreTagDto: CreateGameStoreTagDto) {
     return this.gameStoreService.createGameStoreTag(createGameStoreTagDto);
   }
 
+  @Post('tagRelations')
+  createGameStoreTagRelation(
+    @Headers('Authorization') userEmail: string,
+    @Body() createGameStoreTagRelationDto: CreateGameStoreTagRelationDto,
+  ) {
+    return this.gameStoreService.createGameStoreTagRelation(
+      userEmail,
+      createGameStoreTagRelationDto,
+    );
+  }
+
   @Post('playtimeRelations')
   createPlaytimeRelations(
     @Headers('Authorization') userEmail: string,
-    @Query('gameStoreId') gameStoreId: string,
+    @Body() createPlaytimeRelationDto: CreatePlaytimeRelationDto,
   ) {
-    return this.gameStoreService.createPlayTimeRelation(userEmail, gameStoreId);
+    return this.gameStoreService.createPlayTimeRelation(
+      userEmail,
+      createPlaytimeRelationDto,
+    );
   }
 
   @Post('reviews')
@@ -162,7 +187,7 @@ export class GameStoreController {
   updateGameStoreReview(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreReviewId: string,
-    @Body() updateGameStoreReviewDto: updateGameStoreReviewDto,
+    @Body() updateGameStoreReviewDto: UpdateGameStoreReviewDto,
   ) {
     return this.gameStoreService.updateGameStoreReview(
       userEmail,
