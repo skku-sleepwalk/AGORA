@@ -262,7 +262,7 @@ export class BoardsService {
     updateBoardDto: UpdateBoardDto,
     updateEmail: string,
   ) {
-    const toUpdateBoard = await this.findOne(id);
+    const toUpdateBoard = await this.boardRepository.findOne(id);
     if (!toUpdateBoard) {
       throw new HttpException(
         {

@@ -6,7 +6,7 @@ import {
   GameStoreBoardCategoryRepository,
   GameStoreBoardLikeRelationRepository,
   GameStoreBoardRepository,
-  GameStoreTagRepository,
+  GameStoreGenreRepository,
   GameStoreRepository,
   SNSUrlsRepository,
   ShortDescriptionRepository,
@@ -15,9 +15,11 @@ import {
   GameStoreReviewCommentRepository,
   PlayTimeRelationRepository,
   GameStoreReviewCommentLikeRelationRepository,
+  GameStoreTagRepository,
+  GameStoreTagRelationRepository,
 } from './game-store.repository';
 import { UserRepository } from 'src/users/user.repository';
-import { Connection, SelectQueryBuilder } from 'typeorm';
+import { Connection, In, SelectQueryBuilder, getManager } from 'typeorm';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import {
   GameStoreBoard,
@@ -25,10 +27,10 @@ import {
 } from './entities/game-store-board.entity';
 import { v4 as uuid } from 'uuid';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
-import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
+
 import {
   GameStore,
-  GameStoreTag,
+  GameStoreGenre,
   PlayTimeRelation,
 } from './entities/game-store.entity';
 import { cloneDeep } from 'lodash';
@@ -48,7 +50,13 @@ import {
 import { User } from 'src/users/entities/user.entity';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
-import { updateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { UpdateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { UpdateGameStoreReviewCommentDto } from './dto/update-game-store-review-comment.dto';
+import { UpdateGameStoreBoardDto } from './dto/update-game-store-board.dto';
+import { CreateGameStoreGenreDto } from './dto/create-game-store-genre.dto';
+import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
+import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
+import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
 
 @Injectable()
 export class GameStoreService {
@@ -58,7 +66,9 @@ export class GameStoreService {
   private readonly shortDesriptionRepository: ShortDescriptionRepository;
   private readonly snsUrlsRepository: SNSUrlsRepository;
   private readonly costRepository: CostRepository;
+  private readonly gameStoreGenreRepository: GameStoreGenreRepository;
   private readonly gameStoreTagRepository: GameStoreTagRepository;
+  private readonly gameStoreTagRelationRepository: GameStoreTagRelationRepository;
   private readonly playTimeRelationRepository: PlayTimeRelationRepository;
 
   private readonly gameStoreReviewRepository: GameStoreReviewRepository;
@@ -80,8 +90,14 @@ export class GameStoreService {
     );
     this.snsUrlsRepository = connection.getCustomRepository(SNSUrlsRepository);
     this.costRepository = connection.getCustomRepository(CostRepository);
+    this.gameStoreGenreRepository = connection.getCustomRepository(
+      GameStoreGenreRepository,
+    );
     this.gameStoreTagRepository = connection.getCustomRepository(
       GameStoreTagRepository,
+    );
+    this.gameStoreTagRelationRepository = connection.getCustomRepository(
+      GameStoreTagRelationRepository,
     );
     this.playTimeRelationRepository = connection.getCustomRepository(
       PlayTimeRelationRepository,
@@ -118,7 +134,7 @@ export class GameStoreService {
       .withDeleted()
       .leftJoinAndSelect('gamestore.author', 'author')
       .leftJoinAndSelect('gamestore.likedUsers', 'likedUsers')
-      .leftJoinAndSelect('gamestore.tags', 'tags')
+      .leftJoinAndSelect('gamestore.popularTags', 'popularTags')
       .leftJoinAndSelect('gamestore.shortDescription', 'shortDescription')
       .leftJoinAndSelect('gamestore.snsUrls', 'snsUrls')
       .leftJoinAndSelect('gamestore.cost', 'cost');
@@ -180,6 +196,59 @@ export class GameStoreService {
     }
   }
 
+  async updatePopularTags(gameStoreId: string): Promise<GameStore> {
+    // 게임 스토어를 찾습니다.
+    const gameStore = await this.gameStoreRepository.findOne(gameStoreId, {
+      relations: [
+        'gameStoreTagRelations',
+        'gameStoreTagRelations.tag',
+        'popularTags',
+      ],
+    });
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          error: {
+            gameStoreId,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // 모든 태그 관계와 해당 태그들을 가져옵니다.
+    const allRelations = gameStore.gameStoreTagRelations;
+    const allTags = allRelations.map((relation) => relation.tag);
+
+    // 태그별 관계 개수를 세기 위해 맵을 사용합니다.
+    const tagCountMap = new Map<string, number>();
+
+    // 모든 관계를 순회하며 태그별 관계 개수를 셉니다.
+    for (const relation of allRelations) {
+      const tagName = relation.tag.name;
+      tagCountMap.set(tagName, (tagCountMap.get(tagName) || 0) + 1);
+    }
+
+    // 태그별 관계 개수를 기준으로 내림차순으로 정렬합니다.
+    const sortedTags = allTags.sort((tagA, tagB) => {
+      const countA = tagCountMap.get(tagA.name) || 0;
+      const countB = tagCountMap.get(tagB.name) || 0;
+      return countB - countA;
+    });
+
+    // 상위 3개의 태그를 추출하여 리턴합니다.
+    const popularTags = sortedTags.slice(0, 3).map((tag) => tag.name);
+    gameStore.popularTags.push(
+      ...(await this.gameStoreTagRepository.find({
+        name: In(popularTags),
+      })),
+    );
+
+    return await this.gameStoreRepository.save(gameStore);
+  }
+
   async createGameStore(
     authorEmail: string,
     createGameStoreDto: CreateGameStoreDto,
@@ -191,7 +260,7 @@ export class GameStoreService {
       developer,
       snsUrls,
       shortDescription,
-      tagNames,
+      genreNames,
       cost,
     } = createGameStoreDto;
 
@@ -215,13 +284,14 @@ export class GameStoreService {
       description,
       developer,
       distributor,
-      tags: [],
+      genres: [],
       likedUsers: [],
       price: cost.isFree
         ? 0
         : !cost.isSale
         ? cost.defaultPrice
         : cost.saledPrice,
+      popularTags: [],
     });
     newGameStore.shortDescription = await this.shortDesriptionRepository.save(
       this.shortDesriptionRepository.create({
@@ -237,21 +307,23 @@ export class GameStoreService {
       this.snsUrlsRepository.create({ id: uuid(), ...snsUrls }),
     );
 
-    for (const tagName of tagNames) {
-      const Tag: GameStoreTag = await this.gameStoreTagRepository.findOne({
-        name: tagName,
-      });
-      if (Tag) {
-        newGameStore.tags.push(Tag);
+    for (const genreName of genreNames) {
+      const genre: GameStoreGenre = await this.gameStoreGenreRepository.findOne(
+        {
+          name: genreName,
+        },
+      );
+      if (genre) {
+        newGameStore.genres.push(genre);
       }
     }
 
     return this.gameStoreRepository.save(newGameStore);
   }
 
-  async createGameStoreTag(createGameStoreTagDto: CreateGameStoreTagDto) {
-    const { name, tagType } = createGameStoreTagDto;
-    if (await this.gameStoreTagRepository.findOne({ name })) {
+  async createGameStoreGenre(createGameStoreGenreDto: CreateGameStoreGenreDto) {
+    const { name } = createGameStoreGenreDto;
+    if (await this.gameStoreGenreRepository.findOne({ name })) {
       throw new HttpException(
         {
           message: '입력한 데이터가 올바르지 않습니다.',
@@ -262,11 +334,120 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
-    const newGenre = this.gameStoreTagRepository.create({ name, tagType });
-    return this.gameStoreTagRepository.save(newGenre);
+    const newGenre = this.gameStoreGenreRepository.create({ id: uuid(), name });
+    return this.gameStoreGenreRepository.save(newGenre);
   }
 
-  async createPlayTimeRelation(userEmail: string, gameStoreId: string) {
+  async createGameStoreTag(createGameStoreTagDto: CreateGameStoreTagDto) {
+    const { name } = createGameStoreTagDto;
+    const newTag = this.gameStoreTagRepository.create({
+      id: uuid(),
+      name,
+      relations: [],
+    });
+    return this.gameStoreTagRepository.save(newTag);
+  }
+
+  async createGameStoreTagRelation(
+    userEmail: string,
+    createGameStoreTagRelationDto: CreateGameStoreTagRelationDto,
+  ) {
+    const { id, tagNames } = createGameStoreTagRelationDto;
+    const user = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEmail: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const gameStore = await this.gameStoreRepository.findOne(id);
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            gameStoreId: '해당 ID를 가진 게임이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const tags = await this.gameStoreTagRepository.find({
+      where: { name: In(tagNames) },
+    });
+
+    const existingRelations = await this.gameStoreTagRelationRepository.find({
+      relations: ['gameStore', 'user', 'tag'],
+      where: {
+        gameStore: { id: gameStore.id },
+        user: { email: userEmail },
+      },
+    });
+
+    const existingTags = existingRelations.map((relation) => relation.tag.name);
+    // 추가, 삭제, 유지할 관계들을 담을 배열
+    const toAddRelations = [];
+    const toDeleteRelations = [];
+    const toKeepRelations = [];
+
+    for (const tag of tags) {
+      if (!existingTags.includes(tag.name)) {
+        // 새로 추가할 관계들
+        const newRelation = this.gameStoreTagRelationRepository.create({
+          id: uuid(),
+          user,
+          tag,
+          gameStore,
+        });
+        toAddRelations.push(newRelation);
+      } else {
+        // 유지할 관계들
+        const existingRelation = existingRelations.find(
+          (relation) => relation.tag.name === tag.name,
+        );
+        toKeepRelations.push(existingRelation);
+      }
+    }
+
+    for (const existingRelation of existingRelations) {
+      if (!tags.map((tag) => tag.name).includes(existingRelation.tag.name)) {
+        // 삭제할 관계들
+        toDeleteRelations.push(existingRelation);
+      }
+    }
+
+    // 트랜잭션 내에서 추가, 삭제, 유지 작업 실행
+    await getManager().transaction(async (transactionalEntityManager) => {
+      if (toAddRelations.length > 0) {
+        await transactionalEntityManager.save(toAddRelations);
+      }
+
+      if (toDeleteRelations.length > 0) {
+        await transactionalEntityManager.remove(toDeleteRelations);
+      }
+    });
+
+    // 추가한 관계들을 유지한 관계들과 합쳐서 리턴
+    const updatedRelations = [...toKeepRelations, ...toAddRelations];
+
+    await this.updatePopularTags(gameStore.id);
+
+    return updatedRelations;
+  }
+
+  async createPlayTimeRelation(
+    userEmail: string,
+    createPlaytimeRelationDto: CreatePlaytimeRelationDto,
+  ) {
+    const { gameStoreId } = createPlaytimeRelationDto;
     const user = await this.userRepository.findOne({ email: userEmail });
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
     if (await this.playTimeRelationRepository.findOne({ user, gameStore })) {
@@ -428,7 +609,7 @@ export class GameStoreService {
   }
 
   async findGameStoreByTag(_cursor: Cursor, tagName: string) {
-    const tag = this.gameStoreTagRepository.findOne({ name: tagName });
+    const tag = this.gameStoreGenreRepository.findOne({ name: tagName });
     if (!tag) {
       throw new HttpException(
         {
@@ -712,7 +893,7 @@ export class GameStoreService {
         gameStore,
       });
     if (!relation) {
-      relation = await this.createPlayTimeRelation(userEmail, gameStoreId);
+      relation = await this.createPlayTimeRelation(userEmail, { gameStoreId });
     }
     relation.playTime += additionalPlayTime;
     return this.playTimeRelationRepository.save(relation);
@@ -721,7 +902,7 @@ export class GameStoreService {
   async updateGameStoreReview(
     userEmail: string,
     gameStoreReviewId: string,
-    updateGameStoreReviewDto: updateGameStoreReviewDto,
+    updateGameStoreReviewDto: UpdateGameStoreReviewDto,
   ) {
     const { content, rating } = updateGameStoreReviewDto;
     const queryBuilder = this.gameStoreReviewRepository
@@ -765,8 +946,6 @@ export class GameStoreService {
         reviewId: review.id,
       })
       .getMany();
-
-    console.log(reviews);
 
     review.gameStore.rating = parseFloat(
       (
@@ -876,6 +1055,50 @@ export class GameStoreService {
     await this.gameStoreReviewLikeRelationRepository.save(relation);
     return await this.gameStoreReviewRepository.save(review);
   }
+
+  async updateGameStoreReviewComment(
+    userEmail: string,
+    gameStoreReviewCommentId: string,
+    updateGameStoreReviewCommentDto: UpdateGameStoreReviewCommentDto,
+  ) {
+    const { content } = updateGameStoreReviewCommentDto;
+    const queryBuilder = this.gameStoreReviewCommentRepository
+      .createQueryBuilder('comment')
+      .leftJoinAndSelect('comment.writer', 'writer');
+    const comment: GameStoreReviewComment = await queryBuilder
+      .where('comment.id = :id', { id: gameStoreReviewCommentId })
+      .getOne();
+
+    if (!comment) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: '해당 ID를 가진 후기 댓글이 존재하지 않습니다.',
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (user.id !== comment.writer.id) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    comment.content = content;
+
+    return this.gameStoreReviewCommentRepository.save(comment);
+  }
+
   async updateGameStoreReviewCommentLike(
     gameStoreReviewCommentId: string,
     userEmail: string,
@@ -974,6 +1197,72 @@ export class GameStoreService {
     return await this.gameStoreReviewCommentRepository.save(comment);
   }
 
+  async updateGameStoreBoard(
+    userEmail: string,
+    gameStoreBoardId: string,
+    updateGameStoreBoardDto: UpdateGameStoreBoardDto,
+  ) {
+    const board = await this.gameStoreBoardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.writer', 'writer')
+      .where('board.id = :gameStoreBoardId', { gameStoreBoardId })
+      .getOne();
+    if (!board) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${gameStoreBoardId}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user = await this.userRepository.findOne({ email: userEmail });
+
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (userEmail !== board.writer.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            writerEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const createdAt = cloneDeep(board.createdAt);
+
+    const { title, content, categoryNames } = updateGameStoreBoardDto;
+    board.title = title;
+    board.content = content;
+    board.categoryTypes = [];
+    board.createdAt = createdAt;
+    for (const categoryName of categoryNames) {
+      const categoryType = await this.gameStoreBoardCategoryRepository.findOne({
+        name: categoryName,
+      });
+      if (categoryType) {
+        board.categoryTypes.push(categoryType);
+      }
+    }
+    return await this.gameStoreBoardRepository.save(board);
+  }
+
   async updateGameStoreBoardLike(gameStoreBoardId: string, userEmail: string) {
     const board: GameStoreBoard = await this.gameStoreBoardRepository
       .createQueryBuilder('board')
@@ -1039,14 +1328,12 @@ export class GameStoreService {
       )[0].likeAction = 'like';
       relation.likeAction = 'like';
     } else if (relation.likeAction === 'like') {
-      console.log(board.likeRelations);
       relation.likeAction = null;
       board.likeCount -= 1;
       board.likeRelations.filter(
         (relation) => relation.id === relation.id,
       )[0].likeAction = null;
     }
-    console.log(relation);
 
     board.createdAt = createdAt;
     await this.gameStoreBoardLikeRelationRepository.save(relation);

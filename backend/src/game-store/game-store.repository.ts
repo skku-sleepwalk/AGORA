@@ -7,7 +7,9 @@ import {
 import {
   Cost,
   GameStore,
+  GameStoreGenre,
   GameStoreTag,
+  GameStoreTagRelation,
   PlayTimeRelation,
   SNSUrls,
   ShortDescription,
@@ -31,8 +33,14 @@ export class SNSUrlsRepository extends Repository<SNSUrls> {}
 @EntityRepository(Cost)
 export class CostRepository extends Repository<Cost> {}
 
+@EntityRepository(GameStoreGenre)
+export class GameStoreGenreRepository extends Repository<GameStoreGenre> {}
+
 @EntityRepository(GameStoreTag)
 export class GameStoreTagRepository extends Repository<GameStoreTag> {}
+
+@EntityRepository(GameStoreTagRelation)
+export class GameStoreTagRelationRepository extends Repository<GameStoreTagRelation> {}
 
 @EntityRepository(PlayTimeRelation)
 export class PlayTimeRelationRepository extends Repository<PlayTimeRelation> {}

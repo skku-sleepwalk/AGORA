@@ -14,6 +14,7 @@ import {
 } from 'src/game-store/entities/game-store-review.entity';
 import {
   GameStore,
+  GameStoreTagRelation,
   PlayTimeRelation,
 } from 'src/game-store/entities/game-store.entity';
 import {
@@ -64,6 +65,9 @@ export class User {
 
   @OneToMany(() => PlayTimeRelation, (relation) => relation.user)
   playtimeRelations: Array<PlayTimeRelation>;
+
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.user)
+  gameStoreTagRelations: Array<GameStoreTagRelation>;
 
   @OneToMany(() => GameStoreReview, (review) => review.writer)
   gameStoreReviews: Array<GameStoreReview>;

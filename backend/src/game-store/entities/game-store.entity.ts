@@ -16,8 +16,6 @@ import {
 } from 'typeorm';
 import { GameStoreBoard } from './game-store-board.entity';
 import { GameStoreReview } from './game-store-review.entity';
-
-export type tagType = '장르' | '분위기' | '그래픽';
 @Entity('GameStore')
 export class GameStore {
   @PrimaryGeneratedColumn('uuid')
@@ -66,9 +64,16 @@ export class GameStore {
   @JoinTable()
   likedUsers: Array<User>;
 
-  @ManyToMany(() => GameStoreTag)
+  @ManyToMany(() => GameStoreGenre)
   @JoinTable()
-  readonly tags: Array<GameStoreTag>;
+  readonly genres: Array<GameStoreGenre>;
+
+  @ManyToMany(() => GameStoreTag, (tag) => tag.popularedGameStores)
+  @JoinTable()
+  popularTags: Array<GameStoreTag>;
+
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.gameStore)
+  readonly gameStoreTagRelations: Array<GameStoreTagRelation>;
 
   @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
   gameStoreBoards: Array<GameStoreBoard>;
@@ -164,16 +169,13 @@ export class Cost {
   gameStore: GameStore;
 }
 
-@Entity('GameStoreTag')
-export class GameStoreTag {
+@Entity('GameStoreGenre')
+export class GameStoreGenre {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
   @Column({ unique: true, nullable: false })
   readonly name: string;
-
-  @Column({ nullable: false })
-  readonly tagType: tagType;
 
   @ManyToMany(() => GameStore)
   gameStore: Array<GameStore>;
@@ -192,4 +194,34 @@ export class PlayTimeRelation {
 
   @Column({ nullable: false, default: 0 })
   playTime: number;
+}
+
+@Entity('GameStoreTag')
+export class GameStoreTag {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @Column({ unique: true, nullable: false })
+  readonly name: string;
+
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.tag)
+  readonly relations: Array<GameStoreTagRelation>;
+
+  @ManyToMany(() => GameStore, (gameStore) => gameStore.popularTags)
+  popularedGameStores: Array<GameStore>;
+}
+
+@Entity('GameStoreTagRelation')
+export class GameStoreTagRelation {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreTagRelations)
+  readonly gameStore: GameStore;
+
+  @ManyToOne(() => GameStoreTag, (tag) => tag.relations)
+  readonly tag: GameStoreTag;
+
+  @ManyToOne(() => User, (user) => user.gameStoreTagRelations)
+  readonly user: User;
 }
