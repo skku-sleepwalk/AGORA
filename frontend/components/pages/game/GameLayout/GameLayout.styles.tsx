@@ -20,7 +20,6 @@ export const useGameLayoutStyles = createStyles((theme) => ({
 
   PhotoContainer: {
     position: "relative",
-    overflow: "hidden",
     margin: 0,
     aspectRatio: "8 / 5",
     width: 800,
@@ -34,7 +33,6 @@ export const useGameLayoutStyles = createStyles((theme) => ({
   },
 
   tapContainer: {
-    position: "relative",
     width: "100%",
     height: "3rem",
   },
@@ -43,18 +41,30 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     display: "flex",
     flexWrap: "nowrap",
     width: "100%",
-    padding: 20,
+    height: "100%",
+    padding: 40,
     gap: 40,
   },
 
-  mainContainer: {
+  mainContainer_B: {
     flexGrow: 1,
+    flexShrink: 0,
     width: 800,
     margin: 0,
   },
 
-  rightContainer: {
+  rightContainer_B: {
+    flexShrink: 0,
     width: 300,
     margin: 0,
+  },
+
+  mainContainer_S: {
+    flexGrow: 1,
+    margin: 0,
+  },
+
+  rightContainer_S: {
+    display: "none",
   },
 }));

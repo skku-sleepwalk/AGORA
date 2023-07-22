@@ -149,35 +149,51 @@ export function GameInfo() {
         value={["농장 시뮬레이션", "생활 시뮬레이션", "픽셀 그래픽"]}
         readOnly
       />
-      <Group className={classes.marginLeft} position="apart">
-        <Button className={classes.sellButton}>
-          <Stack spacing={"xs"}>
-            <Group position="center" spacing={"xs"} className={classes.alignBottom}>
-              {true && (
-                <Text fz={12} fw={"normal"} td="line-through">
-                  ￦ 16,000
+      {true && (
+        <Group className={classes.marginLeft} position="apart">
+          <Button className={classes.sellButton}>
+            <Stack spacing={"xs"}>
+              <Group position="center" spacing={"xs"} className={classes.alignBottom}>
+                {true && (
+                  <Text fz={12} fw={"normal"} td="line-through">
+                    ￦ 16,000
+                  </Text>
+                )}
+                <Text fz={28}>￦ 13,000</Text>
+              </Group>
+              <Center>
+                <Text fz={12} fw={"normal"}>
+                  장바구니에 담기
                 </Text>
-              )}
-              <Text fz={28}>￦ 13,000</Text>
-            </Group>
+              </Center>
+            </Stack>
+          </Button>
+          <Button className={classes.passButton} variant="outline" color="dark">
+            <Stack spacing={"xs"}>
+              <Center>
+                <Text fz={28}>패스</Text>
+              </Center>
+              <Text fz={12} c={"gray"}>
+                무료로 플레이
+              </Text>
+            </Stack>
+          </Button>
+        </Group>
+      )}
+      {false && (
+        <Button className={cx(classes.marginLeft, classes.sellButton)} w={"100%"}>
+          <Stack>
+            <Center>
+              <Text fz={28}>게임 시작</Text>
+            </Center>
             <Center>
               <Text fz={12} fw={"normal"}>
-                장바구니에 담기
+                마지맞 플레이 2분 전
               </Text>
             </Center>
           </Stack>
         </Button>
-        <Button className={classes.passButton} variant="outline" color="dark">
-          <Stack spacing={"xs"}>
-            <Center>
-              <Text fz={28}>패스</Text>
-            </Center>
-            <Text fz={12} c={"gray"}>
-              무료로 플레이
-            </Text>
-          </Stack>
-        </Button>
-      </Group>
+      )}
     </Stack>
   );
 }
