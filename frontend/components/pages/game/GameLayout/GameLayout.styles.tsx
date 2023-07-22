@@ -32,9 +32,16 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     flexGrow: 1,
   },
 
-  tapContainer: {
+  tapContainer_S: {
     width: "100%",
     height: "3rem",
+  },
+
+  tapContainer_F: {
+    position: "fixed",
+    width: "100%",
+    height: "3rem",
+    zIndex: 100,
   },
 
   bottomContainer: {
@@ -44,6 +51,10 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     height: "100%",
     padding: 40,
     gap: 40,
+  },
+
+  paddingTop: {
+    paddingTop: 88,
   },
 
   mainContainer_B: {
