@@ -208,6 +208,36 @@ export class GameStoreService {
       await this.incrementChildCount(currentParent);
     }
   }
+  async updateParentChildCount(parentId: string): Promise<void> {
+    const parent = await this.gameStoreBoardRepository.findOne({
+      withDeleted: true,
+      relations: ['parent', 'children'], // Assuming 'children' is the property representing the child boards
+      where: { id: parentId },
+    });
+
+    if (!parent) {
+      // Handle the case when parent is not found
+      return;
+    }
+
+    parent.child -= 1;
+    if (parent.parent && parent.child === 0) {
+      await Promise.all(
+        parent.children.map((child) => {
+          child.parent = null; // Remove parent reference from child boards
+          return this.gameStoreBoardRepository.save(child);
+        }),
+      );
+
+      await this.gameStoreBoardRepository.remove(parent); // Now it should not violate the foreign key constraint
+    } else {
+      await this.gameStoreBoardRepository.save(parent);
+    }
+
+    if (parent.parent) {
+      await this.updateParentChildCount(parent.parent.id);
+    }
+  }
 
   async updatePopularTags(gameStoreId: string): Promise<GameStore> {
     // 게임 스토어를 찾습니다.
@@ -1549,6 +1579,18 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
     if (gameStore.author.email !== userEmail) {
       throw new HttpException(
@@ -1584,7 +1626,20 @@ export class GameStoreService {
       );
     }
 
-    if (review.writer.email !== userEmail) {
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (review.writer.email !== user.email) {
       throw new HttpException(
         {
           message: '작성자가 아닙니다.',
@@ -1597,6 +1652,52 @@ export class GameStoreService {
     }
     // GameStore 삭제
     await this.gameStoreReviewRepository.delete(review.id);
+  }
+
+  async removeGameStoreReviewComment(userEmail: string, id: string) {
+    const comment: GameStoreReviewComment =
+      await this.gameStoreReviewCommentRepository.findOne({
+        relations: ['writer'],
+        where: { id },
+      });
+    if (!comment) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 댓글을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (comment.writer.email !== user.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 댓글의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // GameStore 삭제
+    await this.gameStoreReviewCommentRepository.delete(comment.id);
   }
 
   async removeGameStoreBoard(userEmail: string, id: string) {
@@ -1617,6 +1718,30 @@ export class GameStoreService {
       );
     }
 
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (board.writer.email !== user.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const parentIdsToUpdate: string[] = [];
 
     let currentParent = board.parent;
@@ -1627,24 +1752,17 @@ export class GameStoreService {
       }
       currentParent = currentParent.parent;
     }
-    // 부모 게시판들의 child 속성 일괄 업데이트
-    await this.gameStoreBoardRepository
-      .createQueryBuilder('board')
-      .update(GameStoreBoard)
-      .set({ child: () => 'child - 1' })
-      .where('board.id IN (:...ids)', { ids: parentIdsToUpdate })
-      .execute();
-    const children: Array<GameStoreBoard> = await this.gameStoreBoardRepository
-      .createQueryBuilder('board')
-      .where('board.parent.id = :id', { id })
-      .getMany();
 
-    if (children.length !== 0) {
+    if (board.child !== 0) {
       // 자식 게시판들 있는경우 soft delete
       await this.gameStoreBoardRepository.softDelete(id);
     } else {
       // 자식 게시판이 없을 경우 hard delete
       await this.gameStoreBoardRepository.delete(id);
+    }
+
+    if (board.parent) {
+      await this.updateParentChildCount(board.parent.id);
     }
   }
 }

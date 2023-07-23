@@ -17,6 +17,7 @@ import {
 import { CategoryTypeRepository } from './developer-community-category/developer-community-category.repository';
 import { UserRepository } from 'src/users/user.repository';
 import { cloneDeep } from 'lodash';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class BoardsService {
@@ -48,6 +49,37 @@ export class BoardsService {
       .leftJoinAndSelect('board.parent', 'parent')
       .leftJoinAndSelect('board.categoryTypes', 'categoryTypes')
       .leftJoinAndSelect('board.likedUsers', 'likedUsers');
+  }
+
+  async updateParentChildCount(parentId: string): Promise<void> {
+    const parent = await this.boardRepository.findOne({
+      withDeleted: true,
+      relations: ['parent', 'children'], // Assuming 'children' is the property representing the child boards
+      where: { id: parentId },
+    });
+
+    if (!parent) {
+      // Handle the case when parent is not found
+      return;
+    }
+
+    parent.child -= 1;
+    if (parent.parent && parent.child === 0) {
+      await Promise.all(
+        parent.children.map((child) => {
+          child.parent = null; // Remove parent reference from child boards
+          return this.boardRepository.save(child);
+        }),
+      );
+
+      await this.boardRepository.remove(parent); // Now it should not violate the foreign key constraint
+    } else {
+      await this.boardRepository.save(parent);
+    }
+
+    if (parent.parent) {
+      await this.updateParentChildCount(parent.parent.id);
+    }
   }
 
   ///////////////////////////{  CREATE  }/////////////////////////////////
@@ -144,7 +176,6 @@ export class BoardsService {
       _cursor.beforeCursor || paginateOption.query.beforeCursor;
 
     const paginator = buildPaginator(paginateOption);
-    console.log(paginator);
     const { data, cursor } = await paginator.paginate(queryBuilder);
 
     return { data, cursor };
@@ -257,13 +288,12 @@ export class BoardsService {
   }
 
   ///////////////////////////{  UPDATE  }/////////////////////////////////
-  async update(
-    id: string,
-    updateBoardDto: UpdateBoardDto,
-    updateEmail: string,
-  ) {
-    const toUpdateBoard = await this.boardRepository.findOne(id);
-    if (!toUpdateBoard) {
+  async update(id: string, updateBoardDto: UpdateBoardDto, userEmail: string) {
+    const board = await this.boardRepository.findOne({
+      relations: ['writer'],
+      where: { id },
+    });
+    if (!board) {
       throw new HttpException(
         {
           message: '입력한 데이터가 올바르지 않습니다.',
@@ -274,13 +304,25 @@ export class BoardsService {
         HttpStatus.BAD_REQUEST,
       );
     }
+    const user = this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
 
-    if (updateEmail !== toUpdateBoard.writer.email) {
+    if (userEmail !== board.writer.email) {
       throw new HttpException(
         {
           message: '작성자가 아닙니다.',
           error: {
-            writerEmail: `${updateEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
           },
         },
         HttpStatus.BAD_REQUEST,
@@ -289,21 +331,21 @@ export class BoardsService {
 
     const { title, content, categoryNames } = updateBoardDto;
 
-    const createdAt = cloneDeep(toUpdateBoard.createdAt);
+    const createdAt = cloneDeep(board.createdAt);
 
-    toUpdateBoard.title = title;
-    toUpdateBoard.content = content;
-    toUpdateBoard.categoryTypes = [];
-    toUpdateBoard.createdAt = createdAt;
+    board.title = title;
+    board.content = content;
+    board.categoryTypes = [];
+    board.createdAt = createdAt;
     for (const categoryName of categoryNames) {
       const categoryType = await this.categoryTypeRepository.findOne({
         name: categoryName,
       });
       if (categoryType) {
-        toUpdateBoard.categoryTypes.push(categoryType);
+        board.categoryTypes.push(categoryType);
       }
     }
-    return await this.boardRepository.save(toUpdateBoard);
+    return await this.boardRepository.save(board);
   }
 
   async likeUpdate(boardId: string, userEmail: string) {
@@ -325,7 +367,6 @@ export class BoardsService {
     }
 
     const user = this.userRepository.findOne({ email: userEmail });
-
     if (!user) {
       throw new HttpException(
         {
@@ -355,13 +396,14 @@ export class BoardsService {
   }
 
   ///////////////////////////{  DELETE  }/////////////////////////////////
-  async remove(id: string) {
-    const queryBuilder = this.getBoardWithRelations();
-    const toDeleteBoard = await queryBuilder
-      .where('board.id = :id', { id })
-      .getOne();
+  async remove(userEmail: string, id: string) {
+    const board: Board = await this.boardRepository.findOne({
+      relations: ['writer', 'parent'],
+      withDeleted: true,
+      where: { id },
+    });
 
-    if (!toDeleteBoard) {
+    if (!board) {
       throw new HttpException(
         {
           message: '입력한 데이터가 올바르지 않습니다.',
@@ -373,29 +415,39 @@ export class BoardsService {
       );
     }
 
-    let currentParent = toDeleteBoard.parent;
-    while (currentParent) {
-      currentParent.child -= 1;
-      this.boardRepository.save(currentParent);
-      if (!currentParent.parent) {
-        break;
-      }
-      const currentParentId = currentParent.parent.id;
-      currentParent = await this.getBoardWithRelations()
-        .where('board.id = :id', {
-          id: currentParentId,
-        })
-        .getOne();
+    const user: User = await this.userRepository.findOne({ email: userEmail });
+    if (!user) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            userEamil: `Email이 ${userEmail}인 사용자를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
     }
-    const children: Array<Board> = await queryBuilder
-      .where('board.parent.id = :id', {
-        id,
-      })
-      .getMany();
-    if (children.length !== 0) {
+
+    if (board.writer.email !== user.email) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (board.child !== 0) {
       await this.boardRepository.softDelete(id);
     } else {
       await this.boardRepository.delete(id);
+    }
+
+    if (board.parent) {
+      await this.updateParentChildCount(board.parent.id);
     }
   }
 }

@@ -299,20 +299,35 @@ export class GameStoreController {
     );
   }
 
-  @Delete('/id/:id')
+  @Delete()
   removeGameStore(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Query('id') id: string,
   ) {
     return this.gameStoreService.removeGameStore(userEmail, id);
   }
 
-  @Delete('/reviews/:id')
+  @Delete('reviews')
   removeGameStoreReview(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Query('id') id: string,
   ) {
-    console.log('a');
     return this.gameStoreService.removeGameStoreReview(userEmail, id);
+  }
+
+  @Delete('reviews/comments')
+  removeGameStoreReviewComment(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStoreReviewComment(userEmail, id);
+  }
+
+  @Delete('boards')
+  removeGameStoreBoards(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStoreBoard(userEmail, id);
   }
 }
