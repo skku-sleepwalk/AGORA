@@ -21,16 +21,21 @@ export class GameStoreReview {
   @ManyToOne(() => User, (user) => user.gameStoreReviews)
   readonly writer: User;
 
-  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreReviews)
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreReviews, {
+    onDelete: 'CASCADE',
+  })
   readonly gameStore: GameStore;
 
   @OneToMany(
     () => GameStoreReviewLikeRelation,
     (relation) => relation.gameStoreReview,
+    { cascade: true },
   )
   likeRelations: Array<GameStoreReviewLikeRelation>;
 
-  @OneToMany(() => GameStoreReviewComment, (comment) => comment.review)
+  @OneToMany(() => GameStoreReviewComment, (comment) => comment.review, {
+    cascade: true,
+  })
   comments: Array<GameStoreReviewComment>;
 
   @Column({ nullable: false })
@@ -60,10 +65,14 @@ export class GameStoreReviewLikeRelation {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => GameStoreReview, (review) => review.likeRelations)
+  @ManyToOne(() => GameStoreReview, (review) => review.likeRelations, {
+    onDelete: 'CASCADE',
+  })
   readonly gameStoreReview: GameStoreReview;
 
-  @ManyToOne(() => User, (user) => user.gameStoreReviewLikeRelations)
+  @ManyToOne(() => User, (user) => user.gameStoreReviewLikeRelations, {
+    onDelete: 'CASCADE',
+  })
   readonly user: User;
 
   @Column({ nullable: true })
@@ -84,15 +93,20 @@ export class GameStoreReviewComment {
   @Column({ nullable: false, default: 0 })
   unlikeCount: number;
 
-  @ManyToOne(() => User, (user) => user.gameStoreReviewComments)
+  @ManyToOne(() => User, (user) => user.gameStoreReviewComments, {
+    onDelete: 'CASCADE',
+  })
   readonly writer: User;
 
-  @ManyToOne(() => GameStoreReview, (review) => review.comments)
+  @ManyToOne(() => GameStoreReview, (review) => review.comments, {
+    onDelete: 'CASCADE',
+  })
   readonly review: GameStoreReview;
 
   @OneToMany(
     () => GameStoreReviewCommentLikeRelation,
     (relation) => relation.comment,
+    { cascade: true },
   )
   likeRelations: Array<GameStoreReviewCommentLikeRelation>;
 
@@ -111,10 +125,14 @@ export class GameStoreReviewCommentLikeRelation {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => GameStoreReviewComment, (comment) => comment.likeRelations)
+  @ManyToOne(() => GameStoreReviewComment, (comment) => comment.likeRelations, {
+    onDelete: 'CASCADE',
+  })
   readonly comment: GameStoreReviewComment;
 
-  @ManyToOne(() => User, (user) => user.gameStoreReviewCommentLikeRelations)
+  @ManyToOne(() => User, (user) => user.gameStoreReviewCommentLikeRelations, {
+    onDelete: 'CASCADE',
+  })
   readonly user: User;
 
   @Column({ nullable: true })

@@ -72,7 +72,7 @@ export class GameStoreService {
   private readonly userRepository: UserRepository;
 
   private readonly gameStoreRepository: GameStoreRepository;
-  private readonly shortDesriptionRepository: ShortDescriptionRepository;
+  private readonly shortDescriptionRepository: ShortDescriptionRepository;
   private readonly snsUrlsRepository: SNSUrlsRepository;
   private readonly costRepository: CostRepository;
   private readonly gameStoreGenreRepository: GameStoreGenreRepository;
@@ -95,7 +95,7 @@ export class GameStoreService {
 
     this.gameStoreRepository =
       connection.getCustomRepository(GameStoreRepository);
-    this.shortDesriptionRepository = connection.getCustomRepository(
+    this.shortDescriptionRepository = connection.getCustomRepository(
       ShortDescriptionRepository,
     );
     this.snsUrlsRepository = connection.getCustomRepository(SNSUrlsRepository);
@@ -314,8 +314,8 @@ export class GameStoreService {
         : cost.saledPrice,
       popularTags: [],
     });
-    newGameStore.shortDescription = await this.shortDesriptionRepository.save(
-      this.shortDesriptionRepository.create({
+    newGameStore.shortDescription = await this.shortDescriptionRepository.save(
+      this.shortDescriptionRepository.create({
         id: uuid(),
         ...shortDescription,
       }),
@@ -532,7 +532,6 @@ export class GameStoreService {
     }
 
     const gameStore = await this.gameStoreRepository.findOne(gameStoreId);
-    console.log(gameStore);
     if (!gameStore) {
       throw new HttpException(
         {
@@ -801,8 +800,8 @@ export class GameStoreService {
       this.gameStoreReviewRepository
         .createQueryBuilder('review')
         .leftJoinAndSelect('review.writer', 'writer')
-        .leftJoinAndSelect('writer.playtimeRelations', 'playtimeRelations')
-        .where('playtimeRelations.gameStore = :gameStoreId', { gameStoreId });
+        .leftJoinAndSelect('review.gameStore', 'gameStore')
+        .where('gameStore.id = :gameStoreId', { gameStoreId });
 
     const paginationOption: PaginationOptions<GameStoreReview> = {
       entity: GameStoreReview,
@@ -941,11 +940,11 @@ export class GameStoreService {
 
     gameStore.shortDescription.content = shortDescription.content;
     gameStore.shortDescription.imageUrl = shortDescription.imageUrl;
-    await this.shortDesriptionRepository.update(
+    await this.shortDescriptionRepository.update(
       gameStore.shortDescription.id,
       gameStore.shortDescription,
     );
-    this.shortDesriptionRepository.findOne(gameStore.shortDescription.id);
+    this.shortDescriptionRepository.findOne(gameStore.shortDescription.id);
     return await this.gameStoreRepository.save(gameStore);
   }
 
@@ -1533,7 +1532,121 @@ export class GameStoreService {
     return await this.gameStoreBoardRepository.save(board);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} gameStore`;
+  async removeGameStore(userEmail: string, id: string) {
+    const gameStore: GameStore = await this.gameStoreRepository.findOne({
+      relations: [
+        'author',
+        'cost',
+        'shortDescription',
+        'snsUrls',
+        'gameStoreReviews',
+        'gameStoreBoards',
+        'shoppingCartItems',
+        'gameStoreReviews.comments',
+        'playtimeRelations',
+      ],
+      where: { id },
+    });
+
+    if (!gameStore) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 게임 스토어를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (gameStore.author.email !== userEmail) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            writerEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    // GameStoreReviewLikeRelation 삭제
+    for (const review of gameStore.gameStoreReviews) {
+      await this.gameStoreReviewLikeRelationRepository.delete({
+        gameStoreReview: review,
+      });
+    }
+
+    // GameStoreReviewCommentLikeRelation 삭제
+    for (const review of gameStore.gameStoreReviews) {
+      for (const comment of review.comments) {
+        await this.gameStoreReviewCommentLikeRelationRepository.delete({
+          comment,
+        });
+      }
+    }
+
+    // GameStoreReviewComment 삭제
+    for (const review of gameStore.gameStoreReviews) {
+      await this.gameStoreReviewCommentRepository.delete({
+        review,
+      });
+    }
+
+    await this.playTimeRelationRepository.delete({ gameStore: gameStore });
+
+    // GameStore 삭제
+    await this.gameStoreRepository.delete(gameStore.id);
+  }
+
+  async removeGameStoreBoard(userEmail: string, id: string) {
+    const board = await this.gameStoreBoardRepository.findOne({
+      relations: ['parent', 'writer'],
+      where: { id },
+    });
+
+    if (!board) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 게시물을 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const parentIdsToUpdate: string[] = [];
+
+    let currentParent = board.parent;
+    while (currentParent) {
+      parentIdsToUpdate.push(currentParent.id);
+      if (!currentParent.parent) {
+        break;
+      }
+      currentParent = currentParent.parent;
+    }
+    // 부모 게시판들의 child 속성 일괄 업데이트
+    await this.gameStoreBoardRepository
+      .createQueryBuilder('board')
+      .update(GameStoreBoard)
+      .set({ child: () => 'child - 1' })
+      .where('board.id IN (:...ids)', { ids: parentIdsToUpdate })
+      .execute();
+    const children: Array<GameStoreBoard> = await this.gameStoreBoardRepository
+      .createQueryBuilder('board')
+      .where('board.parent.id = :id', { id })
+      .getMany();
+
+    if (children.length !== 0) {
+      // 자식 게시판들 있는경우 soft delete
+      await this.gameStoreBoardRepository.softDelete(id);
+    } else {
+      // 자식 게시판이 없을 경우 hard delete
+      await this.gameStoreBoardRepository.delete(id);
+    }
   }
 }

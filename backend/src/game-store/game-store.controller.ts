@@ -300,7 +300,10 @@ export class GameStoreController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gameStoreService.remove(+id);
+  remove(@Headers('Authorization') userEmail: string, @Param('id') id: string) {
+    console.log(id);
+    return this.gameStoreService.removeGameStore(userEmail, id);
   }
+
+  // @Delete('')
 }
