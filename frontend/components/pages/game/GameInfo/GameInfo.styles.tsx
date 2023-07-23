@@ -32,11 +32,22 @@ export const useGameInfoStyles = createStyles((theme) => ({
   followBadge: {
     width: "6rem",
     height: "2rem",
+    padding: "0rem 0.3rem",
+
+    ".mantine-Badge-leftSection": {
+      marginRight: "0.7rem",
+    },
+  },
+  tagGroup: {
+    maxHeight: "4.3rem",
+    overflow: "hidden",
   },
 
   tagBox: {
+    position: "relative",
     display: "flex",
     flexWrap: "wrap",
+    // justifyContent: "space-between",
 
     height: "4.3rem",
     margin: "0rem 0.1875rem",
@@ -82,12 +93,19 @@ export const useGameInfoStyles = createStyles((theme) => ({
     },
   },
 
+  addButton_A: {
+    position: "absolute",
+    top: "2.175rem",
+    right: "0rem",
+    boxShadow: "-7px 0px 4px #fcfcfe",
+  },
+
   marginTop: {
-    marginTop: "0.65rem",
+    marginTop: "0.44rem",
   },
 
   marginBottom: {
-    marginBottom: "0.65rem",
+    marginBottom: "0.44rem",
   },
 
   marginLeft: {
