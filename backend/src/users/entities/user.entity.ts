@@ -124,6 +124,8 @@ export class GameStoreShoppingCartItem {
   @ManyToOne(() => User, (user) => user.gameStoreShoppingCartItems)
   readonly user: User;
 
-  @ManyToOne(() => GameStore, (gameStore) => gameStore.shoppingCartItems)
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.shoppingCartItems, {
+    onDelete: 'CASCADE',
+  })
   readonly gameStore: GameStore;
 }
