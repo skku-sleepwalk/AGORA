@@ -31,9 +31,11 @@ function GameLayout({
     }
   }, []);
 
+  // alert(height);
+
   return (
     <div className={classes.container}>
-      <div className={classes.topContainer}>
+      <div className={classes.topContainer} ref={heightRef}>
         <div className={classes.PhotoContainer}>{photoSection}</div>
         <div className={classes.infoContainer}>{InfoSection}</div>
       </div>
