@@ -47,8 +47,7 @@ export const useGameInfoStyles = createStyles((theme) => ({
     position: "relative",
     display: "flex",
     flexWrap: "wrap",
-    // justifyContent: "space-between",
-
+    justifyContent: "space-between",
     height: "4.3rem",
     margin: "0rem 0.1875rem",
     padding: 0,
@@ -71,6 +70,11 @@ export const useGameInfoStyles = createStyles((theme) => ({
     color: theme.colors.blue[6],
     fontSize: 12,
     fontWeight: "bold",
+  },
+
+  emptyDiv: {
+    flex: "auto",
+    height: "1.988rem",
   },
 
   addButton: {

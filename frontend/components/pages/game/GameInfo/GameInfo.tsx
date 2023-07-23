@@ -39,6 +39,13 @@ export function GameInfo() {
     "끊을 줄 모르는",
     "최고인",
     "잊을 수 없는",
+    "농장 시뮬레이션",
+    "생활 시뮬레이션",
+    "픽셀 그래픽",
+    "힐링",
+    "끊을 줄 모르는",
+    "최고인",
+    "잊을 수 없는",
   ];
   const tags = data.map((item) => <Box className={classes.tag}>{item}</Box>);
   const overflowRef = useRef<HTMLDivElement>(null);
@@ -58,7 +65,7 @@ export function GameInfo() {
   return (
     <>
       <Modal opened={opened} onClose={close} title="태그 추가" centered>
-        {/* Modal content */}
+        <GameTagModal />
       </Modal>
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
@@ -167,7 +174,7 @@ export function GameInfo() {
         <Text className={cx(classes.marginLeft, classes.marginTop)} fw={"bold"}>
           이 게임의 인기 태그 :
         </Text>
-        <Group spacing={0} className={classes.tagGroup}>
+        <Box className={classes.tagGroup}>
           <Box className={classes.tagBox} ref={overflowRef}>
             {tags}
             <Button
@@ -176,8 +183,9 @@ export function GameInfo() {
             >
               +
             </Button>
+            <div className={cx(classes.emptyDiv)}></div>
           </Box>
-        </Group>
+        </Box>
         {true && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>
