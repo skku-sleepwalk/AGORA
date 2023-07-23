@@ -14,25 +14,37 @@ export function GameTab() {
       <Tabs.List className={classes.tabList} position="left">
         <Tabs.Tab
           value="gameInfo"
-          className={cx(classes.tabItem, activeTab === "gameInfo" && classes.tabItemActive)}
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "gameInfo" && classes.tabItemActive
+          )}
         >
           게임 정보
         </Tabs.Tab>
         <Tabs.Tab
           value="develop"
-          className={cx(classes.tabItem, activeTab === "develop" && classes.tabItemActive)}
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "develop" && classes.tabItemActive
+          )}
         >
           개발 과정
         </Tabs.Tab>
         <Tabs.Tab
           value="review"
-          className={cx(classes.tabItem, activeTab === "review" && classes.tabItemActive)}
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "review" && classes.tabItemActive
+          )}
         >
           후기
         </Tabs.Tab>
         <Tabs.Tab
           value="board"
-          className={cx(classes.tabItem, activeTab === "board" && classes.tabItemActive)}
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "board" && classes.tabItemActive
+          )}
         >
           게시판
         </Tabs.Tab>

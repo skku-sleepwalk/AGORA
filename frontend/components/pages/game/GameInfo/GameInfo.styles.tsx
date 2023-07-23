@@ -34,28 +34,48 @@ export const useGameInfoStyles = createStyles((theme) => ({
     height: "2rem",
   },
 
-  multiSelect: {
+  tagBox: {
+    display: "flex",
+    flexWrap: "wrap",
+
     height: "4.3rem",
-    ".mantine-MultiSelect-input": {
-      border: "none",
-      padding: 0,
-      backgroundColor: "#fcfcfe",
-      cursor: "default",
-    },
-    ".mantine-MultiSelect-value": {
-      height: "1.8rem",
-      backgroundColor: theme.colors.blue[1],
-      color: theme.colors.blue[6],
-      fontWeight: "bold",
-    },
+    margin: "0rem 0.1875rem",
+    padding: 0,
+    backgroundColor: "#fcfcfe",
+  },
+
+  tag: {
+    display: "flex",
+
+    height: "1.8rem",
+    margin: "0.1875rem 0.3125rem",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.75rem",
+    borderRadius: "0.25rem",
+
+    justifyContent: "center",
+    alignItems: "center",
+
+    backgroundColor: theme.colors.blue[1],
+    color: theme.colors.blue[6],
+    fontSize: 12,
+    fontWeight: "bold",
   },
 
   addButton: {
+    display: "flex",
+
     height: "1.8rem",
-    padding: "0px 8px",
+    margin: "0.1875rem 0.3125rem",
+    paddingLeft: "0.5rem",
+    paddingRight: "0.5rem",
+
+    justifyContent: "center",
+    alignItems: "center",
+
     backgroundColor: theme.colors.blue[1],
     color: theme.colors.blue[6],
-    fontSize: "1.2rem",
+    fontSize: 16,
 
     "&:hover": {
       backgroundColor: theme.colors.blue[2],
