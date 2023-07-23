@@ -5,6 +5,10 @@ export const useGameInfoStyles = createStyles((theme) => ({
     cursor: "default",
   },
 
+  heartFilled: {
+    marginRight: "0.2rem",
+  },
+
   alignTop: {
     alignItems: "flex-start",
   },

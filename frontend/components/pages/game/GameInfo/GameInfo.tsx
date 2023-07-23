@@ -6,6 +6,7 @@ import {
   Divider,
   Button,
   Badge,
+  Image,
   Center,
   Box,
   Modal,
@@ -47,7 +48,8 @@ export function GameInfo() {
     "최고인",
     "잊을 수 없는",
   ];
-  const tags = data.map((item) => <Box className={classes.tag}>{item}</Box>);
+  const endIndex = 11;
+  const tags = data.slice(0, endIndex).map((item) => <Box className={classes.tag}>{item}</Box>);
   const overflowRef = useRef<HTMLDivElement>(null);
   const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
   const checkOverflow = () => {
@@ -59,8 +61,6 @@ export function GameInfo() {
   useEffect(() => {
     setIsOverflowed(checkOverflow());
   }, []);
-
-  console.log(isOverflowed);
 
   return (
     <>
@@ -84,8 +84,12 @@ export function GameInfo() {
           <Group spacing={"xs"}>
             <InvisibleButton onClick={handleIsLiking}>
               {isLiking ? (
-                // <Image width={"2rem"} height={"2rem"} src="../../../public/HeartFilled.png" />
-                <IconHeartFilled size={"2rem"} stroke={1} />
+                <Image
+                  className={classes.heartFilled}
+                  width={"1.6rem"}
+                  height={"1.5rem"}
+                  src={"/HeartFilled.png"}
+                />
               ) : (
                 <IconHeart size={"2rem"} stroke={1} />
               )}
