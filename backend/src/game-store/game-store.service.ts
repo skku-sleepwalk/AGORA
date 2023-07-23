@@ -1534,17 +1534,7 @@ export class GameStoreService {
 
   async removeGameStore(userEmail: string, id: string) {
     const gameStore: GameStore = await this.gameStoreRepository.findOne({
-      relations: [
-        'author',
-        'cost',
-        'shortDescription',
-        'snsUrls',
-        'gameStoreReviews',
-        'gameStoreBoards',
-        'shoppingCartItems',
-        'gameStoreReviews.comments',
-        'playtimeRelations',
-      ],
+      relations: ['author'],
       where: { id },
     });
 
@@ -1571,34 +1561,42 @@ export class GameStoreService {
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    // GameStoreReviewLikeRelation 삭제
-    for (const review of gameStore.gameStoreReviews) {
-      await this.gameStoreReviewLikeRelationRepository.delete({
-        gameStoreReview: review,
-      });
-    }
-
-    // GameStoreReviewCommentLikeRelation 삭제
-    for (const review of gameStore.gameStoreReviews) {
-      for (const comment of review.comments) {
-        await this.gameStoreReviewCommentLikeRelationRepository.delete({
-          comment,
-        });
-      }
-    }
-
-    // GameStoreReviewComment 삭제
-    for (const review of gameStore.gameStoreReviews) {
-      await this.gameStoreReviewCommentRepository.delete({
-        review,
-      });
-    }
-
-    await this.playTimeRelationRepository.delete({ gameStore: gameStore });
-
     // GameStore 삭제
     await this.gameStoreRepository.delete(gameStore.id);
+  }
+
+  async removeGameStoreReview(userEmail: string, id: string) {
+    const review: GameStoreReview =
+      await this.gameStoreReviewRepository.findOne({
+        relations: ['writer'],
+        where: { id },
+      });
+
+    if (!review) {
+      throw new HttpException(
+        {
+          message: '입력한 데이터가 올바르지 않습니다.',
+          error: {
+            id: `ID가 ${id}인 후기를 찾을 수 없습니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    if (review.writer.email !== userEmail) {
+      throw new HttpException(
+        {
+          message: '작성자가 아닙니다.',
+          error: {
+            userEmail: `${userEmail}은(는) 해당 게시물의 작성자가 아닙니다.`,
+          },
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    // GameStore 삭제
+    await this.gameStoreReviewRepository.delete(review.id);
   }
 
   async removeGameStoreBoard(userEmail: string, id: string) {

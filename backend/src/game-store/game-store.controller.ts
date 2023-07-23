@@ -299,11 +299,20 @@ export class GameStoreController {
     );
   }
 
-  @Delete(':id')
-  remove(@Headers('Authorization') userEmail: string, @Param('id') id: string) {
-    console.log(id);
+  @Delete('/id/:id')
+  removeGameStore(
+    @Headers('Authorization') userEmail: string,
+    @Param('id') id: string,
+  ) {
     return this.gameStoreService.removeGameStore(userEmail, id);
   }
 
-  // @Delete('')
+  @Delete('/reviews/:id')
+  removeGameStoreReview(
+    @Headers('Authorization') userEmail: string,
+    @Param('id') id: string,
+  ) {
+    console.log('a');
+    return this.gameStoreService.removeGameStoreReview(userEmail, id);
+  }
 }
