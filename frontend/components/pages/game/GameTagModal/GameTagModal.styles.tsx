@@ -19,7 +19,7 @@ export const useGameTagModalStyles = createStyles((theme) => ({
 
   search: {
     flexGrow: 1,
-    border: "0.0625rem solid #ced4da",
+    border: `0.0625rem solid ${theme.colors.gray[4]}`,
     borderRadius: theme.radius.sm,
 
     ".mantine-TextInput-input": {

@@ -1,10 +1,10 @@
-import { Box, Button, Group, ScrollArea, Stack, TextInput, useMantineTheme } from "@mantine/core";
+import { Box, Button, Group, Stack, TextInput, useMantineTheme } from "@mantine/core";
 import { useGameTagModalStyles } from "./GameTagModal.styles";
 import { useListState } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { ChangeEvent, useState } from "react";
-import { showError } from "../../../../utils/notifications";
+import { cleanNotification, showError } from "../../../../utils/notifications";
 
 interface GameTagModalProps {
   onClose?: () => void;
@@ -59,6 +59,7 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
                 });
               // 만약 checked이면 checkHandler에 value.label 추가
               else checkedHandler.filter((item) => item.label !== value.label); // 아니면 checkHandler에서 value.label 제거
+              cleanNotification();
             } else {
               showError("태그는 7개까지 추가할 수 있습니다.", null);
             }
@@ -95,6 +96,12 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
               className={classes.search}
               placeholder="원하는 태그를 검색해서 추가해보세요."
               onChange={onSearchChange}
+              value={search}
+              rightSection={
+                <InvisibleButton onClick={() => setSearch("")}>
+                  <IconX stroke={1.5} size={"1rem"} color={theme.colors.gray[5]} />
+                </InvisibleButton>
+              }
             />
           </Group>
           <Box className={classes.tagBox}>{tags}</Box>
