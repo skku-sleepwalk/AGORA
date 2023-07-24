@@ -1,5 +1,15 @@
-import { useRef, useState } from "react";
-import { Avatar, BackgroundImage, Box, Container, Group, Stack, Text } from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
+import {
+  Avatar,
+  BackgroundImage,
+  Image,
+  Box,
+  Group,
+  Stack,
+  Text,
+  Center,
+  Container,
+} from "@mantine/core";
 import { useListState } from "@mantine/hooks";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
@@ -23,8 +33,22 @@ function processString(input: string): string {
   return processedString;
 }
 
-export function MainCarousel() {
-  const { classes, cx } = useMainCarouselStyles();
+interface MainCarouselProps {
+  isMain?: boolean;
+  isInfo?: boolean;
+}
+
+export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
+  // 배경 이미지 내부, 태그들의 크기/위치 자동 조절 용
+  const widthRef = useRef<HTMLAnchorElement>(null);
+  const [width, setWidth] = useState<number>(1440);
+  useEffect(() => {
+    if (widthRef.current) {
+      setWidth(widthRef.current.clientWidth);
+    }
+  }, []);
+
+  const { classes, cx } = useMainCarouselStyles({ width });
 
   const TRANSITION_DURATION = 200;
   const [embla, setEmbla] = useState<Embla | null>(null);
@@ -36,24 +60,38 @@ export function MainCarousel() {
 
   const GameCarouselSlides = values.map((value) => (
     <Carousel.Slide>
-      <BackgroundImage
-        className={classes.backgroundImage}
-        w={"100%"}
-        h={"100%"}
-        component="a"
-        href={value.href}
-        src={value.src}
-      >
-        <Stack className={classes.gameIntro} spacing={"2rem"}>
-          <Group>
-            <Avatar radius={"md"} src={value.src} />
-            <Text color="#fff" size={"1.8rem"}>
-              {value.gameName}
-            </Text>
-          </Group>
-          <Box className={classes.gameExplain}>{processString(value.gameExplain)}</Box>
-        </Stack>
-      </BackgroundImage>
+      {isMain && (
+        <BackgroundImage
+          className={classes.backgroundImage}
+          ref={widthRef}
+          component="a"
+          href={value.href}
+          src={value.src}
+          h={"100%"}
+        >
+          <Stack className={classes.gameIntro} spacing={`${(2 * width) / 1440}rem`}>
+            <Group>
+              <Avatar radius={"md"} size={`${(2.4 * width) / 1440}rem`} src={value.src} />
+              <Text color="#fff" size={`${(1.8 * width) / 1440}rem`}>
+                {value.gameName}
+              </Text>
+            </Group>
+            <Box className={classes.gameExplain}>{processString(value.gameExplain)}</Box>
+          </Stack>
+        </BackgroundImage>
+      )}
+      {isInfo && (
+        <Container className={classes.imageContainer}>
+          <Image
+            className={classes.image}
+            width={"100%"}
+            height={"100%"}
+            radius={"lg"}
+            fit="contain"
+            src={value.src}
+          />
+        </Container>
+      )}
     </Carousel.Slide>
   ));
 
@@ -61,13 +99,16 @@ export function MainCarousel() {
     <Carousel
       className={classes.carousel}
       slideSize="100%"
-      height="30rem"
       slideGap="md"
       loop
       draggable={false}
       withIndicators
-      previousControlIcon={<IconChevronLeft color="white" size={"3rem"}></IconChevronLeft>}
-      nextControlIcon={<IconChevronRight color="white" size={"3rem"}></IconChevronRight>}
+      previousControlIcon={
+        <IconChevronLeft color="white" size={`${(3 * width) / 1440}rem`}></IconChevronLeft>
+      }
+      nextControlIcon={
+        <IconChevronRight color="white" size={`${(3 * width) / 1440}rem`}></IconChevronRight>
+      }
       getEmblaApi={setEmbla}
       plugins={[autoplay.current]}
       onMouseEnter={autoplay.current.stop}

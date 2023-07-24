@@ -14,6 +14,7 @@ import {
 } from 'src/game-store/entities/game-store-review.entity';
 import {
   GameStore,
+  GameStoreTagRelation,
   PlayTimeRelation,
 } from 'src/game-store/entities/game-store.entity';
 import {
@@ -22,6 +23,7 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -47,6 +49,9 @@ export class User {
   @Column({ default: 0 })
   rating: number;
 
+  @Column({ default: 0 })
+  totalPlaytime: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
@@ -64,6 +69,12 @@ export class User {
 
   @OneToMany(() => PlayTimeRelation, (relation) => relation.user)
   playtimeRelations: Array<PlayTimeRelation>;
+
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.user)
+  gameStoreTagRelations: Array<GameStoreTagRelation>;
+
+  @OneToMany(() => GameStoreShoppingCartItem, (item) => item.user)
+  gameStoreShoppingCartItems: GameStoreShoppingCartItem[];
 
   @OneToMany(() => GameStoreReview, (review) => review.writer)
   gameStoreReviews: Array<GameStoreReview>;
@@ -103,4 +114,18 @@ export class User {
 
   @ManyToMany(() => AssetStoreBoards)
   likedAssetStoreBoards: AssetStoreBoards[];
+}
+
+@Entity('GameStoreShoppingCartItem')
+export class GameStoreShoppingCartItem {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @ManyToOne(() => User, (user) => user.gameStoreShoppingCartItems)
+  readonly user: User;
+
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.shoppingCartItems, {
+    onDelete: 'CASCADE',
+  })
+  readonly gameStore: GameStore;
 }

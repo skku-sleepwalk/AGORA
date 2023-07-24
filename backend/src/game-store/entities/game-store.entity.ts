@@ -1,4 +1,7 @@
-import { User } from 'src/users/entities/user.entity';
+import {
+  GameStoreShoppingCartItem,
+  User,
+} from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -17,7 +20,6 @@ import {
 import { GameStoreBoard } from './game-store-board.entity';
 import { GameStoreReview } from './game-store-review.entity';
 
-export type tagType = '장르' | '분위기' | '그래픽';
 @Entity('GameStore')
 export class GameStore {
   @PrimaryGeneratedColumn('uuid')
@@ -47,15 +49,20 @@ export class GameStore {
   @OneToOne(
     () => ShortDescription,
     (shortDescription) => shortDescription.gameStore,
+    { onDelete: 'CASCADE' },
   )
   @JoinColumn()
   shortDescription: Relation<ShortDescription>;
 
-  @OneToOne(() => SNSUrls, (snsUrls) => snsUrls.gameStore)
+  @OneToOne(() => SNSUrls, (snsUrls) => snsUrls.gameStore, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   snsUrls: Relation<SNSUrls>;
 
-  @OneToOne(() => Cost, (cost) => cost.gameStore)
+  @OneToOne(() => Cost, (cost) => cost.gameStore, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   cost: Relation<Cost>;
 
@@ -64,20 +71,40 @@ export class GameStore {
 
   @ManyToMany(() => User)
   @JoinTable()
-  likedUsers: Array<User>;
+  likedUsers: User[];
 
-  @ManyToMany(() => GameStoreTag)
+  @ManyToMany(() => GameStoreGenre)
   @JoinTable()
-  readonly tags: Array<GameStoreTag>;
+  readonly genres: GameStoreGenre[];
 
-  @OneToMany(() => GameStoreBoard, (board) => board.gameStore)
-  gameStoreBoards: Array<GameStoreBoard>;
+  @ManyToMany(() => GameStoreTag, (tag) => tag.popularedGameStores)
+  @JoinTable()
+  popularTags: GameStoreTag[];
 
-  @OneToMany(() => GameStoreReview, (review) => review.gameStore)
-  gameStoreReview: Array<GameStoreReview>;
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.gameStore, {
+    cascade: true,
+  })
+  readonly gameStoreTagRelations: GameStoreTagRelation[];
 
-  @OneToMany(() => PlayTimeRelation, (relation) => relation.gameStore)
-  playtimeRelations: Array<PlayTimeRelation>;
+  @OneToMany(() => GameStoreBoard, (board) => board.gameStore, {
+    cascade: true,
+  })
+  gameStoreBoards: GameStoreBoard[];
+
+  @OneToMany(() => GameStoreReview, (review) => review.gameStore, {
+    cascade: true,
+  })
+  gameStoreReviews: GameStoreReview[];
+
+  @OneToMany(() => PlayTimeRelation, (relation) => relation.gameStore, {
+    cascade: true,
+  })
+  playtimeRelations: PlayTimeRelation[];
+
+  @OneToMany(() => GameStoreShoppingCartItem, (item) => item.gameStore, {
+    cascade: true,
+  })
+  shoppingCartItems: GameStoreShoppingCartItem[];
 
   @CreateDateColumn()
   createdAt: Date;
@@ -109,28 +136,30 @@ export class SNSUrls {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   youtube: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   twitch: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   twitter: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   discord: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   facebook: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   instagram: string | null;
 
-  @Column({ nullable: true, default: null })
+  @Column({ nullable: true })
   customPage: string | null;
 
-  @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls)
+  @OneToOne(() => GameStore, (gameStore) => gameStore.snsUrls, {
+    onDelete: 'CASCADE',
+  })
   gameStore: GameStore;
 }
 
@@ -160,8 +189,41 @@ export class Cost {
   @Column({ nullable: true })
   saleEndAt: Date;
 
-  @OneToOne(() => GameStore, (gameStore) => gameStore.cost)
+  @OneToOne(() => GameStore, (gameStore) => gameStore.cost, {
+    onDelete: 'CASCADE',
+  })
   gameStore: GameStore;
+}
+
+@Entity('GameStoreGenre')
+export class GameStoreGenre {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @Column({ unique: true, nullable: false })
+  readonly name: string;
+
+  @ManyToMany(() => GameStore, { onDelete: 'CASCADE' })
+  gameStore: Array<GameStore>;
+}
+
+@Entity('PlayTimeRelation')
+export class PlayTimeRelation {
+  @PrimaryGeneratedColumn('uuid')
+  readonly id: string;
+
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.playtimeRelations, {
+    onDelete: 'CASCADE',
+  })
+  readonly gameStore: GameStore;
+
+  @ManyToOne(() => User, (user) => user.playtimeRelations, {
+    onDelete: 'CASCADE',
+  })
+  readonly user: User;
+
+  @Column({ nullable: false, default: 0 })
+  playTime: number;
 }
 
 @Entity('GameStoreTag')
@@ -172,24 +234,26 @@ export class GameStoreTag {
   @Column({ unique: true, nullable: false })
   readonly name: string;
 
-  @Column({ nullable: false })
-  readonly tagType: tagType;
+  @OneToMany(() => GameStoreTagRelation, (relation) => relation.tag)
+  readonly relations: Array<GameStoreTagRelation>;
 
-  @ManyToMany(() => GameStore)
-  gameStore: Array<GameStore>;
+  @ManyToMany(() => GameStore, (gameStore) => gameStore.popularTags)
+  popularedGameStores: Array<GameStore>;
 }
 
-@Entity('PlayTimeRelation')
-export class PlayTimeRelation {
+@Entity('GameStoreTagRelation')
+export class GameStoreTagRelation {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => GameStore, (gameStore) => gameStore.playtimeRelations)
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreTagRelations, {
+    onDelete: 'CASCADE',
+  })
   readonly gameStore: GameStore;
 
-  @ManyToOne(() => User, (user) => user.playtimeRelations)
-  readonly user: User;
+  @ManyToOne(() => GameStoreTag, (tag) => tag.relations)
+  readonly tag: GameStoreTag;
 
-  @Column({ nullable: false, default: 0 })
-  playTime: number;
+  @ManyToOne(() => User, (user) => user.gameStoreTagRelations)
+  readonly user: User;
 }

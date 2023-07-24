@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GameStore } from './game-store.entity';
+import { LikeAction } from './game-store-review.entity';
 
 @Entity('GameStoreBoard')
 export class GameStoreBoard {
@@ -25,7 +26,7 @@ export class GameStoreBoard {
   content: string;
 
   @Column({ nullable: false, default: 0 })
-  like: number;
+  likeCount: number;
 
   @Column({ nullable: false, default: 0 })
   child: number;
@@ -42,13 +43,16 @@ export class GameStoreBoard {
   @OneToMany(
     () => GameStoreBoardLikeRelation,
     (relation) => relation.gameStoreBoard,
+    { cascade: true },
   )
-  likeRelation: Array<GameStoreBoardLikeRelation>;
+  likeRelations: Array<GameStoreBoardLikeRelation>;
 
-  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreBoards)
+  @ManyToOne(() => GameStore, (gameStore) => gameStore.gameStoreBoards, {
+    onDelete: 'CASCADE',
+  })
   gameStore: GameStore;
 
-  @ManyToOne(() => User, (user) => user.boards)
+  @ManyToOne(() => User, (user) => user.boards, { onDelete: 'CASCADE' })
   writer: User;
 
   @ManyToOne(() => GameStoreBoard, { nullable: true })
@@ -79,9 +83,12 @@ export class GameStoreBoardLikeRelation {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => GameStoreBoard, { nullable: false })
+  @ManyToOne(() => GameStoreBoard, { nullable: false, onDelete: 'CASCADE' })
   readonly gameStoreBoard: GameStoreBoard;
 
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
   readonly user: User;
+
+  @Column({ nullable: true, default: null })
+  likeAction: LikeAction;
 }

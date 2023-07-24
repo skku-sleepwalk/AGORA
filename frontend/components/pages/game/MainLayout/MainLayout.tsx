@@ -12,8 +12,10 @@ function MainLayout({ children, tapSection, upSection }: CommunityLayoutProps) {
   return (
     <div className={classes.container}>
       <div className={classes.tapContainer}>{tapSection}</div>
-      <div className={classes.upContainer}>{upSection}</div>
-      <div className={classes.mainContainer}>{children}</div>
+      <div className={classes.upMainContainer}>
+        <div className={classes.upContainer}>{upSection}</div>
+        <div className={classes.mainContainer}>{children}</div>
+      </div>
     </div>
   );
 }

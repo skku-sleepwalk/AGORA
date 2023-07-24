@@ -3,18 +3,25 @@ import { createStyles } from "@mantine/core";
 export const useMainLayoutStyles = createStyles((theme) => ({
   container: {
     width: "100%",
+    height: "100%",
   },
 
   tapContainer: {
-    position: "relative",
+    position: "fixed",
     width: "100%",
     height: "3rem",
     zIndex: 100,
   },
 
-  upContainer: {
+  upMainContainer: {
+    position: "relative",
+    top: "3rem",
     width: "100%",
-    height: "32rem",
+  },
+
+  upContainer: {
+    aspectRatio: "20 / 7",
+    width: "100%",
   },
 
   mainContainer: {

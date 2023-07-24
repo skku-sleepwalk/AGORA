@@ -1,5 +1,5 @@
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { Text } from "@mantine/core";
+import { Card, Text } from "@mantine/core";
 import { Box, Divider, Group } from "@mantine/core";
 import { CSSProperties } from "react";
 export function Rightsection() {
@@ -201,6 +201,66 @@ export function Rightsection() {
             홈페이지
           </Text>
         </Group>
+      </CardContainer>
+      <CardContainer w={"100%"} h={"12rem"} style={{ marginTop: "3rem" }}>
+        <Text
+          style={{
+            paddingTop: "1rem",
+            fontWeight: "bold",
+            fontSize: "18px",
+          }}
+        >
+          구매
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            fontSize: "20px",
+            marginTop: "0.6rem",
+            marginLeft: "0.4rem",
+          }}
+        >
+          Stardew Valley
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            marginLeft: "80%",
+
+            fontSize: "15px",
+            marginTop: "0.4rem",
+            color: "gray",
+            textDecoration: "line-through",
+          }}
+        >
+          \ 16,000
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            background: "#F1A2A2",
+            display: "inline",
+            fontSize: "15px",
+            borderRadius: "3px",
+            marginTop: "0.4rem",
+            marginLeft: "55%",
+          }}
+        >
+          -37.5%
+        </Text>
+        <Text
+          style={{
+            fontWeight: "bold",
+            marginLeft: "2%",
+            display: "inline",
+            fontSize: "27px",
+
+            marginTop: "0.4rem",
+          }}
+        >
+          \9,999
+        </Text>
+        {/* 그 외 버튼 두 개 */}
       </CardContainer>
     </CardContainer>
   );
