@@ -13,7 +13,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameInfoStyles } from "./GameInfo.styles";
-import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
@@ -64,8 +64,8 @@ export function GameInfo() {
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="태그 추가" centered>
-        <GameTagModal />
+      <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
+        <GameTagModal onClose={close} />
       </Modal>
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
@@ -187,7 +187,6 @@ export function GameInfo() {
             >
               +
             </Button>
-            <div className={cx(classes.emptyDiv)}></div>
           </Box>
         </Box>
         {true && (

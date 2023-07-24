@@ -1,6 +1,16 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameInfoStyles = createStyles((theme) => ({
+  modal: {
+    display: "flex",
+    width: "21.875rem",
+
+    ".mantine-Modal-title": {
+      marginLeft: "0.1rem",
+      fontSize: "1.2rem",
+    },
+  },
+
   stack: {
     cursor: "default",
   },
@@ -42,6 +52,7 @@ export const useGameInfoStyles = createStyles((theme) => ({
       marginRight: "0.7rem",
     },
   },
+
   tagGroup: {
     maxHeight: "4.3rem",
     overflow: "hidden",
@@ -56,10 +67,17 @@ export const useGameInfoStyles = createStyles((theme) => ({
     margin: "0rem 0.1875rem",
     padding: 0,
     backgroundColor: "#fcfcfe",
+
+    "&::after": {
+      content: '""',
+      flex: "auto",
+      height: "1.988rem",
+    },
   },
 
   tag: {
     display: "flex",
+    flexGrow: 1,
 
     height: "1.8rem",
     margin: "0.1875rem 0.3125rem",
@@ -74,11 +92,6 @@ export const useGameInfoStyles = createStyles((theme) => ({
     color: theme.colors.blue[6],
     fontSize: 12,
     fontWeight: "bold",
-  },
-
-  emptyDiv: {
-    flex: "auto",
-    height: "1.988rem",
   },
 
   addButton: {
