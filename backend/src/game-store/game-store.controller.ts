@@ -8,17 +8,25 @@ import {
   Delete,
   Headers,
   Query,
+  ParseArrayPipe,
 } from '@nestjs/common';
 import { GameStoreService } from './game-store.service';
 import { CreateGameStoreDto } from './dto/create-game-store.dto';
 import { UpdateGameStoreDto } from './dto/update-game-store.dto';
 import { CreateGameStoreBoardDto } from './dto/create-game-store-board.dto';
 import { CreateGameStoreBoardCategoryDto } from './dto/create-game-store-board-category.dto';
-import { CreateGameStoreTagDto } from './dto/create-game-tag.dto';
 import { CreateGameStoreReviewDto } from './dto/create-game-store-review.dto';
 import { CreateGameStoreReviewCommentDto } from './dto/create-game-store-review-comment.dto';
 import { UpdatePlaytimeRelationDto } from './dto/update-playtime-relation.dto';
 import { LikeAction } from './entities/game-store-review.entity';
+import { UpdateGameStoreReviewCommentDto } from './dto/update-game-store-review-comment.dto';
+import { UpdateGameStoreBoardDto } from './dto/update-game-store-board.dto';
+import { CreateGameStoreGenreDto } from './dto/create-game-store-genre.dto';
+import { UpdateGameStoreReviewDto } from './dto/update-game-store-review.dto';
+import { CreateGameStoreTagDto } from './dto/create-game-store-tag.dto';
+import { CreateGameStoreTagRelationDto } from './dto/create-game-store-tag-relation.dto';
+import { CreatePlaytimeRelationDto } from './dto/create-playtime-relation.dto';
+import { CreateGameStoreShoppingCartItemDto } from './dto/create-game-store-shoppingCartItem.dto';
 
 @Controller('game-store')
 export class GameStoreController {
@@ -35,17 +43,50 @@ export class GameStoreController {
     );
   }
 
+  @Post('genres')
+  createGameStoreGenre(
+    @Body() createGameStoreGenreDto: CreateGameStoreGenreDto,
+  ) {
+    return this.gameStoreService.createGameStoreGenre(createGameStoreGenreDto);
+  }
+
   @Post('tags')
   createGameStoreTag(@Body() createGameStoreTagDto: CreateGameStoreTagDto) {
     return this.gameStoreService.createGameStoreTag(createGameStoreTagDto);
   }
 
+  @Post('tagRelations')
+  createGameStoreTagRelation(
+    @Headers('Authorization') userEmail: string,
+    @Body() createGameStoreTagRelationDto: CreateGameStoreTagRelationDto,
+  ) {
+    return this.gameStoreService.createGameStoreTagRelation(
+      userEmail,
+      createGameStoreTagRelationDto,
+    );
+  }
+
   @Post('playtimeRelations')
   createPlaytimeRelations(
     @Headers('Authorization') userEmail: string,
-    @Query('gameStoreId') gameStoreId: string,
+    @Body() createPlaytimeRelationDto: CreatePlaytimeRelationDto,
   ) {
-    return this.gameStoreService.createPlayTimeRelation(userEmail, gameStoreId);
+    return this.gameStoreService.createPlayTimeRelation(
+      userEmail,
+      createPlaytimeRelationDto,
+    );
+  }
+
+  @Post('shoppingCartItems')
+  createGameStoreShoppingCartItem(
+    @Headers('Authorization') userEmail: string,
+    @Body()
+    createGameStoreShoppingCartItemDto: CreateGameStoreShoppingCartItemDto,
+  ) {
+    return this.gameStoreService.createGameStoreShoppingCartItem(
+      userEmail,
+      createGameStoreShoppingCartItemDto,
+    );
   }
 
   @Post('reviews')
@@ -69,6 +110,7 @@ export class GameStoreController {
       createGameStoreReviewCommentDto,
     );
   }
+
   @Post('boards')
   createGameStoreBoard(
     @Headers('Authorization') writerEmail: string,
@@ -94,15 +136,47 @@ export class GameStoreController {
     return this.gameStoreService.findAll();
   }
 
-  @Get('/tag')
-  findByTag(
-    @Query('name') tagName: string,
+  @Get('/findByGenre')
+  findByGenre(
+    @Query('name') genreName: string,
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
-    return this.gameStoreService.findGameStoreByTag(
+    return this.gameStoreService.findGameStoreByGenre(
       { afterCursor, beforeCursor },
-      tagName,
+      genreName,
+    );
+  }
+
+  @Get('/searchGameStore')
+  searchGameStore(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('search') search: string,
+    @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
+    genreNames: string[],
+  ) {
+    return this.gameStoreService.searchGameStore(
+      { afterCursor, beforeCursor },
+      search,
+      genreNames,
+    );
+  }
+
+  @Get('/id/:id')
+  findOne(@Param('id') id: string) {
+    return this.gameStoreService.findOneGameStore(id);
+  }
+
+  @Get('/searchTag')
+  searchGameStoreTag(
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('search') search: string,
+  ) {
+    return this.gameStoreService.searchGameStoreTag(
+      { afterCursor, beforeCursor },
+      search,
     );
   }
 
@@ -118,17 +192,17 @@ export class GameStoreController {
     );
   }
 
-  @Get('/id/:id')
-  findOne(@Param('id') id: string) {
-    return this.gameStoreService.findOneGameStore(id);
-  }
-
-  @Patch()
-  update(
-    @Query('id') id: string,
+  @Patch('/game')
+  updateGameStore(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreId: string,
     @Body() updateGameStoreDto: UpdateGameStoreDto,
   ) {
-    return this.gameStoreService.update(+id, updateGameStoreDto);
+    return this.gameStoreService.updateGameStore(
+      userEmail,
+      gameStoreId,
+      updateGameStoreDto,
+    );
   }
 
   @Patch('/like')
@@ -139,7 +213,7 @@ export class GameStoreController {
     return this.gameStoreService.updateGameStoreLike(gameStoreId, userEmail);
   }
 
-  @Patch('/playtimeRelation')
+  @Patch('/playtimeRelations')
   updatePlaytimeRelation(
     @Headers('Authorization') userEmail: string,
     @Body() updatePlaytimeRelationDto: UpdatePlaytimeRelationDto,
@@ -147,6 +221,19 @@ export class GameStoreController {
     this.gameStoreService.updatePlaytimeRelation(
       userEmail,
       updatePlaytimeRelationDto,
+    );
+  }
+
+  @Patch('/reviews')
+  updateGameStoreReview(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewId: string,
+    @Body() updateGameStoreReviewDto: UpdateGameStoreReviewDto,
+  ) {
+    return this.gameStoreService.updateGameStoreReview(
+      userEmail,
+      gameStoreReviewId,
+      updateGameStoreReviewDto,
     );
   }
 
@@ -163,8 +250,20 @@ export class GameStoreController {
     );
   }
 
+  @Patch('reviews/comments')
+  updateGameStoreReviewComment(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewCommentId: string,
+    @Body() updateGameStoreReviewCommentDto: UpdateGameStoreReviewCommentDto,
+  ) {
+    return this.gameStoreService.updateGameStoreReviewComment(
+      userEmail,
+      gameStoreReviewCommentId,
+      updateGameStoreReviewCommentDto,
+    );
+  }
   @Patch('/reviews/comments/like')
-  updateGameStoreCommentReviewLike(
+  updateGameStoreReviewCommentLike(
     @Headers('Authorization') userEmail: string,
     @Query('id') gameStoreReviewCommentId: string,
     @Query('action') likeAction: LikeAction,
@@ -175,8 +274,60 @@ export class GameStoreController {
       likeAction,
     );
   }
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.gameStoreService.remove(+id);
+
+  @Patch('/boards')
+  updateGameStoreBoard(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreReviewCommentId: string,
+    @Body() updateGameStoreBoardDto: UpdateGameStoreBoardDto,
+  ) {
+    return this.gameStoreService.updateGameStoreBoard(
+      userEmail,
+      gameStoreReviewCommentId,
+      updateGameStoreBoardDto,
+    );
+  }
+
+  @Patch('/boards/like')
+  updateGameStoreBoardLike(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') gameStoreBoardId: string,
+  ) {
+    return this.gameStoreService.updateGameStoreBoardLike(
+      gameStoreBoardId,
+      userEmail,
+    );
+  }
+
+  @Delete()
+  removeGameStore(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStore(userEmail, id);
+  }
+
+  @Delete('reviews')
+  removeGameStoreReview(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStoreReview(userEmail, id);
+  }
+
+  @Delete('reviews/comments')
+  removeGameStoreReviewComment(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStoreReviewComment(userEmail, id);
+  }
+
+  @Delete('boards')
+  removeGameStoreBoards(
+    @Headers('Authorization') userEmail: string,
+    @Query('id') id: string,
+  ) {
+    return this.gameStoreService.removeGameStoreBoard(userEmail, id);
   }
 }

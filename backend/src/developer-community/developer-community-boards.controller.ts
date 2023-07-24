@@ -96,11 +96,6 @@ export class BoardsController {
     );
   }
 
-  @Get('/email/:email')
-  findOne(@Param('email') writerEmail: string) {
-    return this.boardsService.findByUser(writerEmail);
-  }
-
   @Get('/id/:id')
   getOne(@Param('id') id: string) {
     return this.boardsService.findOne(id);
@@ -126,6 +121,6 @@ export class BoardsController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.boardsService.remove(id);
+    return this.boardsService.remove('a@gmail.com', id);
   }
 }

@@ -1,11 +1,8 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber } from 'class-validator';
+import { CreatePlaytimeRelationDto } from './create-playtime-relation.dto';
 
-export class UpdatePlaytimeRelationDto {
-  @IsNotEmpty()
-  @IsString()
-  gameStoreId: string;
-
+export class UpdatePlaytimeRelationDto extends CreatePlaytimeRelationDto {
   @IsNotEmpty()
   @IsNumber()
-  additionalPlayTime: number;
+  additionalPlaytime: number;
 }
