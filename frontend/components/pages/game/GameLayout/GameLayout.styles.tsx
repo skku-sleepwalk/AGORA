@@ -66,7 +66,8 @@ export const useGameLayoutStyles = createStyles((theme) => ({
 
   rightContainer_B: {
     flexShrink: 0,
-    width: 400,
+    width: "25rem",
+
     margin: 0,
   },
 

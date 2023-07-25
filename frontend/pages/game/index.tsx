@@ -1,6 +1,14 @@
+import { Box, Divider, Group } from "@mantine/core";
+
 import CardContainer from "../../components/common/CardContainer/CardContainer";
 import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
+
+import { Text } from "@mantine/core";
+import { Image } from "@mantine/core";
+import { CSSProperties } from "react";
+import { Rightsection } from "../../components/pages/game/RightSection/RightSection";
+
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
@@ -21,12 +29,12 @@ function Game() {
     <GameLayout
       photoSection={<MainCarousel isInfo={true} />}
       InfoSection={<GameInfo />}
+
       tapSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
       rightSection={
-        <CardContainer w={"100%"} h={"20rem"}>
-          right
-        </CardContainer>
+       <Rightsection />
       }
+
     >
       {activeTab === "gameInfo" && (
         <CardContainer w={"100%"} h={"50rem"}>
