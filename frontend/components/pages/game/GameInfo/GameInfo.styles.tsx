@@ -1,8 +1,22 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameInfoStyles = createStyles((theme) => ({
+  modal: {
+    display: "flex",
+    width: "21.875rem",
+
+    ".mantine-Modal-title": {
+      marginLeft: "0.1rem",
+      fontSize: "1.2rem",
+    },
+  },
+
   stack: {
     cursor: "default",
+  },
+
+  heartFilled: {
+    marginRight: "0.2rem",
   },
 
   alignTop: {
@@ -32,20 +46,38 @@ export const useGameInfoStyles = createStyles((theme) => ({
   followBadge: {
     width: "6rem",
     height: "2rem",
+    padding: "0rem 0.3rem",
+
+    ".mantine-Badge-leftSection": {
+      marginRight: "0.7rem",
+    },
+  },
+
+  tagGroup: {
+    maxHeight: "4.3rem",
+    overflow: "hidden",
   },
 
   tagBox: {
+    position: "relative",
     display: "flex",
     flexWrap: "wrap",
-
+    justifyContent: "space-between",
     height: "4.3rem",
     margin: "0rem 0.1875rem",
     padding: 0,
     backgroundColor: "#fcfcfe",
+
+    "&::after": {
+      content: '""',
+      flex: "auto",
+      height: "1.988rem",
+    },
   },
 
   tag: {
     display: "flex",
+    flexGrow: 1,
 
     height: "1.8rem",
     margin: "0.1875rem 0.3125rem",
@@ -82,12 +114,19 @@ export const useGameInfoStyles = createStyles((theme) => ({
     },
   },
 
+  addButton_A: {
+    position: "absolute",
+    top: "2.175rem",
+    right: "0rem",
+    boxShadow: "-7px 0px 4px #fcfcfe",
+  },
+
   marginTop: {
-    marginTop: "0.65rem",
+    marginTop: "0.44rem",
   },
 
   marginBottom: {
-    marginBottom: "0.65rem",
+    marginBottom: "0.44rem",
   },
 
   marginLeft: {
