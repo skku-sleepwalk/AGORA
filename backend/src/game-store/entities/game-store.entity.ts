@@ -47,7 +47,7 @@ export class GameStore {
   price: number;
 
   @Column({ nullable: false })
-  downloadPath: string;
+  downloadUrl: string;
 
   @Column({ nullable: false })
   executablePath: string;

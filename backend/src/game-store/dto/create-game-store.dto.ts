@@ -36,7 +36,7 @@ export class CreateGameStoreDto {
 
   @IsNotEmpty()
   @IsString()
-  downloadPath: string;
+  downloadUrl: string;
 
   @IsNotEmpty()
   @IsString()

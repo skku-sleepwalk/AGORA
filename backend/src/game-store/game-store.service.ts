@@ -314,7 +314,7 @@ export class GameStoreService {
       genreNames,
       cost,
       executablePath,
-      downloadPath,
+      downloadUrl,
     } = createGameStoreDto;
 
     const author = await this.userRepository.findOne({ email: authorEmail });
@@ -346,7 +346,7 @@ export class GameStoreService {
         : cost.saledPrice,
       popularTags: [],
       executablePath,
-      downloadPath,
+      downloadUrl,
     });
     newGameStore.shortDescription = await this.shortDescriptionRepository.save(
       this.shortDescriptionRepository.create({
