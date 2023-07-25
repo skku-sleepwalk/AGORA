@@ -70,7 +70,7 @@ export const useGameInfoStyles = createStyles((theme) => ({
 
     "&::after": {
       content: '""',
-      flex: "auto",
+      flexGrow: 100,
       height: "1.988rem",
     },
   },
