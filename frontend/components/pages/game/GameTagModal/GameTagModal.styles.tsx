@@ -38,6 +38,12 @@ export const useGameTagModalStyles = createStyles((theme) => ({
     margin: 0,
 
     alignContent: "flex-start",
+
+    "&::after": {
+      content: '""',
+      flexGrow: 100,
+      height: "1.988rem",
+    },
   },
 
   selectedGroup: {
@@ -59,6 +65,12 @@ export const useGameTagModalStyles = createStyles((theme) => ({
     overflow: "hidden",
 
     alignContent: "flex-start",
+
+    "&::after": {
+      content: '""',
+      flexGrow: 100,
+      height: "1.988rem",
+    },
   },
 
   selectedTag: {
