@@ -46,6 +46,12 @@ export class GameStore {
   @Column({ nullable: false })
   price: number;
 
+  @Column({ nullable: false })
+  downloadPath: string;
+
+  @Column({ nullable: false })
+  executablePath: string;
+
   @OneToOne(
     () => ShortDescription,
     (shortDescription) => shortDescription.gameStore,
