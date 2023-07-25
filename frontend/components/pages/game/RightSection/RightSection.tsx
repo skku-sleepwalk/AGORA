@@ -1,11 +1,6 @@
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { Card, Text } from "@mantine/core";
-import { Box, Divider, Group } from "@mantine/core";
+import { Text, Box, Group, Button, Center } from "@mantine/core";
 import { CSSProperties } from "react";
-import { useGameInfoStyles } from "../GameInfo/GameInfo.styles";
-import { Button } from "@mantine/core";
-import { Stack } from "@mantine/core";
-import { Center } from "@mantine/core";
 
 export function Rightsection() {
   const margins: (marginTop: number) => CSSProperties = (marginTop: number) => ({
@@ -20,8 +15,7 @@ export function Rightsection() {
     fontWeight: "bold",
   };
   return (
-    <CardContainer w={"100%"} h={"40rem"}>
-      right
+    <Box>
       <CardContainer w={"100%"} h={"7rem"}>
         <Group spacing={5}>
           <img
@@ -294,6 +288,6 @@ export function Rightsection() {
         </Group>
         {/* 그 외 버튼 두 개 */}
       </CardContainer>
-    </CardContainer>
+    </Box>
   );
 }
