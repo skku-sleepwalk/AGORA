@@ -2,12 +2,18 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 import { Card, Text } from "@mantine/core";
 import { Box, Divider, Group } from "@mantine/core";
 import { CSSProperties } from "react";
+import { useGameInfoStyles } from "../GameInfo/GameInfo.styles";
+import { Button } from "@mantine/core";
+import { Stack } from "@mantine/core";
+import { Center } from "@mantine/core";
+
 export function Rightsection() {
   const margins: (marginTop: number) => CSSProperties = (marginTop: number) => ({
     marginTop: marginTop,
 
     fontWeight: "bold",
   });
+
   const marginsgray: CSSProperties = {
     marginTop: 10,
     color: "gray",
@@ -260,6 +266,32 @@ export function Rightsection() {
         >
           \9,999
         </Text>
+        <Group style={{ marginTop: "1rem" }} spacing={"0.5rem"}>
+          <Button style={{ width: "12rem", height: "3rem" }}>
+            <Center>
+              <Text fz={20} fw={"normal"}>
+                장바구니
+              </Text>
+            </Center>
+          </Button>
+          <Button
+            style={{
+              width: "8rem",
+              height: "3rem",
+              backgroundColor: "white",
+              border: "solid gray 0.1rem",
+            }}
+          >
+            <Text fz={20} fw={"Bold"} color="black" style={{ display: "block" }}>
+              패스 구매
+              <Center>
+                <Text fz={10} fw={"Bold"} color="gray" style={{ display: "block" }}>
+                  무료로 플레이
+                </Text>
+              </Center>
+            </Text>
+          </Button>
+        </Group>
         {/* 그 외 버튼 두 개 */}
       </CardContainer>
     </CardContainer>
