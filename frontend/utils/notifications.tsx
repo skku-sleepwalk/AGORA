@@ -1,6 +1,7 @@
 import { NotificationProps } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconX } from "@tabler/icons-react";
+import exp from "constants";
 
 export function showNotification(
   title: string | null,
@@ -26,4 +27,8 @@ export function showError(
     icon: <IconX />,
     ...option,
   });
+}
+
+export function cleanNotification() {
+  notifications.clean();
 }
