@@ -1,11 +1,16 @@
 import { Tabs } from "@mantine/core";
 import { useGameTabStyles } from "./GameTab.styles";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 
-export function GameTab() {
+interface GameTabProps {
+  activeTab: string | null;
+  setActiveTab?: Dispatch<SetStateAction<string | null>>;
+}
+
+export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
   const { classes, cx } = useGameTabStyles();
-  const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
+  // const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
 
   const smallScreen = useMediaQuery("(max-width: 780px)");
 

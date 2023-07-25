@@ -40,11 +40,15 @@ export const useGameTagModalStyles = createStyles((theme) => ({
     alignContent: "flex-start",
   },
 
+  selectedGroup: {
+    alignItems: "flex-end",
+  },
+
   selectedBox: {
     display: "flex",
     flexWrap: "wrap",
 
-    width: "10rem",
+    width: "20rem",
     minHeight: "2.5rem",
     maxHeight: "4.7rem",
     padding: "0.1rem 0.5rem",

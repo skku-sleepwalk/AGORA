@@ -5,8 +5,11 @@ import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarou
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
+import { useState } from "react";
 
 function Game() {
+  const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
+
   return (
     // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
     //   <CardContainer w={"100%"} h={"50rem"}>
@@ -17,16 +20,33 @@ function Game() {
     <GameLayout
       photoSection={<MainCarousel isInfo={true} />}
       InfoSection={<GameInfo />}
-      tapSection={<GameTab />}
+      tapSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
       rightSection={
         <CardContainer w={"100%"} h={"20rem"}>
           right
         </CardContainer>
       }
     >
-      <CardContainer w={"100%"} h={"50rem"}>
-        children
-      </CardContainer>
+      {activeTab === "gameInfo" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          gameInfo
+        </CardContainer>
+      )}
+      {activeTab === "develop" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          develop
+        </CardContainer>
+      )}
+      {activeTab === "review" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          review
+        </CardContainer>
+      )}
+      {activeTab === "board" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          board
+        </CardContainer>
+      )}
     </GameLayout>
   );
 }
