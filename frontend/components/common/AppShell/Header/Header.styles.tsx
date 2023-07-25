@@ -4,6 +4,7 @@ export const useHeaderStyles = createStyles((theme) => ({
   header: {
     width: "100%",
     backgroundColor: theme.colors.teal[4],
+    border: "none",
     marginTop: 0,
     boxShadow: "0px 3px 10px rgba(0, 0, 0, 0.2)",
     padding: "0 40px",
