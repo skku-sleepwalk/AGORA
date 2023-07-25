@@ -12,39 +12,39 @@ function Game() {
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
 
   return (
-    <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
-      <CardContainer w={"100%"} h={"50rem"}>
-        main
-      </CardContainer>
-    </MainLayout>
+    // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
+    //   <CardContainer w={"100%"} h={"50rem"}>
+    //     main
+    //   </CardContainer>
+    // </MainLayout>
 
-    // <GameLayout
-    //   photoSection={<MainCarousel isInfo={true} />}
-    //   InfoSection={<GameInfo />}
-    //   tapSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-    //   rightSection={
-    //     <CardContainer w={"100%"} h={"20rem"}>
-    //       right
-    //     </CardContainer>
-    //   }
-    // >
-    //   {activeTab === "gameInfo" && (
-    //     <CardContainer w={"100%"} h={"50rem"}>
-    //       gameInfo
-    //     </CardContainer>
-    //   )}
-    //   {activeTab === "develop" && (
-    //     <CardContainer w={"100%"} h={"50rem"}>
-    //       develop
-    //     </CardContainer>
-    //   )}
-    //   {activeTab === "review" && <GameReviewSection />}
-    //   {activeTab === "board" && (
-    //     <CardContainer w={"100%"} h={"50rem"}>
-    //       board
-    //     </CardContainer>
-    //   )}
-    // </GameLayout>
+    <GameLayout
+      photoSection={<MainCarousel isInfo={true} />}
+      InfoSection={<GameInfo />}
+      tapSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
+      rightSection={
+        <CardContainer w={"100%"} h={"20rem"}>
+          right
+        </CardContainer>
+      }
+    >
+      {activeTab === "gameInfo" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          gameInfo
+        </CardContainer>
+      )}
+      {activeTab === "develop" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          develop
+        </CardContainer>
+      )}
+      {activeTab === "review" && <GameReviewSection />}
+      {activeTab === "board" && (
+        <CardContainer w={"100%"} h={"50rem"}>
+          board
+        </CardContainer>
+      )}
+    </GameLayout>
   );
 }
 export default Game;
