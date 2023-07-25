@@ -9,6 +9,7 @@ import {
   Menu,
   Stack,
   Text,
+  Image,
   TypographyStylesProvider,
   UnstyledButton,
   useMantineTheme,
@@ -178,7 +179,14 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
                     });
                 }}
               >
-                {isliking && <IconHeartFilled size={22} color={theme.colors.gray[6]} />}
+                {isliking && (
+                  <Image
+                    className={classes.heartFilled}
+                    width={"1.15rem"}
+                    height={"1rem"}
+                    src={"/HeartFilled.png"}
+                  />
+                )}
                 {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">
