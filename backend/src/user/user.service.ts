@@ -31,4 +31,7 @@ export class UserService {
       description,
     });
   }
+  get() {
+    return this.userRepository.find();
+  }
 }

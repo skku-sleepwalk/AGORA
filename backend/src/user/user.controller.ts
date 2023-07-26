@@ -35,6 +35,11 @@ export class UsersController {
     );
   }
 
+  @Get()
+  get() {
+    return this.userService.get();
+  }
+
   @ApiResponse({ type: UserDto })
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })

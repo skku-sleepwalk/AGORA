@@ -22,6 +22,7 @@ import { GameGenre } from './game.genre.entity';
 import { GameTag } from './game.tag.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { GameDescription } from './game.description.entity';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 @Entity('Game')
 export class Game {
@@ -29,19 +30,29 @@ export class Game {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ApiProperty({ example: 'CartRider-Drift', description: '코드네임' })
+  @ApiProperty({
+    example: 'CartRider-Drift',
+    description: '코드네임',
+    required: true,
+  })
+  @IsNotEmpty()
+  @IsString()
   @Column({ nullable: false, unique: true })
   title: string;
 
-  @ManyToOne(() => User, (user) => user.gameStores)
+  @ManyToOne(() => User, (user) => user.gameStores, { eager: true })
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
-  readonly author: User;
+  author: User;
 
   @ApiProperty({ description: '다운로드 경로' })
+  @IsNotEmpty()
+  @IsString()
   @Column({ nullable: false })
   downloadUrl: string;
 
   @ApiProperty({ description: '실행 경로' })
+  @IsNotEmpty()
+  @IsString()
   @Column({ nullable: false })
   executablePath: string;
 
@@ -73,10 +84,10 @@ export class Game {
   })
   readonly playtimeRelations: Array<PlayTimeRelation>;
 
-  @OneToMany(() => GameTagRelation, (relation) => relation.gameStore, {
+  @OneToMany(() => GameTagRelation, (relation) => relation.game, {
     cascade: true,
   })
-  readonly gameTagRelations: Array<GameTagRelation>;
+  readonly tagRelations: Array<GameTagRelation>;
 
   @ManyToMany(() => GameGenre)
   @JoinTable({
@@ -84,7 +95,7 @@ export class Game {
     joinColumn: { name: 'genreId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'gameStoreId', referencedColumnName: 'id' },
   })
-  readonly genres: Array<GameGenre>;
+  genres: Array<GameGenre>;
 
   @ManyToMany(() => GameTag, (tag) => tag.popularedGames)
   @JoinTable({

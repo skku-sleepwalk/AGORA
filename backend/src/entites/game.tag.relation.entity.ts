@@ -11,18 +11,18 @@ export class GameTagRelation {
   readonly id: string;
 
   @ApiProperty({ description: '게임' })
-  @ManyToOne(() => Game, (game) => game.gameTagRelations, {
+  @ManyToOne(() => Game, (game) => game.tagRelations, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
-  readonly gameStore: GameStore;
+  game: Game;
 
   @ApiProperty({ description: '태그' })
   @ManyToOne(() => GameTag, (tag) => tag.relations)
   @JoinColumn([{ name: 'tagId', referencedColumnName: 'id' }])
-  readonly tag: GameTag;
+  tag: GameTag;
 
   @ManyToOne(() => User, (user) => user.gameTagRelations)
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
-  readonly user: User;
+  user: User;
 }

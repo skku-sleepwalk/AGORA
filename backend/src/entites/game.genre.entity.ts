@@ -10,7 +10,7 @@ export class GameGenre {
 
   @ApiProperty({ example: 'FPS', description: '장르 이름' })
   @Column({ unique: true, nullable: false })
-  readonly name: string;
+  name: string;
 
   @ManyToMany(() => GameStore, { onDelete: 'CASCADE' })
   gameStore: Array<GameStore>;

@@ -11,9 +11,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { User } from './user.entity';
 import { CommunityCategory } from './community.category.entity';
 import { CommunityBoardLikeRelation } from './community.board.like.relation';
+import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('CommunityBoard')

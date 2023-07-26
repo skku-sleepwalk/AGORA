@@ -2,8 +2,7 @@ import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty } from 'class-validator';
 import { Game } from 'src/entites/game.entity';
 
-export class CreateGameDto extends PickType(Game, [
-  'title',
+export class UpdateGameDto extends PickType(PartialType(Game), [
   'downloadUrl',
   'executablePath',
 ]) {

@@ -9,7 +9,7 @@ import dotenv from 'dotenv';
 
 import { User } from './entites/user.entity';
 import { CommunityCategory } from './entites/community.category.entity';
-import { CommunityBoard } from './entites/community.board.entity';
+
 import { GameBoardCategory } from './entites/game.board.category.entity';
 import { GameBoard } from './entites/game.board.entity';
 import { GameBoardLikeRelation } from './entites/game.board.like.relation.entity';
@@ -31,15 +31,13 @@ import { CommunityModule } from './community/community.module';
 import { GameStoreModule } from './game/game.module';
 import { Game } from './entites/game.entity';
 import { GameDescription } from './entites/game.description.entity';
+import { CommunityBoard } from './entites/community.board.entity';
 
 dotenv.config();
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    UsersModule,
-    CommunityModule,
-    GameStoreModule,
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -73,6 +71,31 @@ dotenv.config();
       logging: true,
       keepConnectionAlive: true,
     }),
+    TypeOrmModule.forFeature([
+      User,
+      CommunityBoard,
+      CommunityCategory,
+      CommunityBoardLikeRelation,
+      Game,
+      GameDescription,
+      GameBoardCategory,
+      GameBoard,
+      GameBoardLikeRelation,
+      GameCost,
+      GameGenre,
+      PlayTimeRelation,
+      GameReview,
+      GameReviewLikeRelation,
+      GameReviewComment,
+      GameReviewCommentLikeRelation,
+      GameShoppingCartItem,
+      GameStore,
+      GameTag,
+      GameTagRelation,
+    ]),
+    UsersModule,
+    CommunityModule,
+    GameStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService, CommunityBoardService],

@@ -30,6 +30,8 @@ import { GameBoardController } from './controllers/game.board.controller';
 import { GameBoardCategoryService } from './services/game.board.category.service';
 import { GameBoardCategoryController } from './controllers/game.board.category.controller';
 import { Game } from 'src/entites/game.entity';
+import { GameService } from './services/game.service';
+import { GameContorller } from './controllers/game.controller';
 
 @Module({
   imports: [
@@ -53,6 +55,7 @@ import { Game } from 'src/entites/game.entity';
     ]),
   ],
   providers: [
+    GameService,
     GameStoresService,
     GameGenreService,
     GameTagService,
@@ -62,6 +65,7 @@ import { Game } from 'src/entites/game.entity';
     GameBoardCategoryService,
   ],
   controllers: [
+    GameContorller,
     GameStoresController,
     GameGenreController,
     GameTagController,

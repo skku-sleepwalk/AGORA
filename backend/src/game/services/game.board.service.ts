@@ -10,6 +10,7 @@ export class GameBoardService {
     @InjectRepository(GameBoard)
     private gameBoardRepository: Repository<GameBoard>,
   ) {}
+
   postGameBoard(
     userEmail: string,
     title: string,

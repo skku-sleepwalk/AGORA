@@ -30,7 +30,7 @@ export class GameReview {
   @ManyToOne(() => Game, (game) => game.reviews, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
   readonly game: Game;
 
   @OneToMany(() => GameReviewLikeRelation, (relation) => relation.gameReview, {

@@ -32,7 +32,7 @@ export class User {
   @IsString()
   @IsNotEmpty()
   @ApiProperty({ example: 'a', description: '유저 이름' })
-  @Column({ length: 32, unique: true })
+  @Column({ length: 32 })
   name: string;
 
   @IsEmail()
