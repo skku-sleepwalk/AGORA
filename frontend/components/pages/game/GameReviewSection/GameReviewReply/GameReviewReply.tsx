@@ -29,7 +29,7 @@ export interface GameReviewReplyProps {
   opened: boolean;
 }
 
-export function GameReviewReply({ opened }: GameReviewReplyProps) {
+export function GameReviewReply({ opened = false }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -44,7 +44,14 @@ export function GameReviewReply({ opened }: GameReviewReplyProps) {
     return overflowRef.current.scrollHeight > overflowRef.current.clientHeight;
   };
   useEffect(() => {
-    setIsOverflowed(checkOverflow());
+    // setIsOverflowed(checkOverflow())가 clientHeight가 0일 때 계산하지 않도록
+    const timer = setTimeout(() => {
+      setIsOverflowed(checkOverflow());
+    }, 1); // 1 밀리초의 딜레이를 줌
+
+    return () => {
+      clearTimeout(timer); // 컴포넌트가 unmount될 때 타이머를 클리어
+    };
   }, [opened]);
   const [viewMore, setViewMore] = useState<boolean>(false);
 

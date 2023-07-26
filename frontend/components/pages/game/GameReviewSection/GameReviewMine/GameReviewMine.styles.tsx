@@ -16,7 +16,7 @@ export const useGameReviewMineStyles = createStyles(
     },
 
     limitHeight: {
-      height: smallScreen ? "4.1rem" : "5.9rem",
+      maxHeight: smallScreen ? "4.1rem" : "5.9rem",
       overflow: "hidden",
     },
 
