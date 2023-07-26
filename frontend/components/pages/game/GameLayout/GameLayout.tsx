@@ -17,6 +17,7 @@ function GameLayout({
   children,
   rightSection,
 }: CommunityLayoutProps) {
+  const { classes, cx } = useGameLayoutStyles();
   const smallScreen = useMediaQuery("(max-width: 780px)");
   const [scroll, scrollTo] = useWindowScroll();
 
@@ -28,12 +29,6 @@ function GameLayout({
       setHeight(heightRef.current.clientHeight);
     }
   }, []);
-
-  const { classes, cx } = useGameLayoutStyles({
-    rightSectionMove: scroll.y <= height ? 0 : scroll.y - height,
-  });
-
-  // alert(height);
 
   return (
     <div className={classes.container}>
