@@ -1,6 +1,5 @@
-import { useMediaQuery, useWindowScroll } from "@mantine/hooks";
+import { useMediaQuery } from "@mantine/hooks";
 import { useGameLayoutStyles } from "./GameLayout.styles";
-import { useEffect, useRef, useState } from "react";
 
 export interface CommunityLayoutProps {
   photoSection?: React.ReactNode;
