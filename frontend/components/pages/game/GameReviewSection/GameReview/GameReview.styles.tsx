@@ -18,13 +18,16 @@ export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameRev
     overflow: "hidden",
   },
 
+  content: {
+    lineHeight: 1.5,
+
+    "*": {
+      marginBottom: "0px !important",
+    },
+  },
+
   viewMoreButton: {
-    position: "absolute",
-    bottom: -2,
-    right: 0,
-    paddingLeft: "7rem",
-    backgroundColor: "#fcfcfe",
-    boxShadow: "-50px 0px 5px #fcfcfe",
+    paddingTop: "0.3rem",
   },
 
   button: {
@@ -43,5 +46,33 @@ export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameRev
 
   marginLeft: {
     marginLeft: smallScreen ? "2.9rem" : "4rem",
+  },
+
+  myReviewGroup: {
+    display: "flex",
+    alignItems: "flex-start",
+    flexWrap: "nowrap",
+
+    margin: "1rem 0rem",
+    marginLeft: "0.5rem",
+  },
+
+  reviewEditorBox: {
+    flexGrow: 1,
+    width: "100%",
+  },
+
+  reviewNo: {
+    width: "100%",
+
+    ".mantine-TextInput-root, .mantine-TextInput-wrapper, .mantine-TextInput-input": {
+      height: smallScreen ? 30 : 46,
+    },
+
+    ".mantine-TextInput-input": {
+      "::placeholder": {
+        fontSize: smallScreen ? "0.8rem" : "auto",
+      },
+    },
   },
 }));

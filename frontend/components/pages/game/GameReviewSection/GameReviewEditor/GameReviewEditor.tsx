@@ -11,14 +11,12 @@ import { useMediaQuery } from "@mantine/hooks";
 
 export interface GameReviewEditorProps {
   onEditClick?: () => void;
+  placeholder: string;
 }
 
-export function GameReviewEditor({ onEditClick }: GameReviewEditorProps) {
+export function GameReviewEditor({ onEditClick, placeholder }: GameReviewEditorProps) {
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Placeholder.configure({ placeholder: "도움이 되는 착한 후기를 남겨보세요." }),
-    ],
+    extensions: [StarterKit, Placeholder.configure({ placeholder: placeholder })],
     content: "",
   });
   const theme = useMantineTheme();

@@ -2,33 +2,36 @@ import {
   Avatar,
   Box,
   Button,
-  Collapse,
   Divider,
   Group,
+  Menu,
   Stack,
   Text,
-  TextInput,
   TypographyStylesProvider,
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { useGameReviewStyles } from "./GameReview.styles";
+import { useGameReviewReplyStyles } from "./GameReviewReply.styles";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
-  IconMessages,
+  IconDotsVertical,
+  IconPencil,
   IconThumbDown,
   IconThumbDownFilled,
   IconThumbUp,
   IconThumbUpFilled,
+  IconTrash,
 } from "@tabler/icons-react";
-import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
+import { useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
-import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
-import { GameReviewEditor } from "../GameReviewEditor/GameReviewEditor";
 
-export function GameReview() {
+export interface GameReviewReplyProps {
+  opened: boolean;
+}
+
+export function GameReviewReply({ opened }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
-  const { classes, cx } = useGameReviewStyles({ smallScreen });
+  const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
 
   // 자세히 보기 관련 로직
@@ -42,10 +45,10 @@ export function GameReview() {
   };
   useEffect(() => {
     setIsOverflowed(checkOverflow());
-  }, []);
+  }, [opened]);
   const [viewMore, setViewMore] = useState<boolean>(false);
 
-  // 후기 좋아요 싫어요 관련 로직
+  // 답글 좋아요 싫어요 관련 로직
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
   const handleGoodState = () => {
     setGoodBadState({ good: !goodBadstate.good });
@@ -59,10 +62,6 @@ export function GameReview() {
       setGoodBadState({ good: !goodBadstate.good });
     }
   };
-
-  // 답글 관련
-  const [opened, { toggle }] = useDisclosure(false);
-  const canReview = true;
 
   return (
     <Box>
@@ -112,78 +111,56 @@ export function GameReview() {
           )}
         </Stack>
         {/* 후기 하단 버튿들 */}
-        <Group className={classes.marginLeft} position="apart">
+        <Group className={classes.marginLeft} position="right" spacing={"xs"}>
           <Button
-            className={classes.button}
+            className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
             size="xs"
             variant="outline"
             color="dark"
-            leftIcon={<IconMessages stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />}
-            onClick={toggle}
+            onClick={handleGoodState}
           >
-            답글
-          </Button>
-          <Group spacing={"xs"}>
-            <Button
-              className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
-              size="xs"
-              variant="outline"
-              color="dark"
-              onClick={handleGoodState}
-            >
-              <Group spacing={"xs"}>
-                {goodBadstate.good ? (
-                  <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                ) : (
-                  <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                )}
-                2
-              </Group>
-            </Button>
-            <Button
-              className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
-              size="xs"
-              variant="outline"
-              color="dark"
-              onClick={handleBadState}
-            >
-              <Group spacing={"xs"}>
-                {goodBadstate.bad ? (
-                  <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                ) : (
-                  <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                )}
-                1
-              </Group>
-            </Button>
-          </Group>
-        </Group>
-        {/* 후기 답글 */}
-        <Collapse in={opened} className={classes.marginLeft}>
-          {/* 후기 답글 작성 파트 */}
-          <Divider />
-          <Group className={classes.myReviewGroup}>
-            <Avatar
-              radius="xl"
-              size={smallScreen ? 30 : 46}
-              src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
-            />
-            <Box className={classes.reviewEditorBox}>
-              {/* 후기 작성 에디터 파트 */}
-              {canReview && <GameReviewEditor placeholder={"후기에 답글을 달아보세요."} />}
-              {!canReview && (
-                <TextInput
-                  className={classes.reviewNo}
-                  placeholder="게임을 플레이하고 후기에 답글을 달아보세요."
-                  disabled
-                />
+            <Group spacing={"xs"}>
+              {goodBadstate.good ? (
+                <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              ) : (
+                <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
               )}
-            </Box>
-          </Group>
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-        </Collapse>
+              2
+            </Group>
+          </Button>
+          <Button
+            className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
+            size="xs"
+            variant="outline"
+            color="dark"
+            onClick={handleBadState}
+          >
+            <Group spacing={"xs"}>
+              {goodBadstate.bad ? (
+                <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              ) : (
+                <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              )}
+              1
+            </Group>
+          </Button>
+          <Menu shadow="md" width={120} position="bottom-end" offset={10}>
+            <Menu.Target>
+              <UnstyledButton>
+                <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              </UnstyledButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item icon={<IconPencil size={18} stroke={2} />} className={classes.menuItem}>
+                수정하기
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item icon={<IconTrash size={18} stroke={2} />} className={classes.menuItem}>
+                삭제하기
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Group>
       </Stack>
     </Box>
   );

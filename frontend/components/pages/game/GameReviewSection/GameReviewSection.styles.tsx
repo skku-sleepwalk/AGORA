@@ -9,7 +9,6 @@ export const useGameReviewSectionStyles = createStyles(
     reviewSection: {
       width: "100%",
       height: "100%",
-
       padding: "2rem 1rem",
     },
 
