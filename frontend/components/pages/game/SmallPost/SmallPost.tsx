@@ -1,8 +1,9 @@
-import CardContainer from "../../common/CardContainer/CardContainer";
-import UserInfoSmall from "../../common/UserInfoSmall/UserInfoSmall";
+import CardContainer from "../../../common/CardContainer/CardContainer";
+import UserInfoSmall from "../../../common/UserInfoSmall/UserInfoSmall";
+
 import { Group } from "@mantine/core";
 import { Text } from "@mantine/core";
-import { User } from "../../../types/api/user";
+import { User } from "../../../../types/api/user";
 import { Rating } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
@@ -93,16 +94,16 @@ export default function () {
         사그레스
       </Text>
 
-      <Group spacing="6.5rem" align="flex-start" style={margins}>
+      <Group spacing="5.5rem" align="flex-start" style={margins}>
         <UserInfoSmall user={hardcodedUser} />
         <Group spacing={0}>
-          <Group spacing={5}>
+          <Group spacing={5} style={{ marginRight: "1rem" }}>
             <IconHeart size={15} stroke={1.3} />
             <Text size={"xs"}>(1010)</Text>
           </Group>
         </Group>
       </Group>
-      <div>
+      <div style={{ marginRight: "1rem" }}>
         <Text align="right" size={"lg"}>
           \{price}
         </Text>
