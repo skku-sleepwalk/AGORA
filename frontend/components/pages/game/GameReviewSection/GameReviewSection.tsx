@@ -1,12 +1,13 @@
 import { Avatar, Box, Collapse, Group, Stack, Text, TextInput } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameReviewEditor } from "./GameReviewEditor/GameReviewEditor";
 import { GameReview } from "./GameReview/GameReview";
 
 export function GameReviewSection() {
-  const { classes, cx } = useGameReviewSectionStyles();
+  const smallScreen = useMediaQuery("(max-width: 765px)");
+  const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
   const [opened, handlers] = useDisclosure(false);
 
   const canEdit = true;
@@ -21,7 +22,7 @@ export function GameReviewSection() {
           <Group spacing={"lg"} align="flex-start" className={classes.marginLeftRight}>
             <Avatar
               radius="xl"
-              size={46}
+              size={smallScreen ? 30 : 46}
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
             <Stack spacing={0} className={classes.reviewStack}>
@@ -54,6 +55,7 @@ export function GameReviewSection() {
             </Stack>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
+          <GameReview />
           <GameReview />
           <GameReview />
         </Stack>
