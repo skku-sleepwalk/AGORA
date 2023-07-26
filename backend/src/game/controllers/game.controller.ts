@@ -24,6 +24,7 @@ import { CreateGameDto } from '../dto/create.game.dto';
 import { GameDto } from '../dto/game.dto';
 import { UpdateGameDto } from '../dto/update.game.dto';
 import { UpdateGameTagRelationDto } from '../dto/update.game.tag.relation.dto';
+import { CursoredGameDto } from 'src/common/dto/cursoredData.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Game')
@@ -49,7 +50,7 @@ export class GameContorller {
   }
 
   @ApiOperation({ summary: '게시글 검색' })
-  @ApiResponse({ type: GameDto })
+  @ApiResponse({ type: CursoredGameDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
@@ -96,7 +97,7 @@ export class GameContorller {
 
   @ApiOperation({ summary: '게임스토어 장르별로 가져오기' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiResponse({ type: GameDto })
+  @ApiResponse({ type: CursoredGameDto })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -133,8 +134,6 @@ export class GameContorller {
     @Param('id') gameId: string,
     @Body() data: UpdateGameDto,
   ) {
-    console.log(userEmail, gameId);
-
     return this.gameService.updateGame(
       userEmail,
       gameId,

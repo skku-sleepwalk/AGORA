@@ -1,5 +1,10 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  ValidateNested,
+} from 'class-validator';
 import { GameStore } from 'src/entites/game.store.entity';
 import { GameCostDto } from './game.cost.dto';
 
@@ -13,4 +18,14 @@ export class GameStoreDto extends PickType(PartialType(GameStore), [
   @IsNotEmpty()
   @ValidateNested()
   cost: GameCostDto;
+
+  @ApiProperty({ description: '좋아요 수', example: 3 })
+  @IsNotEmpty()
+  @IsNumber()
+  likeCount?: number;
+
+  @ApiProperty({ description: '좋아요 여부' })
+  @IsNotEmpty()
+  @IsBoolean()
+  like?: boolean;
 }

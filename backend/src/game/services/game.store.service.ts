@@ -5,20 +5,18 @@ import { GameCost } from 'src/entites/game.cost.entity';
 import { User } from 'src/entites/user.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Game } from 'src/entites/game.entity';
-import {
-  Cursor,
-  PaginationOptions,
-  buildPaginator,
-} from 'typeorm-cursor-pagination';
 import { GameStoreDto } from '../dto/game.store.dto';
-import Paginator from 'typeorm-cursor-pagination/lib/Paginator';
+import { GameCostDto } from '../dto/game.cost.dto';
+import { GameLikeRelation } from 'src/entites/game.like.relation.entity';
 
 @Injectable()
-export class GameStoresService {
+export class GameStoreService {
   constructor(
     @InjectRepository(GameStore)
     private gameStoreRepository: Repository<GameStore>,
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(GameLikeRelation)
+    private readonly gameLikeRelationRepository: Repository<GameLikeRelation>,
     @InjectRepository(GameCost)
     private gameCostRepository: Repository<GameCost>,
     @InjectRepository(User)
@@ -41,7 +39,7 @@ export class GameStoresService {
     await queryRunner.startTransaction();
 
     try {
-      // 2. 현재 유저 가져오기
+      // 2. 유저 가져오기
       const user = await this.userRepository.findOne({
         where: { email: userEmail },
       });
@@ -95,28 +93,78 @@ export class GameStoresService {
     }
   }
 
-  async getGameStore(userEmail: string, gameStoreId: string) {
+  async getGameStore(userEmail: string, gameId: string) {
     const gameStore: GameStoreDto = await this.gameStoreRepository.findOne({
-      where: { id: gameStoreId },
+      where: { game: { id: gameId } },
       relations: ['cost'],
     });
-    console.log(gameStore);
-
+    const [relations, likeCount] =
+      await this.gameLikeRelationRepository.findAndCount({
+        where: { game: { id: gameId } },
+        relations: ['user'],
+      });
+    gameStore.like =
+      relations.filter((relation) => relation.user.email === userEmail).length >
+      0
+        ? true
+        : false;
+    gameStore.likeCount = likeCount;
     return gameStore;
   }
 
-  searchGameStore(_cursor: Cursor, genreNames: Array<string>, search: string) {
-    //구현
-  }
+  async updateGameStore(
+    userEmail: string,
+    gameId: string,
+    cost: GameCostDto,
+    developer: string,
+    distributor: string,
+    snsUrls: SNSUrls,
+    title: string,
+  ) {
+    // 1. Transaction 시작
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      // 2. 유저 가져오기
+      const user = await this.userRepository.findOne({
+        where: { email: userEmail },
+      });
+      if (!user) {
+        throw new NotFoundException('사용자를 찾을 수 없습니다.');
+      }
+      // 3. GameStore 엔티티 가져오기
+      const gameStore = await this.gameStoreRepository.findOne({
+        where: { game: { id: gameId } },
+        relations: ['cost'],
+      });
+      if (!gameStore) {
+        throw new NotFoundException('게임 스토어를 찾을 수 없습니다.');
+      }
 
-  updateGameStore(userEmail: string, gameStoreId: string) {
-    return;
-  }
+      // 4. GameStore 엔티티 수정 및 저장
+      gameStore.developer = developer;
+      gameStore.distributor = distributor;
+      gameStore.developer = developer;
+      gameStore.snsUrls = snsUrls;
+      gameStore.title = title;
+      await queryRunner.manager.save(GameStore, gameStore);
 
-  likeGameStore(userEmail) {
-    return;
-  }
-  deleteGameStore() {
-    return;
+      // 5. GameCost 엔티티 수정 및 저장
+      console.log(gameStore);
+      cost.id = gameStore.cost.id;
+      console.log(cost);
+      await queryRunner.manager.save(GameCost, cost);
+
+      // 트랜잭션 커밋
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      // 트랜잭션 롤백
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      // 트랜잭션 종료 및 쿼리 러너 반환
+      await queryRunner.release();
+    }
   }
 }

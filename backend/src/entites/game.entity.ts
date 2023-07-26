@@ -41,7 +41,7 @@ export class Game {
   @Column({ nullable: false, unique: true })
   title: string;
 
-  @ManyToOne(() => User, (user) => user.gameStores, { eager: true })
+  @ManyToOne(() => User, (user) => user.gameStores)
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
   author: User;
 
@@ -72,10 +72,12 @@ export class Game {
   @Column({ nullable: false })
   shortContent: string;
 
-  @OneToOne(() => GameStore, (gameStore) => gameStore.game)
+  @OneToOne(() => GameStore, (gameStore) => gameStore.game, { cascade: true })
   readonly store: GameStore;
 
-  @OneToOne(() => GameDescription, (description) => description.game)
+  @OneToOne(() => GameDescription, (description) => description.game, {
+    cascade: true,
+  })
   readonly description: GameDescription;
 
   @OneToMany(() => GameReview, (review) => review.game, {
@@ -121,7 +123,9 @@ export class Game {
   })
   popularTags: Array<GameTag>;
 
-  @OneToMany(() => GameLikeRelation, (relation) => relation.game)
+  @OneToMany(() => GameLikeRelation, (relation) => relation.game, {
+    cascade: true,
+  })
   likeRelations: Array<GameLikeRelation>;
 
   @CreateDateColumn()

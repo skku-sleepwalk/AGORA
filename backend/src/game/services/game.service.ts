@@ -122,6 +122,9 @@ export class GameService {
       relations: ['popularTags', 'description', 'genres'],
       where: { id: gameId },
     });
+    if (!game) {
+      throw new NotFoundException('게임을 찾을 수 없습니다.');
+    }
 
     // 게임에 대한 좋아요 관계 및 좋아요 개수를 조회
     const [likeRelation, likeCount] =

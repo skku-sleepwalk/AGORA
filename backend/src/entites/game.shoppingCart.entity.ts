@@ -7,7 +7,9 @@ export class GameShoppingCartItem {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => User, (user) => user.gameShoppingCartItems)
+  @ManyToOne(() => User, (user) => user.gameShoppingCartItems, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   readonly user: User;
 

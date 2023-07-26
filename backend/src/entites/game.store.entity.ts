@@ -4,8 +4,6 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -68,17 +66,17 @@ export class GameStore {
   @Column('json', { nullable: false })
   snsUrls: SNSUrls;
 
-  @OneToOne(() => Game, (game) => game.store)
+  @OneToOne(() => Game, (game) => game.store, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
   game: Game;
 
   @OneToOne(() => GameCost, (cost) => cost.store, {
-    onDelete: 'CASCADE',
+    cascade: true,
   })
   @JoinColumn({ name: 'costId', referencedColumnName: 'id' })
   cost: Relation<GameCost>;
 
-  @ManyToOne(() => User, (user) => user.gameStores)
+  @ManyToOne(() => User, (user) => user.gameStores, { onDelete: 'CASCADE' })
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
   author: User;
 

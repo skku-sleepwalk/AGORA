@@ -6,7 +6,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class GameCost {
   @ApiProperty({ description: '아이디' })
   @PrimaryGeneratedColumn('uuid')
-  readonly id: string;
+  id: string;
 
   @ApiProperty({ description: '무료 여부', example: false })
   @Column('bool', { nullable: false })

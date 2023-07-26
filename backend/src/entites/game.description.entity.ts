@@ -18,7 +18,7 @@ export class GameDescription {
   @Column({ nullable: false })
   content: string;
 
-  @OneToOne(() => Game, (game) => game.description)
+  @OneToOne(() => Game, (game) => game.description, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
   game: Game;
 }

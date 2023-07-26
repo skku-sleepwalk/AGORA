@@ -14,7 +14,7 @@ import { GameShoppingCartItem } from 'src/entites/game.shoppingCart.entity';
 import { GameStore } from 'src/entites/game.store.entity';
 import { GameTag } from 'src/entites/game.tag.entity';
 import { GameTagRelation } from 'src/entites/game.tag.relation.entity';
-import { GameStoresService } from './services/game.store.service';
+import { GameStoreService } from './services/game.store.service';
 import { GameStoresController } from './controllers/game.store.controller';
 import { User } from 'src/entites/user.entity';
 import { GameGenreService } from './services/game.genre.service';
@@ -58,7 +58,7 @@ import { GameLikeRelation } from 'src/entites/game.like.relation.entity';
   ],
   providers: [
     GameService,
-    GameStoresService,
+    GameStoreService,
     GameGenreService,
     GameTagService,
     GameReviewService,

@@ -23,6 +23,7 @@ import { CommunityBoardService } from '../services/community.board.service';
 import { CreateCommunityBoardDto } from '../dto/create.community.board.dto';
 import { CommunityBoardDto } from 'src/community/dto/communityBoard.dto';
 import { UpdateCommunityBoardDto } from '../dto/update.community.board.dto';
+import { CursoredCommunityBoardDto } from 'src/common/dto/cursoredData.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Community')
@@ -54,7 +55,7 @@ export class CommunityBoardController {
   }
 
   @ApiOperation({ summary: '게시글 카테고리별로 가져오기' })
-  @ApiResponse({ type: CommunityBoardDto })
+  @ApiResponse({ type: CursoredCommunityBoardDto })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -82,7 +83,7 @@ export class CommunityBoardController {
   }
 
   @ApiOperation({ summary: '게시글 검색' })
-  @ApiResponse({ type: CommunityBoardDto })
+  @ApiResponse({ type: CursoredCommunityBoardDto })
   @Get('/search')
   @ApiQuery({
     name: 'beforeCursor',
@@ -113,7 +114,7 @@ export class CommunityBoardController {
   }
 
   @ApiOperation({ summary: '자식 게시글 가져오기' })
-  @ApiResponse({ type: CommunityBoardDto })
+  @ApiResponse({ type: CursoredCommunityBoardDto })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',

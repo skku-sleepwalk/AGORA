@@ -5,21 +5,13 @@ import {
   Get,
   Headers,
   Param,
-  ParseArrayPipe,
   Patch,
   Post,
-  Query,
   UseInterceptors,
 } from '@nestjs/common';
-import {
-  ApiHeader,
-  ApiOperation,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
-import { GameStoresService } from '../services/game.store.service';
+import { GameStoreService } from '../services/game.store.service';
 import { CreateGameStoreDto } from '../dto/create.game.store.dto';
 import { GameStoreDto } from 'src/game/dto/game.store.dto';
 import { UpdateGameStoreDto } from '../dto/update.game.store.dto';
@@ -28,7 +20,7 @@ import { UpdateGameStoreDto } from '../dto/update.game.store.dto';
 @ApiTags('GameStore')
 @Controller('game/:gameId/store')
 export class GameStoresController {
-  constructor(private gamestoresService: GameStoresService) {}
+  constructor(private gameStoreService: GameStoreService) {}
 
   @ApiOperation({ summary: '게임스토어 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
@@ -39,7 +31,7 @@ export class GameStoresController {
     @Param('gameId') gameId: string,
     @Body() data: CreateGameStoreDto,
   ) {
-    return this.gamestoresService.postGameStore(
+    return this.gameStoreService.postGameStore(
       userEmail,
       gameId,
       data.title,
@@ -53,42 +45,30 @@ export class GameStoresController {
   @ApiOperation({ summary: '게임스토어 가져오기' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiResponse({ type: GameStoreDto })
-  @Get(':id')
+  @Get()
   GetGameStore(
     @Headers('Authorization') userEmail: string,
     @Param('id') gameStoreId: string,
   ) {
-    return this.gamestoresService.getGameStore(userEmail, gameStoreId);
+    return this.gameStoreService.getGameStore(userEmail, gameStoreId);
   }
 
   @ApiOperation({ summary: '게임스토어 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
-  updateGameStore(
+  @Patch()
+  UpdateGameStore(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameStoreId: string,
+    @Param('gameId') gameId: string,
     @Body() data: UpdateGameStoreDto,
   ) {
-    return;
-  }
-
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch('/like/:id')
-  likeGameStore(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameStoreId: string,
-  ) {
-    return;
-  }
-
-  @ApiOperation({ summary: '게임스토어 삭제' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':id')
-  deleteGameStore(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
-  ) {
-    return;
+    return this.gameStoreService.updateGameStore(
+      userEmail,
+      gameId,
+      data.cost,
+      data.developer,
+      data.distributor,
+      data.snsUrls,
+      data.title,
+    );
   }
 }
