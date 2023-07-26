@@ -1,55 +1,37 @@
 import { createStyles } from "@mantine/core";
 
-export const useGameReviewEditorStyles = createStyles((theme) => ({
-  editorWrapper: {
-    paddingBottom: 12,
-    marginBottom: 8,
-    borderBottom: `2px solid ${theme.colors.gray[3]}`,
-  },
+export interface GameReviewEditorProps {
+  smallScreen: boolean;
+}
 
-  commentEditor: {
-    ".mantine-RichTextEditor-content": {
-      fontSize: theme.fontSizes.sm,
+export const useGameReviewEditorStyles = createStyles(
+  (theme, { smallScreen }: GameReviewEditorProps) => ({
+    group: {
+      display: "flex",
+      flexWrap: "nowrap",
+
+      alignItems: "flex-end",
     },
-    ".mantine-RichTextEditor-toolbar": {
-      borderBottom: "none",
-      borderTop: `1px solid ${theme.colors.gray[4]}`,
+
+    reviewEditor: {
+      display: "flex",
+      flexGrow: 1,
+      width: "100%",
+
+      ".mantine-RichTextEditor-typographyStylesProvider, .mantine-RichTextEditor-content": {
+        flexGrow: 1,
+      },
+      ".mantine-RichTextEditor-content": {
+        backgroundColor: "transparent",
+        fontSize: smallScreen ? theme.fontSizes.xs : theme.fontSizes.sm,
+        ".ProseMirror": {
+          padding: smallScreen ? "0.6rem" : "1rem",
+        },
+      },
     },
-  },
 
-  submitButton: {
-    height: 25,
-    fontSize: theme.fontSizes.xs,
-    backgroundColor: theme.colors.teal[5],
-    "&:hover": {
-      backgroundColor: theme.colors.teal[6],
+    sendIcon: {
+      marginBottom: smallScreen ? "0.3rem" : "0.5rem",
     },
-  },
-
-  EditButton: {
-    height: 25,
-    fontSize: theme.fontSizes.xs,
-
-    ".mantine-Button-label": {
-      fontWeight: "normal",
-    },
-  },
-
-  toolbarGroup: {
-    width: "100%",
-  },
-
-  cancelAlert: {
-    margin: "0.625rem 1rem",
-  },
-
-  cancelButton: {
-    height: 25,
-    border: `1px solid ${theme.colors.gray[6]}`,
-    fontSize: theme.fontSizes.xs,
-
-    ".mantine-Button-label": {
-      fontWeight: "normal",
-    },
-  },
-}));
+  })
+);

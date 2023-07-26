@@ -1,6 +1,10 @@
 import { createStyles } from "@mantine/core";
 
-export const useGameReviewStyles = createStyles((theme) => ({
+export interface GameReviewProps {
+  smallScreen: boolean;
+}
+
+export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameReviewProps) => ({
   stack: {
     margin: "1rem 1.5rem",
   },
@@ -10,7 +14,7 @@ export const useGameReviewStyles = createStyles((theme) => ({
   },
 
   limitHeight: {
-    height: "5.9rem",
+    height: smallScreen ? "4.1rem" : "5.9rem",
     overflow: "hidden",
   },
 
@@ -33,7 +37,11 @@ export const useGameReviewStyles = createStyles((theme) => ({
     },
   },
 
+  buttonPadding: {
+    padding: "0rem 0.5rem",
+  },
+
   marginLeft: {
-    marginLeft: "4rem",
+    marginLeft: smallScreen ? "2.9rem" : "4rem",
   },
 }));

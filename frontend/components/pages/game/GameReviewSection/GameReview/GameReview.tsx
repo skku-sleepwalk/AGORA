@@ -19,11 +19,12 @@ import {
   IconThumbUp,
   IconThumbUpFilled,
 } from "@tabler/icons-react";
-import { useSetState } from "@mantine/hooks";
+import { useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 
 export function GameReview() {
-  const { classes, cx } = useGameReviewStyles();
+  const smallScreen = useMediaQuery("(max-width: 765px)");
+  const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
 
   // 후기 내용 더보기 작동 관련
@@ -64,17 +65,17 @@ export function GameReview() {
           <Group align="flex-end">
             <Avatar
               radius="xl"
-              size={46}
+              size={smallScreen ? 30 : 46}
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
             <Stack spacing={"0.2rem"}>
-              <Text fz={18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
-              <Text fz={14} color={theme.colors.blue[4]}>
+              <Text fz={smallScreen ? 14 : 18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
+              <Text fz={smallScreen ? 12 : 14} color={theme.colors.blue[4]}>
                 15일 동안 30시간 플레이
               </Text>
             </Stack>
           </Group>
-          <Text fz={14} color={theme.colors.gray[4]}>
+          <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
             15일 전
           </Text>
         </Group>
@@ -83,7 +84,7 @@ export function GameReview() {
           {isOverflowed && !viewMore && (
             <UnstyledButton
               className={classes.viewMoreButton}
-              fz={16}
+              fz={smallScreen ? 14 : 16}
               c={theme.colors.gray[4]}
               onClick={() => setViewMore(true)}
             >
@@ -104,13 +105,13 @@ export function GameReview() {
             size="xs"
             variant="outline"
             color="dark"
-            leftIcon={<IconMessages stroke={1.5} />}
+            leftIcon={<IconMessages stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />}
           >
             답글
           </Button>
           <Group>
             <Button
-              className={classes.button}
+              className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
               size="xs"
               variant="outline"
               color="dark"
@@ -118,15 +119,15 @@ export function GameReview() {
             >
               <Group spacing={"xs"}>
                 {goodBadstate.good ? (
-                  <IconThumbUpFilled stroke={1.5} />
+                  <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 ) : (
-                  <IconThumbUp stroke={1.5} />
+                  <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
                 1
               </Group>
             </Button>
             <Button
-              className={classes.button}
+              className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
               size="xs"
               variant="outline"
               color="dark"
@@ -134,9 +135,9 @@ export function GameReview() {
             >
               <Group spacing={"xs"}>
                 {goodBadstate.bad ? (
-                  <IconThumbDownFilled stroke={1.5} />
+                  <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 ) : (
-                  <IconThumbDown stroke={1.5} />
+                  <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
                 1
               </Group>
