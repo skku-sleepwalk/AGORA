@@ -70,11 +70,17 @@ export const usePostViewerStyles = createStyles(
         borderRadius: 15,
       },
     },
+
     imageModal: {
       ".mantine-Modal-content": {
         backgroundColor: "transparent",
         boxShadow: "none",
       },
+    },
+
+    heartFilled: {
+      marginLeft: "0.1rem",
+      marginRight: "0.1rem",
     },
   })
 );

@@ -6,7 +6,7 @@ export const useMainTabStyles = createStyles((theme) => ({
     boxSizing: "border-box",
     width: "100%",
     height: "3rem",
-    borderBottom: "none",
+    borderBottom: "0.2rem solid white",
 
     backgroundColor: "white",
     boxShadow: `0px 3px 10px rgba(0, 0, 0, 0.2)`,
@@ -14,19 +14,20 @@ export const useMainTabStyles = createStyles((theme) => ({
 
   tabItem: {
     width: "7rem",
+    height: "3rem",
     fontSize: "1rem",
 
     "&:hover": {
       backgroundColor: "transparent",
-      borderBottom: "none",
+      borderBottom: "0.2rem solid white",
     },
   },
 
   tabItemActive: {
     color: `${theme.colors.blue[6]} !important`,
-    borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
+    borderBottom: `0.2rem solid ${theme.colors.blue[6]}`,
     "&:hover": {
-      borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
+      borderBottom: `0.2rem solid ${theme.colors.blue[6]}`,
     },
   },
 

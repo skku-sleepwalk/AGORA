@@ -6,7 +6,7 @@ export const useGameTabStyles = createStyles((theme) => ({
     boxSizing: "border-box",
     width: "100%",
     height: "3rem",
-    borderBottom: "none",
+    borderBottom: "0.2rem solid #fcfcfe",
     paddingLeft: "2.3rem",
 
     backgroundColor: "#fcfcfe",
@@ -15,29 +15,31 @@ export const useGameTabStyles = createStyles((theme) => ({
 
   tabItem_B: {
     width: "8rem",
+    height: "3rem",
     fontSize: "1rem",
 
     "&:hover": {
       backgroundColor: "transparent",
-      borderBottom: "none",
+      borderBottom: "0.2rem solid #fcfcfe",
     },
   },
 
   tabItem_S: {
     width: "5rem",
+    height: "3rem",
     fontSize: "0.8rem",
 
     "&:hover": {
       backgroundColor: "transparent",
-      borderBottom: "none",
+      borderBottom: "0.2rem solid #fcfcfe",
     },
   },
 
   tabItemActive: {
     color: `${theme.colors.blue[6]} !important`,
-    borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
+    borderBottom: `0.2rem solid ${theme.colors.blue[6]}`,
     "&:hover": {
-      borderBottom: `0.15rem solid ${theme.colors.blue[6]}`,
+      borderBottom: `0.2rem solid ${theme.colors.blue[6]}`,
     },
   },
 }));

@@ -85,8 +85,9 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
         {value.label}
         <InvisibleButton
           onClick={() => {
-            checkedHandler.filter((item) => item !== value);
-            handlers.setItemProp(value.index, "checked", false);
+            checkedHandler.filter((item) => item !== value); // checkHandler에서 value.label 제거
+            handlers.setItemProp(value.index, "checked", false); // 해당 index의 checked 속성을 false로 설정
+            cleanNotification();
           }}
         >
           <IconX stroke={2} size={"0.8rem"} color={theme.colors.blue[6]} />

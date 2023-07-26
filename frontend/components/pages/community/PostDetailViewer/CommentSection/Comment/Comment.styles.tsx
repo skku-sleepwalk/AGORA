@@ -9,6 +9,11 @@ export const useCommentStyles = createStyles((theme) => ({
     border: `1px solid ${theme.colors.red[6]}`,
   },
 
+  heartFilled: {
+    marginLeft: "0.1rem",
+    marginRight: "0.1rem",
+  },
+
   divider: {
     marginBottom: 4,
   },

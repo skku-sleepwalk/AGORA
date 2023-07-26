@@ -14,7 +14,11 @@ import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
 import { useState } from "react";
+
 import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
+
+import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
+
 
 function Game() {
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
@@ -43,11 +47,7 @@ function Game() {
           develop
         </CardContainer>
       )}
-      {activeTab === "review" && (
-        <CardContainer w={"100%"} h={"50rem"}>
-          review
-        </CardContainer>
-      )}
+      {activeTab === "review" && <GameReviewSection />}
       {activeTab === "board" && (
         <CardContainer w={"100%"} h={"50rem"}>
           board
