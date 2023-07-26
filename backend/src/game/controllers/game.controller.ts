@@ -5,6 +5,7 @@ import {
   Get,
   Headers,
   Param,
+  ParseArrayPipe,
   Patch,
   Post,
   Query,
@@ -44,6 +45,41 @@ export class GameContorller {
       data.shortContent,
       data.shortImgUrl,
       data.genreNames,
+    );
+  }
+
+  @ApiOperation({ summary: '게시글 검색' })
+  @ApiResponse({ type: GameDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiQuery({
+    name: 'beforeCursor',
+    description: '이전 페이지 커서(페이지네이션 옵션)',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    description: '다음 페이지 커서(페이지네이션 옵션)',
+    required: false,
+  })
+  @ApiQuery({ name: 'q', description: '검색 내용' })
+  @ApiQuery({
+    name: 'genreNames',
+    description: '장르 이름들',
+  })
+  @Get('search')
+  SearchGame(
+    @Headers('Authorization') userEmail: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('q') search: string,
+    @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
+    genreNames: Array<string>,
+  ) {
+    return this.gameService.searchGame(
+      userEmail,
+      { beforeCursor, afterCursor },
+      genreNames,
+      search,
     );
   }
 

@@ -11,6 +11,13 @@ export class GameTagService {
   ) {}
 
   postGameTag(name: string) {
-    return;
+    this.gameTagRepository.save({ name });
+  }
+
+  async searchGameTag(search: string) {
+    return await this.gameTagRepository
+      .createQueryBuilder('tag')
+      .where('tag.name LIKE :search', { search })
+      .getMany();
   }
 }

@@ -1,6 +1,5 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, ValidateNested } from 'class-validator';
-import { UserDto } from 'src/common/dto/user.dto';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { GameStore } from 'src/entites/game.store.entity';
 import { GameCostDto } from './game.cost.dto';
 

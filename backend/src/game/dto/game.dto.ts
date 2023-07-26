@@ -3,11 +3,13 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { Game } from 'src/entites/game.entity';
 import { GameDescriptionDto } from './game.description.dto';
 import { GameTagDto } from './game.tag.dto';
+import { GameStoreDto } from './game.store.dto';
 
 export class GameDto extends PickType(PartialType(Game), [
   'id',
@@ -30,6 +32,15 @@ export class GameDto extends PickType(PartialType(Game), [
   @IsNotEmpty()
   @IsBoolean()
   like?: boolean;
+
+  @ApiProperty({
+    description: '게임 스토어',
+    type: () => GameStoreDto,
+    required: false,
+  })
+  @IsOptional()
+  @ValidateNested()
+  store: GameStoreDto;
 
   @ApiProperty({ description: '게임 설명', type: () => GameDescriptionDto })
   @IsNotEmpty()

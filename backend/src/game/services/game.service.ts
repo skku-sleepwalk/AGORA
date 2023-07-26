@@ -149,8 +149,77 @@ export class GameService {
     const queryBuilder = this.gameRepository
       .createQueryBuilder('game')
       .leftJoinAndSelect('game.genres', 'genres')
-      .leftJoinAndSelect('game.cost', 'cost')
+      .leftJoinAndSelect('game.store', 'store')
       .where('genres.name = :genreName', { genreName });
+    console.log(await queryBuilder.getMany());
+    // 페이징 옵션 설정
+    const paginationOption: PaginationOptions<Game> = {
+      entity: Game,
+      paginationKeys: ['createdAt'],
+      query: {
+        afterCursor: _cursor.afterCursor || null,
+        beforeCursor: _cursor.beforeCursor || null,
+        limit: 5,
+        order: 'DESC',
+      },
+    };
+    // 페이징 처리를 위한 Paginator 생성
+    const paginator = buildPaginator(paginationOption);
+
+    // 페이징을 적용하여 데이터 조회
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    // data 배열을 map 메서드를 사용하여 변환
+    const dataWithLikes = await Promise.all(
+      data.map(async (game) => {
+        // userEmail과 game.id를 이용하여 좋아요 여부 조회
+        const [likeRelations, likeCount] =
+          await this.gameLikeRelationRepository.findAndCount({
+            where: {
+              likeAction: 'like',
+              game: {
+                id: game.id,
+              },
+            },
+            relations: ['user'],
+          });
+
+        // 좋아요 여부에 따라 like 속성 추가
+        const like =
+          likeRelations.filter((relation) => relation.user.email === userEmail)
+            .length > 0
+            ? true
+            : false;
+
+        // game 데이터에 like 속성 추가하여 반환
+        return {
+          ...game,
+          like,
+          likeCount,
+        };
+      }),
+    );
+
+    // 수정된 dataWithLikes와 cursor 반환
+    return { data: dataWithLikes, cursor };
+    // return { data, cursor };
+  }
+
+  async searchGame(
+    userEmail: string,
+    _cursor: Cursor,
+    genreNames: Array<string>,
+    search: string,
+  ) {
+    // 게임 레포지토리에서 genreName에 해당하는 게임을 조회하는 쿼리 빌더 생성
+    const queryBuilder = this.gameRepository
+      .createQueryBuilder('game')
+      .leftJoinAndSelect('game.genres', 'genres')
+      .leftJoinAndSelect('game.store', 'store')
+      .leftJoinAndSelect('game.description', 'description')
+      .where(
+        '(genres.name IN (:...genreNames)) AND (game.title LIKE :search OR game.shortContent LIKE :search OR store.title LIKE :search OR description.content LIKE :search)',
+        { genreNames, search: `%${search}%` },
+      );
 
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
@@ -169,7 +238,6 @@ export class GameService {
 
     // 페이징을 적용하여 데이터 조회
     const { data, cursor } = await paginator.paginate(queryBuilder);
-
     // data 배열을 map 메서드를 사용하여 변환
     const dataWithLikes = await Promise.all(
       data.map(async (game) => {
@@ -195,10 +263,10 @@ export class GameService {
         return {
           ...game,
           like,
+          likeCount,
         };
       }),
     );
-
     // 수정된 dataWithLikes와 cursor 반환
     return { data: dataWithLikes, cursor };
   }
