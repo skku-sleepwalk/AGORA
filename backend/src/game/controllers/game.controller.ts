@@ -7,9 +7,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseInterceptors,
 } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiHeader,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GameService } from '../services/game.service';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { CreateGameDto } from '../dto/create.game.dto';
@@ -34,15 +41,52 @@ export class GameContorller {
       data.title,
       data.downloadUrl,
       data.executablePath,
+      data.shortContent,
+      data.shortImgUrl,
       data.genreNames,
     );
   }
 
   @ApiOperation({ summary: '게임 불러오기' })
   @ApiResponse({ type: GameDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Get(':id')
-  GetOneGame(@Param('id') gameId: string) {
-    return this.gameService.getOneGame(gameId);
+  GetOneGame(
+    @Param('id') gameId: string,
+    @Headers('Authorization') userEmail: string,
+  ) {
+    return this.gameService.getOneGame(userEmail, gameId);
+  }
+
+  @ApiOperation({ summary: '게임스토어 장르별로 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiResponse({ type: GameDto })
+  @ApiQuery({
+    name: 'beforeCursor',
+    description: '이전 페이지 커서(페이지네이션 옵션)',
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    description: '다음 페이지 커서(페이지네이션 옵션)',
+  })
+  @ApiQuery({
+    name: 'genreName',
+    description: '장르 이름',
+    required: true,
+  })
+  @Get()
+  GetGameStoreByGenre(
+    @Headers('Authorization') userEmail: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('genreName')
+    genreName: string,
+  ) {
+    return this.gameService.getGameByGenre(
+      userEmail,
+      { beforeCursor, afterCursor },
+      genreName,
+    );
   }
 
   @ApiOperation({ summary: '게임 업데이트' })
@@ -62,6 +106,16 @@ export class GameContorller {
       data.executablePath,
       data.genreNames,
     );
+  }
+
+  @ApiOperation({ summary: '좋아요' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @Patch(':id/like')
+  LikeGame(
+    @Headers('Authorization') userEmail: string,
+    @Param('id') gameId: string,
+  ) {
+    return this.gameService.likeGame(userEmail, gameId);
   }
 
   @ApiOperation({ summary: '게임 태그 수정' })

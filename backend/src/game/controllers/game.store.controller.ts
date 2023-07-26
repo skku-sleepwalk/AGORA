@@ -21,31 +21,28 @@ import {
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { GameStoresService } from '../services/game.store.service';
 import { CreateGameStoreDto } from '../dto/create.game.store.dto';
-import { Users } from 'src/common/decorators/user.decorator';
-import { User } from 'src/entites/user.entity';
 import { GameStoreDto } from 'src/game/dto/game.store.dto';
-import { UpdateCommunityBoardDto } from 'src/community/dto/update.community.board.dto';
+import { UpdateGameStoreDto } from '../dto/update.game.store.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('GameStore')
-@Controller('game/stores')
+@Controller('game/:gameId/store')
 export class GameStoresController {
   constructor(private gamestoresService: GameStoresService) {}
 
   @ApiOperation({ summary: '게임스토어 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Post()
-  postGameStore(
+  PostGameStore(
     // @Users() user: User,
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Body() data: CreateGameStoreDto,
   ) {
     return this.gamestoresService.postGameStore(
       userEmail,
-      data.gameId,
+      gameId,
       data.title,
-      data.shortContent,
-      data.shortImgUrl,
       data.cost,
       data.snsUrls,
       data.developer,
@@ -54,35 +51,14 @@ export class GameStoresController {
   }
 
   @ApiOperation({ summary: '게임스토어 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiResponse({ type: GameStoreDto })
   @Get(':id')
-  getGameStore(@Param('id') id: string) {
-    return;
-  }
-
-  @ApiOperation({ summary: '게임스토어 장르별로 가져오기' })
-  @ApiResponse({ type: GameStoreDto })
-  @ApiQuery({
-    name: 'beforeCursor',
-    description: '이전 페이지 커서(페이지네이션 옵션)',
-  })
-  @ApiQuery({
-    name: 'afterCursor',
-    description: '다음 페이지 커서(페이지네이션 옵션)',
-  })
-  @ApiQuery({
-    name: 'genreName',
-    description: '장르 이름',
-    required: true,
-  })
-  @Get()
-  getGameStoreByGenre(
-    @Query('beforeCursor') beforeCursor: string,
-    @Query('afterCursor') afterCursor: string,
-    @Query('genreName')
-    genreName: string,
+  GetGameStore(
+    @Headers('Authorization') userEmail: string,
+    @Param('id') gameStoreId: string,
   ) {
-    return '여러개 가져왔음';
+    return this.gamestoresService.getGameStore(userEmail, gameStoreId);
   }
 
   @ApiOperation({ summary: '게시글 검색' })
@@ -118,8 +94,8 @@ export class GameStoresController {
   @Patch(':id')
   updateGameStore(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
-    @Body() data: UpdateCommunityBoardDto,
+    @Param('id') gameStoreId: string,
+    @Body() data: UpdateGameStoreDto,
   ) {
     return;
   }
@@ -129,7 +105,7 @@ export class GameStoresController {
   @Patch('/like/:id')
   likeGameStore(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Param('id') gameStoreId: string,
   ) {
     return;
   }

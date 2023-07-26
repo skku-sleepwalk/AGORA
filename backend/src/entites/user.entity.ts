@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -19,9 +18,10 @@ import { GameReviewComment } from './game.review.comment.entity';
 import { GameReviewLikeRelation } from './game.review.like.relation';
 import { GameBoard } from './game.board.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { CommunityBoardLikeRelation } from './community.board.like.relation';
+import { CommunityBoardLikeRelation } from './community.board.like.relation.entity';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Game } from './game.entity';
+import { GameLikeRelation } from './game.like.relation.entity';
 
 @Entity('User')
 export class User {
@@ -117,6 +117,6 @@ export class User {
   @OneToMany(() => GameBoardLikeRelation, (relation) => relation.user)
   gameBoardLikeRelations: Array<GameBoardLikeRelation>;
 
-  @ManyToMany(() => GameStore, (gameStore) => gameStore.likedUsers)
-  likeGames: Array<GameStore>;
+  @OneToMany(() => GameLikeRelation, (relation) => relation.user)
+  gameLikeRelations: Array<GameLikeRelation>;
 }

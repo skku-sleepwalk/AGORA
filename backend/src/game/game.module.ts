@@ -32,12 +32,14 @@ import { GameBoardCategoryController } from './controllers/game.board.category.c
 import { Game } from 'src/entites/game.entity';
 import { GameService } from './services/game.service';
 import { GameContorller } from './controllers/game.controller';
+import { GameLikeRelation } from 'src/entites/game.like.relation.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Game,
       GameStore,
+      GameLikeRelation,
       GameTag,
       GameTagRelation,
       GameGenre,

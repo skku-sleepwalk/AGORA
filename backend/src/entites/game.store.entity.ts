@@ -20,8 +20,7 @@ import { GameShoppingCartItem } from './game.shoppingCart.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
 
-export class SNSUrls {
-  id: string;
+export interface SNSUrls {
   youtube: string | null;
   twitch: string | null;
   twitter: string | null;
@@ -49,10 +48,6 @@ export class GameStore {
   @Column({ nullable: false })
   developer: string;
 
-  @ApiProperty({ example: 5, description: '좋아요 수' })
-  @Column({ nullable: false, default: 0 })
-  likeCount: number;
-
   @ApiProperty({ example: 30000, description: '가격' })
   @Column({ nullable: false })
   price: number;
@@ -75,7 +70,7 @@ export class GameStore {
 
   @OneToOne(() => Game, (game) => game.store)
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
-  readonly game: Game;
+  game: Game;
 
   @OneToOne(() => GameCost, (cost) => cost.store, {
     onDelete: 'CASCADE',
@@ -85,26 +80,7 @@ export class GameStore {
 
   @ManyToOne(() => User, (user) => user.gameStores)
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
-  readonly author: User;
-
-  @ApiProperty({ description: '카드에 들어갈 이미지 url' })
-  @Column({ nullable: false })
-  shortImgUrl: string;
-
-  @ApiProperty({
-    description: '카드에 들어갈 짧은 설명',
-    example: '이 게임은 레이싱 게임입니다.',
-  })
-  @Column({ nullable: false })
-  shortContent: string;
-
-  @ManyToMany(() => User, (user) => user.likeGames)
-  @JoinTable({
-    name: 'likedUsers',
-    joinColumn: { name: 'userId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'gameStoreId', referencedColumnName: 'id' },
-  })
-  likedUsers: Array<User>;
+  author: User;
 
   @OneToMany(() => GameShoppingCartItem, (item) => item.gameStore, {
     cascade: true,

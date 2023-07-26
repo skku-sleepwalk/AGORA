@@ -5,6 +5,8 @@ import { Game } from 'src/entites/game.entity';
 export class UpdateGameDto extends PickType(PartialType(Game), [
   'downloadUrl',
   'executablePath',
+  'shortContent',
+  'shortImgUrl',
 ]) {
   @IsNotEmpty()
   @IsArray()

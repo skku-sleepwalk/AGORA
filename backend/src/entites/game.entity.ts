@@ -23,6 +23,7 @@ import { GameTag } from './game.tag.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { GameDescription } from './game.description.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { GameLikeRelation } from './game.like.relation.entity';
 
 @Entity('Game')
 export class Game {
@@ -55,6 +56,21 @@ export class Game {
   @IsString()
   @Column({ nullable: false })
   executablePath: string;
+
+  @ApiProperty({ description: '카드에 들어갈 이미지 url' })
+  @IsNotEmpty()
+  @IsString()
+  @Column({ nullable: false })
+  shortImgUrl: string;
+
+  @ApiProperty({
+    description: '카드에 들어갈 짧은 설명',
+    example: '이 게임은 레이싱 게임입니다.',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @Column({ nullable: false })
+  shortContent: string;
 
   @OneToOne(() => GameStore, (gameStore) => gameStore.game)
   readonly store: GameStore;
@@ -104,6 +120,9 @@ export class Game {
     inverseJoinColumn: { name: 'gameStoreId', referencedColumnName: 'id' },
   })
   popularTags: Array<GameTag>;
+
+  @OneToMany(() => GameLikeRelation, (relation) => relation.game)
+  likeRelations: Array<GameLikeRelation>;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,9 +1,9 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsBoolean, IsNotEmpty, ValidateNested } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
 import { GameBoard } from 'src/entites/game.board.entity';
 
-export class GameBoardDto extends PickType(PartialType(GameBoard), [
+export class GameBoardDto extends PickType(GameBoard, [
   'id',
   'title',
   'content',
@@ -18,6 +18,6 @@ export class GameBoardDto extends PickType(PartialType(GameBoard), [
 
   @ApiProperty({ description: '좋아요 관계', type: () => Array<UserDto> })
   @IsNotEmpty()
-  @ValidateNested()
-  likeRelations: Array<UserDto>;
+  @IsBoolean()
+  like: boolean;
 }

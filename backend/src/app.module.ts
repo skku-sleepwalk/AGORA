@@ -24,7 +24,7 @@ import { GameTag } from './entites/game.tag.entity';
 import { GameTagRelation } from './entites/game.tag.relation.entity';
 import { GameReview } from './entites/game.review.entity';
 import { GameReviewLikeRelation } from './entites/game.review.like.relation';
-import { CommunityBoardLikeRelation } from './entites/community.board.like.relation';
+import { CommunityBoardLikeRelation } from './entites/community.board.like.relation.entity';
 
 import { CommunityBoardService } from './community/services/community.board.service';
 import { CommunityModule } from './community/community.module';
@@ -32,6 +32,9 @@ import { GameStoreModule } from './game/game.module';
 import { Game } from './entites/game.entity';
 import { GameDescription } from './entites/game.description.entity';
 import { CommunityBoard } from './entites/community.board.entity';
+import { GameLikeRelation } from './entites/game.like.relation.entity';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { ResponseInterceptor } from './common/interceptors/api-response.interceptor';
 
 dotenv.config();
 
@@ -64,6 +67,7 @@ dotenv.config();
         GameReviewCommentLikeRelation,
         GameShoppingCartItem,
         GameStore,
+        GameLikeRelation,
         GameTag,
         GameTagRelation,
       ],
@@ -90,6 +94,7 @@ dotenv.config();
       GameReviewCommentLikeRelation,
       GameShoppingCartItem,
       GameStore,
+      GameLikeRelation,
       GameTag,
       GameTagRelation,
     ]),
@@ -98,7 +103,7 @@ dotenv.config();
     GameStoreModule,
   ],
   controllers: [AppController],
-  providers: [AppService, CommunityBoardService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

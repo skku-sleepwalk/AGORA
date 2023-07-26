@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { User } from 'src/entites/user.entity';
 import { CommunityCategory } from 'src/entites/community.category.entity';
 import { CommunityBoard } from 'src/entites/community.board.entity';
-import { CommunityBoardLikeRelation } from 'src/entites/community.board.like.relation';
+import { CommunityBoardLikeRelation } from 'src/entites/community.board.like.relation.entity';
 import { GameBoardCategory } from 'src/entites/game.board.category.entity';
 import { GameBoard } from 'src/entites/game.board.entity';
 import { GameBoardLikeRelation } from 'src/entites/game.board.like.relation.entity';

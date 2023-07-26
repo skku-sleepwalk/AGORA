@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CommunityCategory } from './community.category.entity';
-import { CommunityBoardLikeRelation } from './community.board.like.relation';
+import { CommunityBoardLikeRelation } from './community.board.like.relation.entity';
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
