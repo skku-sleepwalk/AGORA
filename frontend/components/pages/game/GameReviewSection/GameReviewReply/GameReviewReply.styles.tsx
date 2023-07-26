@@ -7,6 +7,7 @@ export interface GameReviewProps {
 export const useGameReviewReplyStyles = createStyles((theme, { smallScreen }: GameReviewProps) => ({
   stack: {
     margin: "1rem 0rem",
+    marginLeft: "0.5rem",
   },
 
   reviewTypo: {
@@ -42,6 +43,10 @@ export const useGameReviewReplyStyles = createStyles((theme, { smallScreen }: Ga
 
   buttonPadding: {
     padding: "0rem 0.5rem",
+  },
+
+  menuItem: {
+    padding: 5,
   },
 
   marginLeft: {

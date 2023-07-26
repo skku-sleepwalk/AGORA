@@ -2,9 +2,9 @@ import {
   Avatar,
   Box,
   Button,
-  Collapse,
   Divider,
   Group,
+  Menu,
   Stack,
   Text,
   TypographyStylesProvider,
@@ -14,16 +14,22 @@ import {
 import { useGameReviewReplyStyles } from "./GameReviewReply.styles";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
-  IconMessages,
+  IconDotsVertical,
+  IconPencil,
   IconThumbDown,
   IconThumbDownFilled,
   IconThumbUp,
   IconThumbUpFilled,
+  IconTrash,
 } from "@tabler/icons-react";
-import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
+import { useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 
-export function GameReviewReply() {
+export interface GameReviewReplyProps {
+  opened: boolean;
+}
+
+export function GameReviewReply({ opened }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -39,7 +45,7 @@ export function GameReviewReply() {
   };
   useEffect(() => {
     setIsOverflowed(checkOverflow());
-  }, []);
+  }, [opened]);
   const [viewMore, setViewMore] = useState<boolean>(false);
 
   // 답글 좋아요 싫어요 관련 로직
@@ -56,9 +62,6 @@ export function GameReviewReply() {
       setGoodBadState({ good: !goodBadstate.good });
     }
   };
-
-  // 답글 관련
-  const [opened, { toggle }] = useDisclosure(false);
 
   return (
     <Box>
@@ -108,7 +111,7 @@ export function GameReviewReply() {
           )}
         </Stack>
         {/* 후기 하단 버튿들 */}
-        <Group className={classes.marginLeft} position="right">
+        <Group className={classes.marginLeft} position="right" spacing={"xs"}>
           <Button
             className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
             size="xs"
@@ -141,6 +144,22 @@ export function GameReviewReply() {
               1
             </Group>
           </Button>
+          <Menu shadow="md" width={120} position="bottom-end" offset={10}>
+            <Menu.Target>
+              <UnstyledButton>
+                <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              </UnstyledButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              <Menu.Item icon={<IconPencil size={18} stroke={2} />} className={classes.menuItem}>
+                수정하기
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item icon={<IconTrash size={18} stroke={2} />} className={classes.menuItem}>
+                삭제하기
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
         </Group>
       </Stack>
     </Box>

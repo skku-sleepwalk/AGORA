@@ -13,6 +13,7 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameReviewEditor } from "./GameReviewEditor/GameReviewEditor";
 import { GameReview } from "./GameReview/GameReview";
+import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
 
 export function GameReviewSection() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -20,7 +21,7 @@ export function GameReviewSection() {
   const theme = useMantineTheme();
 
   const canReview = true;
-  const hasReview = false;
+  const hasReview = true;
 
   return (
     <Stack spacing={"xl"}>
@@ -48,11 +49,7 @@ export function GameReviewSection() {
                 />
               )}
               {/* 자신이 작성한 후기를 보여주는 파트 */}
-              {hasReview && (
-                <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-                  15일 전
-                </Text>
-              )}
+              {hasReview && <GameReviewMine />}
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}

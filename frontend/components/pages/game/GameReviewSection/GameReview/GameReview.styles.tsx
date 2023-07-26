@@ -52,7 +52,9 @@ export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameRev
     display: "flex",
     alignItems: "flex-start",
     flexWrap: "nowrap",
+
     margin: "1rem 0rem",
+    marginLeft: "0.5rem",
   },
 
   reviewEditorBox: {

@@ -10,7 +10,6 @@ export const useGameReviewSectionStyles = createStyles(
       width: "100%",
       height: "100%",
       padding: "2rem 1rem",
-      backgroundColor: "white",
     },
 
     myReviewGroup: {
