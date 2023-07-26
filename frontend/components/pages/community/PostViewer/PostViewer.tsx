@@ -200,7 +200,14 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                         });
                     }}
                   >
-                    {isliking && <IconHeartFilled size={20} stroke={1.3} />}
+                    {isliking && (
+                      <Image
+                        className={classes.heartFilled}
+                        width={"1rem"}
+                        height={"0.9rem"}
+                        src={"/HeartFilled.png"}
+                      />
+                    )}
                     {!isliking && <IconHeart size={20} stroke={1.3} />}
                   </InvisibleButton>
                   <Text fz="sm">{post.like}</Text>

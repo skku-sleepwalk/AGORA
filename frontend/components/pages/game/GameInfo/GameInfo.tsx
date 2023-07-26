@@ -6,19 +6,21 @@ import {
   Divider,
   Button,
   Badge,
+  Image,
   Center,
   Box,
   Modal,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameInfoStyles } from "./GameInfo.styles";
-import { IconHeart, IconHeartFilled } from "@tabler/icons-react";
+import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
 
 export function GameInfo() {
   const { classes, cx } = useGameInfoStyles();
+  const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
@@ -38,14 +40,32 @@ export function GameInfo() {
     "끊을 줄 모르는",
     "최고인",
     "잊을 수 없는",
+    "농장 시뮬레이션",
+    "생활 시뮬레이션",
+    "픽셀 그래픽",
+    "힐링",
+    "끊을 줄 모르는",
+    "최고인",
+    "잊을 수 없는",
   ];
-  const tags = data.map((item) => <Box className={classes.tag}>{item}</Box>);
-  const [opened, { open, close }] = useDisclosure(false);
+  const endIndex = 11;
+  const tags = data.slice(0, endIndex).map((item) => <Box className={classes.tag}>{item}</Box>);
+  const overflowRef = useRef<HTMLDivElement>(null);
+  const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
+  const checkOverflow = () => {
+    if (!overflowRef.current) {
+      return null;
+    }
+    return overflowRef.current.scrollHeight > overflowRef.current.clientHeight;
+  };
+  useEffect(() => {
+    setIsOverflowed(checkOverflow());
+  }, []);
 
   return (
     <>
-      <Modal opened={opened} onClose={close} title="태그 추가" centered>
-        {/* Modal content */}
+      <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
+        <GameTagModal onClose={close} />
       </Modal>
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
@@ -64,8 +84,12 @@ export function GameInfo() {
           <Group spacing={"xs"}>
             <InvisibleButton onClick={handleIsLiking}>
               {isLiking ? (
-                // <Image width={"2rem"} height={"2rem"} src="../../../public/HeartFilled.png" />
-                <IconHeartFilled size={"2rem"} stroke={1} />
+                <Image
+                  className={classes.heartFilled}
+                  width={"1.6rem"}
+                  height={"1.5rem"}
+                  src={"/HeartFilled.png"}
+                />
               ) : (
                 <IconHeart size={"2rem"} stroke={1} />
               )}
@@ -73,20 +97,39 @@ export function GameInfo() {
             <Text fz={16}>(1679)</Text>
           </Group>
         </Group>
-        <Group position="apart" className={cx(classes.alignTop, classes.marginBottom)}>
-          <Stack spacing={"xs"}>
-            <Group spacing={"2rem"}>
-              <Text className={classes.grayText} fw={"bold"}>
-                개발사
-              </Text>
-              <Text
-                className={classes.blueText}
-                fw={"bold"}
-                component="a"
-                href="https://mantine.dev"
-              >
-                Concerned Ape
-              </Text>
+        <Group className={cx(classes.alignTop, classes.marginBottom)}>
+          <Stack spacing={"xs"} w={"100%"}>
+            <Group position="apart">
+              <Group spacing={"2rem"}>
+                <Text className={classes.grayText} fw={"bold"}>
+                  개발사
+                </Text>
+                <Text
+                  className={classes.blueText}
+                  fw={"bold"}
+                  component="a"
+                  href="https://mantine.dev"
+                >
+                  Concerned Ape
+                </Text>
+              </Group>
+              <InvisibleButton onClick={handleIsFollowing}>
+                <Badge
+                  className={classes.followBadge}
+                  color={isFollowing ? "gray" : undefined}
+                  size="lg"
+                  radius="md"
+                  leftSection={
+                    <Avatar
+                      size={24}
+                      radius={"lg"}
+                      src="https://avatars.githubusercontent.com/u/55127132?v=4"
+                    />
+                  }
+                >
+                  {isFollowing ? "팔로잉" : "팔로우"}
+                </Badge>
+              </InvisibleButton>
             </Group>
             <Group spacing={"2rem"}>
               <Text className={classes.grayText} fw={"bold"}>
@@ -102,40 +145,6 @@ export function GameInfo() {
               </Text>
             </Group>
           </Stack>
-          <InvisibleButton onClick={handleIsFollowing}>
-            {isFollowing ? (
-              <Badge
-                className={classes.followBadge}
-                color="gray"
-                size="lg"
-                radius="xl"
-                leftSection={
-                  <Avatar
-                    size={24}
-                    radius={"lg"}
-                    src="https://avatars.githubusercontent.com/u/55127132?v=4"
-                  />
-                }
-              >
-                팔로잉
-              </Badge>
-            ) : (
-              <Badge
-                className={classes.followBadge}
-                size="lg"
-                radius="xl"
-                leftSection={
-                  <Avatar
-                    size={24}
-                    radius={"lg"}
-                    src="https://avatars.githubusercontent.com/u/55127132?v=4"
-                  />
-                }
-              >
-                팔로우
-              </Badge>
-            )}
-          </InvisibleButton>
         </Group>
         <Divider />
         <Group spacing={"2rem"} className={classes.marginTop}>
@@ -169,14 +178,17 @@ export function GameInfo() {
         <Text className={cx(classes.marginLeft, classes.marginTop)} fw={"bold"}>
           이 게임의 인기 태그 :
         </Text>
-        <Group spacing={0}>
-          <Box className={classes.tagBox}>
+        <Box className={classes.tagGroup}>
+          <Box className={classes.tagBox} ref={overflowRef}>
             {tags}
-            <Button className={classes.addButton} onClick={open}>
+            <Button
+              className={cx(classes.addButton, isOverflowed ? classes.addButton_A : null)}
+              onClick={open}
+            >
               +
             </Button>
           </Box>
-        </Group>
+        </Box>
         {true && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>

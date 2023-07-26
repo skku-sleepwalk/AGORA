@@ -33,4 +33,12 @@ export class CreateGameStoreDto {
   @IsNotEmpty()
   @ValidateNested()
   cost: Cost;
+
+  @IsNotEmpty()
+  @IsString()
+  downloadUrl: string;
+
+  @IsNotEmpty()
+  @IsString()
+  executablePath: string;
 }

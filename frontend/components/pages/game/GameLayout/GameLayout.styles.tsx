@@ -1,81 +1,90 @@
 import { createStyles } from "@mantine/core";
 
-export const useGameLayoutStyles = createStyles((theme) => ({
-  container: {
-    display: "flex",
-    flexWrap: "wrap",
-    width: "100%",
-  },
+export interface GameLayoutStyleProps {
+  rightSectionMove: number;
+}
 
-  topContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    width: "100%",
-    height: "auto",
-    padding: 40,
-    paddingTop: 60,
-    gap: 20,
-  },
+export const useGameLayoutStyles = createStyles(
+  (theme, { rightSectionMove }: GameLayoutStyleProps) => ({
+    container: {
+      display: "flex",
+      flexWrap: "wrap",
+      width: "100%",
+    },
 
-  PhotoContainer: {
-    position: "relative",
-    margin: 0,
-    aspectRatio: "8 / 5",
-    width: 800,
-  },
+    topContainer: {
+      display: "flex",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      width: "100%",
+      height: "auto",
+      padding: 40,
+      paddingTop: 60,
+      gap: 20,
+    },
 
-  infoContainer: {
-    margin: 0,
-    width: 430,
-    height: 500,
-    flexGrow: 1,
-  },
+    PhotoContainer: {
+      position: "relative",
+      margin: 0,
+      aspectRatio: "8 / 5",
+      width: 800,
+    },
 
-  tapContainer_S: {
-    width: "100%",
-    height: "3rem",
-  },
+    infoContainer: {
+      margin: 0,
+      width: 430,
+      height: 500,
+      flexGrow: 1,
+    },
 
-  tapContainer_F: {
-    position: "fixed",
-    width: "100%",
-    height: "3rem",
-    zIndex: 100,
-  },
+    tapContainer_S: {
+      width: "100%",
+      height: "3rem",
+    },
 
-  bottomContainer: {
-    display: "flex",
-    flexWrap: "nowrap",
-    width: "100%",
-    height: "100%",
-    padding: 40,
-    gap: 40,
-  },
+    tapContainer_F: {
+      position: "fixed",
+      width: "100%",
+      height: "3rem",
+      zIndex: 100,
+    },
 
-  paddingTop: {
-    paddingTop: 88,
-  },
+    bottomContainer: {
+      display: "flex",
+      flexWrap: "nowrap",
+      width: "100%",
+      height: "100%",
+      padding: 40,
+      gap: 40,
+    },
 
-  mainContainer_B: {
-    flexGrow: 1,
-    flexShrink: 0,
-    width: 700,
-    margin: 0,
-  },
+    paddingTop: {
+      paddingTop: 88,
+    },
 
-  rightContainer_B: {
-    flexShrink: 0,
-    width: 400,
-    margin: 0,
-  },
+    mainContainer_B: {
+      flexGrow: 1,
+      flexShrink: 0,
+      width: 700,
+      margin: 0,
+    },
 
-  mainContainer_S: {
-    flexGrow: 1,
-    margin: 0,
-  },
+    rightContainer_B: {
+      flexShrink: 0,
+      width: "25rem",
+      height: "37rem",
 
-  rightContainer_S: {
-    display: "none",
-  },
-}));
+      margin: 0,
+      marginTop: rightSectionMove,
+    },
+
+    mainContainer_S: {
+      flexGrow: 1,
+      margin: 0,
+    },
+
+    rightContainer_S: {
+      display: "none",
+    },
+  })
+);
