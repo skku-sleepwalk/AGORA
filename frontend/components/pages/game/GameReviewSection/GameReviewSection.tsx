@@ -1,4 +1,13 @@
-import { Avatar, Box, Group, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Avatar,
+  Box,
+  Divider,
+  Group,
+  Stack,
+  Text,
+  TextInput,
+  useMantineTheme,
+} from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
@@ -8,6 +17,7 @@ import { GameReview } from "./GameReview/GameReview";
 export function GameReviewSection() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
+  const theme = useMantineTheme();
 
   const canReview = true;
   const hasReview = false;
@@ -27,7 +37,9 @@ export function GameReviewSection() {
             />
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
-              {canReview && !hasReview && <GameReviewEditor />}
+              {canReview && !hasReview && (
+                <GameReviewEditor placeholder={"도움이 되는 착한 후기를 남겨보세요."} />
+              )}
               {!canReview && (
                 <TextInput
                   className={classes.reviewNo}
@@ -36,6 +48,11 @@ export function GameReviewSection() {
                 />
               )}
               {/* 자신이 작성한 후기를 보여주는 파트 */}
+              {hasReview && (
+                <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
+                  15일 전
+                </Text>
+              )}
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}

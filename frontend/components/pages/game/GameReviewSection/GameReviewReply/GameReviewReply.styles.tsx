@@ -4,9 +4,9 @@ export interface GameReviewProps {
   smallScreen: boolean;
 }
 
-export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameReviewProps) => ({
+export const useGameReviewReplyStyles = createStyles((theme, { smallScreen }: GameReviewProps) => ({
   stack: {
-    margin: "1rem 1.5rem",
+    margin: "1rem 0rem",
   },
 
   reviewTypo: {
@@ -46,31 +46,5 @@ export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameRev
 
   marginLeft: {
     marginLeft: smallScreen ? "2.9rem" : "4rem",
-  },
-
-  myReviewGroup: {
-    display: "flex",
-    alignItems: "flex-start",
-    flexWrap: "nowrap",
-    margin: "1rem 0rem",
-  },
-
-  reviewEditorBox: {
-    flexGrow: 1,
-    width: "100%",
-  },
-
-  reviewNo: {
-    width: "100%",
-
-    ".mantine-TextInput-root, .mantine-TextInput-wrapper, .mantine-TextInput-input": {
-      height: smallScreen ? 30 : 46,
-    },
-
-    ".mantine-TextInput-input": {
-      "::placeholder": {
-        fontSize: smallScreen ? "0.8rem" : "auto",
-      },
-    },
   },
 }));
