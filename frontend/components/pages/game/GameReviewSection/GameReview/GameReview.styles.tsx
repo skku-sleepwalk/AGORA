@@ -14,7 +14,7 @@ export const useGameReviewStyles = createStyles((theme, { smallScreen }: GameRev
   },
 
   limitHeight: {
-    height: smallScreen ? "4.1rem" : "5.9rem",
+    maxHeight: smallScreen ? "4.1rem" : "5.9rem",
     overflow: "hidden",
   },
 

@@ -1,5 +1,6 @@
 import { useMediaQuery } from "@mantine/hooks";
 import { useGameLayoutStyles } from "./GameLayout.styles";
+import { ScrollArea } from "@mantine/core";
 
 export interface CommunityLayoutProps {
   photoSection?: React.ReactNode;
