@@ -111,7 +111,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
       </Group>
       <div style={{ marginRight: "1rem" }}>
         <Text align="right" size={"lg"}>
-          \{price}
+          \{post.price}
         </Text>
       </div>
       <div style={containerStyle}>
