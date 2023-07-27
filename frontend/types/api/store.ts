@@ -10,7 +10,7 @@ export interface GameStore {
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
-  author: User;
+  // author: User;
   likedUsers: Array<User> | undefined;
   genres: Array<GameStoreGenre> | undefined;
   shortDescription: ShortDescription | undefined;

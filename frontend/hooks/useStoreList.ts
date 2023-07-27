@@ -46,7 +46,7 @@ const getKey = (
 
 ////////////////
 
-function useBoardList(settings: useStoreListSettings = {}) {
+function useStoreList(settings: useStoreListSettings = {}) {
   const { token } = useAuth();
   const response = useSWRInfinite<GetStoreListResponse>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, settings),
@@ -61,4 +61,4 @@ function useBoardList(settings: useStoreListSettings = {}) {
   };
 }
 
-export default useBoardList;
+export default useStoreList;

@@ -8,7 +8,12 @@ import { Rating } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";
-export default function () {
+import { GameStore } from "../../../../types/api/store";
+export interface PostViewerProps {
+  post: GameStore;
+  thumbnailUrl?: string;
+}
+export default function ({ post, thumbnailUrl }: PostViewerProps) {
   const hardcodedUser: User = {
     id: "1",
     name: "John Doe",
@@ -89,17 +94,18 @@ export default function () {
       <Text size="xs" color="gray" style={margins}>
         어드벤쳐, 인디,RPG
       </Text>
+      {/* 여기 맵이든 뭐든 해야할듯 */}
 
       <Text font-weight="bold" size={20} style={margins}>
-        사그레스
+        {post.title}
       </Text>
 
       <Group spacing="5.5rem" align="flex-start" style={margins}>
-        <UserInfoSmall user={hardcodedUser} />
+        {/* <UserInfoSmall user={post.author} /> */}
         <Group spacing={0}>
           <Group spacing={5} style={{ marginRight: "1rem" }}>
             <IconHeart size={15} stroke={1.3} />
-            <Text size={"xs"}>(1010)</Text>
+            <Text size={"xs"}>({post.likeCount})</Text>
           </Group>
         </Group>
       </Group>
@@ -119,7 +125,7 @@ export default function () {
           <div>
             <div style={overlayStyle}></div>
             <div style={overlayStyle2}>
-              <p>반투명 창 위에 나타낼 텍스트</p>
+              <p>{post.shortDescription?.content}</p>
               {/* 추가적인 텍스트 또는 아이콘 등을 넣을 수 있습니다. */}
             </div>
           </div>

@@ -3,8 +3,22 @@ import SmallPost from "./SmallPost";
 import { Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-export function SmallPosts() {
+import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
+
+export function SmallPosts({ information }: any) {
   const [Title, setTitle] = useState("납량의 날 특집");
+  let data = new Array();
+
+  const {
+    data: postData,
+    isLoading: isPostLoading,
+    setSize: setPostSize,
+    mutate: mutatePost,
+    isEmpty,
+  } = information;
+  console.log(information.data);
+  console.log(postData);
+
   return (
     <div style={{ marginTop: "5rem" }}>
       <Text
@@ -29,41 +43,15 @@ export function SmallPosts() {
           previousControlIcon={<IconChevronLeft color="black" size={"3rem"}></IconChevronLeft>}
           nextControlIcon={<IconChevronRight color="black" size={"3rem"}></IconChevronRight>}
         >
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>{" "}
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>{" "}
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>{" "}
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>{" "}
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>{" "}
-          <Carousel.Slide>
-            <div style={{ marginTop: "20px" }}>
-              <SmallPost />
-            </div>
-          </Carousel.Slide>
+          {postData?.map((data: any) => {
+            return data.data.map((data: any) => (
+              <Carousel.Slide>
+                <div style={{ marginTop: "20px" }}>
+                  <SmallPost key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
+                </div>{" "}
+              </Carousel.Slide>
+            ));
+          })}
         </Carousel>
       </div>
     </div>
