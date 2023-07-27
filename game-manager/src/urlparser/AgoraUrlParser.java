@@ -18,6 +18,7 @@ public class AgoraUrlParser {
         }
 
         pathName = uri.getPath().substring(1);
+        if (pathName.endsWith("/")) pathName = pathName.substring(0, pathName.length() - 1);
         query = uri.getQuery() == null ? new HashMap<>() : parseQuery(uri.getQuery());
     }
 

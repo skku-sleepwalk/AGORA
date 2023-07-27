@@ -1,7 +1,6 @@
 package main;
 import java.util.Map;
 
-import gameinstaller.GameInstaller;
 import gamemanager.GameManager;
 import urlparser.AgoraUrlParser;
 
@@ -16,19 +15,13 @@ public class Main {
     GameManager gameManager = new GameManager();
 
     token = query.get("token");
+    String gameId = query.get("id");
 
     switch (pathName) {
       case "install":
-        String gameUrl = query.get("url");
-        GameInstaller installer = new GameInstaller(
-          gameUrl, 
-          "C:\\Program Files\\Agora\\",
-          "testgame"
-          );
-        installer.install();
+        gameManager.installGame(gameId);
         break;
       case "execute":
-        String gameId = query.get("id");
         gameManager.executeGame(gameId);
         break;
       default:

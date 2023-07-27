@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class GameManager {
     private List<Game> games;
-    final private String fileName = "games.dat";
+    final private String fileName = "gamedata.bin";
     HttpClientService httpClientService = new HttpClientService();
 
     public GameManager() throws IOException, ClassNotFoundException {
@@ -16,12 +16,14 @@ public class GameManager {
     }
 
     public void installGame(String id) {
-      try {
-        httpClientService.installGame(id);
-        addGame(new Game("test", id));
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+        Game game = httpClientService.getGame(id);
+        GameInstaller installer = new GameInstaller(game);
+        installer.install();
+        try {
+            addGame(game);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void executeGame(String id) {
@@ -57,10 +59,17 @@ public class GameManager {
     @SuppressWarnings("unchecked")
     private void loadFromFile() throws IOException, ClassNotFoundException {
         File file = new File(fileName);
-        if (file.exists()) {
+        if (!file.exists()) {
+            file.createNewFile();
+            games = new ArrayList<>();
+            return;
+        } 
+        if (file.length() > 0) {
             try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(fileName))) {
                 games = (List<Game>) in.readObject();
             }
+        } else {
+            games = new ArrayList<>();
         }
     }
 }

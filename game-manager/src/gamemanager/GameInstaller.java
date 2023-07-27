@@ -1,4 +1,4 @@
-package gameinstaller;
+package gamemanager;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -9,17 +9,17 @@ import java.util.zip.ZipInputStream;
 
 public class GameInstaller {
 
-    private String gameUrl;
-    private String outputDir;
+    private String downloadUrl;
+    private Path outputDir;
 
-    public GameInstaller(String gameUrl, String outputDir, String gameName) {
-        this.gameUrl = gameUrl;
-        this.outputDir = outputDir + gameName + File.separator;
+    public GameInstaller(Game game) {
+        this.downloadUrl = game.getDownloadUrl();
+        this.outputDir = Paths.get(".\\games\\" + game.getName());
     }
 
     public void install() {
         try {
-            URL url = new URL(this.gameUrl);
+            URL url = new URL(this.downloadUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 
@@ -40,23 +40,34 @@ public class GameInstaller {
         }
     }
 
-    private void unzip(String zipFilePath, String destDir) {
-        File dir = new File(destDir);
-        if (!dir.exists()) dir.mkdirs();
+    private void unzip(String zipFilePath, Path destDir) {
+        if (!Files.exists(destDir)) {
+            try {
+                Files.createDirectories(destDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
         try (FileInputStream fis = new FileInputStream(zipFilePath);
             ZipInputStream zis = new ZipInputStream(fis)) {
+
             ZipEntry zipEntry = zis.getNextEntry();
             if (zipEntry == null) {
                 throw new IOException("The file is not a valid ZIP file");
             }
-            while(zipEntry != null) {
-                String filePath = destDir + zipEntry.getName().replace("/", File.separator);
+
+            while (zipEntry != null) {
+                Path filePath = destDir.resolve(Paths.get(zipEntry.getName().replace("/", File.separator)));
                 if (!zipEntry.isDirectory()) {
-                    extractFile(zis, filePath);
+                    extractFile(zis, filePath.toString());
                 } else {
-                    File newDir = new File(filePath);
-                    if (!newDir.exists()) {
-                        if (!newDir.mkdirs()) throw new IOException("Failed to create directory: " + newDir);
+                    if (!Files.exists(filePath)) {
+                        try {
+                            Files.createDirectories(filePath);
+                        } catch (IOException e) {
+                            throw new IOException("Failed to create directory: " + filePath, e);
+                        }
                     }
                 }
                 zipEntry = zis.getNextEntry();
