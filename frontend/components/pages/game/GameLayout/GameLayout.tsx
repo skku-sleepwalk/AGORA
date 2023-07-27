@@ -29,12 +29,9 @@ function GameLayout({
       <div className={classes.tapBottomContainer}>
         <div className={classes.tapContainer}>{tapSection}</div>
         <div className={classes.bottomContainer}>
-          <ScrollArea
-            type="never"
-            className={cx(smallScreen ? classes.scrollContainer_S : classes.scrollContainer_B)}
-          >
-            <div className={classes.mainContainer}>{children}</div>
-          </ScrollArea>
+          <div className={cx(smallScreen ? classes.mainContainer_S : classes.mainContainer_B)}>
+            {children}
+          </div>
           <div className={cx(smallScreen ? classes.rightContainer_S : classes.rightContainer_B)}>
             {rightSection}
           </div>
