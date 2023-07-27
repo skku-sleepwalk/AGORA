@@ -7,21 +7,21 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Game } from 'src/entites/game.entity';
 import { GameStoreDto } from '../dto/game.store.dto';
 import { GameCostDto } from '../dto/game.cost.dto';
-import { GameLikeRelation } from 'src/entites/game.like.relation.entity';
+import { GameLike } from 'src/entites/game.like.entity';
 
 @Injectable()
 export class GameStoreService {
   constructor(
     @InjectRepository(GameStore)
-    private gameStoreRepository: Repository<GameStore>,
+    private readonly gameStoreRepository: Repository<GameStore>,
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
-    @InjectRepository(GameLikeRelation)
-    private readonly gameLikeRelationRepository: Repository<GameLikeRelation>,
+    @InjectRepository(GameLike)
+    private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameCost)
-    private gameCostRepository: Repository<GameCost>,
+    private readonly gameCostRepository: Repository<GameCost>,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    private readonly userRepository: Repository<User>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async postGameStore(
@@ -98,11 +98,10 @@ export class GameStoreService {
       where: { game: { id: gameId } },
       relations: ['cost'],
     });
-    const [relations, likeCount] =
-      await this.gameLikeRelationRepository.findAndCount({
-        where: { game: { id: gameId } },
-        relations: ['user'],
-      });
+    const [relations, likeCount] = await this.gameLikeRepository.findAndCount({
+      where: { game: { id: gameId } },
+      relations: ['user'],
+    });
     gameStore.like =
       relations.filter((relation) => relation.user.email === userEmail).length >
       0

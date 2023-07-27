@@ -9,19 +9,22 @@ import {
 } from 'typeorm';
 import { CommunityBoard } from './community.board.entity';
 import { GameStore } from './game.store.entity';
-import { PlayTimeRelation } from './game.playtime.relation.entity';
+import { PlayTime } from './game.playtime.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { GameShoppingCartItem } from './game.shoppingCart.entity';
 import { GameReview } from './game.review.entity';
-import { GameBoardLikeRelation } from './game.board.like.relation.entity';
+import { GameBoardLike } from './game.board.like.entity';
 import { GameReviewComment } from './game.review.comment.entity';
-import { GameReviewLikeRelation } from './game.review.like.relation';
+import { GameReviewLike } from './game.review.like.entity';
 import { GameBoard } from './game.board.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { CommunityBoardLikeRelation } from './community.board.like.relation.entity';
+import { CommunityBoardLike } from './community.board.like.entity';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { Game } from './game.entity';
-import { GameLikeRelation } from './game.like.relation.entity';
+import { GameLike } from './game.like.entity';
+import { GameReviewDislike } from './game.review.dislike.entity';
+import { GameReviewCommentDislike } from './game.review.comment.dislike.entity';
+import { GameReviewCommentLike } from './game.review.comment.like.entity';
 
 @Entity('User')
 export class User {
@@ -81,8 +84,8 @@ export class User {
   @OneToMany(() => CommunityBoard, (board) => board.author)
   communityBoards: CommunityBoard[];
 
-  @OneToMany(() => CommunityBoardLikeRelation, (relation) => relation.user)
-  communityBoardLikeRelations: Array<CommunityBoardLikeRelation>;
+  @OneToMany(() => CommunityBoardLike, (relation) => relation.user)
+  communityBoardLikes: Array<CommunityBoardLike>;
 
   @OneToMany(() => Game, (game) => game.author)
   games: Array<Game>;
@@ -90,8 +93,8 @@ export class User {
   @OneToMany(() => GameStore, (board) => board.author)
   gameStores: Array<GameStore>;
 
-  @OneToMany(() => PlayTimeRelation, (relation) => relation.user)
-  playtimeRelations: Array<PlayTimeRelation>;
+  @OneToMany(() => PlayTime, (relation) => relation.user)
+  playtimes: Array<PlayTime>;
 
   @OneToMany(() => GameTagRelation, (relation) => relation.user)
   gameTagRelations: Array<GameTagRelation>;
@@ -102,21 +105,27 @@ export class User {
   @OneToMany(() => GameReview, (review) => review.author)
   gameReviews: Array<GameReview>;
 
-  @OneToMany(() => GameBoardLikeRelation, (relation) => relation.user)
-  gameReviewLikeRelations: Array<GameBoardLikeRelation>;
+  @OneToMany(() => GameReviewLike, (relation) => relation.user)
+  gameReviewLikes: Array<GameReviewLike>;
+
+  @OneToMany(() => GameReviewDislike, (relation) => relation.user)
+  gameReviewDislikes: Array<GameReviewDislike>;
 
   @OneToMany(() => GameReviewComment, (comment) => comment.author)
   gameReviewComments: Array<GameReviewComment>;
 
-  @OneToMany(() => GameReviewLikeRelation, (relation) => relation.user)
-  gameReviewCommentLikeRelations: Array<GameReviewLikeRelation>;
+  @OneToMany(() => GameReviewCommentLike, (relation) => relation.user)
+  gameReviewCommentLikes: Array<GameReviewCommentLike>;
+
+  @OneToMany(() => GameReviewCommentDislike, (relation) => relation.user)
+  gameReviewCommentDislikes: Array<GameReviewCommentDislike>;
 
   @OneToMany(() => GameBoard, (board) => board.author)
   gameBoards: Array<GameBoard>;
 
-  @OneToMany(() => GameBoardLikeRelation, (relation) => relation.user)
-  gameBoardLikeRelations: Array<GameBoardLikeRelation>;
+  @OneToMany(() => GameBoardLike, (relation) => relation.user)
+  gameBoardLikes: Array<GameBoardLike>;
 
-  @OneToMany(() => GameLikeRelation, (relation) => relation.user)
-  gameLikeRelations: Array<GameLikeRelation>;
+  @OneToMany(() => GameLike, (relation) => relation.user)
+  gameLikes: Array<GameLike>;
 }

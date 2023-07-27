@@ -25,8 +25,8 @@ import { UpdateGameReviewCommentDto } from '../dto/update.game.review.comment.dt
 import { LikeAction } from 'src/common/types/likeAction.type';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('Game Review Comment')
-@Controller('game/:gameStoreId/review/:GameReviewId/comment')
+@ApiTags('GameReviewComment')
+@Controller('game/:gameId/review/:reviewId/comment')
 export class GameReviewCommentController {
   constructor(private gameReviewCommentService: GameReviewCommentService) {}
 
@@ -35,17 +35,21 @@ export class GameReviewCommentController {
   @Post()
   postGameReviewComment(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
+    @Param('reviewId') reviewId: string,
     @Body() data: CreateGameReviewCommentDto,
   ) {
     return this.gameReviewCommentService.postGameReviewComment(
       userEmail,
-      data.reviewId,
+      gameId,
+      reviewId,
       data.content,
     );
   }
 
   @ApiOperation({ summary: '리뷰에 해당하는 댓글 가져오기' })
   @ApiResponse({ type: GameReviewDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -56,61 +60,53 @@ export class GameReviewCommentController {
   })
   @Get()
   getManyGameReviewComment(
-    @Param('GameReviewId') gameReviewCommentId: string,
+    @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
+    @Param('reviewId') reviewId: string,
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
     return this.gameReviewCommentService.getManyGameReviewComment(
+      userEmail,
       { afterCursor, beforeCursor },
-      gameReviewCommentId,
+      gameId,
+      reviewId,
     );
   }
 
   @ApiOperation({ summary: '리뷰 댓글 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
+  @Patch(':commentId')
   updateGameReviewComment(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameReviewCommentId: string,
+    @Param('gameId') gameId: string,
+    @Param('reviewId') reviewId: string,
+    @Param('commentId') commentId: string,
     @Body() data: UpdateGameReviewCommentDto,
   ) {
     return this.gameReviewCommentService.updateGameReviewComment(
       userEmail,
-      gameReviewCommentId,
+      gameId,
+      reviewId,
+      commentId,
       data.content,
-    );
-  }
-
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiQuery({
-    name: 'likeAction',
-    description: '좋아요 / 싫어요',
-    example: 'like',
-  })
-  @Patch('/like/:id')
-  likeGameReviewComment(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameReviewCommentId: string,
-    @Query('likeAction') likeAction: LikeAction,
-  ) {
-    return this.gameReviewCommentService.likeGameReviewComment(
-      userEmail,
-      gameReviewCommentId,
-      likeAction,
     );
   }
 
   @ApiOperation({ summary: '리뷰 댓글 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':id')
+  @Delete(':commentId')
   deleteGameReviewComment(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameReviewCommentId: string,
+    @Param('gameId') gameId: string,
+    @Param('reviewId') reviewId: string,
+    @Param('commentId') commentId: string,
   ) {
     return this.gameReviewCommentService.deleteGameReviewComment(
       userEmail,
-      gameReviewCommentId,
+      gameId,
+      reviewId,
+      commentId,
     );
   }
 }

@@ -9,23 +9,20 @@ import {
 import { GameReview } from './game.review.entity';
 import { User } from './user.entity';
 
-@Entity('GameReviewLikeRelation')
-export class GameReviewLikeRelation {
+@Entity('GameReviewDislike')
+export class GameReviewDislike {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => GameReview, (review) => review.likeRelations, {
+  @ManyToOne(() => GameReview, (review) => review.dislikes, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'reviewId', referencedColumnName: 'id' }])
-  readonly gameReview: GameReview;
+  readonly review: GameReview;
 
-  @ManyToOne(() => User, (user) => user.gameReviewLikeRelations, {
+  @ManyToOne(() => User, (user) => user.gameReviewDislikes, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   readonly user: User;
-
-  @Column('varchar', { nullable: true })
-  likeAction: LikeAction;
 }

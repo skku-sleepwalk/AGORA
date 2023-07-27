@@ -11,9 +11,10 @@ import {
 } from 'typeorm';
 import { GameReviewComment } from './game.review.comment.entity';
 import { User } from './user.entity';
-import { GameReviewLikeRelation } from './game.review.like.relation';
+import { GameReviewLike } from './game.review.like.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
+import { GameReviewDislike } from './game.review.dislike.entity';
 
 @Entity('GameReview')
 export class GameReview {
@@ -33,10 +34,15 @@ export class GameReview {
   @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
   readonly game: Game;
 
-  @OneToMany(() => GameReviewLikeRelation, (relation) => relation.gameReview, {
+  @OneToMany(() => GameReviewLike, (relation) => relation.review, {
     cascade: true,
   })
-  likeRelations: Array<GameReviewLikeRelation>;
+  likes: Array<GameReviewLike>;
+
+  @OneToMany(() => GameReviewDislike, (relation) => relation.review, {
+    cascade: true,
+  })
+  dislikes: Array<GameReviewDislike>;
 
   @OneToMany(() => GameReviewComment, (comment) => comment.review, {
     cascade: true,

@@ -5,22 +5,22 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { CommunityBoard } from './community.board.entity';
 import { User } from './user.entity';
+import { Game } from './game.entity';
 import { LikeAction } from 'src/common/types/likeAction.type';
 
-@Entity('CommunityBoardLikeRelation')
-export class CommunityBoardLikeRelation {
+@Entity('GameLike')
+export class GameLike {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => CommunityBoard, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'boardId', referencedColumnName: 'id' }])
-  readonly board: CommunityBoard;
+  @ManyToOne(() => Game, { nullable: false, onDelete: 'CASCADE' })
+  @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
+  game: Game;
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
-  readonly user: User;
+  @JoinColumn([{ name: 'Id', referencedColumnName: 'id' }])
+  user: User;
 
   @Column('varchar', { nullable: true, default: null })
   likeAction: LikeAction;

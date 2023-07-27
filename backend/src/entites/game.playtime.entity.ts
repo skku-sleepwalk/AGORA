@@ -8,18 +8,18 @@ import {
 import { User } from './user.entity';
 import { Game } from './game.entity';
 
-@Entity('PlayTimeRelation')
-export class PlayTimeRelation {
+@Entity('PlayTime')
+export class PlayTime {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => Game, (game) => game.playtimeRelations, {
+  @ManyToOne(() => Game, (game) => game.playtimes, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
   readonly game: Game;
 
-  @ManyToOne(() => User, (user) => user.playtimeRelations, {
+  @ManyToOne(() => User, (user) => user.playtimes, {
     onDelete: 'CASCADE',
   })
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])

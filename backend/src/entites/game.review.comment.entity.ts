@@ -11,8 +11,9 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { GameReview } from './game.review.entity';
-import { GameReviewCommentLikeRelation } from './game.review.comment.like.relation';
+import { GameReviewCommentLike } from './game.review.comment.like.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { GameReviewCommentDislike } from './game.review.comment.dislike.entity';
 
 @Entity('GameReviewComment')
 export class GameReviewComment {
@@ -27,14 +28,6 @@ export class GameReviewComment {
   @Column()
   content: string;
 
-  @ApiProperty({ description: '좋아요 수', example: 3 })
-  @Column({ nullable: false, default: 0 })
-  likeCount: number;
-
-  @ApiProperty({ description: '싫어요 수', example: 4 })
-  @Column({ nullable: false, default: 0 })
-  unlikeCount: number;
-
   @ManyToOne(() => User, (user) => user.gameReviewComments, {
     onDelete: 'CASCADE',
   })
@@ -47,12 +40,15 @@ export class GameReviewComment {
   @JoinColumn([{ name: 'reviewId', referencedColumnName: 'id' }])
   readonly review: GameReview;
 
-  @OneToMany(
-    () => GameReviewCommentLikeRelation,
-    (relation) => relation.comment,
-    { cascade: true },
-  )
-  likeRelations: Array<GameReviewCommentLikeRelation>;
+  @OneToMany(() => GameReviewCommentLike, (relation) => relation.comment, {
+    cascade: true,
+  })
+  likes: Array<GameReviewCommentLike>;
+
+  @OneToMany(() => GameReviewCommentDislike, (relation) => relation.comment, {
+    cascade: true,
+  })
+  dislikes: Array<GameReviewCommentLike>;
 
   @CreateDateColumn()
   createdAt: Date;

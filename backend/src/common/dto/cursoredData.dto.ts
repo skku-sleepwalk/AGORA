@@ -3,6 +3,7 @@ import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
 import { CommunityBoardDto } from 'src/community/dto/communityBoard.dto';
 import { GameBoardDto } from 'src/game/dto/game.board.dto';
 import { GameDto } from 'src/game/dto/game.dto';
+import { GameReviewCommentDto } from 'src/game/dto/game.review.comment.dto';
 import { GameReviewDto } from 'src/game/dto/game.review.dto';
 
 class Cursor {
@@ -41,6 +42,23 @@ export class CursoredGameReviewDto {
   @IsNotEmpty()
   @IsArray()
   data: Array<GameReviewDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredGameReviewCommentDto {
+  @ApiProperty({
+    type: 'array',
+    items: {
+      $ref: getSchemaPath(GameReviewCommentDto),
+    },
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<GameReviewCommentDto>;
 
   @ApiProperty({ type: Cursor })
   @IsNotEmpty()

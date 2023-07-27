@@ -17,13 +17,13 @@ import { GameStore } from './game.store.entity';
 import { User } from './user.entity';
 import { GameReview } from './game.review.entity';
 import { GameBoard } from './game.board.entity';
-import { PlayTimeRelation } from './game.playtime.relation.entity';
+import { PlayTime } from './game.playtime.entity';
 import { GameGenre } from './game.genre.entity';
 import { GameTag } from './game.tag.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { GameDescription } from './game.description.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
-import { GameLikeRelation } from './game.like.relation.entity';
+import { GameLike } from './game.like.entity';
 
 @Entity('Game')
 export class Game {
@@ -90,17 +90,10 @@ export class Game {
   })
   boards: Array<GameBoard>;
 
-  @ApiProperty({
-    example: 4.5,
-    description: '별점(소숫점 첫째자리까지 나타냄)',
-  })
-  @Column('float', { nullable: false, default: 0 })
-  rating: number;
-
-  @OneToMany(() => PlayTimeRelation, (relation) => relation.game, {
+  @OneToMany(() => PlayTime, (relation) => relation.game, {
     cascade: true,
   })
-  readonly playtimeRelations: Array<PlayTimeRelation>;
+  readonly playtimes: Array<PlayTime>;
 
   @OneToMany(() => GameTagRelation, (relation) => relation.game, {
     cascade: true,
@@ -123,10 +116,10 @@ export class Game {
   })
   popularTags: Array<GameTag>;
 
-  @OneToMany(() => GameLikeRelation, (relation) => relation.game, {
+  @OneToMany(() => GameLike, (relation) => relation.game, {
     cascade: true,
   })
-  likeRelations: Array<GameLikeRelation>;
+  likes: Array<GameLike>;
 
   @CreateDateColumn()
   createdAt: Date;

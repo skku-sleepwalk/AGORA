@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GameBoardCategory } from './game.board.category.entity';
-import { GameBoardLikeRelation } from './game.board.like.relation.entity';
+import { GameBoardLike } from './game.board.like.entity';
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
@@ -31,10 +31,6 @@ export class GameBoard {
   @Column({ nullable: false })
   content: string;
 
-  @ApiProperty({ description: '좋아요 수', example: 3 })
-  @Column({ nullable: false, default: 0 })
-  likeCount: number;
-
   @ApiProperty({ description: '댓글 수', example: 5 })
   @Column({ nullable: false, default: 0 })
   childCount: number;
@@ -49,10 +45,10 @@ export class GameBoard {
   @DeleteDateColumn()
   deletedAt?: Date | null;
 
-  @OneToMany(() => GameBoardLikeRelation, (relation) => relation.board, {
+  @OneToMany(() => GameBoardLike, (relation) => relation.board, {
     cascade: true,
   })
-  likeRelations: Array<GameBoardLikeRelation>;
+  likes: Array<GameBoardLike>;
 
   @ManyToOne(() => Game, (game) => game.boards, {
     onDelete: 'CASCADE',

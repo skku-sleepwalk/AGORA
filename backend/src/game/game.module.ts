@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GameBoardCategory } from 'src/entites/game.board.category.entity';
 import { GameBoard } from 'src/entites/game.board.entity';
-import { GameBoardLikeRelation } from 'src/entites/game.board.like.relation.entity';
+import { GameBoardLike } from 'src/entites/game.board.like.entity';
 import { GameCost } from 'src/entites/game.cost.entity';
 import { GameGenre } from 'src/entites/game.genre.entity';
-import { PlayTimeRelation } from 'src/entites/game.playtime.relation.entity';
+import { PlayTime } from 'src/entites/game.playtime.entity';
 import { GameReviewComment } from 'src/entites/game.review.comment.entity';
-import { GameReviewCommentLikeRelation } from 'src/entites/game.review.comment.like.relation';
+import { GameReviewCommentLike } from 'src/entites/game.review.comment.like.entity';
 import { GameReview } from 'src/entites/game.review.entity';
-import { GameReviewLikeRelation } from 'src/entites/game.review.like.relation';
+import { GameReviewLike } from 'src/entites/game.review.like.entity';
 import { GameShoppingCartItem } from 'src/entites/game.shoppingCart.entity';
 import { GameStore } from 'src/entites/game.store.entity';
 import { GameTag } from 'src/entites/game.tag.entity';
@@ -32,47 +32,71 @@ import { GameBoardCategoryController } from './controllers/game.board.category.c
 import { Game } from 'src/entites/game.entity';
 import { GameService } from './services/game.service';
 import { GameContorller } from './controllers/game.controller';
-import { GameLikeRelation } from 'src/entites/game.like.relation.entity';
+import { GameLike } from 'src/entites/game.like.entity';
+import { GameReviewDislike } from 'src/entites/game.review.dislike.entity';
+import { GameReviewCommentDislike } from 'src/entites/game.review.comment.dislike.entity';
+import { GameLikeService } from './services/game.like.service';
+import { GameLikeController } from './controllers/game.like.controller';
+import { GameReviewLikeService } from './services/game.review.like.service';
+import { GameReviewLikeController } from './controllers/game.review.like.controller';
+import { GameReviewDislikeService } from './services/game.review.dislike.service';
+import { GameReviewDislikeController } from './controllers/game.review.dislike.contorller';
+import { GameReviewCommentLikeService } from './services/game.review.comment.like.service';
+import { GameReviewCommentLikeController } from './controllers/game.review.comment.like.controller';
+import { GameReviewCommentDislikeService } from './services/game.review.comment.dislike.service';
+import { GameReviewCommentDislikeController } from './controllers/game.review.comment.dislike.controller';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Game,
       GameStore,
-      GameLikeRelation,
+      GameLike,
       GameTag,
       GameTagRelation,
       GameGenre,
       GameCost,
       GameReview,
+      GameReviewDislike,
+      GameReviewLike,
       GameReviewComment,
-      GameReviewLikeRelation,
-      GameReviewCommentLikeRelation,
-      PlayTimeRelation,
+      GameReviewCommentLike,
+      GameReviewCommentDislike,
+      PlayTime,
       GameBoard,
       GameBoardCategory,
-      GameBoardLikeRelation,
+      GameBoardLike,
       GameShoppingCartItem,
       User,
     ]),
   ],
   providers: [
     GameService,
+    GameLikeService,
     GameStoreService,
     GameGenreService,
     GameTagService,
     GameReviewService,
+    GameReviewLikeService,
+    GameReviewDislikeService,
     GameReviewCommentService,
+    GameReviewCommentLikeService,
+    GameReviewCommentDislikeService,
     GameBoardService,
     GameBoardCategoryService,
   ],
   controllers: [
     GameContorller,
+    GameLikeController,
     GameStoresController,
     GameGenreController,
     GameTagController,
     GameReviewController,
+    GameReviewLikeController,
+    GameReviewDislikeController,
     GameReviewCommentController,
+    GameReviewCommentLikeController,
+    GameReviewCommentDislikeController,
     GameBoardController,
     GameBoardCategoryController,
   ],

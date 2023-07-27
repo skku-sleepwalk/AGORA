@@ -143,16 +143,6 @@ export class GameContorller {
     );
   }
 
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id/like')
-  LikeGame(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameId: string,
-  ) {
-    return this.gameService.likeGame(userEmail, gameId);
-  }
-
   @ApiOperation({ summary: '게임 태그 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Patch(':id/tag')

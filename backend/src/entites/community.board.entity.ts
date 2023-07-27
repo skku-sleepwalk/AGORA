@@ -12,7 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { CommunityCategory } from './community.category.entity';
-import { CommunityBoardLikeRelation } from './community.board.like.relation.entity';
+import { CommunityBoardLike } from './community.board.like.entity';
 import { User } from './user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -59,10 +59,10 @@ export class CommunityBoard {
   @OneToMany(() => CommunityBoard, (board) => board.parent)
   children: CommunityBoard[];
 
-  @OneToMany(() => CommunityBoardLikeRelation, (relation) => relation.board, {
+  @OneToMany(() => CommunityBoardLike, (relation) => relation.board, {
     cascade: true,
   })
-  likeRelations: Array<CommunityBoardLikeRelation>;
+  likes: Array<CommunityBoardLike>;
 
   @ManyToMany(() => CommunityCategory)
   @JoinTable({

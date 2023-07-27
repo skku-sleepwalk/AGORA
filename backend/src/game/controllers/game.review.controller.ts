@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import {
   ApiHeader,
-  ApiOkResponse,
   ApiOperation,
   ApiQuery,
   ApiResponse,
@@ -21,34 +20,35 @@ import {
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { CreateGameReviewDto } from '../dto/create.game.review.dto';
 import { GameReviewService } from '../services/game.review.service';
-import { GameReviewDto } from '../dto/game.review.dto';
 import { UpdateGameReviewDto } from '../dto/update.game.review.dto';
-import { LikeAction } from 'src/common/types/likeAction.type';
+import { CursoredGameReviewDto } from 'src/common/dto/cursoredData.dto';
+import { GameReviewDto } from '../dto/game.review.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('GameReview')
-@Controller('game/:gameStoreId/review')
+@Controller('game/:gameId/review')
 export class GameReviewController {
   constructor(private gameReviewService: GameReviewService) {}
 
   @ApiOperation({ summary: '리뷰 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Post()
-  postGameReview(
+  PostGameReview(
     @Headers('Authorization') userEmail: string,
-    @Param('gameStoreId') gameStoreId: string,
+    @Param('gameId') gameId: string,
     @Body() data: CreateGameReviewDto,
   ) {
     return this.gameReviewService.postGameReview(
       userEmail,
-      gameStoreId,
+      gameId,
       data.content,
       data.rating,
     );
   }
 
-  @ApiOperation({ summary: '게임스토어에 해당하는 리뷰 가져오기' })
-  @ApiResponse({ type: GameReviewDto })
+  @ApiOperation({ summary: '게임에 해당하는 리뷰 가져오기' })
+  @ApiResponse({ type: CursoredGameReviewDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -58,60 +58,58 @@ export class GameReviewController {
     description: '다음 페이지 커서(페이지네이션 옵션)',
   })
   @Get()
-  getManyGameReview(
-    @Param('gameStoreId') gameStoreId: string,
+  GetManyGameReview(
+    @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
     return this.gameReviewService.getManyGameReview(
+      userEmail,
       { afterCursor, beforeCursor },
-      gameStoreId,
+      gameId,
     );
   }
 
-  @ApiOperation({ summary: '게임스토어에 해당하는 리뷰 가져오기' })
+  @ApiOperation({ summary: '유져에 해당하는 리뷰 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiResponse({ type: GameReviewDto })
+  @Get('user')
+  GetOneGameReviewByUser(
+    @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
+  ) {
+    return this.gameReviewService.getOneGameReviewByUser(userEmail, gameId);
+  }
+  @ApiOperation({ summary: '리뷰 하나 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiResponse({ type: GameReviewDto })
   @Get(':id')
-  getOneGameReview(
-    @Param('gameStoreId') gameStoreId: string,
+  GetOneGameReview(
+    @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Param('id') gameReviewId: string,
   ) {
-    return this.gameReviewService.getOneGameReview(gameStoreId, gameReviewId);
+    return this.gameReviewService.getOneGameReview(
+      userEmail,
+      gameId,
+      gameReviewId,
+    );
   }
 
   @ApiOperation({ summary: '리뷰 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
+  @Patch()
   updateGameReview(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameReviewId: string,
+    @Param('gameId') gameId: string,
     @Body() data: UpdateGameReviewDto,
   ) {
     return this.gameReviewService.updateGameReview(
       userEmail,
-      gameReviewId,
+      gameId,
       data.content,
       data.rating,
-    );
-  }
-
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiQuery({
-    name: 'likeAction',
-    description: '좋아요 / 싫어요',
-    example: 'like',
-  })
-  @Patch('/like/:id')
-  likeGameReview(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameReviewId: string,
-    @Query('likeAction') likeAction: LikeAction,
-  ) {
-    return this.gameReviewService.likeGameReview(
-      userEmail,
-      gameReviewId,
-      likeAction,
     );
   }
 
@@ -120,8 +118,13 @@ export class GameReviewController {
   @Delete(':id')
   deleteGameReview(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Param('id') gameReviewId: string,
   ) {
-    return this.gameReviewService.deleteGameReview(userEmail, gameReviewId);
+    return this.gameReviewService.deleteGameReview(
+      userEmail,
+      gameId,
+      gameReviewId,
+    );
   }
 }

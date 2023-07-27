@@ -12,19 +12,19 @@ import { CommunityCategory } from './entites/community.category.entity';
 
 import { GameBoardCategory } from './entites/game.board.category.entity';
 import { GameBoard } from './entites/game.board.entity';
-import { GameBoardLikeRelation } from './entites/game.board.like.relation.entity';
+import { GameBoardLike } from './entites/game.board.like.entity';
 import { GameCost } from './entites/game.cost.entity';
 import { GameGenre } from './entites/game.genre.entity';
-import { PlayTimeRelation } from './entites/game.playtime.relation.entity';
+import { PlayTime } from './entites/game.playtime.entity';
 import { GameReviewComment } from './entites/game.review.comment.entity';
-import { GameReviewCommentLikeRelation } from './entites/game.review.comment.like.relation';
+import { GameReviewCommentLike } from './entites/game.review.comment.like.entity';
 import { GameShoppingCartItem } from './entites/game.shoppingCart.entity';
 import { GameStore } from './entites/game.store.entity';
 import { GameTag } from './entites/game.tag.entity';
 import { GameTagRelation } from './entites/game.tag.relation.entity';
 import { GameReview } from './entites/game.review.entity';
-import { GameReviewLikeRelation } from './entites/game.review.like.relation';
-import { CommunityBoardLikeRelation } from './entites/community.board.like.relation.entity';
+import { GameReviewLike } from './entites/game.review.like.entity';
+import { CommunityBoardLike } from './entites/community.board.like.entity';
 
 import { CommunityBoardService } from './community/services/community.board.service';
 import { CommunityModule } from './community/community.module';
@@ -32,9 +32,11 @@ import { GameStoreModule } from './game/game.module';
 import { Game } from './entites/game.entity';
 import { GameDescription } from './entites/game.description.entity';
 import { CommunityBoard } from './entites/community.board.entity';
-import { GameLikeRelation } from './entites/game.like.relation.entity';
+import { GameLike } from './entites/game.like.entity';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ResponseInterceptor } from './common/interceptors/api-response.interceptor';
+import { GameReviewDislike } from './entites/game.review.dislike.entity';
+import { GameReviewCommentDislike } from './entites/game.review.comment.dislike.entity';
 
 dotenv.config();
 
@@ -52,22 +54,24 @@ dotenv.config();
         User,
         CommunityBoard,
         CommunityCategory,
-        CommunityBoardLikeRelation,
+        CommunityBoardLike,
         Game,
         GameDescription,
         GameBoardCategory,
         GameBoard,
-        GameBoardLikeRelation,
+        GameBoardLike,
         GameCost,
         GameGenre,
-        PlayTimeRelation,
+        PlayTime,
         GameReview,
-        GameReviewLikeRelation,
+        GameReviewLike,
+        GameReviewDislike,
         GameReviewComment,
-        GameReviewCommentLikeRelation,
+        GameReviewCommentLike,
+        GameReviewCommentDislike,
         GameShoppingCartItem,
         GameStore,
-        GameLikeRelation,
+        GameLike,
         GameTag,
         GameTagRelation,
       ],
@@ -79,22 +83,24 @@ dotenv.config();
       User,
       CommunityBoard,
       CommunityCategory,
-      CommunityBoardLikeRelation,
+      CommunityBoardLike,
       Game,
       GameDescription,
       GameBoardCategory,
       GameBoard,
-      GameBoardLikeRelation,
+      GameBoardLike,
       GameCost,
       GameGenre,
-      PlayTimeRelation,
+      PlayTime,
       GameReview,
-      GameReviewLikeRelation,
+      GameReviewLike,
+      GameReviewDislike,
       GameReviewComment,
-      GameReviewCommentLikeRelation,
+      GameReviewCommentLike,
+      GameReviewCommentDislike,
       GameShoppingCartItem,
       GameStore,
-      GameLikeRelation,
+      GameLike,
       GameTag,
       GameTagRelation,
     ]),
