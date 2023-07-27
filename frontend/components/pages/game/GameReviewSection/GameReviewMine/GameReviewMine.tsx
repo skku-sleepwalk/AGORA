@@ -80,7 +80,6 @@ export function GameReviewMine() {
             15일 전
           </Text>
         </Group>
-
         {/* 후기 내용 */}
         <Stack spacing={0}>
           <TypographyStylesProvider

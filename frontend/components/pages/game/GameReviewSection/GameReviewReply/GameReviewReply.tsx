@@ -29,7 +29,7 @@ export interface GameReviewReplyProps {
   opened: boolean;
 }
 
-export function GameReviewReply({ opened = false }: GameReviewReplyProps) {
+export function GameReviewReply({ opened }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
