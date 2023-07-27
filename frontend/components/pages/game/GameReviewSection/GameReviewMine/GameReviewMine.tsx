@@ -70,13 +70,17 @@ export function GameReviewMine() {
 
   return (
     <Box>
-      {/* 작성 날짜 */}
-      <Group position="right">
-        <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-          15일 전
-        </Text>
-      </Group>
       <Stack className={classes.stack} spacing={"lg"}>
+        {/* 작성 날짜 */}
+        <Group position="apart">
+          <Text fz={smallScreen ? 14 : 18} fw={"bold"} color={theme.colors.blue[6]}>
+            내가 작성한 후기
+          </Text>
+          <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
+            15일 전
+          </Text>
+        </Group>
+
         {/* 후기 내용 */}
         <Stack spacing={0}>
           <TypographyStylesProvider

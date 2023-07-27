@@ -49,7 +49,7 @@ export function GameReviewSection() {
                 />
               )}
               {/* 자신이 작성한 후기를 보여주는 파트 */}
-              {hasReview && <GameReviewMine />}
+              {canReview && hasReview && <GameReviewMine />}
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}

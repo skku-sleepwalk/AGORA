@@ -51,11 +51,15 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     flexWrap: "nowrap",
     width: "100%",
     height: "100%",
-    padding: 40,
-    gap: 40,
+    padding: 20,
+    gap: 20,
   },
 
-  mainContainer_B: {
+  mainContainer: {
+    padding: 20,
+  },
+
+  scrollContainer_B: {
     flexGrow: 1,
     flexShrink: 0,
     width: 700,
@@ -64,16 +68,17 @@ export const useGameLayoutStyles = createStyles((theme) => ({
 
   rightContainer_B: {
     position: "sticky",
-    top: "9.75rem",
+    top: "8.5rem",
 
     flexShrink: 0,
     width: "25rem",
     height: "37rem",
 
     margin: 0,
+    padding: 20,
   },
 
-  mainContainer_S: {
+  scrollContainer_S: {
     flexGrow: 1,
     margin: 0,
   },
