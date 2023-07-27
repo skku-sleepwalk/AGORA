@@ -14,21 +14,8 @@ export interface PostViewerProps {
   thumbnailUrl?: string;
 }
 export default function ({ post, thumbnailUrl }: PostViewerProps) {
-  const hardcodedUser: User = {
-    id: "1",
-    name: "John Doe",
-    email: "johndoe@example.com",
-    token: 12345,
-    rating: 4.5,
-    createdAt: "2023-07-19T12:34:56Z",
-    updatedAt: "2023-07-19T13:45:22Z",
-    deletedAt: null,
-    description: "",
-  };
-  const [value, setValue] = useState(3.5);
   // 그냥 아무거나 집어넣기
   //but 나중에도 description은 비워둬야함
-  const [price, setPrice] = useState(9000);
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -88,11 +75,12 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
     opacity: 1, // 초기에는 반투명 창을 숨깁니다.
     transition: "opacity 0.3s ease",
   };
-
+  const namesArray = post.genres?.map((item) => item.name);
+  const newarray = namesArray?.join(",");
   return (
     <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
       <Text size="xs" color="gray" style={margins}>
-        어드벤쳐, 인디,RPG
+        {newarray}
       </Text>
       {/* 여기 맵이든 뭐든 해야할듯 */}
 
@@ -115,11 +103,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
         </Text>
       </div>
       <div style={containerStyle}>
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Kitten_in_Rizal_Park%2C_Manila.jpg/320px-Kitten_in_Rizal_Park%2C_Manila.jpg
-"
-          height={"400rem"}
-        />
+        <img src={post.shortDescription?.imageUrl} height={"400rem"} />
         {/* hover 시에 반투명 창과 텍스트를 떠오르게 표시합니다. */}
         {isHovered && (
           <div>

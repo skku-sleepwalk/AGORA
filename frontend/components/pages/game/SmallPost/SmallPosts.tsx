@@ -7,7 +7,6 @@ import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
 
 export function SmallPosts({ information }: any) {
   const [Title, setTitle] = useState("납량의 날 특집");
-  let data = new Array();
 
   const {
     data: postData,
@@ -16,8 +15,6 @@ export function SmallPosts({ information }: any) {
     mutate: mutatePost,
     isEmpty,
   } = information;
-  console.log(information.data);
-  console.log(postData);
 
   return (
     <div style={{ marginTop: "5rem" }}>
