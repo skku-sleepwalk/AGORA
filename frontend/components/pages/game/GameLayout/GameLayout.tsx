@@ -1,10 +1,9 @@
 import { useMediaQuery } from "@mantine/hooks";
 import { useGameLayoutStyles } from "./GameLayout.styles";
-import { ScrollArea } from "@mantine/core";
 
 export interface CommunityLayoutProps {
   photoSection?: React.ReactNode;
-  InfoSection?: React.ReactNode;
+  summarySection?: React.ReactNode;
   tapSection?: React.ReactNode;
   children?: React.ReactNode;
   rightSection?: React.ReactNode;
@@ -12,7 +11,7 @@ export interface CommunityLayoutProps {
 
 function GameLayout({
   photoSection,
-  InfoSection,
+  summarySection,
   tapSection,
   children,
   rightSection,
@@ -24,7 +23,7 @@ function GameLayout({
     <div className={classes.container}>
       <div className={classes.topContainer}>
         <div className={classes.PhotoContainer}>{photoSection}</div>
-        <div className={classes.infoContainer}>{InfoSection}</div>
+        <div className={classes.summaryContainer}>{summarySection}</div>
       </div>
       <div className={classes.tapBottomContainer}>
         <div className={classes.tapContainer}>{tapSection}</div>

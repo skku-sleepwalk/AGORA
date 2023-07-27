@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 
-export const useGameInfoStyles = createStyles((theme) => ({
+export const useGameSummaryStyles = createStyles((theme) => ({
   modal: {
     display: "flex",
     width: "21.875rem",

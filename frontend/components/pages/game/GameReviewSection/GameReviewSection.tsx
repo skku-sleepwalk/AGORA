@@ -25,7 +25,7 @@ export function GameReviewSection() {
 
   return (
     <Stack spacing={"xl"}>
-      <Text fz={32}>후기</Text>
+      <Text fz={smallScreen ? 28 : 32}>후기</Text>
       {/* 후기 컨테이너 */}
       <CardContainer className={classes.reviewSection}>
         <Stack spacing={"lg"}>

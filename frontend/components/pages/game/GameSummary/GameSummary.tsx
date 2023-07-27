@@ -12,14 +12,14 @@ import {
   Modal,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useGameInfoStyles } from "./GameInfo.styles";
+import { useGameSummaryStyles } from "./GameSummary.styles";
 import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
 
-export function GameInfo() {
-  const { classes, cx } = useGameInfoStyles();
+export function GameSummary() {
+  const { classes, cx } = useGameSummaryStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);

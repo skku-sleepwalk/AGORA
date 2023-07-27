@@ -25,7 +25,7 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     width: 800,
   },
 
-  infoContainer: {
+  summaryContainer: {
     margin: 0,
     width: 430,
     height: 500,
