@@ -45,6 +45,8 @@ import { GameReviewCommentLikeService } from './services/game.review.comment.lik
 import { GameReviewCommentLikeController } from './controllers/game.review.comment.like.controller';
 import { GameReviewCommentDislikeService } from './services/game.review.comment.dislike.service';
 import { GameReviewCommentDislikeController } from './controllers/game.review.comment.dislike.controller';
+import { GameBoardLikeService } from './services/game.board.like.service';
+import { GameBoardLikeController } from './controllers/game.board.like.controller';
 
 @Module({
   imports: [
@@ -83,6 +85,7 @@ import { GameReviewCommentDislikeController } from './controllers/game.review.co
     GameReviewCommentLikeService,
     GameReviewCommentDislikeService,
     GameBoardService,
+    GameBoardLikeService,
     GameBoardCategoryService,
   ],
   controllers: [
@@ -98,6 +101,7 @@ import { GameReviewCommentDislikeController } from './controllers/game.review.co
     GameReviewCommentLikeController,
     GameReviewCommentDislikeController,
     GameBoardController,
+    GameBoardLikeController,
     GameBoardCategoryController,
   ],
 })

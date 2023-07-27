@@ -22,7 +22,6 @@ export class GameLikeService {
     const user = await this.userRepository.findOne({
       where: { email: userEmail },
     });
-
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }

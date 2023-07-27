@@ -1,5 +1,4 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { PickType } from '@nestjs/swagger';
 import { GameReviewComment } from 'src/entites/game.review.comment.entity';
 
 export class CreateGameReviewCommentDto extends PickType(GameReviewComment, [

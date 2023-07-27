@@ -25,7 +25,7 @@ import { GameBoardDto } from '../dto/game.board.dto';
 import { UpdateGameBoardDto } from '../dto/update.game.board.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('Game Board')
+@ApiTags('GameBoard')
 @Controller('game/:gameId/board')
 export class GameBoardController {
   constructor(private gameBoardService: GameBoardService) {}
@@ -150,16 +150,6 @@ export class GameBoardController {
       data.content,
       data.categoryNames,
     );
-  }
-
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch('/like/:id')
-  LikeGameBoard(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameBoardId: string,
-  ) {
-    return this.gameBoardService.likeGameBoard(userEmail, gameBoardId);
   }
 
   @ApiOperation({ summary: '게시글 삭제' })

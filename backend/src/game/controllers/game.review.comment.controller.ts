@@ -22,7 +22,6 @@ import { GameReviewCommentService } from '../services/game.review.comment.servic
 import { CreateGameReviewCommentDto } from '../dto/create.game.review.comment.dto';
 import { GameReviewDto } from '../dto/game.review.dto';
 import { UpdateGameReviewCommentDto } from '../dto/update.game.review.comment.dto';
-import { LikeAction } from 'src/common/types/likeAction.type';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('GameReviewComment')

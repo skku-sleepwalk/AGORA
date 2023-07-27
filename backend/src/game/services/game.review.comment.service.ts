@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { LikeAction } from 'src/common/types/likeAction.type';
 import { GameReviewComment } from 'src/entites/game.review.comment.entity';
 import { GameReviewCommentLike } from 'src/entites/game.review.comment.like.entity';
 import { GameReview } from 'src/entites/game.review.entity';
@@ -137,7 +136,6 @@ export class GameReviewCommentService {
     // data 배열을 map 메서드를 사용하여 변환
     const dataModified = await this.dataModifying(userEmail, data);
 
-    // 로직 구현
     return { data: dataModified, cursor };
   }
 
