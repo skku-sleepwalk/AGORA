@@ -9,7 +9,13 @@ import {
 } from "@mantine/core";
 import CardContainer from "../../../../common/CardContainer/CardContainer";
 import { useGameNewsStyles } from "./GameNews.styles";
-import { IconHeart, IconMessages, IconPhotoOff, IconShare } from "@tabler/icons-react";
+import {
+  IconBookmark,
+  IconHeart,
+  IconMessages,
+  IconPhotoOff,
+  IconShare,
+} from "@tabler/icons-react";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import { useMediaQuery } from "@mantine/hooks";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
@@ -64,6 +70,9 @@ export function GameNews() {
             </Group>
             <InvisibleButton>
               <IconShare stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+            </InvisibleButton>
+            <InvisibleButton>
+              <IconBookmark stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
             </InvisibleButton>
           </Group>
         </Stack>

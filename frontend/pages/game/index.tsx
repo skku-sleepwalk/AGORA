@@ -30,7 +30,7 @@ function Game() {
           gameInfo
         </CardContainer>
       )}
-      {activeTab === "develop" && <GameNewsSection />}
+      {activeTab === "gameNews" && <GameNewsSection />}
       {activeTab === "review" && <GameReviewSection />}
       {activeTab === "board" && (
         <CardContainer w={"100%"} h={"50rem"}>

@@ -26,10 +26,10 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
           게임 정보
         </Tabs.Tab>
         <Tabs.Tab
-          value="develop"
+          value="gameNews"
           className={cx(
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
-            activeTab === "develop" && classes.tabItemActive
+            activeTab === "gameNews" && classes.tabItemActive
           )}
         >
           개발 과정
