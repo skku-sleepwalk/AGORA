@@ -39,8 +39,11 @@ export class GameBoardService {
 
   async boardModifying(
     userEmail: string,
-    board: GameBoardDto,
+    board: GameBoardDto | null,
   ): Promise<GameBoardDto> {
+    if (!board) {
+      return null;
+    }
     const [likeRelations, likeCount] =
       await this.gameBoardLikeRepository.findAndCount({
         where: { board: { id: board.id } },
@@ -176,10 +179,11 @@ export class GameBoardService {
   async getGameBoardByCategory(
     userEmail: string,
     _cursor: Cursor,
+    gameId: string,
     categoryNames: Array<string>,
   ) {
     const queryBuilder = this.createQueryBuilder().where(
-      'category.name IN (...categoryName)',
+      'board.gameId =: GameId AND category.name IN (...categoryName)',
       { categoryNames },
     );
     const { data, cursor } = await this.paginating(
@@ -193,12 +197,13 @@ export class GameBoardService {
   async searchGameBoard(
     userEmail: string,
     _cursor: Cursor,
+    gameId: string,
     categoryNames: Array<string>,
     search: string,
   ) {
     const queryBuilder = this.createQueryBuilder().where(
-      '(category.name IN (...categoryName)) AND (board.title :search OR board.contetn LIKE :search)',
-      { categoryNames, search: `%${search}%` },
+      'board.gameId =:GameId AND (category.name IN (...categoryName)) AND (board.title :search OR board.contetn LIKE :search)',
+      { gameId, categoryNames, search: `%${search}%` },
     );
     const { data, cursor } = await this.paginating(
       userEmail,
@@ -208,10 +213,15 @@ export class GameBoardService {
     return { data, cursor };
   }
 
-  async getChild(userEmail: string, _cursor: Cursor, parentId: string) {
+  async getChild(
+    userEmail: string,
+    _cursor: Cursor,
+    gameId: string,
+    parentId: string,
+  ) {
     const queryBuilder = this.createQueryBuilder().where(
-      'board.parentId =:parentId',
-      { parentId },
+      'board.gameId=:gameId AND board.parentId =:parentId',
+      { gameId, parentId },
     );
     const { data, cursor } = await this.paginating(
       userEmail,
@@ -219,6 +229,19 @@ export class GameBoardService {
       queryBuilder,
     );
     return { data, cursor };
+  }
+
+  async getOneGameBoard(userEmail: string, gameId: string, boardId: string) {
+    const board = this.boardModifying(
+      userEmail,
+      await this.gameBoardRepository.findOne({
+        where: { id: boardId, game: { id: gameId } },
+      }),
+    );
+    if (!board) {
+      throw new NotFoundException('게시물을 찾을 수 없습니다.');
+    }
+    return board;
   }
 
   async updateGameBoard(
@@ -317,7 +340,7 @@ export class GameBoardService {
     }
 
     // 4. 게임 삭제
-    await this.gameRepository.delete(gameId);
+    await this.gameRepository.delete(board);
 
     return true;
   }

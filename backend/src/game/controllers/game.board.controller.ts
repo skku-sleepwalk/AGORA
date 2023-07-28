@@ -68,6 +68,7 @@ export class GameBoardController {
   @Get()
   GetGameBoardByCategory(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -79,6 +80,7 @@ export class GameBoardController {
     return this.gameBoardService.getGameBoardByCategory(
       userEmail,
       { beforeCursor, afterCursor },
+      gameId,
       categoryNames,
     );
   }
@@ -104,6 +106,7 @@ export class GameBoardController {
   @ApiQuery({ name: 'q', description: '검색 내용' })
   SearchGameBoard(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -116,6 +119,7 @@ export class GameBoardController {
     return this.gameBoardService.searchGameBoard(
       userEmail,
       { beforeCursor, afterCursor },
+      gameId,
       categoryNames,
       search,
     );
@@ -137,6 +141,7 @@ export class GameBoardController {
   @Get('getChild/:parentId')
   GetChild(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Param('parentId') parentId: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
@@ -144,8 +149,21 @@ export class GameBoardController {
     return this.gameBoardService.getChild(
       userEmail,
       { beforeCursor, afterCursor },
+      gameId,
       parentId,
     );
+  }
+
+  @ApiOperation({ summary: '게시글 하나 가져오기' })
+  @ApiResponse({ type: GameBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @Get(':boardId')
+  GetOneGameBoard(
+    @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
+    @Param('boardId') boardId: string,
+  ) {
+    this.gameBoardService.getOneGameBoard(userEmail, gameId, boardId);
   }
 
   @ApiOperation({ summary: '게시글 수정' })
