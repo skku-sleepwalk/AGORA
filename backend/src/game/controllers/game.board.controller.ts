@@ -23,6 +23,7 @@ import { GameBoardService } from '../services/game.board.service';
 import { CreateGameBoardDto } from '../dto/create.game.board.dto';
 import { GameBoardDto } from '../dto/game.board.dto';
 import { UpdateGameBoardDto } from '../dto/update.game.board.dto';
+import { CursoredGameBoardDto } from 'src/common/dto/cursoredData.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('GameBoard')
@@ -35,10 +36,12 @@ export class GameBoardController {
   @Post()
   PostGameBoard(
     @Headers('Authorization') userEmail: string,
+    @Param('gameId') gameId: string,
     @Body() data: CreateGameBoardDto,
   ) {
     return this.gameBoardService.postGameBoard(
       userEmail,
+      gameId,
       data.title,
       data.content,
       data.parentId,
@@ -47,7 +50,8 @@ export class GameBoardController {
   }
 
   @ApiOperation({ summary: '게시글 카테고리별로 가져오기' })
-  @ApiResponse({ type: GameBoardDto })
+  @ApiResponse({ type: CursoredGameBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -63,6 +67,7 @@ export class GameBoardController {
   })
   @Get()
   GetGameBoardByCategory(
+    @Headers('Authorization') userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -72,13 +77,15 @@ export class GameBoardController {
     categoryNames: Array<string>,
   ) {
     return this.gameBoardService.getGameBoardByCategory(
+      userEmail,
       { beforeCursor, afterCursor },
       categoryNames,
     );
   }
 
   @ApiOperation({ summary: '게시글 검색' })
-  @ApiResponse({ type: GameBoardDto })
+  @ApiResponse({ type: CursoredGameBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Get('/search')
   @ApiQuery({
     name: 'beforeCursor',
@@ -96,6 +103,7 @@ export class GameBoardController {
   })
   @ApiQuery({ name: 'q', description: '검색 내용' })
   SearchGameBoard(
+    @Headers('Authorization') userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -106,6 +114,7 @@ export class GameBoardController {
     @Query('q') search: string,
   ) {
     return this.gameBoardService.searchGameBoard(
+      userEmail,
       { beforeCursor, afterCursor },
       categoryNames,
       search,
@@ -113,7 +122,8 @@ export class GameBoardController {
   }
 
   @ApiOperation({ summary: '자식 게시글 가져오기' })
-  @ApiResponse({ type: GameBoardDto })
+  @ApiResponse({ type: CursoredGameBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -126,11 +136,13 @@ export class GameBoardController {
   })
   @Get('getChild/:parentId')
   GetChild(
+    @Headers('Authorization') userEmail: string,
     @Param('parentId') parentId: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
   ) {
     return this.gameBoardService.getChild(
+      userEmail,
       { beforeCursor, afterCursor },
       parentId,
     );

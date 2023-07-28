@@ -28,5 +28,5 @@ export class GameBoardDto extends PickType(GameBoard, [
   @ApiProperty({ description: '좋아요 관계', type: () => Array<UserDto> })
   @IsNotEmpty()
   @IsBoolean()
-  like: boolean;
+  like?: boolean;
 }

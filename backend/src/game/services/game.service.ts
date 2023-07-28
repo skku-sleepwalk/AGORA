@@ -137,7 +137,6 @@ export class GameService {
         shortContent,
         shortImgUrl,
       });
-      await queryRunner.manager.save(Game, newGame);
 
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
@@ -165,7 +164,7 @@ export class GameService {
       // 트랜잭션 커밋
       await queryRunner.commitTransaction();
 
-      // return newGame;
+      return true;
     } catch (error) {
       // 트랜잭션 롤백
       await queryRunner.rollbackTransaction();
@@ -179,7 +178,7 @@ export class GameService {
   async getOneGame(userEmail: string, gameId: string) {
     // gameId에 해당하는 게임 데이터를 조회
     const _game: GameDto = await this.gameRepository.findOne({
-      relations: ['popularTags', 'description', 'genres'],
+      relations: ['popularTags', 'description', 'genres', 'author'],
       where: { id: gameId },
     });
     if (!_game) {
@@ -196,7 +195,8 @@ export class GameService {
     const queryBuilder = this.gameRepository
       .createQueryBuilder('game')
       .leftJoinAndSelect('game.genres', 'genres')
-      // .leftJoinAndSelect('game.store', 'store')
+      .leftJoinAndSelect('game.author', 'author')
+      .leftJoinAndSelect('game.store', 'store')
       .where('genres.name = :genreName', { genreName });
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
@@ -231,6 +231,7 @@ export class GameService {
     const queryBuilder = this.gameRepository
       .createQueryBuilder('game')
       .leftJoinAndSelect('game.genres', 'genres')
+      .leftJoinAndSelect('game.author', 'author')
       .leftJoinAndSelect('game.store', 'store')
       .leftJoinAndSelect('game.description', 'description')
       .where(
@@ -303,10 +304,14 @@ export class GameService {
 
       // 5. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
+      const existingGenres = await this.gameGenreRepository.find({
+        where: { name: In(genreNames) },
+      });
+
       for (const genreName of genreNames) {
-        const existingGenre = await this.gameGenreRepository.findOne({
-          where: { name: genreName },
-        });
+        const existingGenre = existingGenres.find(
+          (genre) => genre.name === genreName,
+        );
         if (existingGenre) {
           uniqueGenres.push(existingGenre);
         } else {

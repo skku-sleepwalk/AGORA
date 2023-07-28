@@ -31,14 +31,14 @@ export class GameDto extends PickType(Game, [
   @IsBoolean()
   like?: boolean;
 
-  // @ApiProperty({
-  //   description: '게임 스토어',
-  //   type: () => GameStoreDto,
-  //   required: false,
-  // })
-  // @IsOptional()
-  // @ValidateNested()
-  // store: GameStoreDto;
+  @ApiProperty({
+    description: '게임 스토어',
+    type: () => GameStoreDto,
+    required: false,
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  store: GameStoreDto;
 
   @ApiProperty({
     example: 4.5,
