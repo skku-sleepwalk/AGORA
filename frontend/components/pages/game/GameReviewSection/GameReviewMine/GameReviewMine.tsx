@@ -5,6 +5,7 @@ import {
   Collapse,
   Divider,
   Group,
+  Menu,
   Stack,
   Text,
   TextInput,
@@ -12,23 +13,26 @@ import {
   UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
-import { useGameReviewStyles } from "./GameReview.styles";
+import { useGameReviewMineStyles } from "./GameReviewMine.styles";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
+  IconDotsVertical,
   IconMessages,
+  IconPencil,
   IconThumbDown,
   IconThumbDownFilled,
   IconThumbUp,
   IconThumbUpFilled,
+  IconTrash,
 } from "@tabler/icons-react";
 import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameReviewEditor } from "../GameReviewEditor/GameReviewEditor";
 
-export function GameReview() {
+export function GameReviewMine() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
-  const { classes, cx } = useGameReviewStyles({ smallScreen });
+  const { classes, cx } = useGameReviewMineStyles({ smallScreen });
   const theme = useMantineTheme();
 
   // 자세히 보기 관련 로직
@@ -66,29 +70,18 @@ export function GameReview() {
 
   return (
     <Box>
-      <Divider />
       <Stack className={classes.stack} spacing={"lg"}>
-        {/* 유저 소개 및 작성 날짜 */}
-        <Group position="apart" align="flex-start">
-          <Group align="flex-end">
-            <Avatar
-              radius="xl"
-              size={smallScreen ? 30 : 46}
-              src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
-            />
-            <Stack spacing={"0.2rem"}>
-              <Text fz={smallScreen ? 14 : 18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
-              <Text fz={smallScreen ? 12 : 14} color={theme.colors.blue[4]}>
-                15일 동안 30시간 플레이
-              </Text>
-            </Stack>
-          </Group>
+        {/* 작성 날짜 */}
+        <Group position="apart">
+          <Text fz={smallScreen ? 14 : 18} fw={"bold"} color={theme.colors.blue[6]}>
+            내가 작성한 후기
+          </Text>
           <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
             15일 전
           </Text>
         </Group>
         {/* 후기 내용 */}
-        <Stack className={classes.marginLeft} spacing={0}>
+        <Stack spacing={0}>
           <TypographyStylesProvider
             className={cx(classes.reviewTypo, !viewMore && classes.limitHeight)}
             ref={overflowRef}
@@ -112,7 +105,7 @@ export function GameReview() {
           )}
         </Stack>
         {/* 후기 하단 버튿들 */}
-        <Group className={classes.marginLeft} position="apart">
+        <Group position="apart">
           <Button
             className={classes.button}
             size="xs"
@@ -156,10 +149,26 @@ export function GameReview() {
                 1
               </Group>
             </Button>
+            <Menu shadow="md" width={120} position="bottom-end" offset={10}>
+              <Menu.Target>
+                <UnstyledButton>
+                  <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Item icon={<IconPencil size={18} stroke={2} />} className={classes.menuItem}>
+                  수정하기
+                </Menu.Item>
+                <Menu.Divider />
+                <Menu.Item icon={<IconTrash size={18} stroke={2} />} className={classes.menuItem}>
+                  삭제하기
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           </Group>
         </Group>
         {/* 후기 답글 */}
-        <Collapse in={opened} className={classes.marginLeft}>
+        <Collapse in={opened}>
           {/* 후기 답글 작성 파트 */}
           <Divider />
           <Group className={classes.myReviewGroup}>
