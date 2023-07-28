@@ -26,15 +26,12 @@ import { GameReview } from './entites/game.review.entity';
 import { GameReviewLike } from './entites/game.review.like.entity';
 import { CommunityBoardLike } from './entites/community.board.like.entity';
 
-import { CommunityBoardService } from './community/services/community.board.service';
 import { CommunityModule } from './community/community.module';
 import { GameStoreModule } from './game/game.module';
 import { Game } from './entites/game.entity';
 import { GameDescription } from './entites/game.description.entity';
 import { CommunityBoard } from './entites/community.board.entity';
 import { GameLike } from './entites/game.like.entity';
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { ResponseInterceptor } from './common/interceptors/api-response.interceptor';
 import { GameReviewDislike } from './entites/game.review.dislike.entity';
 import { GameReviewCommentDislike } from './entites/game.review.comment.dislike.entity';
 
