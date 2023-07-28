@@ -1,6 +1,10 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameNewsSectionStyles = createStyles((theme) => ({
+  displayNone: {
+    display: "none",
+  },
+
   button: {
     borderRadius: theme.radius.md,
     transition: "background-color 0.2s ease-in",
@@ -18,7 +22,7 @@ export const useGameNewsSectionStyles = createStyles((theme) => ({
     transition: "transform 0.2s ease-in",
   },
 
-  group: {
+  marginTop: {
     marginTop: "3rem",
   },
 }));

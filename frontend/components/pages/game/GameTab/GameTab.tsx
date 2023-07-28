@@ -1,7 +1,8 @@
 import { Tabs } from "@mantine/core";
 import { useGameTabStyles } from "./GameTab.styles";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useContext } from "react";
 import { useMediaQuery } from "@mantine/hooks";
+import { TabClicklContext } from "../../../../pages/game";
 
 interface GameTabProps {
   activeTab: string | null;
@@ -12,6 +13,7 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
   const { classes, cx } = useGameTabStyles();
 
   const smallScreen = useMediaQuery("(max-width: 780px)");
+  const handleScroll = useContext(TabClicklContext);
 
   return (
     <Tabs value={activeTab} onTabChange={setActiveTab}>
@@ -22,6 +24,7 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
             activeTab === "gameInfo" && classes.tabItemActive
           )}
+          onClick={handleScroll.ontabClickFast}
         >
           게임 정보
         </Tabs.Tab>
@@ -31,8 +34,9 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
             activeTab === "gameNews" && classes.tabItemActive
           )}
+          onClick={handleScroll.ontabClickFast}
         >
-          개발 과정
+          게임 소식
         </Tabs.Tab>
         <Tabs.Tab
           value="review"
@@ -40,6 +44,7 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
             activeTab === "review" && classes.tabItemActive
           )}
+          onClick={handleScroll.ontabClickFast}
         >
           후기
         </Tabs.Tab>
@@ -49,6 +54,7 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
             activeTab === "board" && classes.tabItemActive
           )}
+          onClick={handleScroll.ontabClickFast}
         >
           게시판
         </Tabs.Tab>

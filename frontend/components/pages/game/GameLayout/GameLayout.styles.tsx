@@ -32,12 +32,18 @@ export const useGameLayoutStyles = createStyles((theme) => ({
     flexGrow: 1,
   },
 
-  tapBottomContainer: {
+  tabBottomContainer: {
+    position: "relative",
     width: "100%",
     height: "100%",
   },
 
-  tapContainer: {
+  anchor: {
+    position: "absolute",
+    top: "-4.313rem", // 탭 클릭시 이동하는 위치를 위한 것
+  },
+
+  tabContainer: {
     position: "sticky",
     top: "4.313rem",
 
