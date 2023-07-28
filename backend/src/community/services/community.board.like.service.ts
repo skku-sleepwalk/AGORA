@@ -4,18 +4,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameBoard } from 'src/entites/game.board.entity';
-import { GameBoardLike } from 'src/entites/game.board.like.entity';
+import { CommunityBoard } from 'src/entites/community.board.entity';
+import { CommunityBoardLike } from 'src/entites/community.board.like.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class CommunityBoardLikeService {
   constructor(
-    @InjectRepository(GameBoardLike)
-    private readonly gameBoardLikeRepository: Repository<GameBoardLike>,
-    @InjectRepository(GameBoard)
-    private readonly gameBoardRepository: Repository<GameBoard>,
+    @InjectRepository(CommunityBoardLike)
+    private readonly communityBoardLikeRepository: Repository<CommunityBoardLike>,
+    @InjectRepository(CommunityBoard)
+    private readonly communityBoardRepository: Repository<CommunityBoard>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -28,14 +28,14 @@ export class CommunityBoardLikeService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const board = await this.gameBoardRepository.findOne({
+    const board = await this.communityBoardRepository.findOne({
       where: { id: boardId },
     });
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
 
-    const existingLike = await this.gameBoardLikeRepository.findOne({
+    const existingLike = await this.communityBoardLikeRepository.findOne({
       where: {
         user: { email: userEmail },
         board: { id: boardId },
@@ -44,12 +44,12 @@ export class CommunityBoardLikeService {
     if (existingLike) {
       throw new ConflictException('이미 좋아요가 존재합니다.');
     }
-    await this.gameBoardLikeRepository.save({ user, board });
+    await this.communityBoardLikeRepository.save({ user, board });
     return true;
   }
 
   async deleteGameBoardLike(userEmail: string, boardId: string) {
-    const like = await this.gameBoardLikeRepository.findOne({
+    const like = await this.communityBoardLikeRepository.findOne({
       where: {
         user: { email: userEmail },
         board: { id: boardId },
@@ -58,6 +58,6 @@ export class CommunityBoardLikeService {
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }
-    await this.gameBoardLikeRepository.delete(like);
+    await this.communityBoardLikeRepository.delete(like);
   }
 }
