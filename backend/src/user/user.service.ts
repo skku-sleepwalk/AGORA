@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
-import bcrypt from 'bcrypt';
+// import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -14,7 +14,7 @@ export class UserService {
   async postUsers(
     email: string,
     name: string,
-    password: string,
+    // password: string,
     description: string,
   ) {
     const user = await this.userRepository.findOne({ where: { email } });
@@ -23,11 +23,11 @@ export class UserService {
       throw new ForbiddenException('이미 존재하는 사용자입니다.');
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    // const hashedPassword = await bcrypt.hash(password, 12);
     return this.userRepository.save({
       email,
       name,
-      password: hashedPassword,
+      // password: hashedPassword,
       description,
     });
   }

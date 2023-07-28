@@ -30,7 +30,7 @@ export class UsersController {
     return this.userService.postUsers(
       data.email,
       data.name,
-      data.password,
+      // data.password,
       data.description,
     );
   }

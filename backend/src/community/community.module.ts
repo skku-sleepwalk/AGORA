@@ -8,12 +8,28 @@ import { CommunityBoardController } from './controllers/community.board.controll
 import { CommunityCategoryController } from './controllers/community.category.controller';
 import { User } from 'src/entites/user.entity';
 import { CommunityBoardService } from './services/community.board.service';
+import { CommunityBoardLike } from 'src/entites/community.board.like.entity';
+import { CommunityBoardLikeService } from './services/community.board.like.service';
+import { CommunityBoardLikeController } from './controllers/community.board.like.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CommunityBoard, CommunityCategory, User]),
+    TypeOrmModule.forFeature([
+      CommunityBoard,
+      CommunityCategory,
+      CommunityBoardLike,
+      User,
+    ]),
   ],
-  providers: [CommunityBoardService, CommunityCategoryService],
-  controllers: [CommunityBoardController, CommunityCategoryController],
+  providers: [
+    CommunityBoardService,
+    CommunityBoardLikeService,
+    CommunityCategoryService,
+  ],
+  controllers: [
+    CommunityBoardController,
+    CommunityBoardLikeController,
+    CommunityCategoryController,
+  ],
 })
 export class CommunityModule {}

@@ -13,7 +13,7 @@ import { CommunityBoardLikeService } from '../services/community.board.like.serv
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('CommunityBoard')
 @Controller('community/board/:boardId/like')
-export class GameBoardLikeController {
+export class CommunityBoardLikeController {
   constructor(private communityBoardLikeService: CommunityBoardLikeService) {}
 
   @ApiOperation({ summary: '좋아요 생성' })
