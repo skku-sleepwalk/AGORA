@@ -12,13 +12,17 @@ export class GameBoardDto extends PickType(GameBoard, [
   'id',
   'title',
   'content',
-  'childCount',
   'createdAt',
 ]) {
   @ApiProperty({ description: '작성자 정보', type: () => UserDto })
   @IsNotEmpty()
   @ValidateNested()
   author: UserDto;
+
+  @ApiProperty({ description: '댓글 수', example: 2 })
+  @IsNotEmpty()
+  @IsNumber()
+  childCount?: number;
 
   @ApiProperty({ description: '좋아요 수', example: 3 })
   @IsNotEmpty()

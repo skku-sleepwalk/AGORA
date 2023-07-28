@@ -47,15 +47,9 @@ export class CommunityBoardController {
     );
   }
 
-  @ApiOperation({ summary: '게시글 하나 가져오기' })
-  @ApiResponse({ type: CommunityBoardDto })
-  @Get(':id')
-  getCommunityBoard(@Param('id') id: string) {
-    return '하나 가져왔음';
-  }
-
   @ApiOperation({ summary: '게시글 카테고리별로 가져오기' })
   @ApiResponse({ type: CursoredCommunityBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -70,7 +64,8 @@ export class CommunityBoardController {
     required: true,
   })
   @Get()
-  getCommunityBoardByCategory(
+  GetCommunityBoardByCategory(
+    @Headers('Authorization') userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -79,12 +74,16 @@ export class CommunityBoardController {
     )
     categoryNames: Array<string>,
   ) {
-    return '여러개 가져왔음';
+    return this.communityBoardService.getCommunityBoardByCategory(
+      userEmail,
+      { beforeCursor, afterCursor },
+      categoryNames,
+    );
   }
 
   @ApiOperation({ summary: '게시글 검색' })
   @ApiResponse({ type: CursoredCommunityBoardDto })
-  @Get('/search')
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
     description: '이전 페이지 커서(페이지네이션 옵션)',
@@ -100,7 +99,9 @@ export class CommunityBoardController {
     description: '카테고리 이름들',
   })
   @ApiQuery({ name: 'q', description: '검색 내용' })
+  @Get('/search')
   searchCommunityBoard(
+    @Headers('Authorization') userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query(
@@ -110,10 +111,16 @@ export class CommunityBoardController {
     categoryNames: Array<string>,
     @Query('q') search: string,
   ) {
-    return;
+    return this.communityBoardService.searchBoard(
+      userEmail,
+      { beforeCursor, afterCursor },
+      categoryNames,
+      search,
+    );
   }
 
   @ApiOperation({ summary: '자식 게시글 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiResponse({ type: CursoredCommunityBoardDto })
   @ApiQuery({
     name: 'beforeCursor',
@@ -126,42 +133,54 @@ export class CommunityBoardController {
     required: false,
   })
   @Get('getChild/:parentId')
-  getChild(
+  GetChild(
+    @Headers('Authorization') userEmail: string,
     @Param('parentId') parentId: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
   ) {
-    return;
+    return this.communityBoardService.getChild(
+      userEmail,
+      { beforeCursor, afterCursor },
+      parentId,
+    );
+  }
+
+  @ApiOperation({ summary: '게시글 하나 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiResponse({ type: CommunityBoardDto })
+  @Get(':boardId')
+  getCommunityBoard(
+    @Headers('Authorization') userEmail: string,
+    @Param('boardId') boardId: string,
+  ) {
+    return this.communityBoardService.getOneBoard(userEmail, boardId);
   }
 
   @ApiOperation({ summary: '게시글 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
+  @Patch(':boardId')
   updateCommunityBoard(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Param('boardId') boardId: string,
     @Body() data: UpdateCommunityBoardDto,
   ) {
-    return;
-  }
-
-  @ApiOperation({ summary: '좋아요' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch('/like/:id')
-  likeCommunityBoard(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
-  ) {
-    return;
+    return this.communityBoardService.updateCommunityBoard(
+      userEmail,
+      boardId,
+      data.title,
+      data.content,
+      data.categoryNames,
+    );
   }
 
   @ApiOperation({ summary: '게시글 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':id')
+  @Delete(':boardId')
   deleteCommunityBoard(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Param('boardId') boardId: string,
   ) {
-    return;
+    return this.communityBoardService.deleteGameBoard(userEmail, boardId);
   }
 }

@@ -163,8 +163,6 @@ export class GameService {
 
       // 트랜잭션 커밋
       await queryRunner.commitTransaction();
-
-      return true;
     } catch (error) {
       // 트랜잭션 롤백
       await queryRunner.rollbackTransaction();
@@ -431,7 +429,5 @@ export class GameService {
 
     // 4. 게임 삭제
     await this.gameRepository.delete(gameId);
-
-    return true;
   }
 }

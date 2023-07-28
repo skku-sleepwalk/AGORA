@@ -31,9 +31,9 @@ export class GameBoard {
   @Column({ nullable: false })
   content: string;
 
-  @ApiProperty({ description: '댓글 수', example: 5 })
-  @Column({ nullable: false, default: 0 })
-  childCount: number;
+  // @ApiProperty({ description: '댓글 수', example: 5 })
+  // @Column({ nullable: false, default: 0 })
+  // childCount: number;
 
   @ApiProperty({ description: '생성일' })
   @CreateDateColumn()

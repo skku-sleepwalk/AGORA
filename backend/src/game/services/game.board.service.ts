@@ -37,6 +37,25 @@ export class GameBoardService {
       .leftJoinAndSelect('board.category', 'category');
   }
 
+  async getChildCount(parentId: string): Promise<number> {
+    if (!parentId) {
+      return 0; // parentId가 제공되지 않으면 0을 반환하여 자식이 없음을 표시합니다.
+    }
+
+    const [children, count] = await this.gameBoardRepository.findAndCount({
+      where: { parent: { id: parentId } },
+    });
+
+    let totalCount = count; // 즉시 하위 항목들의 개수로 totalCount를 초기화합니다.
+
+    for (const child of children) {
+      const childCount = await this.getChildCount(child.id); // 각 자식에 대해 getChildCount를 재귀적으로 호출하여 하위 항목들의 개수를 얻습니다.
+      totalCount += childCount; // 각 자식의 하위 항목들의 개수를 totalCount에 더하여 총 하위 항목들의 개수를 구합니다.
+    }
+
+    return totalCount;
+  }
+
   async boardModifying(
     userEmail: string,
     board: GameBoardDto | null,
@@ -57,11 +76,13 @@ export class GameBoardService {
         ? true
         : false;
 
+    const childCount = await this.getChildCount(board.id);
     // game 데이터에 like 속성 추가하여 반환
     return {
       ...board,
       like,
       likeCount,
+      childCount,
     };
   }
 
@@ -183,8 +204,8 @@ export class GameBoardService {
     categoryNames: Array<string>,
   ) {
     const queryBuilder = this.createQueryBuilder().where(
-      'board.gameId =: GameId AND category.name IN (...categoryName)',
-      { categoryNames },
+      'board.gameId = :gameId AND category.name IN (...categoryName)',
+      { gameId, categoryNames },
     );
     const { data, cursor } = await this.paginating(
       userEmail,
@@ -331,15 +352,15 @@ export class GameBoardService {
       relations: ['author'],
     });
     if (!board) {
-      throw new NotFoundException('게시판을 찾을 수 없습니다.');
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
 
-    // 3. 현재 유저가 해당 게임의 작성자인지 확인
+    // 3. 현재 유저가 해당 게시글의 작성자인지 확인
     if (board.author.id !== user.id) {
-      throw new ForbiddenException('해당 게임의 작성자가 아닙니다.');
+      throw new ForbiddenException('해당 게시글의 작성자가 아닙니다.');
     }
 
-    // 4. 게임 삭제
+    // 4. 게시글 삭제
     await this.gameRepository.delete(board);
 
     return true;

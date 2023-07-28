@@ -10,7 +10,7 @@ import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class GameBoardLikeService {
+export class CommunityBoardLikeService {
   constructor(
     @InjectRepository(GameBoardLike)
     private readonly gameBoardLikeRepository: Repository<GameBoardLike>,
@@ -20,7 +20,7 @@ export class GameBoardLikeService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async postGameBoardLike(userEmail: string, gameId: string, boardId: string) {
+  async postGameBoardLike(userEmail: string, boardId: string) {
     const user = await this.userRepository.findOne({
       where: { email: userEmail },
     });
@@ -29,7 +29,7 @@ export class GameBoardLikeService {
     }
 
     const board = await this.gameBoardRepository.findOne({
-      where: { id: boardId, game: { id: gameId } },
+      where: { id: boardId },
     });
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
@@ -38,7 +38,7 @@ export class GameBoardLikeService {
     const existingLike = await this.gameBoardLikeRepository.findOne({
       where: {
         user: { email: userEmail },
-        board: { id: boardId, game: { id: gameId } },
+        board: { id: boardId },
       },
     });
     if (existingLike) {
@@ -48,15 +48,11 @@ export class GameBoardLikeService {
     return true;
   }
 
-  async deleteGameBoardLike(
-    userEmail: string,
-    gameId: string,
-    boardId: string,
-  ) {
+  async deleteGameBoardLike(userEmail: string, boardId: string) {
     const like = await this.gameBoardLikeRepository.findOne({
       where: {
         user: { email: userEmail },
-        board: { id: boardId, game: { id: gameId } },
+        board: { id: boardId },
       },
     });
     if (!like) {
