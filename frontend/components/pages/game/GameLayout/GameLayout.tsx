@@ -1,10 +1,12 @@
 import { useMediaQuery } from "@mantine/hooks";
 import { useGameLayoutStyles } from "./GameLayout.styles";
+import { useRef } from "react";
 
 export interface CommunityLayoutProps {
   photoSection?: React.ReactNode;
   summarySection?: React.ReactNode;
-  tapSection?: React.ReactNode;
+  anchorSection?: React.ReactNode;
+  tabSection?: React.ReactNode;
   children?: React.ReactNode;
   rightSection?: React.ReactNode;
 }
@@ -12,7 +14,8 @@ export interface CommunityLayoutProps {
 function GameLayout({
   photoSection,
   summarySection,
-  tapSection,
+  anchorSection,
+  tabSection,
   children,
   rightSection,
 }: CommunityLayoutProps) {
@@ -25,8 +28,9 @@ function GameLayout({
         <div className={classes.PhotoContainer}>{photoSection}</div>
         <div className={classes.summaryContainer}>{summarySection}</div>
       </div>
-      <div className={classes.tapBottomContainer}>
-        <div className={classes.tapContainer}>{tapSection}</div>
+      <div className={classes.tabBottomContainer}>
+        <div className={classes.anchor}>{anchorSection}</div>
+        <div className={classes.tabContainer}>{tabSection}</div>
         <div className={classes.bottomContainer}>
           <div className={cx(smallScreen ? classes.mainContainer_S : classes.mainContainer_B)}>
             {children}
