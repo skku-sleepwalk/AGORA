@@ -11,7 +11,7 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoN
 import { CommunityBoardLikeService } from '../services/community.board.like.service';
 
 @UseInterceptors(UndefinedToNullInterceptor)
-@ApiTags('CommunityBoard')
+@ApiTags('Community')
 @Controller('community/board/:boardId/like')
 export class CommunityBoardLikeController {
   constructor(private communityBoardLikeService: CommunityBoardLikeService) {}
