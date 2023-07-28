@@ -10,6 +10,7 @@ import { Rightsection } from "../../components/pages/game/RightSection/RightSect
 import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
 import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
+import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 
 export const TabClicklContext = createContext({
   ontabClick: () => {},
@@ -38,11 +39,7 @@ function Game() {
         tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
         rightSection={<Rightsection />}
       >
-        {activeTab === "gameInfo" && (
-          <CardContainer w={"100%"} h={"50rem"}>
-            gameInfo
-          </CardContainer>
-        )}
+        {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
         {activeTab === "board" && (
