@@ -10,8 +10,8 @@ export class GameBoardCategoryService {
     private gameBoardCategoryRepository: Repository<GameBoardCategory>,
   ) {}
 
-  postGameBoardCategory(userEmail: string, name: string) {
-    // 로직 구현
+  postGameBoardCategory(name: string) {
+    this.gameBoardCategoryRepository.save({ name });
     return;
   }
 }

@@ -13,6 +13,6 @@ export class CommunityCategoryController {
   @ApiOperation({ summary: '커뮤니티 카테고리 생성' })
   @Post()
   postCommunityCategory(@Body() data: CreateCommunityCategoryDto) {
-    return;
+    return this.communityCategoryService.postCommunityBoardCategory(data.name);
   }
 }
