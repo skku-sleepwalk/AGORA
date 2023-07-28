@@ -293,8 +293,32 @@ export class GameBoardService {
     }
   }
 
-  deleteGameBoard(userEmail: string, gameBoardId: string) {
-    // 로직 구현
-    return;
+  async deleteGameBoard(userEmail: string, gameId: string, boardId: string) {
+    // 1. 현재 유저 가져오기
+    const user = await this.userRepository.findOne({
+      where: { email: userEmail },
+    });
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    // 2. GameBoard 엔티티 가져오기
+    const board = await this.gameBoardRepository.findOne({
+      where: { id: boardId, game: { id: gameId } },
+      relations: ['author'],
+    });
+    if (!board) {
+      throw new NotFoundException('게시판을 찾을 수 없습니다.');
+    }
+
+    // 3. 현재 유저가 해당 게임의 작성자인지 확인
+    if (board.author.id !== user.id) {
+      throw new ForbiddenException('해당 게임의 작성자가 아닙니다.');
+    }
+
+    // 4. 게임 삭제
+    await this.gameRepository.delete(gameId);
+
+    return true;
   }
 }

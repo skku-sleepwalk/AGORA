@@ -150,14 +150,17 @@ export class GameBoardController {
 
   @ApiOperation({ summary: '게시글 수정' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
+  @Patch(':boardId')
   UpdateGameBoard(
     @Headers('Authorization') userEmail: string,
-    @Param('id') id: string,
+    @Param('gameId') gameId: string,
+    @Param('boardId') boardId: string,
     @Body() data: UpdateGameBoardDto,
   ) {
     return this.gameBoardService.updateGameBoard(
       userEmail,
+      gameId,
+      boardId,
       data.title,
       data.content,
       data.categoryNames,
@@ -166,11 +169,12 @@ export class GameBoardController {
 
   @ApiOperation({ summary: '게시글 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':id')
+  @Delete(':boardId')
   DeleteGameBoard(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameBoardId: string,
+    @Param('gameId') gameId: string,
+    @Param('boardId') boardId: string,
   ) {
-    return this.gameBoardService.deleteGameBoard(userEmail, gameBoardId);
+    return this.gameBoardService.deleteGameBoard(userEmail, gameId, boardId);
   }
 }
