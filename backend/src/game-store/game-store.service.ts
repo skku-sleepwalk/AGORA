@@ -745,6 +745,7 @@ export class GameStoreService {
 
     const queryBuilder = this.gameStoreRepository
       .createQueryBuilder('gamestore')
+      .leftJoinAndSelect('gamestore.author', 'author')
       .leftJoinAndSelect('gamestore.shortDescription', 'shortDescription')
       .leftJoinAndSelect('gamestore.genres', 'genres')
       .leftJoinAndSelect('gamestore.popularTags', 'popularTags')
