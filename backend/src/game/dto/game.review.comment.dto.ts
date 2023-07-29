@@ -5,7 +5,7 @@ import { GameReviewComment } from 'src/entites/game.review.comment.entity';
 
 export class GameReviewCommentDto extends PickType(
   PartialType(GameReviewComment),
-  ['id', 'content', 'createdAt'],
+  ['id', 'content', 'createdAt', 'updatedAt', 'deletedAt'],
 ) {
   @IsNotEmpty()
   @ApiProperty({ description: '작성자 정보', type: () => UserDto })

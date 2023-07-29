@@ -1,10 +1,4 @@
-import {
-  Column,
-  Entity,
-  ManyToMany,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { GameStore } from './game.store.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { ApiProperty } from '@nestjs/swagger';
@@ -22,7 +16,4 @@ export class GameTag {
 
   @OneToMany(() => GameTagRelation, (relation) => relation.tag)
   readonly relations: Array<GameTagRelation>;
-
-  @ManyToMany(() => Game, (game) => game.popularTags)
-  popularedGames: Array<Game>;
 }

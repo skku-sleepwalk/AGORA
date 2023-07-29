@@ -38,6 +38,15 @@ export class GameService {
     private dataSource: DataSource,
   ) {}
 
+  getQueryBuilder() {
+    return this.gameRepository
+      .createQueryBuilder('game')
+      .leftJoinAndSelect('game.genres', 'genres')
+      .leftJoinAndSelect('game.author', 'author')
+      .leftJoinAndSelect('game.store', 'store')
+      .leftJoinAndSelect('game.description', 'description');
+  }
+
   calculateRating([reviews, reviewCount]: [Array<GameReview>, number]) {
     return reviews.length > 0
       ? parseFloat(
@@ -69,12 +78,33 @@ export class GameService {
         : false
       : false;
 
-    // 별점 체크
+    // 별점 확인
     const rating = this.calculateRating(
       await this.gameReviewRepository.findAndCount({
         where: { game: { id: game.id } },
       }),
     );
+
+    // tags 순위 매겨서 5개 반환
+    const relations = await this.gameTagRelationRepository.find({
+      where: { game: { id: game.id } },
+      relations: ['tag'],
+    });
+    const tagCountMap = new Map<string, number>();
+
+    for (const relation of relations) {
+      const tagName = relation.tag.name;
+      tagCountMap.set(tagName, (tagCountMap.get(tagName) || 0) + 1);
+    }
+    const sortedTags = Array.from(tagCountMap.entries()).sort(
+      (a, b) => b[1] - a[1],
+    );
+
+    const top5Tags = sortedTags.slice(0, 5).map(([tagName]) => tagName);
+    const popularTags = top5Tags.map((tagName) => {
+      const relation = relations.find((r) => r.tag.name === tagName);
+      return relation.tag;
+    });
 
     // game 데이터에 like 속성 추가하여 반환
     return {
@@ -82,6 +112,7 @@ export class GameService {
       like,
       likeCount,
       rating,
+      popularTags,
     };
   }
 
@@ -193,13 +224,10 @@ export class GameService {
 
   async getGameByGenre(userEmail: string, _cursor: Cursor, genreName: string) {
     // 게임 레포지토리에서 genreName에 해당하는 게임을 조회하는 쿼리 빌더 생성
-    const queryBuilder = this.gameRepository
-      .createQueryBuilder('game')
-      .leftJoinAndSelect('game.genres', 'genres')
-      .leftJoinAndSelect('game.author', 'author')
-      .leftJoinAndSelect('game.store', 'store')
-      .leftJoinAndSelect('game.description', 'description')
-      .where('genres.name = :genreName', { genreName });
+    const queryBuilder = this.getQueryBuilder().where(
+      'genres.name = :genreName',
+      { genreName },
+    );
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
       entity: Game,
@@ -230,16 +258,10 @@ export class GameService {
     search: string,
   ) {
     // 게임 레포지토리에서 genreName에 해당하는 게임을 조회하는 쿼리 빌더 생성
-    const queryBuilder = this.gameRepository
-      .createQueryBuilder('game')
-      .leftJoinAndSelect('game.genres', 'genres')
-      .leftJoinAndSelect('game.author', 'author')
-      .leftJoinAndSelect('game.store', 'store')
-      .leftJoinAndSelect('game.description', 'description')
-      .where(
-        '(genres.name IN (:...genreNames)) AND (game.title LIKE :search OR game.shortContent LIKE :search OR store.title LIKE :search OR description.content LIKE :search)',
-        { genreNames, search: `%${search}%` },
-      );
+    const queryBuilder = this.getQueryBuilder().where(
+      '(genres.name IN (:...genreNames)) AND (game.title LIKE :search OR game.shortContent LIKE :search OR store.title LIKE :search OR description.content LIKE :search)',
+      { genreNames, search: `%${search}%` },
+    );
 
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {

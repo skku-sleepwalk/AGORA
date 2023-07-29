@@ -9,6 +9,7 @@ import { Game } from 'src/entites/game.entity';
 import { GameDescriptionDto } from './game.description.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';
+import { UserDto } from 'src/common/dto/user.dto';
 
 export class GameDto extends PickType(Game, [
   'id',
@@ -41,6 +42,15 @@ export class GameDto extends PickType(Game, [
   store: GameStoreDto;
 
   @ApiProperty({
+    description: '작성자(추후 수정예정) 정보',
+    type: () => UserDto,
+    required: false,
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  author: UserDto;
+
+  @ApiProperty({
     example: 4.5,
     description: '별점(소숫점 첫째자리까지 나타냄)',
   })
@@ -55,5 +65,5 @@ export class GameDto extends PickType(Game, [
   @ApiProperty({ description: '인기 태그들', type: () => GameTagDto })
   @IsNotEmpty()
   @ValidateNested()
-  popularTags: Array<GameTagDto>;
+  popularTags?: Array<GameTagDto>;
 }

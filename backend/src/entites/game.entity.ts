@@ -108,14 +108,6 @@ export class Game {
   })
   genres: Array<GameGenre>;
 
-  @ManyToMany(() => GameTag, (tag) => tag.popularedGames)
-  @JoinTable({
-    name: 'popularTags',
-    joinColumn: { name: 'tagId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'gameStoreId', referencedColumnName: 'id' },
-  })
-  popularTags: Array<GameTag>;
-
   @OneToMany(() => GameLike, (relation) => relation.game, {
     cascade: true,
   })
