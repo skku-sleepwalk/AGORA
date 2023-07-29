@@ -195,6 +195,7 @@ export class GameService {
       .leftJoinAndSelect('game.genres', 'genres')
       .leftJoinAndSelect('game.author', 'author')
       .leftJoinAndSelect('game.store', 'store')
+      .leftJoinAndSelect('game.description', 'description')
       .where('genres.name = :genreName', { genreName });
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {

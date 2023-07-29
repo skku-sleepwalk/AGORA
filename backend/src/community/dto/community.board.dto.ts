@@ -1,20 +1,31 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
 import { CommunityBoard } from 'src/entites/community.board.entity';
+import { CommunityCategory } from 'src/entites/community.category.entity';
 
 export class CommunityBoardDto extends PickType(CommunityBoard, [
   'id',
   'title',
-  'parent',
   'content',
-
-  'categories',
   'createdAt',
+  'updatedAt',
+  'deletedAt',
 ]) {
   @IsNotEmpty()
   @ApiProperty({ description: '작성자 정보', type: () => UserDto })
   author: UserDto;
+
+  @IsOptional()
+  @ApiProperty({
+    description: '부모 게시글 정보',
+    type: () => CommunityBoardDto,
+  })
+  parent: CommunityBoardDto;
+
+  @IsNotEmpty()
+  @ApiProperty({ description: '카테고리 정보', type: () => CommunityCategory })
+  categories: Array<CommunityCategory>;
 
   @ApiProperty({ description: '댓글 수', example: 2 })
   @IsNotEmpty()

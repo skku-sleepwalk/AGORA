@@ -13,6 +13,9 @@ export class GameStoreDto extends PickType(PartialType(GameStore), [
   'price',
   'snsUrls',
   'title',
+  'createdAt',
+  'updatedAt',
+  'deletedAt',
 ]) {
   @ApiProperty({ description: '가격 상세', type: () => GameCostDto })
   @IsNotEmpty()

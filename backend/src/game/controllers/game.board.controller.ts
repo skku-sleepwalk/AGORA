@@ -104,6 +104,7 @@ export class GameBoardController {
     description: '카테고리 이름들',
   })
   @ApiQuery({ name: 'q', description: '검색 내용' })
+  @ApiQuery({ name: 'boardType', description: '게시글 타입', required: true })
   SearchGameBoard(
     @Headers('Authorization') userEmail: string,
     @Param('gameId') gameId: string,
@@ -115,6 +116,7 @@ export class GameBoardController {
     )
     categoryNames: Array<string>,
     @Query('q') search: string,
+    @Query('boardType') boardType: 'parent' | 'child',
   ) {
     return this.gameBoardService.searchGameBoard(
       userEmail,
@@ -122,6 +124,7 @@ export class GameBoardController {
       gameId,
       categoryNames,
       search,
+      boardType,
     );
   }
 

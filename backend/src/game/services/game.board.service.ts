@@ -221,11 +221,16 @@ export class GameBoardService {
     gameId: string,
     categoryNames: Array<string>,
     search: string,
+    boardType: 'parent' | 'child',
   ) {
-    const queryBuilder = this.createQueryBuilder().where(
-      'board.gameId =:GameId AND (category.name IN (...categoryName)) AND (board.title :search OR board.contetn LIKE :search)',
+    const _queryBuilder = this.createQueryBuilder().where(
+      '(board.gameId = :gameId) AND (categories.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
       { gameId, categoryNames, search: `%${search}%` },
     );
+    const queryBuilder =
+      boardType === 'parent'
+        ? _queryBuilder.andWhere('board.parentId IS NULL')
+        : _queryBuilder.andWhere('board.parentId IS NOT NULL');
     const { data, cursor } = await this.paginating(
       userEmail,
       _cursor,

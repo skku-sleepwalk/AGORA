@@ -21,7 +21,7 @@ import {
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { CommunityBoardService } from '../services/community.board.service';
 import { CreateCommunityBoardDto } from '../dto/create.community.board.dto';
-import { CommunityBoardDto } from 'src/community/dto/communityBoard.dto';
+import { CommunityBoardDto } from 'src/community/dto/community.board.dto';
 import { UpdateCommunityBoardDto } from '../dto/update.community.board.dto';
 import { CursoredCommunityBoardDto } from 'src/common/dto/cursoredData.dto';
 
@@ -99,6 +99,7 @@ export class CommunityBoardController {
     description: '카테고리 이름들',
   })
   @ApiQuery({ name: 'q', description: '검색 내용' })
+  @ApiQuery({ name: 'boardType', description: '게시글 타입', required: true })
   @Get('/search')
   searchCommunityBoard(
     @Headers('Authorization') userEmail: string,
@@ -110,12 +111,14 @@ export class CommunityBoardController {
     )
     categoryNames: Array<string>,
     @Query('q') search: string,
+    @Query('boardType') boardType: 'parent' | 'child',
   ) {
     return this.communityBoardService.searchBoard(
       userEmail,
       { beforeCursor, afterCursor },
       categoryNames,
       search,
+      boardType,
     );
   }
 

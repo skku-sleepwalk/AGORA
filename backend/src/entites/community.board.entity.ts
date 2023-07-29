@@ -30,9 +30,9 @@ export class CommunityBoard {
   @Column({ nullable: false })
   content: string;
 
-  @ApiProperty({ description: '좋아요 수', example: 3 })
-  @Column({ nullable: false, default: 0 })
-  likeCount: number;
+  // @ApiProperty({ description: '좋아요 수', example: 3 })
+  // @Column({ nullable: false, default: 0 })
+  // likeCount: number;
 
   // @ApiProperty({ description: '댓글 수', example: 5 })
   // @Column({ nullable: false, default: 0 })

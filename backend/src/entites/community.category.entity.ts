@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
-  Entity,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { CommunityBoard } from './community.board.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -21,13 +13,4 @@ export class CommunityCategory {
 
   @ManyToMany(() => CommunityBoard)
   boards: CommunityBoard[];
-
-  @CreateDateColumn()
-  createdAt: Date;
-
-  @UpdateDateColumn()
-  updatedAt: Date;
-
-  @DeleteDateColumn()
-  deleteAt?: Date | null;
 }

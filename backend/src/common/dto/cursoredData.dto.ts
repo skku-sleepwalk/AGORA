@@ -1,6 +1,6 @@
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
-import { CommunityBoardDto } from 'src/community/dto/communityBoard.dto';
+import { CommunityBoardDto } from 'src/community/dto/community.board.dto';
 import { GameBoardDto } from 'src/game/dto/game.board.dto';
 import { GameDto } from 'src/game/dto/game.dto';
 import { GameReviewCommentDto } from 'src/game/dto/game.review.comment.dto';

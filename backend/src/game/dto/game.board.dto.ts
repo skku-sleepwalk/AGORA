@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType, getSchemaPath } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -6,6 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
+import { GameBoardCategory } from 'src/entites/game.board.category.entity';
 import { GameBoard } from 'src/entites/game.board.entity';
 
 export class GameBoardDto extends PickType(GameBoard, [
@@ -13,11 +14,24 @@ export class GameBoardDto extends PickType(GameBoard, [
   'title',
   'content',
   'createdAt',
+  'deletedAt',
+  'updatedAt',
 ]) {
   @ApiProperty({ description: '작성자 정보', type: () => UserDto })
   @IsNotEmpty()
   @ValidateNested()
   author: UserDto;
+
+  @ApiProperty({
+    description: '작성자 정보',
+    type: 'array',
+    items: {
+      $ref: getSchemaPath(GameBoardCategory),
+    },
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  categories: Array<GameBoardCategory>;
 
   @ApiProperty({ description: '댓글 수', example: 2 })
   @IsNotEmpty()

@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
+import { In, Repository, SelectQueryBuilder } from 'typeorm';
 import {
   ForbiddenException,
   Injectable,
@@ -8,7 +8,7 @@ import {
 import { CommunityBoard } from 'src/entites/community.board.entity';
 import { CommunityCategory } from 'src/entites/community.category.entity';
 import { User } from 'src/entites/user.entity';
-import { CommunityBoardDto } from '../dto/communityBoard.dto';
+import { CommunityBoardDto } from '../dto/community.board.dto';
 import { CommunityBoardLike } from 'src/entites/community.board.like.entity';
 import {
   Cursor,
@@ -20,21 +20,22 @@ import {
 export class CommunityBoardService {
   constructor(
     @InjectRepository(CommunityBoard)
-    private communityBoardRepository: Repository<CommunityBoard>,
+    private readonly communityBoardRepository: Repository<CommunityBoard>,
     @InjectRepository(CommunityBoardLike)
-    private communityBoardLikeRepository: Repository<CommunityBoardLike>,
+    private readonly communityBoardLikeRepository: Repository<CommunityBoardLike>,
     @InjectRepository(CommunityCategory)
-    private communityCategoryRepository: Repository<CommunityCategory>,
+    private readonly communityCategoryRepository: Repository<CommunityCategory>,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
-    private dataSource: DataSource,
+    private readonly userRepository: Repository<User>,
   ) {}
 
   createQueryBuilder() {
-    return this.communityBoardRepository
+    const queryBuilder = this.communityBoardRepository
       .createQueryBuilder('board')
+      .withDeleted()
       .leftJoinAndSelect('board.author', 'author')
-      .leftJoinAndSelect('board.category', 'category');
+      .leftJoinAndSelect('board.categories', 'categories');
+    return queryBuilder;
   }
 
   async getChildCount(parentId: string): Promise<number> {
@@ -99,7 +100,11 @@ export class CommunityBoardService {
     );
   }
 
-  async paginating(userEmail: string, _cursor: Cursor, queryBuilder) {
+  async paginating(
+    userEmail: string,
+    _cursor: Cursor,
+    queryBuilder: SelectQueryBuilder<CommunityBoard>,
+  ) {
     const paginationOption: PaginationOptions<CommunityBoard> = {
       entity: CommunityBoard,
       paginationKeys: ['createdAt'],
@@ -127,7 +132,8 @@ export class CommunityBoardService {
     categoryNames: Array<string>,
     parentId: string,
   ) {
-    const queryRunner = this.dataSource.createQueryRunner();
+    const queryRunner =
+      this.communityBoardRepository.manager.connection.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
     const user: User = await queryRunner.manager.getRepository(User).findOne({
@@ -137,33 +143,38 @@ export class CommunityBoardService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
     try {
-      const parent: CommunityBoard = await queryRunner.manager
-        .getRepository(CommunityBoard)
-        .findOne({ where: { id: parentId } });
-      const newBoard: CommunityBoard = await queryRunner.manager
-        .getRepository(CommunityBoard)
-        .save({ author: user, title, content, parent });
+      const parent = parentId
+        ? await this.communityBoardRepository.findOne({
+            where: { id: parentId },
+          })
+        : null;
 
-      const promises = Object.keys(categoryNames).map(async (categoryName) => {
-        const genre = await queryRunner.manager
+      const newBoard: CommunityBoard = queryRunner.manager
+        .getRepository(CommunityBoard)
+        .create({ author: user, title, content, parent });
+
+      const categories: CommunityCategory[] = [];
+
+      for (const categoryName of categoryNames) {
+        const category = await queryRunner.manager
           .getRepository(CommunityCategory)
           .findOne({
             where: {
               name: categoryName,
             },
           });
-        if (!genre) {
-          return await queryRunner.manager
-            .getRepository(CommunityCategory)
-            .save({ name: categoryName });
+        if (!category) {
+          categories.push(
+            await queryRunner.manager.save(CommunityCategory, {
+              name: categoryName,
+            }),
+          );
         } else {
-          return genre;
+          categories.push(category);
         }
-      });
-
-      const Categories: CommunityCategory[] = await Promise.all(promises);
-      newBoard.categories.push(...Categories);
-
+      }
+      newBoard.categories = categories;
+      await queryRunner.manager.save(CommunityBoard, newBoard);
       // 트랜잭션 커밋
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -191,9 +202,10 @@ export class CommunityBoardService {
     categoryNames: Array<string>,
   ) {
     const queryBuilder = this.createQueryBuilder().where(
-      'category.name IN (...categoryName)',
+      '(board.parent IS NULL) AND (categories.name IN (:...categoryNames))',
       { categoryNames },
     );
+
     const { data, cursor } = await this.paginating(
       userEmail,
       _cursor,
@@ -207,11 +219,22 @@ export class CommunityBoardService {
     _cursor: Cursor,
     categoryNames: Array<string>,
     search: string,
+    boardType: 'parent' | 'child',
   ) {
-    const queryBuilder = this.createQueryBuilder().where(
-      'category.name IN (...categoryName) AND (board.title :search OR board.contetn LIKE :search)',
-      { categoryNames, search },
-    );
+    const queryBuilder =
+      boardType === 'parent'
+        ? this.createQueryBuilder()
+            .where(
+              '(categories.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+              { categoryNames, search: `%${search}%` },
+            )
+            .andWhere('board.parentId IS NULL')
+        : this.createQueryBuilder()
+            .where(
+              '(categories.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
+              { categoryNames, search: `%${search}%` },
+            )
+            .andWhere('board.parentId IS NOT NULL');
     const { data, cursor } = await this.paginating(
       userEmail,
       _cursor,
