@@ -20,17 +20,21 @@ export class GameTagRelationService {
     tagName: string,
   ) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 게임 엔티티 가져오기
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-    });
+    const game = gameId
+      ? await this.gameRepository.findOne({
+          where: { id: gameId },
+        })
+      : null;
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
@@ -41,17 +45,21 @@ export class GameTagRelationService {
 
   async getGameTagRelation(userEmail: string, gameId: string) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 게임 엔티티 가져오기
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-    });
+    const game = gameId
+      ? await this.gameRepository.findOne({
+          where: { id: gameId },
+        })
+      : null;
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
@@ -69,17 +77,21 @@ export class GameTagRelationService {
     relationId: string,
   ) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 게임 엔티티 가져오기
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-    });
+    const game = gameId
+      ? await this.gameRepository.findOne({
+          where: { id: gameId },
+        })
+      : null;
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }

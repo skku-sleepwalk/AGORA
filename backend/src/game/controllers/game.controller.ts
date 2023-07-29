@@ -23,7 +23,6 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoN
 import { CreateGameDto } from '../dto/create.game.dto';
 import { GameDto } from '../dto/game.dto';
 import { UpdateGameDto } from '../dto/update.game.dto';
-import { UpdateGameTagRelationDto } from '../dto/update.game.tag.relation.dto';
 import { CursoredGameDto } from 'src/common/dto/cursoredData.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
@@ -140,21 +139,6 @@ export class GameContorller {
       data.downloadUrl,
       data.executablePath,
       data.genreNames,
-    );
-  }
-
-  @ApiOperation({ summary: '게임 태그 수정' })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id/tag')
-  UpdateGameTagRelation(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameId: string,
-    @Body() data: UpdateGameTagRelationDto,
-  ) {
-    return this.gameService.updateGameTagRelation(
-      userEmail,
-      gameId,
-      data.tagNames,
     );
   }
 

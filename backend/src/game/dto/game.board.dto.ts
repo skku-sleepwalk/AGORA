@@ -3,6 +3,7 @@ import {
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   ValidateNested,
 } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
@@ -21,6 +22,11 @@ export class GameBoardDto extends PickType(GameBoard, [
   @IsNotEmpty()
   @ValidateNested()
   author: UserDto;
+
+  @ApiProperty({ description: '부모 게시글 정보', type: () => GameBoardDto })
+  @IsOptional()
+  @ValidateNested()
+  parent: GameBoardDto;
 
   @ApiProperty({
     description: '작성자 정보',

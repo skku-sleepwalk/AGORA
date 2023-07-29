@@ -1,5 +1,5 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { GameBoard } from 'src/entites/game.board.entity';
 
 export class CreateGameBoardDto extends PickType(PartialType(GameBoard), [
@@ -17,7 +17,7 @@ export class CreateGameBoardDto extends PickType(PartialType(GameBoard), [
   @ApiProperty({
     description: '부모 게시글 아이디',
   })
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   parentId: string;
 }

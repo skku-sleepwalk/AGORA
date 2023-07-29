@@ -19,14 +19,18 @@ export class GameLikeService {
   ) {}
 
   async postGameLike(userEmail: string, gameId: string) {
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const game = await this.gameRepository.findOne({ where: { id: gameId } });
+    const game = gameId
+      ? await this.gameRepository.findOne({ where: { id: gameId } })
+      : null;
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
@@ -42,12 +46,28 @@ export class GameLikeService {
   }
 
   async deleteGameLike(userEmail: string, gameId: string) {
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    const game = gameId
+      ? await this.gameRepository.findOne({ where: { id: gameId } })
+      : null;
+    if (!game) {
+      throw new NotFoundException('게임을 찾을 수 없습니다.');
+    }
+
     const like = await this.gameLikeRepository.findOne({
       where: { user: { email: userEmail }, game: { id: gameId } },
     });
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }
-    await this.gameLikeRepository.delete(like);
+    await this.gameLikeRepository.delete(like.id);
   }
 }

@@ -25,20 +25,24 @@ export class GameReviewCommentDislikeService {
     gameReviewId: string,
     gameReviewCommentId: string,
   ) {
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
 
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const reviewComment = await this.gameReviewCommentRepository.findOne({
-      where: {
-        id: gameReviewCommentId,
-        review: { id: gameReviewId, game: { id: gameId } },
-      },
-    });
+    const reviewComment = gameReviewCommentId
+      ? await this.gameReviewCommentRepository.findOne({
+          where: {
+            id: gameReviewCommentId,
+            review: { id: gameReviewId, game: { id: gameId } },
+          },
+        })
+      : null;
     if (!reviewComment) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
@@ -74,11 +78,12 @@ export class GameReviewCommentDislikeService {
           id: gameReviewId,
           review: { id: gameReviewId, game: { id: gameId } },
         },
+        user: { email: userEmail },
       },
     });
     if (!dislike) {
       throw new NotFoundException('싫어요를 찾을 수 없습니다.');
     }
-    await this.gameReviewCommentDislikeRepository.delete(dislike);
+    await this.gameReviewCommentDislikeRepository.delete(dislike.id);
   }
 }

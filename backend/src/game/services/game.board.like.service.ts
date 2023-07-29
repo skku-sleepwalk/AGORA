@@ -21,16 +21,20 @@ export class GameBoardLikeService {
   ) {}
 
   async postGameBoardLike(userEmail: string, gameId: string, boardId: string) {
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const board = await this.gameBoardRepository.findOne({
-      where: { id: boardId, game: { id: gameId } },
-    });
+    const board = boardId
+      ? await this.gameBoardRepository.findOne({
+          where: { id: boardId, game: { id: gameId } },
+        })
+      : null;
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
@@ -59,6 +63,24 @@ export class GameBoardLikeService {
         board: { id: boardId, game: { id: gameId } },
       },
     });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    const board = boardId
+      ? await this.gameBoardRepository.findOne({
+          where: { id: boardId },
+        })
+      : null;
+    if (!board) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }

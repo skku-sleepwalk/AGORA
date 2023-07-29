@@ -34,7 +34,8 @@ export class GameBoardService {
     return this.gameBoardRepository
       .createQueryBuilder('board')
       .leftJoinAndSelect('board.author', 'author')
-      .leftJoinAndSelect('board.category', 'category');
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categories', 'categories');
   }
 
   async getChildCount(parentId: string): Promise<number> {
@@ -135,23 +136,29 @@ export class GameBoardService {
 
     try {
       // 1. User 엔티티를 userEmail로 찾기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
       // 2. Game 엔티티를 gameId로 찾기
-      const game = await this.gameRepository.findOne({ where: { id: gameId } });
+      const game = gameId
+        ? await this.gameRepository.findOne({ where: { id: gameId } })
+        : null;
       if (!game) {
         throw new NotFoundException('게임을 찾을 수 없습니다.');
       }
 
       // 3. Parent 확인
-      const parent = await this.gameBoardRepository.findOne({
-        where: { id: parentId },
-      });
+      const parent = parentId
+        ? await this.gameBoardRepository.findOne({
+            where: { id: parentId },
+          })
+        : null;
 
       // 4. GameBoard 엔티티 생성
       const newBoard = this.gameBoardRepository.create({
@@ -159,6 +166,7 @@ export class GameBoardService {
         content,
         parent,
         author: user,
+        game,
       });
 
       // 5. GameBoardCategory 엔티티 저장 (중복 방지)
@@ -167,17 +175,10 @@ export class GameBoardService {
         const existingCategory = await this.gameBoardCategoryRepository.findOne(
           { where: { name: categoryName } },
         );
-        if (existingCategory) {
-          categories.push(existingCategory);
+        if (existingCategory.name !== categoryName) {
+          continue;
         } else {
-          const newCategory = this.gameBoardCategoryRepository.create({
-            name: categoryName,
-          });
-          const savedCategory = await queryRunner.manager.save(
-            GameBoardCategory,
-            newCategory,
-          );
-          categories.push(savedCategory);
+          categories.push(existingCategory);
         }
       }
 
@@ -204,9 +205,10 @@ export class GameBoardService {
     categoryNames: Array<string>,
   ) {
     const queryBuilder = this.createQueryBuilder().where(
-      'board.gameId = :gameId AND category.name IN (...categoryName)',
+      '(board.parentId IS NULL) AND (board.gameId = :gameId) AND (categories.name IN (:...categoryNames))',
       { gameId, categoryNames },
     );
+
     const { data, cursor } = await this.paginating(
       userEmail,
       _cursor,
@@ -354,7 +356,7 @@ export class GameBoardService {
     // 2. GameBoard 엔티티 가져오기
     const board = await this.gameBoardRepository.findOne({
       where: { id: boardId, game: { id: gameId } },
-      relations: ['author'],
+      relations: ['author', 'parent'],
     });
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
@@ -366,8 +368,32 @@ export class GameBoardService {
     }
 
     // 4. 게시글 삭제
-    await this.gameRepository.delete(board);
+    if ((await this.getChildCount(board.id)) > 0) {
+      await this.gameBoardRepository.softDelete(board.id);
+    } else {
+      await this.gameBoardRepository.delete(board.id);
+    }
 
+    await this.updateAncestorDeletedStatus(board.parent.id);
     return true;
+  }
+
+  async updateAncestorDeletedStatus(boardId: string): Promise<void> {
+    const board = await this.gameBoardRepository.findOne({
+      where: { id: boardId },
+      relations: ['parent'],
+    });
+
+    const childCount = await this.getChildCount(board.id);
+
+    if (childCount === 0 && board.deletedAt) {
+      // 자식이 없고, 현재 게시글이 삭제 상태라면 hard delete 수행
+      await this.gameBoardRepository.delete(board.id);
+    }
+
+    // 부모의 부모로 재귀적으로 호출
+    if (board.parent) {
+      await this.updateAncestorDeletedStatus(board.parent.id);
+    }
   }
 }

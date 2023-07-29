@@ -22,32 +22,35 @@ export class GameReviewDislikeService {
   async postGameReviewDislike(
     userEmail: string,
     gameId: string,
-    gameReviewId: string,
+    reviewId: string,
   ) {
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
-
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const review = await this.gameReviewRepository.findOne({
-      where: { id: gameReviewId, game: { id: gameId } },
-    });
+    const review = reviewId
+      ? await this.gameReviewRepository.findOne({
+          where: { id: reviewId, game: { id: gameId } },
+        })
+      : null;
     if (!review) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
 
     const existingDislike = await this.gameReviewDislikeRepository.findOne({
       where: {
-        id: gameReviewId,
+        id: reviewId,
         user: { email: userEmail },
         review: { game: { id: gameId } },
       },
     });
     if (existingDislike) {
-      throw new ConflictException('이미 좋아요가 존재합니다.');
+      throw new ConflictException('이미 싫어요가 존재합니다.');
     }
     await this.gameReviewDislikeRepository.save({ user, review });
     return true;
@@ -56,18 +59,36 @@ export class GameReviewDislikeService {
   async deleteGameReviewDislike(
     userEmail: string,
     gameId: string,
-    gameReviewId: string,
+    reviewId: string,
   ) {
-    const Dislike = await this.gameReviewDislikeRepository.findOne({
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    const review = reviewId
+      ? await this.gameReviewRepository.findOne({
+          where: { id: reviewId, game: { id: gameId } },
+        })
+      : null;
+    if (!review) {
+      throw new NotFoundException('리뷰를 찾을 수 없습니다.');
+    }
+
+    const dislike = await this.gameReviewDislikeRepository.findOne({
       where: {
-        id: gameReviewId,
+        id: reviewId,
         user: { email: userEmail },
         review: { game: { id: gameId } },
       },
     });
-    if (!Dislike) {
-      throw new NotFoundException('좋아요를 찾을 수 없습니다.');
+    if (!dislike) {
+      throw new NotFoundException('싫어요를 찾을 수 없습니다.');
     }
-    await this.gameReviewDislikeRepository.delete(Dislike);
+    await this.gameReviewDislikeRepository.delete(dislike.id);
   }
 }

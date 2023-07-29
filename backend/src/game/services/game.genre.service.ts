@@ -7,10 +7,11 @@ import { Repository } from 'typeorm';
 export class GameGenreService {
   constructor(
     @InjectRepository(GameGenre)
-    private gameGenreRepository: Repository<GameGenre>,
+    private readonly gameGenreRepository: Repository<GameGenre>,
   ) {}
 
   postGameGenre(name: string) {
-    return;
+    this.gameGenreRepository.save({ name });
+    return true;
   }
 }

@@ -62,11 +62,12 @@ export class GameService {
       });
 
     // 좋아요 여부에 따라 like 속성 추가
-    const like =
-      likeRelations.filter((relation) => relation.user.email === userEmail)
-        .length > 0
+    const like = userEmail
+      ? likeRelations.filter((relation) => relation.user.email === userEmail)
+          .length > 0
         ? true
-        : false;
+        : false
+      : false;
 
     // 별점 체크
     const rating = this.calculateRating(
@@ -113,9 +114,11 @@ export class GameService {
 
     try {
       // 1. User 엔티티를 userEmail로 찾기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
@@ -275,18 +278,22 @@ export class GameService {
 
     try {
       // 1. User 엔티티를 userEmail로 찾기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
       // 2. Game 엔티티를 gameId로 찾기
-      const game = await this.gameRepository.findOne({
-        where: { id: gameId },
-        relations: ['author'],
-      });
+      const game = gameId
+        ? await this.gameRepository.findOne({
+            where: { id: gameId },
+            relations: ['author'],
+          })
+        : null;
       if (!game) {
         throw new NotFoundException('게임을 찾을 수 없습니다.');
       }
@@ -340,85 +347,24 @@ export class GameService {
     }
   }
 
-  async updateGameTagRelation(
-    userEmail: string,
-    gameId: string,
-    tagNames: Array<string>,
-  ) {
-    // 1. 태그와 게임 엔티티들 가져오기
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-      relations: ['tags', 'tagRelations', 'tagRelations.tag'],
-    });
-    if (!game) {
-      throw new NotFoundException('게임을 찾을 수 없습니다.');
-    }
-
-    // 2. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
-    if (!user) {
-      throw new NotFoundException('사용자를 찾을 수 없습니다.');
-    }
-
-    // 3. 태그 엔티티들 가져오기 (없는 태그라면 에러 발생)
-    const tags = await this.gameTagRepository.find({
-      where: { name: In(tagNames) },
-    });
-    const foundTagNames = tags.map((tag) => tag.name);
-    const missingTags = tagNames.filter(
-      (tagName) => !foundTagNames.includes(tagName),
-    );
-    if (missingTags.length > 0) {
-      throw new NotFoundException(
-        `태그를 찾을 수 없습니다: ${missingTags.join(', ')}`,
-      );
-    }
-
-    // 4. GameTagRelation 테이블 업데이트
-    const existingRelations = game.tagRelations;
-    const existingTagNames = existingRelations.map(
-      (relation) => relation.tag.name,
-    );
-
-    // 4.1 관계 삭제
-    const relationsToDelete = existingRelations.filter(
-      (relation) => !tagNames.includes(relation.tag.name),
-    );
-    await this.gameTagRelationRepository.remove(relationsToDelete);
-
-    // 4.2 새로 추가되는 관계
-    const newRelations = tags
-      .filter((tag) => !existingTagNames.includes(tag.name))
-      .map((tag) => {
-        const newRelation = new GameTagRelation();
-        newRelation.game = game;
-        newRelation.tag = tag;
-        newRelation.user = user;
-        return newRelation;
-      });
-
-    // 관계 저장
-    await this.gameTagRelationRepository.save(newRelations);
-
-    return game;
-  }
-
   async deleteGame(userEmail: string, gameId: string) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 게임 엔티티 가져오기
-    const game = await this.gameRepository.findOne({
-      where: { id: gameId },
-      relations: ['author'],
-    });
+    const game = gameId
+      ? await this.gameRepository.findOne({
+          where: { id: gameId },
+          relations: ['author'],
+        })
+      : null;
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }

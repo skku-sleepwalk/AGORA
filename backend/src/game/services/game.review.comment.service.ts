@@ -80,17 +80,21 @@ export class GameReviewCommentService {
     content: string,
   ) {
     // 1. User 엔티티를 userEmail로 찾기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. GameReview 엔티티를 reviewId로 찾기
-    const review = await this.gameReviewRepository.findOne({
-      where: { id: reviewId },
-    });
+    const review = reviewId
+      ? await this.gameReviewRepository.findOne({
+          where: { id: reviewId },
+        })
+      : null;
     if (!review) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
@@ -147,17 +151,24 @@ export class GameReviewCommentService {
     content: string,
   ) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. GameReviewComment 엔티티를 commentId로 찾기
-    const comment = await this.gameReviewCommentRepository.findOne({
-      where: { id: commentId, review: { id: reviewId, game: { id: gameId } } },
-    });
+    const comment = commentId
+      ? await this.gameReviewCommentRepository.findOne({
+          where: {
+            id: commentId,
+            review: { id: reviewId, game: { id: gameId } },
+          },
+        })
+      : null;
     if (!comment) {
       throw new NotFoundException('리뷰 댓글을 찾을 수 없습니다.');
     }
@@ -177,23 +188,30 @@ export class GameReviewCommentService {
     commentId: string,
   ) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 리뷰 댓글 엔티티 가져오기
-    const comment = await this.gameReviewCommentRepository.findOne({
-      where: { id: commentId, review: { id: reviewId, game: { id: gameId } } },
-    });
+    const comment = commentId
+      ? await this.gameReviewCommentRepository.findOne({
+          where: {
+            id: commentId,
+            review: { id: reviewId, game: { id: gameId } },
+          },
+        })
+      : null;
     if (!comment) {
       throw new NotFoundException('리뷰 댓글을 찾을 수 없습니다.');
     }
 
     // 3. 리뷰 댓글 삭제
-    await this.gameReviewCommentRepository.delete(comment);
+    await this.gameReviewCommentRepository.delete(comment.id);
     return;
   }
 }

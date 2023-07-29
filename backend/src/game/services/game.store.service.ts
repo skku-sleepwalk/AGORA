@@ -40,15 +40,19 @@ export class GameStoreService {
 
     try {
       // 2. 유저 가져오기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
       // 3. 게임 엔티티 가져오기
-      const game = await this.gameRepository.findOne({ where: { id: gameId } });
+      const game = gameId
+        ? await this.gameRepository.findOne({ where: { id: gameId } })
+        : null;
       if (!game) {
         throw new NotFoundException('게임을 찾을 수 없습니다.');
       }
@@ -126,17 +130,21 @@ export class GameStoreService {
     await queryRunner.startTransaction();
     try {
       // 2. 유저 가져오기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
       // 3. GameStore 엔티티 가져오기
-      const gameStore = await this.gameStoreRepository.findOne({
-        where: { game: { id: gameId } },
-        relations: ['cost'],
-      });
+      const gameStore = gameId
+        ? await this.gameStoreRepository.findOne({
+            where: { game: { id: gameId } },
+            relations: ['cost'],
+          })
+        : null;
       if (!gameStore) {
         throw new NotFoundException('게임 스토어를 찾을 수 없습니다.');
       }

@@ -21,16 +21,20 @@ export class CommunityBoardLikeService {
   ) {}
 
   async postGameBoardLike(userEmail: string, boardId: string) {
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const board = await this.communityBoardRepository.findOne({
-      where: { id: boardId },
-    });
+    const board = boardId
+      ? await this.communityBoardRepository.findOne({
+          where: { id: boardId },
+        })
+      : null;
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
@@ -49,6 +53,26 @@ export class CommunityBoardLikeService {
   }
 
   async deleteGameBoardLike(userEmail: string, boardId: string) {
+    // 1. 현재 유저 가져오기
+
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    const board = boardId
+      ? await this.communityBoardRepository.findOne({
+          where: { id: boardId },
+        })
+      : null;
+    if (!board) {
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
+    }
+
     const like = await this.communityBoardLikeRepository.findOne({
       where: {
         user: { email: userEmail },
@@ -58,6 +82,7 @@ export class CommunityBoardLikeService {
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }
-    await this.communityBoardLikeRepository.delete(like);
+
+    await this.communityBoardLikeRepository.delete(like.id);
   }
 }

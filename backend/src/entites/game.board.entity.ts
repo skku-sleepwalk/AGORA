@@ -53,7 +53,7 @@ export class GameBoard {
   @ManyToOne(() => Game, (game) => game.boards, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
   readonly game: Game;
 
   @ManyToOne(() => User, (user) => user.communityBoards, {

@@ -136,9 +136,11 @@ export class CommunityBoardService {
       this.communityBoardRepository.manager.connection.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
-    const user: User = await queryRunner.manager.getRepository(User).findOne({
-      where: { email: userEmail },
-    });
+    const user: User = userEmail
+      ? await queryRunner.manager.getRepository(User).findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
@@ -271,18 +273,22 @@ export class CommunityBoardService {
 
     try {
       // 1. User 엔티티를 userEmail로 찾기
-      const user = await this.userRepository.findOne({
-        where: { email: userEmail },
-      });
+      const user = userEmail
+        ? await this.userRepository.findOne({
+            where: { email: userEmail },
+          })
+        : null;
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
       // 2. CommunityBoard 엔티티를 gameId로 찾기
-      const board = await this.communityBoardRepository.findOne({
-        where: { id: boardId },
-        relations: ['author'],
-      });
+      const board = boardId
+        ? await this.communityBoardRepository.findOne({
+            where: { id: boardId },
+            relations: ['author'],
+          })
+        : null;
       if (!board) {
         throw new NotFoundException('게시물을 찾을 수 없습니다.');
       }
@@ -329,18 +335,22 @@ export class CommunityBoardService {
 
   async deleteGameBoard(userEmail: string, boardId: string) {
     // 1. 현재 유저 가져오기
-    const user = await this.userRepository.findOne({
-      where: { email: userEmail },
-    });
+    const user = userEmail
+      ? await this.userRepository.findOne({
+          where: { email: userEmail },
+        })
+      : null;
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. communityBoard 엔티티 가져오기
-    const board = await this.communityBoardRepository.findOne({
-      where: { id: boardId },
-      relations: ['author'],
-    });
+    const board = boardId
+      ? await this.communityBoardRepository.findOne({
+          where: { id: boardId },
+          relations: ['author'],
+        })
+      : null;
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
@@ -351,8 +361,31 @@ export class CommunityBoardService {
     }
 
     // 4. 게시글 삭제
-    await this.communityBoardRepository.delete(board);
+    if ((await this.getChildCount(board.id)) > 0) {
+      await this.communityBoardRepository.softDelete(board.id);
+    } else {
+      await this.communityBoardRepository.delete(board.id);
+    }
 
     return true;
+  }
+
+  async updateAncestorDeletedStatus(boardId: string): Promise<void> {
+    const board = await this.communityBoardRepository.findOne({
+      where: { id: boardId },
+      relations: ['parent'],
+    });
+
+    const childCount = await this.getChildCount(board.id);
+
+    if (childCount === 0 && board.deletedAt) {
+      // 자식이 없고, 현재 게시글이 삭제 상태라면 hard delete 수행
+      await this.communityBoardRepository.delete(board.id);
+    }
+
+    // 부모의 부모로 재귀적으로 호출
+    if (board.parent) {
+      await this.updateAncestorDeletedStatus(board.parent.id);
+    }
   }
 }
