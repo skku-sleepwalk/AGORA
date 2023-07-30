@@ -75,11 +75,6 @@ export class GameStoreService {
       newGameStore.snsUrls = snsUrls;
       newGameStore.developer = developer;
       newGameStore.distributor = distributor;
-      newGameStore.price = savedCost.isFree
-        ? 0
-        : !savedCost.isSale
-        ? savedCost.defaultPrice
-        : savedCost.saledPrice;
       newGameStore.cost = savedCost;
       newGameStore.game = game;
       newGameStore.author = user;

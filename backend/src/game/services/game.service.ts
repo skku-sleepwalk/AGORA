@@ -44,6 +44,7 @@ export class GameService {
       .leftJoinAndSelect('game.genres', 'genres')
       .leftJoinAndSelect('game.author', 'author')
       .leftJoinAndSelect('game.store', 'store')
+      .leftJoinAndSelect('store.cost', 'cost')
       .leftJoinAndSelect('game.description', 'description');
   }
 

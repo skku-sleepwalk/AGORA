@@ -46,10 +46,6 @@ export class GameStore {
   @Column({ nullable: false })
   developer: string;
 
-  @ApiProperty({ example: 30000, description: '가격' })
-  @Column({ nullable: false })
-  price: number;
-
   @ApiProperty({
     example: {
       id: 'uuid',

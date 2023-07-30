@@ -1,4 +1,10 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { GameStore } from './game.store.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -39,5 +45,6 @@ export class GameCost {
   @OneToOne(() => GameStore, (gameStore) => gameStore.cost, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'storeId', referencedColumnName: 'id' })
   store: GameStore;
 }

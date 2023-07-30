@@ -10,14 +10,13 @@ import { GameCostDto } from './game.cost.dto';
 
 export class GameStoreDto extends PickType(PartialType(GameStore), [
   'id',
-  'price',
   'snsUrls',
   'title',
   'createdAt',
   'updatedAt',
   'deletedAt',
 ]) {
-  @ApiProperty({ description: '가격 상세', type: () => GameCostDto })
+  @ApiProperty({ description: '가격 정보', type: () => GameCostDto })
   @IsNotEmpty()
   @ValidateNested()
   cost: GameCostDto;
