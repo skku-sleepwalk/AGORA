@@ -1,4 +1,4 @@
-import { Alert, Button, Center, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
+import { Alert, Button, Image, Group, Menu, Stack, Text, UnstyledButton } from "@mantine/core";
 import {
   IconAlertCircle,
   IconBell,
@@ -94,7 +94,14 @@ PostFooterProps) {
           </Group>
           <Group spacing={8}>
             <InvisibleButton onClick={onLikeClick}>
-              {isliking && <IconHeartFilled size={25} color="#fd0061" />}
+              {isliking && (
+                <Image
+                  className={classes.heartFilled}
+                  width={"1.4rem"}
+                  height={"1.2rem"}
+                  src={"/HeartFilled.png"}
+                />
+              )}
               {!isliking && <IconHeart size={25} />}
             </InvisibleButton>
             <Text>{likeCount}</Text>

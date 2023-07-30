@@ -1,10 +1,10 @@
-import { Box, Button, Group, ScrollArea, Stack, TextInput, useMantineTheme } from "@mantine/core";
+import { Box, Button, Group, Stack, TextInput, useMantineTheme } from "@mantine/core";
 import { useGameTagModalStyles } from "./GameTagModal.styles";
 import { useListState } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import { ChangeEvent, useState } from "react";
-import { showError } from "../../../../utils/notifications";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { cleanNotification, showError } from "../../../../utils/notifications";
 
 interface GameTagModalProps {
   onClose?: () => void;
@@ -42,13 +42,21 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
     setSearch(event.target.value);
   };
 
+  // 검색창이 자동 활성화 되도록
+  const textInputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (textInputRef.current) {
+      textInputRef.current.focus();
+    }
+  }, []);
+
   const tags = values.map((value, index) => {
     if (isContain(search, value.label)) {
       return (
         <Button
           className={cx(classes.tagButton, values[index].checked && classes.tagButtonChecked)}
           onClick={() => {
-            if (values[index].checked || checked.length <= 7) {
+            if (values[index].checked || checked.length < 7) {
               const checked = !values[index].checked; // 현 태그가 checked 속성 값을 반전
               handlers.setItemProp(index, "checked", checked); // 해당 index의 checked 속성을 checked로 설정
 
@@ -58,7 +66,9 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
                   index: index,
                 });
               // 만약 checked이면 checkHandler에 value.label 추가
-              else checkedHandler.filter((item) => item.label !== value.label); // 아니면 checkHandler에서 value.label 제거
+              else checkedHandler.filter((item) => item.label !== value.label);
+              // 아니면 checkHandler에서 value.label 제거
+              cleanNotification();
             } else {
               showError("태그는 7개까지 추가할 수 있습니다.", null);
             }
@@ -75,8 +85,9 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
         {value.label}
         <InvisibleButton
           onClick={() => {
-            checkedHandler.filter((item) => item !== value);
-            handlers.setItemProp(value.index, "checked", false);
+            checkedHandler.filter((item) => item !== value); // checkHandler에서 value.label 제거
+            handlers.setItemProp(value.index, "checked", false); // 해당 index의 checked 속성을 false로 설정
+            cleanNotification();
           }}
         >
           <IconX stroke={2} size={"0.8rem"} color={theme.colors.blue[6]} />
@@ -95,14 +106,28 @@ export function GameTagModal({ onClose }: GameTagModalProps) {
               className={classes.search}
               placeholder="원하는 태그를 검색해서 추가해보세요."
               onChange={onSearchChange}
+              value={search}
+              ref={textInputRef}
+              rightSection={
+                <InvisibleButton
+                  onClick={() => {
+                    setSearch("");
+                    if (textInputRef.current) {
+                      textInputRef.current.focus();
+                    }
+                  }}
+                >
+                  <IconX stroke={1.5} size={"1rem"} color={theme.colors.gray[5]} />
+                </InvisibleButton>
+              }
             />
           </Group>
           <Box className={classes.tagBox}>{tags}</Box>
         </Stack>
       </Box>
-      <Group spacing={"xs"}>
+      <Group spacing={"xs"} className={classes.selectedGroup}>
         <Box className={classes.selectedBox}>{selectedTag}</Box>
-        <Button variant="light" color="cyan" onClick={onClose}>
+        <Button variant="light" color="cyan" h={"2.5rem"} onClick={onClose}>
           추가
         </Button>
       </Group>

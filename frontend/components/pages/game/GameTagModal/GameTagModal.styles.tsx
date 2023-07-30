@@ -19,7 +19,7 @@ export const useGameTagModalStyles = createStyles((theme) => ({
 
   search: {
     flexGrow: 1,
-    border: "0.0625rem solid #ced4da",
+    border: `0.0625rem solid ${theme.colors.gray[4]}`,
     borderRadius: theme.radius.sm,
 
     ".mantine-TextInput-input": {
@@ -38,13 +38,23 @@ export const useGameTagModalStyles = createStyles((theme) => ({
     margin: 0,
 
     alignContent: "flex-start",
+
+    "&::after": {
+      content: '""',
+      flexGrow: 100,
+      height: "1.988rem",
+    },
+  },
+
+  selectedGroup: {
+    alignItems: "flex-end",
   },
 
   selectedBox: {
     display: "flex",
     flexWrap: "wrap",
 
-    width: "10rem",
+    width: "20rem",
     minHeight: "2.5rem",
     maxHeight: "4.7rem",
     padding: "0.1rem 0.5rem",
@@ -55,6 +65,12 @@ export const useGameTagModalStyles = createStyles((theme) => ({
     overflow: "hidden",
 
     alignContent: "flex-start",
+
+    "&::after": {
+      content: '""',
+      flexGrow: 100,
+      height: "1.988rem",
+    },
   },
 
   selectedTag: {
