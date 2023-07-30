@@ -5,11 +5,11 @@ export interface StoreData {
   title: string;
   distributor: string;
   developer: string;
-  price: number;
   snsUrls: SNSUrls | undefined;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
+  cost: Cost | undefined;
 }
 export interface GameStore {
   //data로 한번 감싸야함
@@ -33,7 +33,6 @@ export interface GameStore {
   likedUsers: Array<User> | undefined;
   store: StoreData;
   genres: Array<GameStoreGenre> | undefined;
-  cost: Cost | undefined;
 }
 
 export interface GameStoreGenre {

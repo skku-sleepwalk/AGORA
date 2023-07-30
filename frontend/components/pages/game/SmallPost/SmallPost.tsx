@@ -77,6 +77,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
   };
   const namesArray = post.genres?.map((item) => item.name);
   const newarray = namesArray?.join(",");
+  console.log(post.store?.cost);
   return (
     <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
       <Text size="xs" color="gray" style={margins}>
@@ -98,9 +99,19 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
         </Group>
       </Group>
       <div style={{ marginRight: "1rem" }}>
-        <Text align="right" size={"lg"}>
-          \{post.price}
-        </Text>
+        {post.store.cost?.isFree ? (
+          <Text align="right" size={"lg"}>
+            FREE
+          </Text>
+        ) : post.store.cost?.isSale ? (
+          <Text align="right" td="line-through" c="gray" size={"lg"}>
+            \{post.store?.cost?.defaultPrice}
+          </Text>
+        ) : (
+          <Text align="right" size={"lg"}>
+            \{post.store?.cost?.defaultPrice}
+          </Text>
+        )}
       </div>
       <div style={containerStyle}>
         <img src={post.shortImgUrl} height={"400rem"} />
