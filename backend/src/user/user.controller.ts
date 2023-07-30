@@ -44,7 +44,7 @@ export class UsersController {
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })
   @Get(':id')
-  getUsers(@Param('id') id) {
+  getUsers(@Param('id') id: string) {
     return id;
   }
 
