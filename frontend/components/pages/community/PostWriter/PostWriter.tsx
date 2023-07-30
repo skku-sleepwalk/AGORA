@@ -43,7 +43,7 @@ function PostWriter() {
   const [categorychanged, setcategorychange] = useState(false);
   return (
     <>
-      <CardContainer className={classes.container}>
+      <CardContainer className={classes.container} bg={"white"}>
         <Avatar
           className={classes.avatarInWriting}
           radius="xl"

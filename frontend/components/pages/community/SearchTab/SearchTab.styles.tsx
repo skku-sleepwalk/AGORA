@@ -13,13 +13,13 @@ export const useSearchTabStyles = createStyles((theme) => ({
 
   tabList: {
     width: "100%",
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
   },
 
   settingButton: {
     color: theme.colors.gray[5],
     backgroundColor: "transparent",
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
     height: "2.875rem",
 
     fontSize: 16,
@@ -35,7 +35,7 @@ export const useSearchTabStyles = createStyles((theme) => ({
       marginLeft: "0.25rem",
       color: theme.colors.gray[5],
     },
-    ".mantine-NativeSelect-wrapper":{
+    ".mantine-NativeSelect-wrapper": {
       marginBottom: "0.25rem",
       backgroundColor: "#F3F3F3",
       border: "none",
@@ -46,6 +46,10 @@ export const useSearchTabStyles = createStyles((theme) => ({
       border: "none",
       width: "6.875rem",
     },
+  },
+
+  nativeSelect: {
+    marginBottom: "0.3rem",
   },
 
   marginTop: {

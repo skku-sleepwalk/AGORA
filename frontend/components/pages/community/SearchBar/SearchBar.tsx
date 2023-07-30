@@ -28,8 +28,8 @@ function SearchBar({ onSubmit, defaultValue }: SearchBarProps) {
         onSubmit?.(search);
       }}
     >
-      <CardContainer className={classes.container}>
-        <Group spacing={'xs'} className={classes.group}>
+      <CardContainer className={classes.container} bg={"white"}>
+        <Group spacing={"xs"} className={classes.group}>
           <TextInput
             placeholder="원하는 글을 검색해보세요."
             className={classes.input}
@@ -37,14 +37,19 @@ function SearchBar({ onSubmit, defaultValue }: SearchBarProps) {
             onChange={(event) => setSearch(event.currentTarget.value)}
             rightSection={
               <InvisibleButton>
-                <IconX onClick={() => {setSearch("")}}
-                  size={"1rem"} stroke={"0.15rem"} color="#bdc3cd"/>
+                <IconX
+                  onClick={() => {
+                    setSearch("");
+                  }}
+                  size={"1rem"}
+                  stroke={"0.15rem"}
+                  color="#bdc3cd"
+                />
               </InvisibleButton>
             }
           />
-          <Button className={classes.searchButton} 
-            type="submit" color="cyan">
-            <IconSearch stroke={"0.15rem"}/>
+          <Button className={classes.searchButton} type="submit" color="cyan">
+            <IconSearch stroke={"0.15rem"} />
           </Button>
         </Group>
       </CardContainer>

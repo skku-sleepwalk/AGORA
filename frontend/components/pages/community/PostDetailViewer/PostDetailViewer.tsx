@@ -89,7 +89,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   };
 
   return (
-    <CardContainer className={classes.postContainer}>
+    <CardContainer className={classes.postContainer} bg={"white"}>
       <Stack spacing={15}>
         <Stack spacing={14}>
           {postType === "child" && (

@@ -119,7 +119,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
           router.push(`/community/${post.id}`);
         }}
       >
-        <CardContainer className={classes.postContainer}>
+        <CardContainer className={classes.postContainer} bg={"white"}>
           <Stack spacing={14}>
             {postType === "child" && (
               <InvisibleButton

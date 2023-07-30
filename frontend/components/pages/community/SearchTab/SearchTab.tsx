@@ -3,6 +3,7 @@ import { useSearchTabStyles } from "./SearchTab.styles";
 import { useState } from "react";
 import { IconAdjustmentsHorizontal, IconMessage, IconNote } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import { CustomNativeSelect } from "../../../common/CustomNativeSelect/CustomNativeSelect";
 
 export interface SearchTabProps {
   className?: string;
@@ -13,6 +14,9 @@ function SearchTab({ className, onChange }: SearchTabProps) {
   const { classes, cx } = useSearchTabStyles();
   const [tab, setTab] = useState<string | null>("post");
   const [opened, { toggle }] = useDisclosure(false);
+
+  const [lineUpValue, setLineUpValue] = useState("최신순");
+  const [periodValue, setPeriodValue] = useState("전체");
 
   return (
     <Tabs
@@ -28,41 +32,44 @@ function SearchTab({ className, onChange }: SearchTabProps) {
           <Group spacing={0} noWrap>
             <Tabs.Tab
               value="post"
-              icon={<IconNote/>}
+              icon={<IconNote />}
               className={cx(classes.tabItem, tab === "post" && classes.tabItemActive)}
             >
               게시글
             </Tabs.Tab>
             <Tabs.Tab
               value="comment"
-              icon={<IconMessage/>}
+              icon={<IconMessage />}
               className={cx(classes.tabItem, tab === "comment" && classes.tabItemActive)}
             >
               댓글
             </Tabs.Tab>
           </Group>
           <Box>
-            <Group position='right'>
-            <Button
-              onClick={toggle}
-              leftIcon={<IconAdjustmentsHorizontal/>} 
-              className={classes.settingButton}>
-              검색 설정
-            </Button>
+            <Group position="right">
+              <Button
+                onClick={toggle}
+                leftIcon={<IconAdjustmentsHorizontal />}
+                className={classes.settingButton}
+              >
+                검색 설정
+              </Button>
             </Group>
             <Collapse in={opened} className={classes.marginTop}>
-              <Group spacing={10}>
-                <NativeSelect
-                  data={["최신순", "조회순"]}
-                  label="정렬 순서"
-                  className={classes.settingItem}
-                  variant="filled"
+              <Group spacing={10} className={classes.nativeSelect}>
+                <CustomNativeSelect
+                  data={["최신순", "조회순", "인기순", "댓글순"]}
+                  defaultValue={lineUpValue}
+                  onChange={(value) => {
+                    setLineUpValue(value);
+                  }}
                 />
-                <NativeSelect
+                <CustomNativeSelect
                   data={["전체", "최근 1일", "최근 1주", "최근 1개월", "최근 1년"]}
-                  label="기간"
-                  className={classes.settingItem}
-                  variant="filled"
+                  defaultValue={periodValue}
+                  onChange={(value) => {
+                    setPeriodValue(value);
+                  }}
                 />
               </Group>
             </Collapse>
