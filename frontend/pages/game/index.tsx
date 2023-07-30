@@ -11,6 +11,7 @@ import { GameReviewSection } from "../../components/pages/game/GameReviewSection
 import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
+import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
 
 export const TabClicklContext = createContext({
   ontabClick: () => {},
@@ -19,6 +20,7 @@ export const TabClicklContext = createContext({
 
 function Game() {
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
+  // tab 클릭 시 페이지 상단으로 이동 관련
   const tabRef = useRef<HTMLDivElement>(null);
   const ontabClick = () => {
     tabRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -42,11 +44,7 @@ function Game() {
         {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
-        {activeTab === "board" && (
-          <CardContainer w={"100%"} h={"50rem"}>
-            board
-          </CardContainer>
-        )}
+        {activeTab === "board" && <GameBoardSection />}
       </GameLayout>
     </TabClicklContext.Provider>
   );

@@ -27,7 +27,7 @@ export function GameReviewSection() {
     <Stack spacing={"xl"}>
       <Text fz={smallScreen ? 28 : 32}>후기</Text>
       {/* 후기 컨테이너 */}
-      <CardContainer className={classes.reviewSection}>
+      <CardContainer className={classes.reviewSection} bg={"white"}>
         <Stack spacing={"lg"}>
           {/* 후기 작성 파트 */}
           <Group className={classes.myReviewGroup}>

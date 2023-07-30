@@ -28,7 +28,7 @@ export function GameNews() {
   const isImage = true;
 
   return (
-    <CardContainer className={classes.gameNewsSection}>
+    <CardContainer className={classes.gameNewsSection} bg={"white"}>
       <Group className={classes.group}>
         {isImage && (
           <Image
