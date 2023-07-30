@@ -34,7 +34,6 @@ import { CommunityBoard } from './entites/community.board.entity';
 import { GameLike } from './entites/game.like.entity';
 import { GameReviewDislike } from './entites/game.review.dislike.entity';
 import { GameReviewCommentDislike } from './entites/game.review.comment.dislike.entity';
-import { AssetModule } from './asset/asset.module';
 
 dotenv.config();
 
@@ -105,7 +104,6 @@ dotenv.config();
     UsersModule,
     CommunityModule,
     GameStoreModule,
-    AssetModule,
   ],
   controllers: [AppController],
   providers: [AppService],
