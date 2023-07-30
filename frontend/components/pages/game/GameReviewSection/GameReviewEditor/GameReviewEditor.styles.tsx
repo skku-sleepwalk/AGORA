@@ -13,20 +13,23 @@ export const useGameReviewEditorStyles = createStyles(
       alignItems: "flex-end",
     },
 
-    reviewEditor: {
-      display: "flex",
+    textarea: {
       flexGrow: 1,
-      width: "100%",
 
-      ".mantine-RichTextEditor-typographyStylesProvider, .mantine-RichTextEditor-content": {
+      ".mantine-Textarea-root, .mantine-Textarea-wrapper, .mantine-Textarea-input": {
         flexGrow: 1,
       },
-      ".mantine-RichTextEditor-content": {
+
+      ".mantine-Textarea-wrapper": {
+        borderRadius: theme.radius.sm,
+        border: `1px solid ${theme.colors.gray[4]}`,
+      },
+
+      ".mantine-Textarea-input": {
+        padding: smallScreen ? "0.4rem 0.5rem" : "0.75rem 0.65rem",
+        border: "none",
         backgroundColor: "transparent",
-        fontSize: smallScreen ? theme.fontSizes.xs : theme.fontSizes.sm,
-        ".ProseMirror": {
-          padding: smallScreen ? "0.6rem" : "1rem",
-        },
+        lineHeight: 1.2,
       },
     },
 
