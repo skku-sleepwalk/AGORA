@@ -45,7 +45,6 @@ export class GameDto extends PickType(Game, [
   @ApiProperty({
     description: '작성자(추후 수정예정) 정보',
     type: () => UserDto,
-    required: false,
   })
   @IsNotEmpty()
   @ValidateNested()
@@ -53,8 +52,8 @@ export class GameDto extends PickType(Game, [
 
   @ApiProperty({
     description: '장르',
-    type: () => GameGenre,
-    required: false,
+    type: 'array',
+    items: { $ref: getSchemaPath(GameGenre) },
   })
   @IsNotEmpty()
   @ValidateNested()
