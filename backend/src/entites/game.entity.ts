@@ -103,7 +103,7 @@ export class Game {
   @JoinTable({
     name: 'genres',
     joinColumn: { name: 'genreId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'gameStoreId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'gameId', referencedColumnName: 'id' },
   })
   genres: Array<GameGenre>;
 

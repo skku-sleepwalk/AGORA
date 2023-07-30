@@ -10,7 +10,7 @@ import { GameDescriptionDto } from './game.description.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';
 import { UserDto } from 'src/common/dto/user.dto';
-import { GameGenre } from 'src/entites/game.genre.entity';
+import { GameGenreDto } from './game.genre.dto';
 
 export class GameDto extends PickType(Game, [
   'id',
@@ -51,15 +51,6 @@ export class GameDto extends PickType(Game, [
   author: UserDto;
 
   @ApiProperty({
-    description: '장르',
-    type: 'array',
-    items: { $ref: getSchemaPath(GameGenre) },
-  })
-  @IsNotEmpty()
-  @ValidateNested()
-  genres: Array<GameGenre>;
-
-  @ApiProperty({
     example: 4.5,
     description: '별점(소숫점 첫째자리까지 나타냄)',
   })
@@ -72,11 +63,18 @@ export class GameDto extends PickType(Game, [
   description: GameDescriptionDto;
 
   @ApiProperty({
+    description: '장르들',
+    type: GameGenreDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  genres: Array<GameGenreDto>;
+
+  @ApiProperty({
     description: '인기 태그들',
-    type: 'array',
-    items: {
-      $ref: getSchemaPath(GameTagDto),
-    },
+    type: GameTagDto,
+    isArray: true,
   })
   @IsNotEmpty()
   @ValidateNested()

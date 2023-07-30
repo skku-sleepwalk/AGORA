@@ -12,6 +12,8 @@ export class GameTag {
   @Column({ unique: true, nullable: false })
   readonly name: string;
 
-  @OneToMany(() => GameTagRelation, (relation) => relation.tag)
+  @OneToMany(() => GameTagRelation, (relation) => relation.tag, {
+    cascade: true,
+  })
   readonly relations: Array<GameTagRelation>;
 }

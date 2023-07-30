@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { GameStore } from './game.store.entity';
 import { ApiProperty } from '@nestjs/swagger';
+import { Game } from './game.entity';
 
 @Entity('GameGenre')
 export class GameGenre {
@@ -12,6 +12,6 @@ export class GameGenre {
   @Column({ unique: true, nullable: false })
   name: string;
 
-  @ManyToMany(() => GameStore, { onDelete: 'CASCADE' })
-  gameStore: Array<GameStore>;
+  @ManyToMany(() => Game, (game) => game.genres)
+  game: Array<Game>;
 }
