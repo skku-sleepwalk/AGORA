@@ -19,7 +19,6 @@ import { GameReview } from './game.review.entity';
 import { GameBoard } from './game.board.entity';
 import { PlayTime } from './game.playtime.entity';
 import { GameGenre } from './game.genre.entity';
-import { GameTag } from './game.tag.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
 import { GameDescription } from './game.description.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
@@ -113,12 +112,15 @@ export class Game {
   })
   likes: Array<GameLike>;
 
+  @ApiProperty({ description: '생성일자' })
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty({ description: '수정일자' })
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty({ description: '삭제일자' })
   @DeleteDateColumn()
   deletedAt?: Date | null;
 }

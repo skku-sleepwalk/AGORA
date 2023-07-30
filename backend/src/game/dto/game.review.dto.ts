@@ -7,6 +7,8 @@ export class GameReviewDto extends PickType(GameReview, [
   'id',
   'content',
   'createdAt',
+  'deletedAt',
+  'updatedAt',
   'rating',
 ]) {
   @IsNotEmpty()

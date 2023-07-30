@@ -68,12 +68,15 @@ export class GameReview {
   @Column({ nullable: false })
   rating: number;
 
+  @ApiProperty({ description: '생성일자' })
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty({ description: '수정일자' })
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty({ description: '삭제일자' })
   @DeleteDateColumn()
   deletedAt?: Date | null;
 }

@@ -1,4 +1,4 @@
-import { ApiProperty, PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType, getSchemaPath } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -62,7 +62,13 @@ export class GameDto extends PickType(Game, [
   @ValidateNested()
   description: GameDescriptionDto;
 
-  @ApiProperty({ description: '인기 태그들', type: () => GameTagDto })
+  @ApiProperty({
+    description: '인기 태그들',
+    type: 'array',
+    items: {
+      $ref: getSchemaPath(GameTagDto),
+    },
+  })
   @IsNotEmpty()
   @ValidateNested()
   popularTags?: Array<GameTagDto>;
