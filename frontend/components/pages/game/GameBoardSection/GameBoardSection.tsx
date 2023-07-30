@@ -41,14 +41,14 @@ export function GameBoardSection() {
           <Group position="apart">
             <CustomNativeSelect
               data={["전체 보기", "공지사항", "업데이트", "개발일지", "리뷰", "공략", "뻘글"]}
-              defaultValue="전체보기"
+              defaultValue={sectionValue}
               onChange={(value) => {
                 setSectionValue(value);
               }}
             />
             <CustomNativeSelect
-              data={["최신순", "인기순", "댓글순"]}
-              defaultValue=" 최신순"
+              data={["최신순", "조회순", "인기순", "댓글순"]}
+              defaultValue={lineUpValue}
               onChange={(value) => {
                 setLineUpValue(value);
               }}

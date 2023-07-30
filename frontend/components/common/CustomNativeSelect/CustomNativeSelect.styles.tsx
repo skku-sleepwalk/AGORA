@@ -5,6 +5,7 @@ export const useCustomNativeSelectStyles = createStyles((theme) => ({
     ".mantine-Menu-item": {
       paddingTop: "0.4rem",
       paddingBottom: "0.4rem",
+      color: `${theme.colors.gray[6]}`,
     },
   },
 
@@ -16,7 +17,7 @@ export const useCustomNativeSelectStyles = createStyles((theme) => ({
     backgroundColor: "transparent",
     fontWeight: "normal",
     fontSize: 14,
-    color: "black",
+    color: `${theme.colors.gray[6]}`,
     "&:hover": {
       backgroundColor: "transparent",
     },
