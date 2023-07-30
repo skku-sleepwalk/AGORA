@@ -10,6 +10,7 @@ import { GameDescriptionDto } from './game.description.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';
 import { UserDto } from 'src/common/dto/user.dto';
+import { GameGenre } from 'src/entites/game.genre.entity';
 
 export class GameDto extends PickType(Game, [
   'id',
@@ -49,6 +50,15 @@ export class GameDto extends PickType(Game, [
   @IsNotEmpty()
   @ValidateNested()
   author: UserDto;
+
+  @ApiProperty({
+    description: '장르',
+    type: () => GameGenre,
+    required: false,
+  })
+  @IsNotEmpty()
+  @ValidateNested()
+  genres: Array<GameGenre>;
 
   @ApiProperty({
     example: 4.5,
