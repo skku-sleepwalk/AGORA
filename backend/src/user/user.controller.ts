@@ -19,7 +19,7 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
-@Controller('user')
+@Controller('users')
 export class UsersController {
   constructor(private userService: UserService) {}
 
@@ -44,7 +44,7 @@ export class UsersController {
   @ApiOperation({ summary: '내 정보 조회' })
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })
   @Get(':id')
-  getUsers(@Param('id') id) {
+  getUsers(@Param('id') id: string) {
     return id;
   }
 
