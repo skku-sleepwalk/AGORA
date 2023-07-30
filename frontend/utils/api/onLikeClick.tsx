@@ -5,13 +5,14 @@ import { identity } from "@mantine/core/lib/Box/style-system-props/value-getters
 
 // boardId와 userId를 받아 boards/like?에 patch하는 함수
 export interface LikeClickResponse {
-  boardId: string;
-  token?: string;
+  data: {
+    boardId: string;
+    token?: string;
+  };
 }
 
 export async function onLikeClick({
-  boardId,
-  token,
+  data: { boardId, token },
 }: LikeClickResponse): Promise<void | undefined> {
   const url = `http://localhost:8000/developer-community-boards/like?boardId=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const data = {};

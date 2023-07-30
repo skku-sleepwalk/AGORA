@@ -14,4 +14,6 @@ export const MOCKUP_BOARD: Board = {
   updatedAt: "2021-01-01T00:00:00.000Z",
   deletedAt: null,
   writer: MOCKUP_USER,
+  categoryTypes: [],
+  likedUsers: [],
 };

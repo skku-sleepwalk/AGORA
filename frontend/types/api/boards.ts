@@ -29,9 +29,11 @@ export type PostBoardResponse = Board;
 export type GetBoardResponse = Board;
 
 export interface GetBoardListResponse {
-  data: Board[];
-  cursor: {
-    afterCursor: string | null;
-    beforeCursor: string | null;
+  data: {
+    data: Board[];
+    cursor: {
+      afterCursor: string | null;
+      beforeCursor: string | null;
+    };
   };
 }

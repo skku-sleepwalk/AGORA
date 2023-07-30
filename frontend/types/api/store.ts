@@ -1,28 +1,41 @@
 import { User } from "./user";
 
-export interface GameStore {
+export interface StoreData {
   id: string;
   title: string;
-  description: string;
   distributor: string;
   developer: string;
+  price: number;
+  snsUrls: SNSUrls | undefined;
+  createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
+}
+export interface GameStore {
+  //data로 한번 감싸야함
+  id: string;
+  title: string;
+  downloadUrl: string;
+  executablePath: string;
+  shortImgUrl: string;
+  shortContent: string;
   likeCount: number;
+  like: boolean;
+  rating: number;
+  // description: string;
+  // distributor: string;
+  // developer: string;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;
   price: number;
-  // author: User;
+  author: User;
   likedUsers: Array<User> | undefined;
+  store: StoreData;
   genres: Array<GameStoreGenre> | undefined;
-  shortDescription: ShortDescription | undefined;
-  snsUrls: SNSUrls | undefined;
   cost: Cost | undefined;
 }
-export interface ShortDescription {
-  id: string;
-  imageUrl: string;
-  content: string;
-}
+
 export interface GameStoreGenre {
   id: string;
   name: string;
@@ -57,9 +70,11 @@ export interface PlayTimeRelation {
 }
 
 export interface GetStoreListResponse {
-  data: GameStore[];
-  cursor: {
-    afterCursor: string | null;
-    beforeCursor: string | null;
+  data: {
+    data: GameStore[];
+    cursor: {
+      afterCursor: string | null;
+      beforeCursor: string | null;
+    };
   };
 }

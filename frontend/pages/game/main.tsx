@@ -5,6 +5,7 @@ import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarou
 import useStoreList from "../../hooks/useStoreList";
 import { useRouter } from "next/router";
 import { createContext } from "react";
+import { useEffect } from "react";
 
 export const StoreContext = createContext({
   mutatePost: () => {},
@@ -13,7 +14,7 @@ export const StoreContext = createContext({
 export default function Main() {
   const router = useRouter();
 
-  const name = "어드밴처";
+  const name = "FPS";
   // router.query.name
   const {
     data: postData,
@@ -22,9 +23,14 @@ export default function Main() {
     mutate: mutatePost,
     isEmpty,
   } = useStoreList({
-    name: name ? name.toString() : undefined,
+    name: name ? name : undefined,
+    // name.toString()
     //여기 tostring 에러 가능성 있음
   });
+  useEffect(() => {
+    setPostSize(1);
+  }, []);
+
   return (
     <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
       <StoreContext.Provider

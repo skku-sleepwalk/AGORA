@@ -103,13 +103,13 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
         </Text>
       </div>
       <div style={containerStyle}>
-        <img src={post.shortDescription?.imageUrl} height={"400rem"} />
+        <img src={post.shortImgUrl} height={"400rem"} />
         {/* hover 시에 반투명 창과 텍스트를 떠오르게 표시합니다. */}
         {isHovered && (
           <div>
             <div style={overlayStyle}></div>
             <div style={overlayStyle2}>
-              <p>{post.shortDescription?.content}</p>
+              <p>{post.shortContent}</p>
               {/* 추가적인 텍스트 또는 아이콘 등을 넣을 수 있습니다. */}
             </div>
           </div>

@@ -41,11 +41,12 @@ export function SmallPosts({ information }: any) {
           nextControlIcon={<IconChevronRight color="black" size={"3rem"}></IconChevronRight>}
         >
           {postData?.map((data: any) => {
-            return data.data.map((data: any) => (
+            console.log("data is ", data);
+            return data.data.data.map((data: any) => (
               <Carousel.Slide>
                 <div style={{ marginTop: "20px" }}>
                   <SmallPost key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
-                </div>{" "}
+                </div>
               </Carousel.Slide>
             ));
           })}

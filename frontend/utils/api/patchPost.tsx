@@ -8,15 +8,15 @@ export interface patchBoard {
 }
 
 export interface PatchPostResponse {
-  boardId: string;
-  data: patchBoard;
-  token?: string;
+  data: {
+    boardId: string;
+    data: patchBoard;
+    token?: string;
+  };
 }
 
 export async function patchPost({
-  boardId,
-  data,
-  token,
+  data: { boardId, data, token },
 }: PatchPostResponse): Promise<void | undefined> {
   const url = `http://localhost:8000/developer-community-boards/update?id=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
