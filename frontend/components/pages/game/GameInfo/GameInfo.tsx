@@ -11,7 +11,7 @@ export function GameInfo() {
   return (
     <Stack spacing={"xl"}>
       <Text fz={smallScreen ? 28 : 32}>게임 정보</Text>
-      <CardContainer className={classes.infoSection}>
+      <CardContainer className={classes.infoSection} bg={"white"}>
         <TypographyStylesProvider className={classes.infoTypo}>
           <div
             className={classes.content}
