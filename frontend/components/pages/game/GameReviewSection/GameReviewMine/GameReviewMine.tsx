@@ -28,7 +28,7 @@ import {
 import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
-import { GameReviewEditor } from "../GameReviewEditor/GameReviewEditor";
+import { GameReviewEditor, ShortenText } from "../GameReviewEditor/GameReviewEditor";
 
 export function GameReviewMine() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -36,17 +36,10 @@ export function GameReviewMine() {
   const theme = useMantineTheme();
 
   // 자세히 보기 관련 로직
-  const overflowRef = useRef<HTMLDivElement>(null);
-  const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
-  const checkOverflow = () => {
-    if (!overflowRef.current) {
-      return null;
-    }
-    return overflowRef.current.scrollHeight > overflowRef.current.clientHeight;
-  };
-  useEffect(() => {
-    setIsOverflowed(checkOverflow());
-  }, []);
+  const [shortenedText, isShorten] = ShortenText({
+    text: MOCKUP_CONTENT,
+    length: smallScreen ? 100 : 300,
+  });
   const [viewMore, setViewMore] = useState<boolean>(false);
 
   // 후기 좋아요 싫어요 관련 로직
@@ -82,18 +75,25 @@ export function GameReviewMine() {
         </Group>
         {/* 후기 내용 */}
         <Stack spacing={0}>
-          <TypographyStylesProvider
-            className={cx(classes.reviewTypo, !viewMore && classes.limitHeight)}
-            ref={overflowRef}
-          >
-            <div
-              className={classes.content}
-              dangerouslySetInnerHTML={{
-                __html: MOCKUP_CONTENT,
-              }}
-            />
+          <TypographyStylesProvider className={classes.reviewTypo}>
+            {!viewMore && (
+              <div
+                className={classes.content}
+                dangerouslySetInnerHTML={{
+                  __html: shortenedText,
+                }}
+              />
+            )}
+            {viewMore && (
+              <div
+                className={classes.content}
+                dangerouslySetInnerHTML={{
+                  __html: MOCKUP_CONTENT,
+                }}
+              />
+            )}
           </TypographyStylesProvider>
-          {isOverflowed && !viewMore && (
+          {isShorten && !viewMore && (
             <UnstyledButton
               className={classes.viewMoreButton}
               fz={smallScreen ? 14 : 16}
