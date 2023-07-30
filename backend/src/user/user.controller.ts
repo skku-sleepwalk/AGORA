@@ -19,7 +19,7 @@ import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
-@Controller('user')
+@Controller('users')
 export class UsersController {
   constructor(private userService: UserService) {}
 
