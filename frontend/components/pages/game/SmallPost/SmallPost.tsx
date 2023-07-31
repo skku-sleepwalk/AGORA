@@ -89,8 +89,8 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
         {post.title}
       </Text>
 
-      <Group spacing="5.5rem" align="flex-start" style={margins}>
-        {/* <UserInfoSmall user={post.author} /> */}
+      <Group spacing="9rem" align="flex-start" style={margins}>
+        <UserInfoSmall user={post.author} />
         <Group spacing={0}>
           <Group spacing={5} style={{ marginRight: "1rem" }}>
             <IconHeart size={15} stroke={1.3} />
@@ -98,15 +98,29 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
           </Group>
         </Group>
       </Group>
+      <Group>
+        {post.store.cost?.isSale ? (
+          <Text
+            style={{ marginLeft: "190px" }}
+            align="right"
+            td="line-through"
+            c="gray"
+            size={"md"}
+          >
+            \{post.store?.cost?.defaultPrice}
+          </Text>
+        ) : null}
+      </Group>
       <div style={{ marginRight: "1rem" }}>
         {post.store.cost?.isFree ? (
           <Text align="right" size={"lg"}>
             FREE
           </Text>
         ) : post.store.cost?.isSale ? (
-          <Text align="right" td="line-through" c="gray" size={"lg"}>
-            \{post.store?.cost?.defaultPrice}
-          </Text>
+          <Group style={{ paddingLeft: "124px" }}>
+            <Text style={{ backgroundColor: "#F1A2A2" }}>-{post.store.cost.salePercentage}%</Text>
+            <Text size={"lg"}>\{post.store?.cost?.saledPrice}</Text>
+          </Group>
         ) : (
           <Text align="right" size={"lg"}>
             \{post.store?.cost?.defaultPrice}
