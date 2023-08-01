@@ -46,7 +46,9 @@ export function GameNews() {
         )}
         <Stack className={classes.stack} spacing={"xs"}>
           <Group position="apart" align="flex-start" spacing={"xs"}>
-            <Text fz={smallScreen ? 14 : 18}>내가 세계에서 제일 귀엽고 이쁨 ^^</Text>
+            <Text fz={smallScreen ? 14 : 18} fw={"bold"}>
+              내가 세계에서 제일 귀엽고 이쁨 ^^
+            </Text>
             <Text fz={smallScreen ? 12 : 14} c={theme.colors.gray[4]}>
               23/7/27
             </Text>

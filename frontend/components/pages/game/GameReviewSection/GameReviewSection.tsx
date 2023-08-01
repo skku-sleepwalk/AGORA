@@ -24,7 +24,7 @@ export function GameReviewSection() {
   const hasReview = true;
 
   return (
-    <Stack spacing={"xl"}>
+    <Stack spacing={"xl"} className={classes.all}>
       <Text fz={smallScreen ? 28 : 32}>후기</Text>
       {/* 후기 컨테이너 */}
       <CardContainer className={classes.reviewSection} bg={"white"}>

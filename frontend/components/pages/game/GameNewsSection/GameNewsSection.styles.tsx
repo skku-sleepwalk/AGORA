@@ -1,6 +1,10 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameNewsSectionStyles = createStyles((theme) => ({
+  all: {
+    cursor: "default",
+  },
+
   displayNone: {
     display: "none",
   },

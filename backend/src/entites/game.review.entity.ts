@@ -15,7 +15,6 @@ import { GameReviewLike } from './game.review.like.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
 import { GameReviewDislike } from './game.review.dislike.entity';
-import { UserDto } from 'src/common/dto/user.dto';
 
 @Entity('GameReview')
 export class GameReview {

@@ -165,13 +165,7 @@ export class CommunityBoardService {
               name: categoryName,
             },
           });
-        if (!category) {
-          categories.push(
-            await queryRunner.manager.save(CommunityCategory, {
-              name: categoryName,
-            }),
-          );
-        } else {
+        if (category) {
           categories.push(category);
         }
       }
@@ -192,7 +186,7 @@ export class CommunityBoardService {
   async getOneBoard(userEmail: string, id: string) {
     const board = await this.communityBoardRepository.findOne({
       where: { id },
-      relations: ['author'],
+      relations: ['author', 'categories'],
     });
     const boardModified = this.boardModifying(userEmail, board);
     return boardModified;
