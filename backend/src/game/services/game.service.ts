@@ -179,9 +179,8 @@ export class GameService {
         specification,
       });
       await queryRunner.manager.save(newInformation);
-      console.log('--------------------');
 
-      // newGame.information = information;
+      newGame.information = newInformation;
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
       for (const genreName of genreNames) {
