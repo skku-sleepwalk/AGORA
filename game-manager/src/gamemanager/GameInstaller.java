@@ -1,6 +1,7 @@
 package gamemanager;
 
 import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ import java.util.zip.ZipInputStream;
 
 public class GameInstaller {
     private String downloadUrl;
-    private Path executablePath;
+    private Path path;
     private Path outputDir;
     private JFrame frame;
     private JProgressBar progressBar;
@@ -22,7 +23,7 @@ public class GameInstaller {
 
     public GameInstaller(Game game) {
         this.downloadUrl = game.getDownloadUrl();
-        this.executablePath = game.getExecutablePath();
+        this.path = game.getPath();
         this.outputDir = Paths.get(".\\games\\" + game.getName());
         this.initGUI();
     }
@@ -68,6 +69,8 @@ public class GameInstaller {
             SwingUtilities.invokeLater(() -> frame.setVisible(false));
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            frame.dispose();
         }
     }
 
@@ -108,7 +111,11 @@ public class GameInstaller {
                 SwingUtilities.invokeLater(() -> progressBar.setValue(percentCompleted));
             }
         }
-        if (Paths.get(filePath).equals(executablePath)) {
+        
+        Path absoluteFilePath = Paths.get(filePath).toAbsolutePath().normalize();
+        Path absolutePath = path.toAbsolutePath().normalize();
+
+        if (absoluteFilePath.equals(absolutePath)) {
             try {
                 Path encryptedFilePath = Paths.get(filePath + ".enc");
                 encryptFile(Paths.get(filePath), encryptedFilePath);
@@ -122,18 +129,20 @@ public class GameInstaller {
 
     private void encryptFile(Path source, Path destination) throws Exception {
         SecretKeySpec secretKeySpec = new SecretKeySpec(ENCRYPTION_KEY.getBytes(), "AES");
-        Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, new IvParameterSpec(new byte[16]));
 
         try (FileInputStream fis = new FileInputStream(source.toFile());
-             FileOutputStream fos = new FileOutputStream(destination.toFile());
-             BufferedOutputStream bos = new BufferedOutputStream(fos)) {
+            FileOutputStream fos = new FileOutputStream(destination.toFile());
+            BufferedOutputStream bos = new BufferedOutputStream(fos)) {
             byte[] buffer = new byte[4096];
             int read;
             while ((read = fis.read(buffer)) != -1) {
-                byte[] encrypted = cipher.doFinal(buffer, 0, read);
+                byte[] encrypted = cipher.update(buffer, 0, read);
                 bos.write(encrypted);
             }
+            byte[] encrypted = cipher.doFinal();
+            bos.write(encrypted);
         }
     }
 }
