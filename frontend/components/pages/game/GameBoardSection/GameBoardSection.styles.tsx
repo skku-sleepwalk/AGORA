@@ -6,6 +6,21 @@ export interface GameBoardSectionStylesProps {
 
 export const useGameBoardSectionStyles = createStyles(
   (theme, { smallScreen }: GameBoardSectionStylesProps) => ({
+    modal: {
+      ".mantine-Modal-header": {
+        alignItems: "flex-start",
+      },
+
+      ".mantine-Modal-close": {
+        marginRight: "0.5rem",
+      },
+    },
+
+    modalTitle: {
+      marginTop: "0.2rem",
+      marginLeft: "0.5rem",
+    },
+
     all: {
       cursor: "default",
     },
