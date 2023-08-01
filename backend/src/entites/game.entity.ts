@@ -77,7 +77,7 @@ export class Game {
   @OneToOne(() => GameInformation, (info) => info.game, {
     cascade: true,
   })
-  readonly information: GameInformation;
+  information: GameInformation;
 
   @OneToMany(() => GameReview, (review) => review.game, {
     cascade: true,

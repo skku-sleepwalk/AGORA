@@ -19,11 +19,14 @@ import {
 } from 'typeorm-cursor-pagination';
 import { GameDto } from '../dto/game.dto';
 import { GameReview } from 'src/entites/game.review.entity';
+import { GameInformation } from 'src/entites/game.information.entity';
 
 @Injectable()
 export class GameService {
   constructor(
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(GameInformation)
+    private readonly gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(GameLike)
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameGenre)
@@ -137,6 +140,8 @@ export class GameService {
     shortContent: string,
     shortImgUrl: string,
     genreNames: Array<string>,
+    description: string,
+    specification: string,
   ) {
     // 트랜잭션 시작
     const queryRunner =
@@ -172,6 +177,14 @@ export class GameService {
         shortContent,
         shortImgUrl,
       });
+
+      const information = await queryRunner.manager.save(GameInformation, {
+        game: newGame,
+        author: user,
+        description,
+        specification,
+      });
+      newGame.information = information;
 
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
@@ -292,6 +305,8 @@ export class GameService {
     downloadUrl: string,
     executablePath: string,
     genreNames: Array<string>,
+    description: string,
+    specification: string,
   ) {
     // 트랜잭션 시작
     const queryRunner =
@@ -314,7 +329,7 @@ export class GameService {
       const game = gameId
         ? await this.gameRepository.findOne({
             where: { id: gameId },
-            relations: ['author'],
+            relations: ['author', 'information'],
           })
         : null;
       if (!game) {
@@ -326,6 +341,12 @@ export class GameService {
         throw new ForbiddenException('해당 게임의 작성자가 아닙니다.');
       }
 
+      const information = {
+        description,
+        specification,
+        ...game.information,
+      };
+      queryRunner.manager.save(GameInformation, information);
       // 4. Game 엔티티 수정
       game.downloadUrl = downloadUrl;
       game.executablePath = executablePath;

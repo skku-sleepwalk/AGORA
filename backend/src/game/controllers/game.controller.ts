@@ -45,6 +45,8 @@ export class GameContorller {
       data.shortContent,
       data.shortImgUrl,
       data.genreNames,
+      data.description,
+      data.specification,
     );
   }
 
@@ -139,6 +141,8 @@ export class GameContorller {
       data.downloadUrl,
       data.executablePath,
       data.genreNames,
+      data.description,
+      data.specification,
     );
   }
 
