@@ -15,6 +15,7 @@ import { GameReviewLike } from './game.review.like.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
 import { GameReviewDislike } from './game.review.dislike.entity';
+import { UserDto } from 'src/common/dto/user.dto';
 
 @Entity('GameReview')
 export class GameReview {
@@ -26,7 +27,7 @@ export class GameReview {
 
   @ManyToOne(() => User, (user) => user.gameReviews)
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
-  readonly author: User;
+  readonly author: UserDto;
 
   @ManyToOne(() => Game, (game) => game.reviews, {
     onDelete: 'CASCADE',

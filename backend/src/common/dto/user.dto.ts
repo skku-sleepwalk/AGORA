@@ -15,8 +15,17 @@ export class UserDto extends PickType(User, [
 ]) {
   @ApiProperty({
     description: '총 플레이 시간(유저 하나 불러오거나, 여러개 불러올 때만)',
+    required: false,
   })
   @IsOptional()
   @IsNumber()
   totalPlaytime?: number;
+
+  @ApiProperty({
+    description: '게임 별 플레이 시간(리뷰 불러올때만)',
+    required: false,
+  })
+  @IsOptional()
+  @IsNumber()
+  playtime?: number;
 }
