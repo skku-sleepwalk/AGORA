@@ -1,4 +1,4 @@
-import { ApiProperty, PickType, getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Game } from 'src/entites/game.entity';
-import { GameDescriptionDto } from './game.description.dto';
+import { GameInformationDto } from './game.description.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';
 import { UserDto } from 'src/common/dto/user.dto';
@@ -57,10 +57,10 @@ export class GameDto extends PickType(Game, [
   @IsNotEmpty()
   rating?: number;
 
-  @ApiProperty({ description: '게임 설명', type: () => GameDescriptionDto })
+  @ApiProperty({ description: '게임 설명', type: () => GameInformationDto })
   @IsNotEmpty()
   @ValidateNested()
-  description: GameDescriptionDto;
+  information: GameInformationDto;
 
   @ApiProperty({
     description: '장르들',
