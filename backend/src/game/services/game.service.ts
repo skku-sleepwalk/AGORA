@@ -8,7 +8,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from 'src/entites/game.entity';
 import { GameGenre } from 'src/entites/game.genre.entity';
 import { GameLike } from 'src/entites/game.like.entity';
-import { GameTag } from 'src/entites/game.tag.entity';
 import { GameTagRelation } from 'src/entites/game.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { DataSource, In, Repository } from 'typeorm';
@@ -29,8 +28,6 @@ export class GameService {
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameGenre)
     private readonly gameGenreRepository: Repository<GameGenre>,
-    @InjectRepository(GameTag)
-    private readonly gameTagRepository: Repository<GameTag>,
     @InjectRepository(GameTagRelation)
     private readonly gameTagRelationRepository: Repository<GameTagRelation>,
     @InjectRepository(GameReview)
