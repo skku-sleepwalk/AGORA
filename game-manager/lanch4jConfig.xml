@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch4jConfig>
   <dontWrapJar>false</dontWrapJar>
-  <headerType>console</headerType>
+  <headerType>gui</headerType>
   <jar>C:\Users\qazxs\Desktop\SPARK\AGORA\game-manager\agoraGameManager.jar</jar>
   <outfile>C:\Users\qazxs\Desktop\agoraGameManager.exe</outfile>
   <errTitle></errTitle>
@@ -14,6 +14,10 @@
   <restartOnCrash>false</restartOnCrash>
   <manifest></manifest>
   <icon></icon>
+  <classPath>
+    <mainClass>main.Main</mainClass>
+    <cp>lib/org.json.jar</cp>
+  </classPath>
   <jre>
     <path>%JAVA_HOME%;%PATH%</path>
     <requiresJdk>false</requiresJdk>

@@ -22,7 +22,7 @@ public class HttpClientService {
 
     public Game getGame(String id) {
         try {   
-            JSONObject response = sendRequest("GET", "/game" + id, null);
+            JSONObject response = sendRequest("GET", "/game/" + id, null);
             return new Game(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,9 +33,8 @@ public class HttpClientService {
     public void addPlaytime(String id, int minutes) {
         try {
             JSONObject body = new JSONObject();
-            body.put("gameStoreId", id);
             body.put("additionalPlaytime", minutes);
-            sendRequest("PATCH", "/game-store/playtimeRelations", body);
+            sendRequest("PATCH", "/game/" + id + "/playtime", body);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,7 +43,8 @@ public class HttpClientService {
     private JSONObject sendRequest(String method, String endpoint, JSONObject requestBody) throws IOException, InterruptedException, JSONException {
         HttpRequest.Builder builder = HttpRequest.newBuilder()
             .uri(URI.create(baseUrl + endpoint))
-            .header("Authorization", "Bearer " + Main.getToken());
+            .header("Authorization", Main.getToken())
+            .header("Content-Type", "application/json");
 
         HttpRequest.BodyPublisher bodyPublisher = requestBody != null
             ? HttpRequest.BodyPublishers.ofString(requestBody.toString())
@@ -72,7 +72,11 @@ public class HttpClientService {
             throw new IOException("Unexpected HTTP status: " + response.statusCode());
         }
 
-        return new JSONObject(response.body());
+        try {
+            return new JSONObject(response.body()).getJSONObject("data");
+        } catch (JSONException e) {
+            return null;
+        }
     }
 
 }
