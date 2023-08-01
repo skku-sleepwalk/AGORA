@@ -296,8 +296,7 @@ export class GameService {
     specification: string,
   ) {
     // 트랜잭션 시작
-    const queryRunner =
-      this.gameRepository.manager.connection.createQueryRunner();
+    const queryRunner = this.dataSource.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -329,12 +328,13 @@ export class GameService {
       }
 
       const information = {
+        ...game.information,
         description,
         specification,
-        ...game.information,
       };
-      this.gameInformationRepository.save(information);
+
       // 4. Game 엔티티 수정
+      game.information = information;
       game.downloadUrl = downloadUrl;
       game.executablePath = executablePath;
       await queryRunner.manager.save(Game, game);
