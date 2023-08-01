@@ -16,7 +16,7 @@ export function GameNewsSection() {
   const handleScroll = useContext(TabClicklContext);
 
   return (
-    <Stack spacing={"xl"}>
+    <Stack spacing={"xl"} className={classes.all}>
       {/* 공지사항 */}
       <Stack spacing={"xl"} className={cx((state.update || state.develop) && classes.displayNone)}>
         <Group spacing={"sm"}>

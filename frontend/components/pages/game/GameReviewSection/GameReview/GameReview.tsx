@@ -55,7 +55,7 @@ export function GameReview() {
 
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
-  const canReview = true;
+  const canReview = false;
 
   return (
     <Box>
