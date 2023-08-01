@@ -49,11 +49,13 @@ import { GameBoardLikeService } from './services/game.board.like.service';
 import { GameBoardLikeController } from './controllers/game.board.like.controller';
 import { GamePlaytimeService } from './services/game.playtime.service';
 import { GamePlaytimeController } from './controllers/game.playtime.controller';
+import { GameInformation } from 'src/entites/game.information.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       Game,
+      GameInformation,
       GameStore,
       GameLike,
       GameTag,

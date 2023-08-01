@@ -24,6 +24,8 @@ import { GameInformation } from 'src/entites/game.information.entity';
 export class GameService {
   constructor(
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(GameInformation)
+    private readonly gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(GameLike)
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameGenre)
@@ -33,7 +35,7 @@ export class GameService {
     @InjectRepository(GameReview)
     private readonly gameReviewRepository: Repository<GameReview>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private dataSource: DataSource,
+    private readonly dataSource: DataSource,
   ) {}
 
   getQueryBuilder() {
@@ -139,8 +141,7 @@ export class GameService {
     specification: string,
   ) {
     // 트랜잭션 시작
-    const queryRunner =
-      this.gameRepository.manager.connection.createQueryRunner();
+    const queryRunner = this.dataSource.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -162,7 +163,6 @@ export class GameService {
       if (existingGame) {
         throw new ConflictException('이미 존재하는 게임 이름입니다.');
       }
-
       // 3. Game 엔티티 생성 및 저장
       const newGame = this.gameRepository.create({
         title,
@@ -172,15 +172,15 @@ export class GameService {
         shortContent,
         shortImgUrl,
       });
+      queryRunner.manager.save(newGame);
 
-      const information = await queryRunner.manager.save(GameInformation, {
-        game: newGame,
-        author: user,
+      const newInformation = this.gameInformationRepository.create({
         description,
         specification,
       });
-      newGame.information = information;
+      await queryRunner.manager.save(newInformation);
 
+      newGame.information = newInformation;
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
       for (const genreName of genreNames) {
@@ -189,14 +189,6 @@ export class GameService {
         });
         if (existingGenre) {
           uniqueGenres.push(existingGenre);
-        } else {
-          const newGenre = new GameGenre();
-          newGenre.name = genreName;
-          const savedGenre = await queryRunner.manager.save(
-            GameGenre,
-            newGenre,
-          );
-          uniqueGenres.push(savedGenre);
         }
       }
 
@@ -341,14 +333,14 @@ export class GameService {
         specification,
         ...game.information,
       };
-      queryRunner.manager.save(GameInformation, information);
+      this.gameInformationRepository.save(information);
       // 4. Game 엔티티 수정
       game.downloadUrl = downloadUrl;
       game.executablePath = executablePath;
       await queryRunner.manager.save(Game, game);
 
       // 5. Genre 엔티티 생성 및 저장 (중복 방지)
-      const uniqueGenres: GameGenre[] = [];
+      const genres: GameGenre[] = [];
       const existingGenres = await this.gameGenreRepository.find({
         where: { name: In(genreNames) },
       });
@@ -358,20 +350,12 @@ export class GameService {
           (genre) => genre.name === genreName,
         );
         if (existingGenre) {
-          uniqueGenres.push(existingGenre);
-        } else {
-          const newGenre = new GameGenre();
-          newGenre.name = genreName;
-          const savedGenre = await queryRunner.manager.save(
-            GameGenre,
-            newGenre,
-          );
-          uniqueGenres.push(savedGenre);
+          genres.push(existingGenre);
         }
       }
 
       // 6. Game과 Genre의 관계 설정
-      game.genres = uniqueGenres;
+      game.genres = genres;
       await queryRunner.manager.save(Game, game);
 
       // 트랜잭션 커밋
