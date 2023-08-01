@@ -37,6 +37,10 @@ public class Game implements Serializable {
         return Paths.get("games").resolve(name).resolve(Paths.get(executablePathString));
     }
 
+    public Path getExecutablePath() {
+        return Paths.get(executablePathString);
+    }
+
     public String getDownloadUrl() {
         return downloadUrl;
     }

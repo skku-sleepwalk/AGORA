@@ -22,7 +22,7 @@ public class HttpClientService {
 
     public Game getGame(String id) {
         try {   
-            JSONObject response = sendRequest("GET", "/game-store/id/" + id, null);
+            JSONObject response = sendRequest("GET", "/game" + id, null);
             return new Game(response);
         } catch (Exception e) {
             e.printStackTrace();
