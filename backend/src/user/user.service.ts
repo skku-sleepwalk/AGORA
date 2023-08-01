@@ -34,6 +34,7 @@ export class UserService {
       description,
     });
   }
+
   async get() {
     const users = await this.userRepository.find();
     users.map(async (user) => {

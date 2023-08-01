@@ -17,6 +17,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { GameReviewDto } from '../dto/game.review.dto';
 import { GameReviewDislike } from 'src/entites/game.review.dislike.entity';
+import { PlayTime } from 'src/entites/game.playtime.entity';
 
 @Injectable()
 export class GameReviewService {
@@ -29,11 +30,13 @@ export class GameReviewService {
     private readonly gameReviewDislikeRepository: Repository<GameReviewDislike>,
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(PlayTime)
+    private readonly playTimeRepository: Repository<PlayTime>,
   ) {}
 
   async reviewModifying(
     userEmail: string,
-    review: GameReviewDto,
+    review: GameReview,
   ): Promise<GameReviewDto> {
     // userEmail과 gameReview.id를 이용하여 좋아요 여부 조회
     const [likes, likeCount] = await this.gameReviewLikeRepository
@@ -66,12 +69,17 @@ export class GameReviewService {
         : false
       : false;
 
+    review.author.playtime = (
+      await this.playTimeRepository.findOne({
+        where: { user: { email: userEmail }, game: { id: review.game.id } },
+      })
+    ).playtime;
     return { ...review, like, dislike, likeCount, dislikeCount };
   }
 
   async dataModifying(
     userEmail: string,
-    data: Array<GameReviewDto>,
+    data: Array<GameReview>,
   ): Promise<Array<GameReviewDto>> {
     return await Promise.all(
       data.map(async (review) => {
@@ -133,7 +141,7 @@ export class GameReviewService {
     if (!userEmail) {
       return null;
     }
-    const _review: GameReviewDto = await this.gameReviewRepository.findOne({
+    const _review: GameReview = await this.gameReviewRepository.findOne({
       where: { game: { id: gameId }, author: { email: userEmail } },
       relations: ['author'],
     });
@@ -146,7 +154,7 @@ export class GameReviewService {
     gameId: string,
     reviewId: string,
   ): Promise<GameReviewDto> {
-    const _review: GameReviewDto = await this.gameReviewRepository.findOne({
+    const _review: GameReview = await this.gameReviewRepository.findOne({
       where: { id: reviewId, game: { id: gameId } },
     });
     if (!_review) {
