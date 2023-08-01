@@ -36,6 +36,7 @@ export class UsersController {
   }
 
   @Get()
+  @ApiResponse({ type: UserDto, isArray: true })
   get() {
     return this.userService.get();
   }

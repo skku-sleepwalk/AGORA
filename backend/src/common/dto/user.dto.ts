@@ -1,4 +1,5 @@
-import { PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 import { User } from 'src/entites/user.entity';
 
 export class UserDto extends PickType(User, [
@@ -8,8 +9,12 @@ export class UserDto extends PickType(User, [
   'description',
   'token',
   'rating',
-  'totalPlaytime',
   'createdAt',
   'updatedAt',
   'deletedAt',
-]) {}
+]) {
+  @ApiProperty({ description: '총 플레이 시간' })
+  @IsNotEmpty()
+  @IsNumber()
+  totalPlaytime: number;
+}

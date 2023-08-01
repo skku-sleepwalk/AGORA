@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PlayTime } from 'src/entites/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 // import bcrypt from 'bcrypt';
@@ -9,6 +10,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(PlayTime)
+    private readonly playtimeRepository: Repository<PlayTime>,
   ) {}
 
   async postUsers(
@@ -31,7 +34,17 @@ export class UserService {
       description,
     });
   }
-  get() {
-    return this.userRepository.find();
+  async get() {
+    const users = await this.userRepository.find();
+    users.map(async (user) => {
+      const playtimes = await this.playtimeRepository.find({
+        where: { user: { id: user.id } },
+      });
+      const totalPlaytime = playtimes
+        .map((playtime) => playtime.playtime)
+        .reduce((acc, current) => acc + current, 0);
+      return { ...user, totalPlaytime };
+    });
+    return users;
   }
 }

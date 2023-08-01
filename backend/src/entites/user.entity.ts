@@ -68,10 +68,6 @@ export class User {
   @Column({ default: 0 })
   rating: number;
 
-  @ApiProperty({ example: 300, description: '플레이 시간(분단위)' })
-  @Column({ default: 0 })
-  totalPlaytime: number;
-
   @CreateDateColumn()
   createdAt: Date;
 
