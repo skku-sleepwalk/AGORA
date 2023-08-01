@@ -27,7 +27,7 @@ export class GameReview {
 
   @ManyToOne(() => User, (user) => user.gameReviews)
   @JoinColumn([{ name: 'authorId', referencedColumnName: 'id' }])
-  readonly author: UserDto;
+  readonly author: User;
 
   @ManyToOne(() => Game, (game) => game.reviews, {
     onDelete: 'CASCADE',

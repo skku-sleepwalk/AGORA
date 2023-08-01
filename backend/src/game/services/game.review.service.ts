@@ -69,12 +69,19 @@ export class GameReviewService {
         : false
       : false;
 
-    review.author.playtime = (
+    const playtime = (
       await this.playTimeRepository.findOne({
         where: { user: { email: userEmail }, game: { id: review.game.id } },
       })
     ).playtime;
-    return { ...review, like, dislike, likeCount, dislikeCount };
+    return {
+      ...review,
+      author: { ...review.author, playtime },
+      like,
+      dislike,
+      likeCount,
+      dislikeCount,
+    };
   }
 
   async dataModifying(
