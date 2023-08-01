@@ -1,11 +1,15 @@
 import { createStyles } from "@mantine/core";
 
-export interface GameReviewSectionProps {
+export interface GameReviewSectionStylesProps {
   smallScreen: boolean;
 }
 
 export const useGameReviewSectionStyles = createStyles(
-  (theme, { smallScreen }: GameReviewSectionProps) => ({
+  (theme, { smallScreen }: GameReviewSectionStylesProps) => ({
+    all: {
+      cursor: "default",
+    },
+
     reviewSection: {
       width: "100%",
       height: "100%",

@@ -1,19 +1,22 @@
 import { createStyles } from "@mantine/core";
 
-export interface GameNewsStylesProps {
+export interface GameBoardStylesProps {
   smallScreen: boolean;
 }
-
-export const useGameNewsStyles = createStyles((theme, { smallScreen }: GameNewsStylesProps) => ({
-  gameNewsSection: {
-    width: "100%",
-    height: "100%",
-    padding: "0.2rem 0.2rem",
-    paddingRight: "1rem",
+export const useGameBoardStyles = createStyles((theme, { smallScreen }: GameBoardStylesProps) => ({
+  stack: {
+    margin: "1rem 1.5rem",
+    marginBottom: "0.1rem",
   },
 
   group: {
+    marginLeft: smallScreen ? "0.7rem" : "1rem",
     flexWrap: "nowrap",
+  },
+
+  boardStack: {
+    flexGrow: 1,
+    padding: "0.7rem 0rem 0.3rem",
   },
 
   noImage: {
@@ -28,14 +31,9 @@ export const useGameNewsStyles = createStyles((theme, { smallScreen }: GameNewsS
     justifyContent: "center",
   },
 
-  stack: {
-    flexGrow: 1,
-    padding: "0.7rem 0rem 0.3rem",
-  },
-
   newsTypo: {
     position: "relative",
-    height: smallScreen ? "2.5rem" : "2.9rem",
+    height: smallScreen ? "2.5rem" : "4.5rem",
     overflow: "hidden",
 
     lineHeight: 1.2,
@@ -57,5 +55,9 @@ export const useGameNewsStyles = createStyles((theme, { smallScreen }: GameNewsS
     "*": {
       marginBottom: "0px !important",
     },
+  },
+
+  footerGroup: {
+    marginTop: "0.5rem",
   },
 }));

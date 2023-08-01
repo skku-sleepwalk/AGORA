@@ -9,7 +9,7 @@ export function GameInfo() {
   const { classes, cx } = useGameInfoStyles();
 
   return (
-    <Stack spacing={"xl"}>
+    <Stack spacing={"xl"} className={classes.all}>
       <Text fz={smallScreen ? 28 : 32}>게임 정보</Text>
       <CardContainer className={classes.infoSection} bg={"white"}>
         <TypographyStylesProvider className={classes.infoTypo}>
