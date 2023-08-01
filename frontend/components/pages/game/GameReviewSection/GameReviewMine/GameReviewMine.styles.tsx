@@ -1,11 +1,11 @@
 import { createStyles } from "@mantine/core";
 
-export interface GameReviewMineProps {
+export interface GameReviewMineStylesProps {
   smallScreen: boolean;
 }
 
 export const useGameReviewMineStyles = createStyles(
-  (theme, { smallScreen }: GameReviewMineProps) => ({
+  (theme, { smallScreen }: GameReviewMineStylesProps) => ({
     stack: {
       marginTop: "0.2rem",
       marginBottom: "1rem",

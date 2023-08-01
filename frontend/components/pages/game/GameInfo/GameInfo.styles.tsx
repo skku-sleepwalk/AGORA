@@ -1,6 +1,10 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameInfoStyles = createStyles((theme) => ({
+  all: {
+    cursor: "default",
+  },
+
   infoSection: {
     width: "100%",
     height: "100%",
