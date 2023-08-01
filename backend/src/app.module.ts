@@ -36,6 +36,7 @@ import { GameReviewDislike } from './entites/game.review.dislike.entity';
 import { GameReviewCommentDislike } from './entites/game.review.comment.dislike.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UploadModule } from './upload/upload.module';
 
 dotenv.config();
 
@@ -103,6 +104,7 @@ dotenv.config();
       GameTag,
       GameTagRelation,
     ]),
+    UploadModule,
     UsersModule,
     CommunityModule,
     GameStoreModule,
