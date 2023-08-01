@@ -47,6 +47,8 @@ import { GameReviewCommentDislikeService } from './services/game.review.comment.
 import { GameReviewCommentDislikeController } from './controllers/game.review.comment.dislike.controller';
 import { GameBoardLikeService } from './services/game.board.like.service';
 import { GameBoardLikeController } from './controllers/game.board.like.controller';
+import { GamePlaytimeService } from './services/game.playtime.service';
+import { GamePlaytimeController } from './controllers/game.playtime.controller';
 
 @Module({
   imports: [
@@ -75,6 +77,7 @@ import { GameBoardLikeController } from './controllers/game.board.like.controlle
   providers: [
     GameService,
     GameLikeService,
+    GamePlaytimeService,
     GameStoreService,
     GameGenreService,
     GameTagService,
@@ -91,6 +94,7 @@ import { GameBoardLikeController } from './controllers/game.board.like.controlle
   controllers: [
     GameContorller,
     GameLikeController,
+    GamePlaytimeController,
     GameStoresController,
     GameGenreController,
     GameTagController,

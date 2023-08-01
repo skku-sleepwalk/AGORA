@@ -26,5 +26,5 @@ export class PlayTime {
   readonly user: User;
 
   @Column({ nullable: false, default: 0 })
-  playTime: number;
+  playtime: number;
 }

@@ -45,7 +45,7 @@ export class GameService {
       .leftJoinAndSelect('game.author', 'author')
       .leftJoinAndSelect('game.store', 'store')
       .leftJoinAndSelect('store.cost', 'cost')
-      .leftJoinAndSelect('game.description', 'description');
+      .leftJoinAndSelect('game.information', 'information');
   }
 
   calculateRating([reviews, reviewCount]: [Array<GameReview>, number]) {
@@ -211,7 +211,7 @@ export class GameService {
   async getOneGame(userEmail: string, gameId: string) {
     // gameId에 해당하는 게임 데이터를 조회
     const _game: GameDto = await this.gameRepository.findOne({
-      relations: ['popularTags', 'description', 'genres', 'author'],
+      relations: ['information', 'genres', 'author'],
       where: { id: gameId },
     });
     if (!_game) {

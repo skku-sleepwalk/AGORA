@@ -20,7 +20,7 @@ import { GameBoard } from './game.board.entity';
 import { PlayTime } from './game.playtime.entity';
 import { GameGenre } from './game.genre.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
-import { GameDescription } from './game.description.entity';
+import { GameInformation } from './game.information.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { GameLike } from './game.like.entity';
 
@@ -74,10 +74,10 @@ export class Game {
   @OneToOne(() => GameStore, (gameStore) => gameStore.game, { cascade: true })
   readonly store: GameStore;
 
-  @OneToOne(() => GameDescription, (description) => description.game, {
+  @OneToOne(() => GameInformation, (info) => info.game, {
     cascade: true,
   })
-  readonly description: GameDescription;
+  readonly information: GameInformation;
 
   @OneToMany(() => GameReview, (review) => review.game, {
     cascade: true,

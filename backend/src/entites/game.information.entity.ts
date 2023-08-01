@@ -8,17 +8,22 @@ import {
 } from 'typeorm';
 import { Game } from './game.entity';
 
-@Entity('GameDescription')
-export class GameDescription {
+@Entity('GameInformation')
+export class GameInformation {
   @ApiProperty({ description: '아이디' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ description: '게임 정보에 들어갈 긴 설명' })
   @Column({ nullable: false })
-  content: string;
+  description: string;
 
-  @OneToOne(() => Game, (game) => game.description, { onDelete: 'CASCADE' })
+  @ApiProperty({ description: '사양' })
+  @Column({ nullable: false })
+  specification: string;
+
+  @ApiProperty({})
+  @OneToOne(() => Game, (game) => game.information, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'gameId', referencedColumnName: 'id' })
   game: Game;
 }

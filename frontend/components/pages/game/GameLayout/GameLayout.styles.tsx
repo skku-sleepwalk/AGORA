@@ -49,7 +49,7 @@ export const useGameLayoutStyles = createStyles((theme) => ({
 
     width: "100%",
     height: "3rem",
-    zIndex: 100,
+    zIndex: 50,
   },
 
   bottomContainer: {
