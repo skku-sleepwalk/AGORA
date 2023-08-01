@@ -105,7 +105,7 @@ function Community() {
             <PostWriter />
           )}
           {postData?.map((data) => {
-            return data.data.map((data) => (
+            return data.data.data.map((data) => (
               <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
             ));
           })}
