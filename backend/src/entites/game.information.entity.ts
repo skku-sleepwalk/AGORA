@@ -11,7 +11,7 @@ import { Game } from './game.entity';
 @Entity('GameInformation')
 export class GameInformation {
   @ApiProperty({ description: '아이디' })
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ApiProperty({ description: '게임 정보에 들어갈 긴 설명' })

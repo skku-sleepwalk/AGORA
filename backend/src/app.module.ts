@@ -29,7 +29,7 @@ import { CommunityBoardLike } from './entites/community.board.like.entity';
 import { CommunityModule } from './community/community.module';
 import { GameStoreModule } from './game/game.module';
 import { Game } from './entites/game.entity';
-import { GameDescription } from './entites/game.description.entity';
+import { GameInformation } from './entites/game.information.entity';
 import { CommunityBoard } from './entites/community.board.entity';
 import { GameLike } from './entites/game.like.entity';
 import { GameReviewDislike } from './entites/game.review.dislike.entity';
@@ -53,7 +53,7 @@ dotenv.config();
         CommunityCategory,
         CommunityBoardLike,
         Game,
-        GameDescription,
+        GameInformation,
         GameBoardCategory,
         GameBoard,
         GameBoardLike,
@@ -82,7 +82,7 @@ dotenv.config();
       CommunityCategory,
       CommunityBoardLike,
       Game,
-      GameDescription,
+      GameInformation,
       GameBoardCategory,
       GameBoard,
       GameBoardLike,

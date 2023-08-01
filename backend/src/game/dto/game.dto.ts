@@ -6,7 +6,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Game } from 'src/entites/game.entity';
-import { GameInformationDto } from './game.description.dto';
+import { GameInformationDto } from './game.information.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';
 import { UserDto } from 'src/common/dto/user.dto';

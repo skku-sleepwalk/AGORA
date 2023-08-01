@@ -20,7 +20,7 @@ import { GameBoard } from './game.board.entity';
 import { PlayTime } from './game.playtime.entity';
 import { GameGenre } from './game.genre.entity';
 import { GameTagRelation } from './game.tag.relation.entity';
-import { GameInformation } from './game.description.entity';
+import { GameInformation } from './game.information.entity';
 import { IsNotEmpty, IsString } from 'class-validator';
 import { GameLike } from './game.like.entity';
 

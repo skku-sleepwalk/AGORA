@@ -4,24 +4,25 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameDescription } from 'src/entites/game.description.entity';
+import { GameInformation } from 'src/entites/game.information.entity';
 import { Game } from 'src/entites/game.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class GameDescriptionService {
+export class GameInformationService {
   constructor(
-    @InjectRepository(GameDescription)
-    private gameDescriptionRepository: Repository<GameDescription>,
+    @InjectRepository(GameInformation)
+    private gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(Game) private gameRepository: Repository<Game>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
-  async postGameDescription(
+  async postGameInformation(
     userEmail: string,
     gameId: string,
-    content: string,
+    description: string,
+    specification: string,
   ) {
     const user = userEmail
       ? await this.userRepository.findOne({
@@ -39,17 +40,19 @@ export class GameDescriptionService {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
 
-    const description = this.gameDescriptionRepository.create({
+    const information = this.gameInformationRepository.create({
       game,
-      content,
+      description,
+      specification,
     });
-    return this.gameDescriptionRepository.save(description);
+    return this.gameInformationRepository.save(information);
   }
 
-  async patchGameDescription(
+  async patchGameInformation(
     userEmail: string,
-    gameDescriptionId: string,
-    content: string,
+    GameInformationId: string,
+    description: string,
+    specification: string,
   ) {
     // 1. User 엔티티를 userEmail로 찾기
     const user = userEmail
@@ -61,24 +64,25 @@ export class GameDescriptionService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    // 2. Game 엔티티를 gameId로 찾기
-    const gameDescription = gameDescriptionId
-      ? await this.gameDescriptionRepository.findOne({
-          where: { id: gameDescriptionId },
+    // 2. GameInfomration 엔티티를 gameId로 찾기
+    const gameInformation = GameInformationId
+      ? await this.gameInformationRepository.findOne({
+          where: { id: GameInformationId },
           relations: ['game'],
         })
       : null;
-    if (!gameDescription) {
+    if (!GameInformation) {
       throw new NotFoundException('게임 설명을 찾을 수 없습니다.');
     }
 
     // 3. 현재 유저가 해당 게임의 작성자인지 확인
-    if (gameDescription.game.author.id !== user.id) {
+    if (gameInformation.game.author.id !== user.id) {
       throw new ForbiddenException('해당 게임의 작성자가 아닙니다.');
     }
 
-    // 4. GameDescription 엔티티 수정
-    gameDescription.content = content;
-    await this.gameDescriptionRepository.save(gameDescription);
+    // 4. GameInformation 엔티티 수정
+    gameInformation.description = description;
+    gameInformation.specification = specification;
+    await this.gameInformationRepository.save(gameInformation);
   }
 }
