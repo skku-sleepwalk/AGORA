@@ -35,7 +35,7 @@ export class GameService {
     @InjectRepository(GameReview)
     private readonly gameReviewRepository: Repository<GameReview>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private dataSource: DataSource,
+    private readonly dataSource: DataSource,
   ) {}
 
   getQueryBuilder() {
@@ -141,8 +141,7 @@ export class GameService {
     specification: string,
   ) {
     // 트랜잭션 시작
-    const queryRunner =
-      this.gameRepository.manager.connection.createQueryRunner();
+    const queryRunner = this.dataSource.manager.connection.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
@@ -164,7 +163,6 @@ export class GameService {
       if (existingGame) {
         throw new ConflictException('이미 존재하는 게임 이름입니다.');
       }
-
       // 3. Game 엔티티 생성 및 저장
       const newGame = this.gameRepository.create({
         title,
@@ -174,15 +172,16 @@ export class GameService {
         shortContent,
         shortImgUrl,
       });
+      queryRunner.manager.save(newGame);
 
-      const information = await this.gameInformationRepository.save({
-        game: newGame,
-        author: user,
+      const newInformation = this.gameInformationRepository.create({
         description,
         specification,
       });
-      newGame.information = information;
+      await queryRunner.manager.save(newInformation);
+      console.log('--------------------');
 
+      // newGame.information = information;
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
       for (const genreName of genreNames) {
@@ -191,14 +190,6 @@ export class GameService {
         });
         if (existingGenre) {
           uniqueGenres.push(existingGenre);
-        } else {
-          const newGenre = new GameGenre();
-          newGenre.name = genreName;
-          const savedGenre = await queryRunner.manager.save(
-            GameGenre,
-            newGenre,
-          );
-          uniqueGenres.push(savedGenre);
         }
       }
 
