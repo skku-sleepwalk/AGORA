@@ -10,6 +10,8 @@ export interface MulterFile {
 }
 
 export interface PostUploadImageResponse {
-  url: string;
-  file: MulterFile;
+  data: {
+    url: string;
+    file: MulterFile;
+  };
 }

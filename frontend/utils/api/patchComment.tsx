@@ -8,15 +8,15 @@ export interface patchComment {
 }
 
 export interface PatchCommentResponse {
-  boardId: string;
-  data: patchComment;
-  token?: string;
+  data: {
+    boardId: string;
+    data: patchComment;
+    token?: string;
+  };
 }
 
 export async function patchComment({
-  boardId,
-  data,
-  token,
+  data: { boardId, data, token },
 }: PatchCommentResponse): Promise<void | undefined> {
   const url = `http://localhost:8000/developer-community-boards/update?id=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {

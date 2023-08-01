@@ -1,4 +1,4 @@
-import { User } from "../../../types/api/user";
+import { GetUserResponse, User } from "../../../types/api/user";
 import { ReactNode, createContext, useState } from "react";
 import useSWR from "swr";
 
@@ -16,13 +16,12 @@ export interface AuthProviderProps {
 function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
-  const { data } = useSWR<User[]>("http://localhost:8000/users");
-
+  const { data } = useSWR<GetUserResponse>("http://localhost:8000/users");
   return (
     <AuthContext.Provider
       value={{
-        user: data?.[0],
-        token: data?.[0]?.email,
+        user: data?.data[0],
+        token: data?.data[0]?.email,
       }}
     >
       {children}

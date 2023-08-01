@@ -77,6 +77,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
   };
   const namesArray = post.genres?.map((item) => item.name);
   const newarray = namesArray?.join(",");
+  console.log(post.store?.cost);
   return (
     <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
       <Text size="xs" color="gray" style={margins}>
@@ -88,8 +89,8 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
         {post.title}
       </Text>
 
-      <Group spacing="5.5rem" align="flex-start" style={margins}>
-        {/* <UserInfoSmall user={post.author} /> */}
+      <Group spacing="9rem" align="flex-start" style={margins}>
+        <UserInfoSmall user={post.author} />
         <Group spacing={0}>
           <Group spacing={5} style={{ marginRight: "1rem" }}>
             <IconHeart size={15} stroke={1.3} />
@@ -97,19 +98,43 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
           </Group>
         </Group>
       </Group>
+      <Group>
+        {post.store.cost?.isSale ? (
+          <Text
+            style={{ marginLeft: "190px" }}
+            align="right"
+            td="line-through"
+            c="gray"
+            size={"md"}
+          >
+            \{post.store?.cost?.defaultPrice}
+          </Text>
+        ) : null}
+      </Group>
       <div style={{ marginRight: "1rem" }}>
-        <Text align="right" size={"lg"}>
-          \{post.price}
-        </Text>
+        {post.store.cost?.isFree ? (
+          <Text align="right" size={"lg"}>
+            FREE
+          </Text>
+        ) : post.store.cost?.isSale ? (
+          <Group style={{ paddingLeft: "124px" }}>
+            <Text style={{ backgroundColor: "#F1A2A2" }}>-{post.store.cost.salePercentage}%</Text>
+            <Text size={"lg"}>\{post.store?.cost?.saledPrice}</Text>
+          </Group>
+        ) : (
+          <Text align="right" size={"lg"}>
+            \{post.store?.cost?.defaultPrice}
+          </Text>
+        )}
       </div>
       <div style={containerStyle}>
-        <img src={post.shortDescription?.imageUrl} height={"400rem"} />
+        <img src={post.shortImgUrl} height={"400rem"} />
         {/* hover 시에 반투명 창과 텍스트를 떠오르게 표시합니다. */}
         {isHovered && (
           <div>
             <div style={overlayStyle}></div>
             <div style={overlayStyle2}>
-              <p>{post.shortDescription?.content}</p>
+              <p>{post.shortContent}</p>
               {/* 추가적인 텍스트 또는 아이콘 등을 넣을 수 있습니다. */}
             </div>
           </div>

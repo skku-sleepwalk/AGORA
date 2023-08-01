@@ -304,7 +304,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
             </Text>
           ) : (
             data?.map((data) => {
-              return data.data.map((data) => (
+              return data.data.data.map((data) => (
                 <Comment
                   key={data.id}
                   post={data}

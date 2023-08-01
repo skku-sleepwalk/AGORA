@@ -5,11 +5,14 @@ export interface User {
   email: string;
   token: number;
   rating: number;
+  totalPlayTime: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
 }
-
+export interface GetUserResponse {
+  data: User[];
+}
 export interface PostUserBody {
   name: string;
   email: string;
