@@ -25,8 +25,6 @@ import { GameInformation } from 'src/entites/game.information.entity';
 export class GameService {
   constructor(
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
-    @InjectRepository(GameInformation)
-    private readonly gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(GameLike)
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameGenre)
