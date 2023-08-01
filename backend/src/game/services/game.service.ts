@@ -24,6 +24,8 @@ import { GameInformation } from 'src/entites/game.information.entity';
 export class GameService {
   constructor(
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(GameInformation)
+    private readonly gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(GameLike)
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameGenre)
@@ -173,7 +175,7 @@ export class GameService {
         shortImgUrl,
       });
 
-      const information = await queryRunner.manager.save(GameInformation, {
+      const information = await this.gameInformationRepository.save({
         game: newGame,
         author: user,
         description,
@@ -341,14 +343,14 @@ export class GameService {
         specification,
         ...game.information,
       };
-      queryRunner.manager.save(GameInformation, information);
+      this.gameInformationRepository.save(information);
       // 4. Game 엔티티 수정
       game.downloadUrl = downloadUrl;
       game.executablePath = executablePath;
       await queryRunner.manager.save(Game, game);
 
       // 5. Genre 엔티티 생성 및 저장 (중복 방지)
-      const uniqueGenres: GameGenre[] = [];
+      const genres: GameGenre[] = [];
       const existingGenres = await this.gameGenreRepository.find({
         where: { name: In(genreNames) },
       });
@@ -358,20 +360,12 @@ export class GameService {
           (genre) => genre.name === genreName,
         );
         if (existingGenre) {
-          uniqueGenres.push(existingGenre);
-        } else {
-          const newGenre = new GameGenre();
-          newGenre.name = genreName;
-          const savedGenre = await queryRunner.manager.save(
-            GameGenre,
-            newGenre,
-          );
-          uniqueGenres.push(savedGenre);
+          genres.push(existingGenre);
         }
       }
 
       // 6. Game과 Genre의 관계 설정
-      game.genres = uniqueGenres;
+      game.genres = genres;
       await queryRunner.manager.save(Game, game);
 
       // 트랜잭션 커밋
