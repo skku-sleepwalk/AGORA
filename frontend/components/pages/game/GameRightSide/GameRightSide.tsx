@@ -74,76 +74,56 @@ export function GameRightSide() {
           <Group className={classes.shortCutsGroup} spacing={"2rem"} position="center">
             {/* 트위터 */}
             {SNSstate.twiter && (
-              <UnstyledButton>
-                <Stack spacing={"sm"} align="center">
-                  <Image width={"4rem"} src={"/images/Twiter.svg"} />
-                  <Text className={classes.text} component="a" href="#" c={theme.colors.gray[6]}>
-                    파랑새
-                  </Text>
-                </Stack>
-              </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/Twiter.svg"} />
+                <Text className={classes.text} component="a" href="#" c={theme.colors.gray[6]}>
+                  파랑새
+                </Text>
+              </Stack>
             )}
             {/* 인스타 */}
             {SNSstate.Insta && (
-              <UnstyledButton>
-                <Stack spacing={"sm"} align="center">
-                  <Image width={"4rem"} src={"/images/Instagram.png"} />
-                  <Text component="a" href="#" c={theme.colors.gray[6]}>
-                    인별
-                  </Text>
-                </Stack>
-              </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/Instagram.png"} />
+                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                  인별
+                </Text>
+              </Stack>
             )}
             {/* 페이스북 */}
             {SNSstate.Face && (
-              <Stack>
-                <UnstyledButton>
-                  <Stack spacing={"sm"} align="center">
-                    <Image width={"4rem"} src={"/images/Facebook.svg"} />
-                    <Text component="a" href="#" c={theme.colors.gray[6]}>
-                      얼굴책
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/Facebook.svg"} />
+                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                  얼굴책
+                </Text>
               </Stack>
             )}
             {/* 유튜브 */}
             {SNSstate.Youtube && (
-              <Stack>
-                <UnstyledButton>
-                  <Stack spacing={"sm"} align="center">
-                    <Image width={"4rem"} src={"/images/YouTube.png"} />
-                    <Text component="a" href="#" c={theme.colors.gray[6]}>
-                      유*브
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/YouTube.png"} />
+                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                  유*브
+                </Text>
               </Stack>
             )}
             {/* 트위치 */}
             {SNSstate.twitch && (
-              <Stack>
-                <UnstyledButton>
-                  <Stack spacing={"sm"} align="center">
-                    <Image width={"4rem"} src={"/images/Twitch.svg"} />
-                    <Text component="a" href="#" c={theme.colors.gray[6]}>
-                      트*치
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/Twitch.svg"} />
+                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                  트*치
+                </Text>
               </Stack>
             )}
             {/* 홈페이지 */}
             {SNSstate.Homepi && (
-              <Stack>
-                <UnstyledButton>
-                  <Stack spacing={"sm"} align="center">
-                    <Image width={"4rem"} src={"/images/Homepage.svg"} />
-                    <Text component="a" href="#" c={theme.colors.gray[6]}>
-                      홈페이지
-                    </Text>
-                  </Stack>
-                </UnstyledButton>
+              <Stack spacing={"sm"} align="center">
+                <Image width={"4rem"} src={"/images/Homepage.svg"} />
+                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                  홈페이지
+                </Text>
               </Stack>
             )}
             {/* 정렬용 빈 상자 */}
