@@ -22,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
+import { GameBoardComment } from "../GameBoardComment/GameBoardComment";
 
 export function GameBoardDetailViewer() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -90,6 +91,8 @@ export function GameBoardDetailViewer() {
         <Box className={classes.marginLeft}>
           <GameTextWriter placeholder={"이 게시글에 댓글을 남겨보세요."} />
         </Box>
+        <GameBoardComment />
+        <GameBoardComment />
       </Stack>
     </CardContainer>
   );
