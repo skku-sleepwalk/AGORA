@@ -24,7 +24,7 @@ import {
 } from "@tabler/icons-react";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
-import { ShortenText } from "../GameReviewEditor/GameReviewEditor";
+import { ShortenText } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameReviewReplyProps {
   opened: boolean;
@@ -38,7 +38,7 @@ export function GameReviewReply({ opened }: GameReviewReplyProps) {
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
     text: MOCKUP_CONTENT,
-    length: smallScreen ? 100 : 300,
+    length: smallScreen ? 60 : 150,
   });
   const [viewMore, setViewMore] = useState<boolean>(false);
 

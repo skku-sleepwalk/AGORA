@@ -12,6 +12,7 @@ import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
+import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
 
 export const TabClicklContext = createContext({
   ontabClick: () => {},
@@ -44,7 +45,8 @@ function Game() {
         {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
-        {activeTab === "board" && <GameBoardSection />}
+        {activeTab === "board" && <GameBoardDetailViewer />}
+        {/* {activeTab === "board" && <GameBoardSection />} */}
       </GameLayout>
     </TabClicklContext.Provider>
   );

@@ -1,11 +1,11 @@
 import { createStyles } from "@mantine/core";
 
-export interface GameReviewEditorStylesProps {
+export interface GameTextWriterStylesProps {
   smallScreen: boolean;
 }
 
-export const useGameReviewEditorStyles = createStyles(
-  (theme, { smallScreen }: GameReviewEditorStylesProps) => ({
+export const useGameTextWriterStyles = createStyles(
+  (theme, { smallScreen }: GameTextWriterStylesProps) => ({
     group: {
       display: "flex",
       flexWrap: "nowrap",
