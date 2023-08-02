@@ -11,39 +11,26 @@ export interface LikeClickResponse {
   };
 }
 
-export async function onLikeClick({
-  data: { boardId, token },
-}: LikeClickResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/developer-community-boards/like?boardId=${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
-  const data = {};
+export async function onLikeClick(
+  { data: { boardId, token } }: LikeClickResponse,
+  currentLike: boolean
+): Promise<void | undefined> {
+  const url = `http://localhost:8000/community/board/${boardId}/like`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
     "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
     Authorization: `${token}`,
   };
 
   try {
-    const response = await axios.patch(url, data, { headers });
-    // 서버로부터의 응답 처리
+    let response;
+    if (currentLike) {
+      response = await axios.delete(url, { headers });
+    } else {
+      response = await axios.post(url, {}, { headers });
+    }
     return response.data;
   } catch (error) {
     // 오류 처리
     throw error;
   }
-}
-
-// boards/likedUsers에 user-id가 들어있는 지 확인하고 boolean 값을 반환하는 함수
-export function CheckIsliking({
-  likedUsers,
-  userId,
-}: {
-  likedUsers: User[];
-  userId?: string;
-}): boolean {
-  if (!userId) return false;
-  for (const entity of likedUsers) {
-    if (entity.id === userId) {
-      return true;
-    }
-  }
-  return false;
 }

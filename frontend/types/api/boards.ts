@@ -6,15 +6,15 @@ export interface Board {
   _id: number;
   title: string | null;
   content: string;
-  like: number;
-  child: number;
+  like: boolean;
+  likeCount: number;
+  childCount: number;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;
-  writer: User;
+  author: User;
   parent?: Board;
-  categoryTypes: Category[];
-  likedUsers: User[];
+  categories: Category[];
 }
 
 export interface PostBoardBody {
@@ -24,9 +24,9 @@ export interface PostBoardBody {
   categoryNames: string[];
 }
 
-export type PostBoardResponse = Board;
-
-export type GetBoardResponse = Board;
+export interface GetBoardResponse {
+  data: Board;
+}
 
 export interface GetBoardListResponse {
   data: {

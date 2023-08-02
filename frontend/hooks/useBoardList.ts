@@ -16,7 +16,7 @@ const getKey = (
   categories: string[],
   { search, parentId, boardType }: useBoardListSettings
 ) => {
-  if (previousPageData && previousPageData.cursor.afterCursor === null) return null;
+  if (previousPageData && previousPageData.data.cursor.afterCursor === null) return null;
   let queryString = "";
   if (pageIndex === 0) {
     // 첫번째 페이지
@@ -32,14 +32,13 @@ const getKey = (
       categoryNames: categories.length > 0 ? categories.join(",") : undefined,
       order: "createdAt",
       boardType,
-      afterCursor: previousPageData?.cursor.afterCursor,
+      afterCursor: previousPageData?.data.cursor.afterCursor,
       search,
     });
   }
-  if (search) return `http://localhost:8000/developer-community-boards/search?${queryString}`;
-  if (parentId)
-    return `http://localhost:8000/developer-community-boards/getChild/${parentId}?${queryString}`;
-  else return `http://localhost:8000/developer-community-boards/main?${queryString}`;
+  if (search) return `http://localhost:8000/community/board/search?${queryString}`;
+  if (parentId) return `http://localhost:8000/community/board/getChild/${parentId}?${queryString}`;
+  else return `http://localhost:8000/community/board?${queryString}`;
 };
 
 function useBoardList(categories: string[], settings: useBoardListSettings = {}) {
@@ -48,8 +47,8 @@ function useBoardList(categories: string[], settings: useBoardListSettings = {})
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, categories, settings),
     (url) => fetcher(url, token)
   );
-  const isLast = response.data?.[response.data.length - 1]?.cursor?.afterCursor === null;
-  const isEmpty = response.data?.[0]?.data.length === 0;
+  const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
+  const isEmpty = response.data?.[0]?.data.data.length === 0;
   return {
     ...response,
     isLast,

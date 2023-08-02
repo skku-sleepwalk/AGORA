@@ -20,7 +20,7 @@ function PostView() {
         />
       }
     >
-      {post && <PostDetailViewer post={post} />}
+      {post && <PostDetailViewer post={post.data} />}
     </PostViewLayout>
   );
 }

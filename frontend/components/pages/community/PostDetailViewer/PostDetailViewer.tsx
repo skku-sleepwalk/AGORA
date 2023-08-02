@@ -17,7 +17,7 @@ import CommentSection from "./CommentSection/CommentSection";
 import { Board } from "../../../../types/api/boards";
 import { uploadPost } from "../../../../utils/api/uploadPost";
 import React, { useContext, useRef } from "react";
-import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { onLikeClick } from "../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
 import { useDisclosure, useSetState } from "@mantine/hooks";
@@ -59,19 +59,14 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   }
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = user
-    ? CheckIsliking({
-        likedUsers: post.likedUsers,
-        userId: user.id,
-      })
-    : false;
+  const isliking = post.like;
 
   // Edit 관련
   const [isEditing, setIsEditing] = useSetState({ Edit: false, cancel: false });
   const form = useForm({
     initialValues: {
       title: post.title ? post.title : "",
-      category: post.categoryTypes.map((item) => item.name),
+      category: post.categories.map((item) => item.name),
     },
   });
   const editorRef = useRef<Editor>(null);
@@ -84,7 +79,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
 
   const postData: Board = post;
   const mutatePostDetail = async () => {
-    mutate(`http://localhost:8000/developer-community-boards/id/${post.id}`, postData);
+    mutate(`http://localhost:8000/community/board/${post.id}`);
     post = postData;
   };
 
@@ -106,7 +101,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               </Group>
             </InvisibleButton>
           )}
-          {post.writer !== null ? <PostHeader user={post.writer} date={post.createdAt} /> : null}
+          {post.author !== null ? <PostHeader user={post.author} date={post.createdAt} /> : null}
           {!isEditing.Edit && (
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>
@@ -140,13 +135,15 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                   showNotification("제목 없음", "제목을 추가해주세요.");
                 } else {
                   patchPost({
-                    boardId: post.id,
                     data: {
-                      title: postData.title,
-                      content: postData.content,
-                      categoryNames: postData.category,
+                      boardId: post.id,
+                      data: {
+                        title: postData.title,
+                        content: postData.content,
+                        categoryNames: postData.category,
+                      },
+                      token,
                     },
-                    token,
                   }).then(() => {
                     showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
                     setIsEditing({ Edit: false });
@@ -169,7 +166,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 />
                 <RichEditor ref={editorRef} content={post.content} />
                 <CategorySelector
-                  defaultValue={post.categoryTypes.map((item) => item.name)}
+                  defaultValue={post.categories.map((item) => item.name)}
                   onChange={(category) => {
                     form.setFieldValue("category", category);
                   }}
@@ -234,7 +231,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             <MultiSelect
               className={classes.multiSelect}
               data={data}
-              value={post.categoryTypes.map((item) => item.name)}
+              value={post.categories.map((item) => item.name)}
               readOnly
             />
           )}
@@ -243,7 +240,15 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               toggleEditor();
             }}
             onLikeClick={() => {
-              onLikeClick({ boardId: post.id, token })
+              onLikeClick(
+                {
+                  data: {
+                    boardId: post.id,
+                    token,
+                  },
+                },
+                isliking
+              )
                 .then(() => {
                   mutatePost();
                   mutatePostDetail();
@@ -258,16 +263,16 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
             }}
             postId={post.id}
             // closeFunction={close}
-            commentCount={post.child}
-            likeCount={post.like}
+            commentCount={post.childCount}
+            likeCount={post.likeCount}
             isliking={isliking}
             isEditing={post.content !== null ? isEditing.Edit : true}
-            canEdit={user && post.writer !== null ? post.writer.id === user.id : false}
+            canEdit={user && post.author !== null ? post.author.id === user.id : false}
           />
         </Stack>
         <CommentSection
           parentId={post.id}
-          categoryNames={post.categoryTypes.map((category) => category.name)}
+          categoryNames={post.categories.map((category) => category.name)}
           editorOpen={editorOpen}
           onSubmitComment={async (content, parentId) => {
             if (content === "<p></p>") {
@@ -277,7 +282,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 {
                   content,
                   parentId,
-                  categoryNames: post.categoryTypes.map((category) => category.name),
+                  categoryNames: post.categories.map((category) => category.name),
                 },
                 token
               );
