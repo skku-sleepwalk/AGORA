@@ -179,7 +179,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
                     className={classes.heartFilled}
                     width={"1.15rem"}
                     height={"1rem"}
-                    src={"/HeartFilled.png"}
+                    src={"/images/HeartFilled.svg"}
                   />
                 )}
                 {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}

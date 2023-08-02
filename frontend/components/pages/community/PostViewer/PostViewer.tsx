@@ -199,7 +199,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                         className={classes.heartFilled}
                         width={"1rem"}
                         height={"0.9rem"}
-                        src={"/HeartFilled.png"}
+                        src={"/images/HeartFilled.svg"}
                       />
                     )}
                     {!isliking && <IconHeart size={20} stroke={1.3} />}

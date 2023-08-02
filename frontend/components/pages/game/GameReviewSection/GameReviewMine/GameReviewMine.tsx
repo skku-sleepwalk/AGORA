@@ -28,7 +28,7 @@ import {
 import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
-import { GameReviewEditor, ShortenText } from "../GameReviewEditor/GameReviewEditor";
+import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
 
 export function GameReviewMine() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -38,7 +38,7 @@ export function GameReviewMine() {
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
     text: MOCKUP_CONTENT,
-    length: smallScreen ? 100 : 300,
+    length: smallScreen ? 70 : 200,
   });
   const [viewMore, setViewMore] = useState<boolean>(false);
 
@@ -179,7 +179,7 @@ export function GameReviewMine() {
             />
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
-              {canReview && <GameReviewEditor placeholder={"후기에 답글을 달아보세요."} />}
+              {canReview && <GameTextWriter placeholder={"후기에 답글을 달아보세요."} />}
               {!canReview && (
                 <TextInput
                   className={classes.reviewNo}
