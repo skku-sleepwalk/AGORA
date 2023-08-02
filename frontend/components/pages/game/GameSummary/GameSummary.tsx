@@ -11,14 +11,21 @@ import {
   Box,
   Modal,
 } from "@mantine/core";
+import { KeyedMutator } from "swr";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
 import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
+import { GameStore } from "../../../../types/api/store";
 
-export function GameSummary() {
+export function GameSummary(postData: {
+  postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore> };
+}) {
+  // '{ postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore>; }; }' 형식은 'IntrinsicAttributes & GameStore' 형식에 할당할 수 없습니다.
+  // 'IntrinsicAttributes & GameStore' 형식에 'postData' 속성이 없습니다.
+
   const { classes, cx } = useGameSummaryStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(false);
@@ -78,7 +85,7 @@ export function GameSummary() {
               }
             />
             <Text fw={"bold"} fz={20}>
-              Stardew Valley
+              {postData.postData.data?.store.title}
             </Text>
           </Group>
           <Group spacing={"xs"}>
@@ -110,7 +117,7 @@ export function GameSummary() {
                   component="a"
                   href="https://mantine.dev"
                 >
-                  Concerned Ape
+                  {postData.postData.data?.store.developer}
                 </Text>
               </Group>
               <InvisibleButton onClick={handleIsFollowing}>
@@ -141,7 +148,7 @@ export function GameSummary() {
                 component="a"
                 href="https://mantine.dev"
               >
-                Concerned Ape
+                {postData.postData.data?.store.distributor}
               </Text>
             </Group>
           </Stack>

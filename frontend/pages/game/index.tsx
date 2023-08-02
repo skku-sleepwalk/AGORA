@@ -28,7 +28,7 @@ function Game() {
   const ontabClickFast = () => {
     tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   };
-  const id = "9fb651e5-e69d-4cfd-8a29-f753129aadc1";
+  const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
   // 추후 수정
   // router.query.name
   const {
@@ -44,7 +44,16 @@ function Game() {
     <TabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
       <GameLayout
         photoSection={<MainCarousel isInfo={true} />}
-        summarySection={<GameSummary />}
+        summarySection={
+          <GameSummary
+            postData={{
+              data: postData,
+              isLoading: isPostLoading,
+
+              mutate: mutatePost,
+            }}
+          />
+        }
         anchorSection={<div ref={tabRef}></div>}
         tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
         rightSection={<Rightsection />}
