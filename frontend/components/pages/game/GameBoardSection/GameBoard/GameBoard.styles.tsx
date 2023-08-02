@@ -3,6 +3,7 @@ import { createStyles } from "@mantine/core";
 export interface GameBoardStylesProps {
   smallScreen: boolean;
 }
+
 export const useGameBoardStyles = createStyles((theme, { smallScreen }: GameBoardStylesProps) => ({
   stack: {
     margin: "1rem 1.5rem",

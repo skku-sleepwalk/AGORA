@@ -6,11 +6,12 @@ import { IconChevronDown } from "@tabler/icons-react";
 export interface CustomNativeSelect {
   data: string[];
   defaultValue: string;
+  height?: string;
   onChange: (value: string) => void;
 }
 
-export function CustomNativeSelect({ data, defaultValue, onChange }: CustomNativeSelect) {
-  const { classes, cx } = useCustomNativeSelectStyles();
+export function CustomNativeSelect({ data, defaultValue, height, onChange }: CustomNativeSelect) {
+  const { classes, cx } = useCustomNativeSelectStyles({ height });
   const theme = useMantineTheme();
 
   const [value, setValue] = useState(defaultValue);

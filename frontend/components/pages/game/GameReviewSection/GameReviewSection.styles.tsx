@@ -21,8 +21,8 @@ export const useGameReviewSectionStyles = createStyles(
       alignItems: "flex-start",
       flexWrap: "nowrap",
 
-      marginLeft: "1.5rem",
-      marginRight: "1.5rem",
+      marginLeft: "1rem",
+      marginRight: "1rem",
     },
 
     reviewEditorBox: {
