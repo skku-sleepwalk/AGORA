@@ -32,7 +32,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  console.log(postData);
+  console.log(postData?.data?.genres);
   const handleIsLiking = () => {
     setIsLiking((prev) => !prev);
   };
@@ -161,7 +161,14 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
             장르
           </Text>
           <Group spacing={"0.5rem"} className={classes.blueText}>
-            <Text fw={"bold"} component="a" href="https://mantine.dev">
+            {postData?.data?.genres?.map((data) => {
+              return (
+                <Text fw={"bold"} component="a" href="https://mantine.dev">
+                  {data.name}
+                </Text>
+              );
+            })}
+            {/* <Text fw={"bold"} component="a" href="https://mantine.dev">
               인디,
             </Text>
             <Text fw={"bold"} component="a" href="https://mantine.dev">
@@ -169,7 +176,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
             </Text>
             <Text fw={"bold"} component="a" href="https://mantine.dev">
               시뮬레이션
-            </Text>
+            </Text> */}
           </Group>
         </Group>
         <Group spacing={"2rem"}>
