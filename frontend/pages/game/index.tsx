@@ -6,7 +6,7 @@ import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary";
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
-import { Rightsection } from "../../components/pages/game/RightSection/RightSection";
+import { GameRightSide } from "../../components/pages/game/GameRightSide/GameRightSide";
 import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
 import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
@@ -40,7 +40,7 @@ function Game() {
         summarySection={<GameSummary />}
         anchorSection={<div ref={tabRef}></div>}
         tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-        rightSection={<Rightsection />}
+        rightSection={<GameRightSide />}
       >
         {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}

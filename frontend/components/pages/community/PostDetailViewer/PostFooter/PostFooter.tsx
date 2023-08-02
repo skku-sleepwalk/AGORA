@@ -99,7 +99,7 @@ PostFooterProps) {
                   className={classes.heartFilled}
                   width={"1.4rem"}
                   height={"1.2rem"}
-                  src={"/HeartFilled.png"}
+                  src={"/images/HeartFilled.svg"}
                 />
               )}
               {!isliking && <IconHeart size={25} />}
