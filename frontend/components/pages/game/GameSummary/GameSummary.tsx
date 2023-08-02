@@ -88,7 +88,7 @@ export function GameSummary() {
                   className={classes.heartFilled}
                   width={"1.6rem"}
                   height={"1.5rem"}
-                  src={"/HeartFilled.png"}
+                  src={"/images/HeartFilled.svg"}
                 />
               ) : (
                 <IconHeart size={"2rem"} stroke={1} />
@@ -189,7 +189,7 @@ export function GameSummary() {
             </Button>
           </Box>
         </Box>
-        {true && (
+        {false && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>
               <Stack spacing={"xs"}>
@@ -220,9 +220,9 @@ export function GameSummary() {
             </Button>
           </Group>
         )}
-        {false && (
+        {true && (
           <Button className={cx(classes.marginLeft, classes.sellButton)} w={"100%"}>
-            <Stack>
+            <Stack spacing={"sm"}>
               <Center>
                 <Text fz={28}>게임 시작</Text>
               </Center>
