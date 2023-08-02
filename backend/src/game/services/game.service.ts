@@ -211,7 +211,7 @@ export class GameService {
   async getOneGame(userEmail: string, gameId: string) {
     // gameId에 해당하는 게임 데이터를 조회
     const _game: GameDto = await this.gameRepository.findOne({
-      relations: ['information', 'genres', 'author'],
+      relations: ['information', 'genres', 'author', 'store'],
       where: { id: gameId },
     });
     if (!_game) {

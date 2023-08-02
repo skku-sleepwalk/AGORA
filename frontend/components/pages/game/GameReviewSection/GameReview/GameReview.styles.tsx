@@ -7,7 +7,7 @@ export interface GameReviewStylesProps {
 export const useGameReviewStyles = createStyles(
   (theme, { smallScreen }: GameReviewStylesProps) => ({
     stack: {
-      margin: "1rem 1.5rem",
+      margin: "1rem 1rem",
     },
 
     reviewTypo: {

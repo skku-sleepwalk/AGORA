@@ -1,6 +1,5 @@
 import {
   Avatar,
-  Box,
   Divider,
   Group,
   Stack,
@@ -8,18 +7,14 @@ import {
   Image,
   useMantineTheme,
   TypographyStylesProvider,
+  UnstyledButton,
 } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useGameBoardStyles } from "./GameBoard.styles";
-import {
-  IconBookmark,
-  IconHeart,
-  IconMessages,
-  IconPhotoOff,
-  IconShare,
-} from "@tabler/icons-react";
+import { IconBookmark, IconHeart, IconMessages, IconShare } from "@tabler/icons-react";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import { GameBoardDetailViewer } from "../GameBoardDetailViewer/GameBoardDetailViewer";
 
 export function GameBoard() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -29,7 +24,7 @@ export function GameBoard() {
   const isImage = true;
 
   return (
-    <Box>
+    <UnstyledButton onClick={() => {}}>
       <Divider />
       <Stack className={classes.stack} spacing={0}>
         {/* 글쓴이 소개 */}
@@ -90,6 +85,6 @@ export function GameBoard() {
           )}
         </Group>
       </Stack>
-    </Box>
+    </UnstyledButton>
   );
 }

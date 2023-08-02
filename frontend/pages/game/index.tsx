@@ -6,13 +6,17 @@ import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary";
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
-import { Rightsection } from "../../components/pages/game/RightSection/RightSection";
+import { GameRightSide } from "../../components/pages/game/GameRightSide/GameRightSide";
 import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
 import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
+
 import useDetailGame from "../../hooks/useDetailGame";
+
+import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
+
 export const TabClicklContext = createContext({
   ontabClick: () => {},
   ontabClickFast: () => {},
@@ -45,23 +49,17 @@ function Game() {
       <GameLayout
         photoSection={<MainCarousel isInfo={true} />}
         summarySection={
-          <GameSummary
-            postData={{
-              data: postData,
-              isLoading: isPostLoading,
-
-              mutate: mutatePost,
-            }}
-          />
+          <GameSummary postData={postData} loading={isPostLoading} mutate={mutatePost} />
         }
         anchorSection={<div ref={tabRef}></div>}
         tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-        rightSection={<Rightsection />}
+        rightSection={<GameRightSide />}
       >
         {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
-        {activeTab === "board" && <GameBoardSection />}
+        {activeTab === "board" && <GameBoardDetailViewer />}
+        {/* {activeTab === "board" && <GameBoardSection />} */}
       </GameLayout>
     </TabClicklContext.Provider>
   );

@@ -19,18 +19,20 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
 import { GameStore } from "../../../../types/api/store";
-
-export function GameSummary(postData: {
-  postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore> };
-}) {
+interface GameDataProps {
+  postData: GameStore | undefined;
+  loading?: boolean;
+  mutate?: KeyedMutator<GameStore>;
+}
+export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   // '{ postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore>; }; }' 형식은 'IntrinsicAttributes & GameStore' 형식에 할당할 수 없습니다.
   // 'IntrinsicAttributes & GameStore' 형식에 'postData' 속성이 없습니다.
 
   const { classes, cx } = useGameSummaryStyles();
   const [opened, { open, close }] = useDisclosure(false);
-  const [isLiking, setIsLiking] = useState<boolean>(false);
+  const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-
+  console.log(postData);
   const handleIsLiking = () => {
     setIsLiking((prev) => !prev);
   };
@@ -68,7 +70,7 @@ export function GameSummary(postData: {
   useEffect(() => {
     setIsOverflowed(checkOverflow());
   }, []);
-
+  // console.log({ storeData });
   return (
     <>
       <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
@@ -85,7 +87,7 @@ export function GameSummary(postData: {
               }
             />
             <Text fw={"bold"} fz={20}>
-              {postData.postData.data?.store.title}
+              {postData ? postData.data.store.title : null}
             </Text>
           </Group>
           <Group spacing={"xs"}>
@@ -95,13 +97,13 @@ export function GameSummary(postData: {
                   className={classes.heartFilled}
                   width={"1.6rem"}
                   height={"1.5rem"}
-                  src={"/HeartFilled.png"}
+                  src={"/images/HeartFilled.svg"}
                 />
               ) : (
                 <IconHeart size={"2rem"} stroke={1} />
               )}
             </InvisibleButton>
-            <Text fz={16}>(1679)</Text>
+            <Text fz={16}>({postData?.data.likeCount})</Text>
           </Group>
         </Group>
         <Group className={cx(classes.alignTop, classes.marginBottom)}>
@@ -117,7 +119,7 @@ export function GameSummary(postData: {
                   component="a"
                   href="https://mantine.dev"
                 >
-                  {postData.postData.data?.store.developer}
+                  {postData?.data.store.developer}
                 </Text>
               </Group>
               <InvisibleButton onClick={handleIsFollowing}>
@@ -148,7 +150,7 @@ export function GameSummary(postData: {
                 component="a"
                 href="https://mantine.dev"
               >
-                {postData.postData.data?.store.distributor}
+                {postData?.data.store.distributor}
               </Text>
             </Group>
           </Stack>
@@ -196,7 +198,7 @@ export function GameSummary(postData: {
             </Button>
           </Box>
         </Box>
-        {true && (
+        {false && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>
               <Stack spacing={"xs"}>
@@ -227,9 +229,9 @@ export function GameSummary(postData: {
             </Button>
           </Group>
         )}
-        {false && (
+        {true && (
           <Button className={cx(classes.marginLeft, classes.sellButton)} w={"100%"}>
-            <Stack>
+            <Stack spacing={"sm"}>
               <Center>
                 <Text fz={28}>게임 시작</Text>
               </Center>

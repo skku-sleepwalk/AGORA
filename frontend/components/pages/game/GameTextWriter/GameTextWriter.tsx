@@ -1,8 +1,8 @@
 import { Group, Textarea, useMantineTheme } from "@mantine/core";
-import { useGameReviewEditorStyles } from "./GameReviewEditor.styles";
-import { showNotification } from "../../../../../utils/notifications";
+import { useGameTextWriterStyles } from "./GameTextWriter.styles";
+import { showNotification } from "../../../../utils/notifications";
 import { IconSend } from "@tabler/icons-react";
-import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useMediaQuery } from "@mantine/hooks";
 
 export function HandleText({ text }: { text: string }): string {
@@ -45,16 +45,16 @@ export function ShortenText({ text, length }: shortenTextProps): [string, boolea
   return [shortenedText + "...", true];
 }
 
-export interface GameReviewEditorProps {
+export interface GameTextWriterProps {
   onSaveClick?: () => void;
   placeholder: string;
 }
 
-export function GameReviewEditor({ onSaveClick, placeholder }: GameReviewEditorProps) {
+export function GameTextWriter({ onSaveClick, placeholder }: GameTextWriterProps) {
   const theme = useMantineTheme();
 
   const smallScreen = useMediaQuery("(max-width: 765px)");
-  const { classes } = useGameReviewEditorStyles({ smallScreen });
+  const { classes } = useGameTextWriterStyles({ smallScreen });
 
   return (
     <Group className={classes.group}>
