@@ -12,7 +12,7 @@ import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
-
+import useDetailGame from "../../hooks/useDetailGame";
 export const TabClicklContext = createContext({
   ontabClick: () => {},
   ontabClickFast: () => {},
@@ -28,7 +28,15 @@ function Game() {
   const ontabClickFast = () => {
     tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   };
+  const id = "9fb651e5-e69d-4cfd-8a29-f753129aadc1";
+  // 추후 수정
+  // router.query.name
+  const {
+    data: postData,
+    isLoading: isPostLoading,
 
+    mutate: mutatePost,
+  } = useDetailGame(id);
   return (
     // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
     //   <SmallPosts></SmallPosts>

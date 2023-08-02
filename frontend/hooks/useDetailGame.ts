@@ -1,9 +1,9 @@
 import useSWR from "swr";
 import { GameStore } from "../types/api/store";
 
-function useBoard(id?: string) {
+function useDetailGame(id?: string) {
   const response = useSWR<GameStore>(id ? `http://localhost:8000/game/${id}` : null);
   return response;
 }
 
-export default useBoard;
+export default useDetailGame;
