@@ -50,6 +50,8 @@ import { GameBoardLikeController } from './controllers/game.board.like.controlle
 import { GamePlaytimeService } from './services/game.playtime.service';
 import { GamePlaytimeController } from './controllers/game.playtime.controller';
 import { GameInformation } from 'src/entites/game.information.entity';
+import { GameTagRelationService } from './services/game.tag.relation.service';
+import { GameTagRelationController } from './controllers/game.tag.relation.controller';
 
 @Module({
   imports: [
@@ -83,6 +85,7 @@ import { GameInformation } from 'src/entites/game.information.entity';
     GameStoreService,
     GameGenreService,
     GameTagService,
+    GameTagRelationService,
     GameReviewService,
     GameReviewLikeService,
     GameReviewDislikeService,
@@ -100,6 +103,7 @@ import { GameInformation } from 'src/entites/game.information.entity';
     GameStoresController,
     GameGenreController,
     GameTagController,
+    GameTagRelationController,
     GameReviewController,
     GameReviewLikeController,
     GameReviewDislikeController,

@@ -18,7 +18,7 @@ import { GameTagRelationDto } from '../dto/game.tag.relation.dto';
 @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
 @ApiTags('GameTag')
 @Controller('game/:gameId/tag')
-export class GameTagController {
+export class GameTagRelationController {
   constructor(private gameTagRelationService: GameTagRelationService) {}
 
   @ApiOperation({ summary: '게임 태그 관계 생성' })
@@ -36,8 +36,8 @@ export class GameTagController {
     );
   }
 
-  @ApiOperation({ summary: '게임 태그 조회' })
-  @ApiResponse({ type: GameTagRelationDto })
+  @ApiOperation({ summary: '유저가 추가한 게임 태그 조회' })
+  @ApiResponse({ type: GameTagRelationDto, isArray: true })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Get()
   GetGameTagRelationsByUser(
@@ -47,7 +47,7 @@ export class GameTagController {
     return this.gameTagRelationService.getGameTagRelation(userEmail, gameId);
   }
 
-  @ApiOperation({ summary: '게임 태그 삭제' })
+  @ApiOperation({ summary: '게임 태그 관계 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Delete('search')
   DeleteGameTagRelation(
