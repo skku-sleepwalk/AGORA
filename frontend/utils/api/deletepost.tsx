@@ -3,7 +3,7 @@ import axios, { AxiosResponse } from "axios";
 export default async function deletePost(postId: string): Promise<void> {
   try {
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/developer-community-boards/${postId}`
+      `http://localhost:8000/community/board/${postId}`
     );
     console.log(response.data); // 삭제된 포스트의 응답 데이터 처리
 

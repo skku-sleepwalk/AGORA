@@ -36,7 +36,7 @@ import { Board } from "../../../../../../types/api/boards";
 import useBoardList from "../../../../../../hooks/useBoardList";
 import { showNotification } from "../../../../../../utils/notifications";
 import { useContext } from "react";
-import { CheckIsliking, onLikeClick } from "../../../../../../utils/api/onLikeClick";
+import { onLikeClick } from "../../../../../../utils/api/onLikeClick";
 import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../utils/api/deletepost";
@@ -64,24 +64,19 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
     isLast,
     isLoading,
   } = useBoardList(
-    post.categoryTypes.map((category) => category.name),
+    post.categories.map((category) => category.name),
     {
       parentId: post.id,
     }
   );
 
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = user
-    ? CheckIsliking({
-        likedUsers: post.likedUsers,
-        userId: user.id,
-      })
-    : false;
+  const isliking = post.like;
 
   // Edit 관련
-  let writerID = post.writer?.id;
+  let writerID = post.author?.id;
   //예외처리
-  if (post.writer?.id === null) {
+  if (post.author?.id === null) {
     writerID = "";
   }
   //예외처리
@@ -98,7 +93,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
   const { canCloseModal } = useContext(ModalContext);
 
   return (
-    <CommentFrame user={post.writer} date={post.createdAt} withoutLeftBorder={!commentOpen}>
+    <CommentFrame user={post.author} date={post.createdAt} withoutLeftBorder={!commentOpen}>
       <Stack spacing={0}>
         <Stack spacing={10} className={classes.comment}>
           {!isEditing.Edit &&
@@ -126,7 +121,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
               }}
               commentId={post.id}
               content={post.content}
-              categoryNames={post.categoryTypes.map((category) => category.name)}
+              categoryNames={post.categories.map((category) => category.name)}
             />
           )}
           {isDeleting.delete && (
@@ -168,7 +163,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
             <Group spacing={5}>
               <InvisibleButton
                 onClick={() => {
-                  onLikeClick({ boardId: post.id, token })
+                  onLikeClick({ data: { boardId: post.id, token } }, isliking)
                     .then(() => {
                       mutateReply !== undefined ? mutateReply() : null;
                       mutateComment();
@@ -190,7 +185,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
                 {!isliking && <IconHeart size={22} color={theme.colors.gray[6]} />}
               </InvisibleButton>
               <Text color={theme.colors.gray[6]} size="xs">
-                {post.like}
+                {post.likeCount}
               </Text>
             </Group>
             {!isEditing.Edit && (
