@@ -52,7 +52,9 @@ function Game() {
         }
         anchorSection={<div ref={tabRef}></div>}
         tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-        rightSection={<GameRightSide />}
+        rightSection={
+          <GameRightSide postData={postData} loading={isPostLoading} mutate={mutatePost} />
+        }
       >
         {activeTab === "gameInfo" && <GameInfo />}
         {activeTab === "gameNews" && <GameNewsSection />}

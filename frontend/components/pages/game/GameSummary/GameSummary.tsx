@@ -168,15 +168,6 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
                 </Text>
               );
             })}
-            {/* <Text fw={"bold"} component="a" href="https://mantine.dev">
-              인디,
-            </Text>
-            <Text fw={"bold"} component="a" href="https://mantine.dev">
-              RPG,
-            </Text>
-            <Text fw={"bold"} component="a" href="https://mantine.dev">
-              시뮬레이션
-            </Text> */}
           </Group>
         </Group>
         <Group spacing={"2rem"}>

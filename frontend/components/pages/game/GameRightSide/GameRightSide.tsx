@@ -13,8 +13,14 @@ import {
 import { useGameRightSideStyles } from "./GameRightSide.styles";
 import { useSetState } from "@mantine/hooks";
 import { useRef } from "react";
-
-export function GameRightSide() {
+import { GameStore } from "../../../../types/api/store";
+import { KeyedMutator } from "swr";
+interface GameDataProps {
+  postData: GameStore | undefined;
+  loading?: boolean;
+  mutate?: KeyedMutator<GameStore>;
+}
+export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
   const theme = useMantineTheme();
 
   // SNS 바로가기 관련
@@ -76,7 +82,12 @@ export function GameRightSide() {
             {SNSstate.twiter && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Twiter.svg"} />
-                <Text className={classes.text} component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  className={classes.text}
+                  component="a"
+                  href={postData?.data.store.snsUrls?.twitter}
+                  c={theme.colors.gray[6]}
+                >
                   파랑새
                 </Text>
               </Stack>
@@ -85,7 +96,11 @@ export function GameRightSide() {
             {SNSstate.Insta && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Instagram.png"} />
-                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  component="a"
+                  href={postData?.data.store.snsUrls?.instagram}
+                  c={theme.colors.gray[6]}
+                >
                   인별
                 </Text>
               </Stack>
@@ -94,7 +109,11 @@ export function GameRightSide() {
             {SNSstate.Face && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Facebook.svg"} />
-                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  component="a"
+                  href={postData?.data.store.snsUrls?.facebook}
+                  c={theme.colors.gray[6]}
+                >
                   얼굴책
                 </Text>
               </Stack>
@@ -103,7 +122,11 @@ export function GameRightSide() {
             {SNSstate.Youtube && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/YouTube.png"} />
-                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  component="a"
+                  href={postData?.data.store.snsUrls?.youtube}
+                  c={theme.colors.gray[6]}
+                >
                   유*브
                 </Text>
               </Stack>
@@ -112,7 +135,11 @@ export function GameRightSide() {
             {SNSstate.twitch && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Twitch.svg"} />
-                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  component="a"
+                  href={postData?.data.store.snsUrls?.twitch}
+                  c={theme.colors.gray[6]}
+                >
                   트*치
                 </Text>
               </Stack>
@@ -121,7 +148,11 @@ export function GameRightSide() {
             {SNSstate.Homepi && (
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Homepage.svg"} />
-                <Text component="a" href="#" c={theme.colors.gray[6]}>
+                <Text
+                  component="a"
+                  href={postData?.data.store.snsUrls?.customPage}
+                  c={theme.colors.gray[6]}
+                >
                   홈페이지
                 </Text>
               </Stack>
