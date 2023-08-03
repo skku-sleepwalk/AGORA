@@ -1,10 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsNotEmpty,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsNotEmpty, ValidateNested } from 'class-validator';
 import { GameCost } from 'src/entites/game.cost.entity';
 import { GameStore } from 'src/entites/game.store.entity';
 
@@ -14,6 +9,8 @@ export class CreateGameStoreDto extends PickType(GameStore, [
   'snsUrls',
   'developer',
   'distributor',
+  'imgUrls',
+  'iconUrl',
 ]) {
   @ApiProperty({
     description: '가격 상세',
