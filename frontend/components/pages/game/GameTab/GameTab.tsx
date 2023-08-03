@@ -2,7 +2,7 @@ import { Tabs } from "@mantine/core";
 import { useGameTabStyles } from "./GameTab.styles";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { useMediaQuery } from "@mantine/hooks";
-import { TabClicklContext } from "../../../../pages/game";
+import { TabClicklContext } from "../../../../pages/game/[id]";
 
 interface GameTabProps {
   activeTab: string | null;
