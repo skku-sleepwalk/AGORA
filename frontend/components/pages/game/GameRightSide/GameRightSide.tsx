@@ -61,7 +61,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
           <Stack spacing={"1.8rem"}>
             <Group spacing={0}>
               <Text fw={"bold"} c={theme.colors.gray[6]}>
-                58
+                {postData?.data.likeCount}
               </Text>
               <Text c={theme.colors.gray[6]}>명의 사람들이 이 게임을 찜했습니다.</Text>
             </Group>
