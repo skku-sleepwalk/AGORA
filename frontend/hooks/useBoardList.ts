@@ -17,25 +17,16 @@ const getKey = (
   { search, parentId, boardType }: useBoardListSettings
 ) => {
   if (previousPageData && previousPageData.data.cursor.afterCursor === null) return null;
-  let queryString = "";
-  if (pageIndex === 0) {
-    // 첫번째 페이지
-    queryString = stringify({
-      categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "createdAt",
-      boardType,
-      search,
-    });
-  } else {
-    // 두번째 페이지부터
-    queryString = stringify({
-      categoryNames: categories.length > 0 ? categories.join(",") : undefined,
-      order: "createdAt",
-      boardType,
-      afterCursor: previousPageData?.data.cursor.afterCursor,
-      search,
-    });
-  }
+  let query: Record<string, any> = {
+    categoryNames: categories.length > 0 ? categories.join(",") : null,
+  };
+
+  if (search) query.q = search;
+  if (boardType) query.boardType = boardType;
+  if (pageIndex > 0) query.afterCursor = previousPageData?.data.cursor.afterCursor;
+
+  const queryString = stringify(query);
+
   if (search) return `http://localhost:8000/community/board/search?${queryString}`;
   if (parentId) return `http://localhost:8000/community/board/getChild/${parentId}?${queryString}`;
   else return `http://localhost:8000/community/board?${queryString}`;

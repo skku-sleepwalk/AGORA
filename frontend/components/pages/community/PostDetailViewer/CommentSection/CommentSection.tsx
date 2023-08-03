@@ -1,13 +1,13 @@
 import { Center, Collapse, Loader, Stack, Text } from "@mantine/core";
 import CommentEditor from "./CommentEditor/CommentEditor";
 import Comment from "./Comment/Comment";
-import { MOCKUP_USER } from "../../../../../mockups/user";
 import { useCommentSectionStyles } from "./CommentSection.styles";
 import useBoardList from "../../../../../hooks/useBoardList";
 import { createContext, useContext, useEffect } from "react";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 import { showNotification } from "../../../../../utils/notifications";
 import { CommunityContext } from "../../../../../pages/community";
+import useAuth from "../../../../../hooks/useAuth";
 
 interface CommentSectionProps {
   parentId: string;
@@ -37,6 +37,7 @@ function CommentSection({
     parentId,
   });
   const { mutatePost } = useContext(CommunityContext);
+  const { user } = useAuth();
 
   useEffect(() => {
     setCommentSize(1);
@@ -50,21 +51,23 @@ function CommentSection({
     >
       <Stack spacing={0} className={classes.commentSection}>
         <Collapse in={editorOpen}>
-          <CommentEditor
-            user={MOCKUP_USER}
-            placeholder={"댓글을 작성해주세요."}
-            onSubmit={async (content) => {
-              if (content === "<p></p>") {
-                return showNotification("댓글 내용 없음", "댓글 내용을 작성해주세요.");
-              } else {
-                return onSubmitComment?.(content, parentId).then(() => {
-                  mutateComment();
-                  mutatePost();
-                  showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
-                });
-              }
-            }}
-          />
+          {user && (
+            <CommentEditor
+              user={user}
+              placeholder={"댓글을 작성해주세요."}
+              onSubmit={async (content) => {
+                if (content === "<p></p>") {
+                  return showNotification("댓글 내용 없음", "댓글 내용을 작성해주세요.");
+                } else {
+                  return onSubmitComment?.(content, parentId).then(() => {
+                    mutateComment();
+                    mutatePost();
+                    showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
+                  });
+                }
+              }}
+            />
+          )}
         </Collapse>
         {commentData?.map((data) => {
           return data.data.data.map((data) => (

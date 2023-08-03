@@ -73,7 +73,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { canCloseModal } = useContext(ModalContext);
 
   // post가 post인지 child인지 확인
-  const postType = post.parent === null ? "post" : "child";
+  const postType = post.parent ? "child" : "post";
 
   const { mutatePost } = useContext(CommunityContext);
 

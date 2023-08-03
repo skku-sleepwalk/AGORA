@@ -18,10 +18,13 @@ public class GameInstaller {
     private Path outputDir;
     private JFrame frame;
     private JProgressBar progressBar;
+    private JLabel nameLabel;
     private long zipFileLength;
     private static final String ENCRYPTION_KEY = "1234567890123456";
+    private Game game;
 
     public GameInstaller(Game game) {
+        this.game = game;
         this.downloadUrl = game.getDownloadUrl();
         this.path = game.getPath();
         this.outputDir = Paths.get(".\\games\\" + game.getName());
@@ -31,8 +34,12 @@ public class GameInstaller {
     private void initGUI() {
         frame = new JFrame("Installing Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 100);
+        frame.setSize(300, 200);
         frame.setLayout(new FlowLayout());
+
+        nameLabel = new JLabel("Downloading: " + game.getName());
+        frame.add(nameLabel);
+
         progressBar = new JProgressBar(0, 100);
         progressBar.setValue(0);
         progressBar.setStringPainted(true);
@@ -66,7 +73,10 @@ public class GameInstaller {
             zipFileLength = tempFile.toFile().length();
             unzip(tempFile.toString(), this.outputDir);
             Files.delete(tempFile);
-            SwingUtilities.invokeLater(() -> frame.setVisible(false));
+            SwingUtilities.invokeLater(() -> {
+                nameLabel.setText(game.getName() + " download completed");
+                frame.setVisible(false);
+            });
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

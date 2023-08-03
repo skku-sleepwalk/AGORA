@@ -98,7 +98,9 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
   const isliking = post.like;
 
   // post가 post인지 child인지 확인
-  const postType = post.parent === null ? "post" : "child";
+  const postType = post.parent ? "child" : "post";
+
+  console.log("postType", postType, post);
 
   const { mutatePost } = useContext(CommunityContext);
 
