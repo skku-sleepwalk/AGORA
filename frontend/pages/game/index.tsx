@@ -1,67 +1,59 @@
-import CardContainer from "../../components/common/CardContainer/CardContainer";
 import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
-import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
-import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
-import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
-import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary";
-import { GameTab } from "../../components/pages/game/GameTab/GameTab";
-import { GameRightSide } from "../../components/pages/game/GameRightSide/GameRightSide";
-import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
-import { createContext, useRef, useState } from "react";
-import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
-import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
-import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
+import { MainTab } from "../../components/pages/game/MainTab/MainTab";
+import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
+import useStoreList from "../../hooks/useStoreList";
+import { useRouter } from "next/router";
+import { createContext } from "react";
+import { useEffect } from "react";
 
-import useDetailGame from "../../hooks/useDetailGame";
-
-import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
-
-export const TabClicklContext = createContext({
-  ontabClick: () => {},
-  ontabClickFast: () => {},
+export const StoreContext = createContext({
+  mutatePost: () => {},
 });
 
-function Game() {
-  const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
-  // tab 클릭 시 페이지 상단으로 이동 관련
-  const tabRef = useRef<HTMLDivElement>(null);
-  const ontabClick = () => {
-    tabRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  };
-  const ontabClickFast = () => {
-    tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
-  };
-  const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
-  // 추후 수정
+export default function Main() {
+  const router = useRouter();
+
+  const name = "FPS";
   // router.query.name
   const {
     data: postData,
     isLoading: isPostLoading,
-
+    setSize: setPostSize,
     mutate: mutatePost,
-  } = useDetailGame(id);
+    isEmpty,
+  } = useStoreList({
+    name: name ? name : undefined,
+    // name.toString()
+    //여기 tostring 에러 가능성 있음
+  });
+  useEffect(() => {
+    setPostSize(1);
+  }, []);
+
   return (
-    // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
-    //   <SmallPosts></SmallPosts>
-    // </MainLayout>
-    <TabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
-      <GameLayout
-        photoSection={<MainCarousel isInfo={true} />}
-        summarySection={
-          <GameSummary postData={postData} loading={isPostLoading} mutate={mutatePost} />
-        }
-        anchorSection={<div ref={tabRef}></div>}
-        tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-        rightSection={<GameRightSide />}
+    <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
+      <StoreContext.Provider
+        value={{
+          mutatePost,
+        }}
       >
-        {activeTab === "gameInfo" && <GameInfo />}
-        {activeTab === "gameNews" && <GameNewsSection />}
-        {activeTab === "review" && <GameReviewSection />}
-        {activeTab === "board" && <GameBoardDetailViewer />}
-        {/* {activeTab === "board" && <GameBoardSection />} */}
-      </GameLayout>
-    </TabClicklContext.Provider>
+        <SmallPosts
+          information={{
+            data: postData,
+            isLoading: isPostLoading,
+            setSize: setPostSize,
+            mutate: mutatePost,
+            isEmpty,
+          }}
+        ></SmallPosts>
+      </StoreContext.Provider>
+    </MainLayout>
   );
 }
-export default Game;
+// let data = new Array();
+// {postData?.map((data) => {
+//   return data.data.map((data) => (
+//     <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
+//   ));
+// })}

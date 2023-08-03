@@ -4,7 +4,7 @@ import { GameNews } from "./GameNews/GameNews";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconPlus } from "@tabler/icons-react";
-import { TabClicklContext } from "../../../../pages/game";
+import { TabClicklContext } from "../../../../pages/game/[id]";
 import { useContext } from "react";
 
 export function GameNewsSection() {
