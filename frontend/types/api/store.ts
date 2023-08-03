@@ -12,27 +12,29 @@ export interface StoreData {
   cost: Cost | undefined;
 }
 export interface GameStore {
+  data: {
+    id: string;
+    title: string;
+    downloadUrl: string;
+    executablePath: string;
+    shortImgUrl: string;
+    shortContent: string;
+    likeCount: number;
+    like: boolean;
+    rating: number;
+    // description: string;
+    // distributor: string;
+    // developer: string;
+    createdAt: Date;
+    updatedAt: Date;
+    deletedAt: Date;
+    price: number;
+    author: User;
+    likedUsers: Array<User> | undefined;
+    store: StoreData;
+    genres: Array<GameStoreGenre> | undefined;
+  };
   //data로 한번 감싸야함
-  id: string;
-  title: string;
-  downloadUrl: string;
-  executablePath: string;
-  shortImgUrl: string;
-  shortContent: string;
-  likeCount: number;
-  like: boolean;
-  rating: number;
-  // description: string;
-  // distributor: string;
-  // developer: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt: Date;
-  price: number;
-  author: User;
-  likedUsers: Array<User> | undefined;
-  store: StoreData;
-  genres: Array<GameStoreGenre> | undefined;
 }
 
 export interface GameStoreGenre {
