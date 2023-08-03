@@ -38,6 +38,8 @@ export class GameStoresController {
       data.snsUrls,
       data.developer,
       data.distributor,
+      data.imgUrls,
+      data.iconUrl,
     );
   }
 
@@ -68,6 +70,8 @@ export class GameStoresController {
       data.distributor,
       data.snsUrls,
       data.title,
+      data.imgUrls,
+      data.iconUrl,
     );
   }
 }

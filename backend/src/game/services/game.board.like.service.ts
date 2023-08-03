@@ -84,6 +84,6 @@ export class GameBoardLikeService {
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }
-    await this.gameBoardLikeRepository.delete(like);
+    await this.gameBoardLikeRepository.delete(like.id);
   }
 }
