@@ -1,20 +1,10 @@
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import {
-  Box,
-  Button,
-  Center,
-  Group,
-  Image,
-  Stack,
-  Text,
-  UnstyledButton,
-  useMantineTheme,
-} from "@mantine/core";
+import { Box, Button, Center, Group, Image, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useGameRightSideStyles } from "./GameRightSide.styles";
 import { useSetState } from "@mantine/hooks";
-import { useRef } from "react";
 
 export function GameRightSide() {
+  const { classes, cx } = useGameRightSideStyles();
   const theme = useMantineTheme();
 
   // SNS 바로가기 관련
@@ -31,12 +21,6 @@ export function GameRightSide() {
   for (let i = 0; i < trueCount; i++) {
     emptyBox.push(<Box w={"4rem"} key={i}></Box>);
   }
-
-  // 가격 할인 관련
-  const widthRef = useRef<HTMLDivElement>(null);
-  const priceWidth = widthRef.current?.clientWidth;
-
-  const { classes, cx } = useGameRightSideStyles({ priceWidth });
 
   return (
     <Box className={classes.box}>
@@ -139,26 +123,26 @@ export function GameRightSide() {
             <Text fz={22} fw={"bold"}>
               Stardew Valley
             </Text>
-            <Group className={classes.marginTop} position="right">
-              <Text ref={widthRef} fz={26} fw={"bold"}>
+            <Group className={classes.marginTop} spacing={"xs"} position="right">
+              {true && (
+                <Box className={classes.percent}>
+                  <Text fz={16} fw={"bold"}>
+                    -18.8%
+                  </Text>
+                </Box>
+              )}
+              <Text fz={26} fw={"bold"}>
                 ￦ 13,000
               </Text>
               {true && (
-                <>
-                  <Text
-                    className={classes.realPrice}
-                    fz={18}
-                    td="line-through"
-                    c={theme.colors.gray[6]}
-                  >
-                    ￦ 16,000
-                  </Text>
-                  <Box className={classes.percent}>
-                    <Text fz={16} fw={"bold"}>
-                      -18.8%
-                    </Text>
-                  </Box>
-                </>
+                <Text
+                  className={classes.realPrice}
+                  fz={18}
+                  td="line-through"
+                  c={theme.colors.gray[6]}
+                >
+                  ￦ 16,000
+                </Text>
               )}
             </Group>
             <Group>

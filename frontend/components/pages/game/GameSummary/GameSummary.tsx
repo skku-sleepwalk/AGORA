@@ -11,19 +11,28 @@ import {
   Box,
   Modal,
 } from "@mantine/core";
+import { KeyedMutator } from "swr";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
 import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
+import { GameStore } from "../../../../types/api/store";
+interface GameDataProps {
+  postData: GameStore | undefined;
+  loading?: boolean;
+  mutate?: KeyedMutator<GameStore>;
+}
+export function GameSummary({ postData, loading, mutate }: GameDataProps) {
+  // '{ postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore>; }; }' 형식은 'IntrinsicAttributes & GameStore' 형식에 할당할 수 없습니다.
+  // 'IntrinsicAttributes & GameStore' 형식에 'postData' 속성이 없습니다.
 
-export function GameSummary() {
   const { classes, cx } = useGameSummaryStyles();
   const [opened, { open, close }] = useDisclosure(false);
-  const [isLiking, setIsLiking] = useState<boolean>(false);
+  const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-
+  console.log(postData);
   const handleIsLiking = () => {
     setIsLiking((prev) => !prev);
   };
@@ -61,7 +70,7 @@ export function GameSummary() {
   useEffect(() => {
     setIsOverflowed(checkOverflow());
   }, []);
-
+  // console.log({ storeData });
   return (
     <>
       <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
@@ -78,7 +87,7 @@ export function GameSummary() {
               }
             />
             <Text fw={"bold"} fz={20}>
-              Stardew Valley
+              {postData ? postData.data.store.title : null}
             </Text>
           </Group>
           <Group spacing={"xs"}>
@@ -94,7 +103,7 @@ export function GameSummary() {
                 <IconHeart size={"2rem"} stroke={1} />
               )}
             </InvisibleButton>
-            <Text fz={16}>(1679)</Text>
+            <Text fz={16}>({postData?.data.likeCount})</Text>
           </Group>
         </Group>
         <Group className={cx(classes.alignTop, classes.marginBottom)}>
@@ -110,7 +119,7 @@ export function GameSummary() {
                   component="a"
                   href="https://mantine.dev"
                 >
-                  Concerned Ape
+                  {postData?.data.store.developer}
                 </Text>
               </Group>
               <InvisibleButton onClick={handleIsFollowing}>
@@ -141,7 +150,7 @@ export function GameSummary() {
                 component="a"
                 href="https://mantine.dev"
               >
-                Concerned Ape
+                {postData?.data.store.distributor}
               </Text>
             </Group>
           </Stack>

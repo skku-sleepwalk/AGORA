@@ -151,7 +151,7 @@ export function GameReviewMine() {
             </Button>
             <Menu shadow="md" width={120} position="bottom-end" offset={10}>
               <Menu.Target>
-                <UnstyledButton>
+                <UnstyledButton className={classes.dotButton}>
                   <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 </UnstyledButton>
               </Menu.Target>

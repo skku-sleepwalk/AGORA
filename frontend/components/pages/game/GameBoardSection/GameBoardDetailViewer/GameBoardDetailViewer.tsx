@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Group,
+  Menu,
   Stack,
   Text,
   Title,
@@ -14,11 +15,15 @@ import { useGameBoardDetailViewerStyles } from "./GameBoardDetailViewer.styles";
 import { useMediaQuery } from "@mantine/hooks";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
+  IconBell,
   IconBookmark,
   IconChevronLeft,
+  IconDotsVertical,
   IconHeart,
   IconMessages,
+  IconPencil,
   IconShare,
+  IconTrash,
 } from "@tabler/icons-react";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
@@ -28,6 +33,8 @@ export function GameBoardDetailViewer() {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardDetailViewerStyles({ smallScreen });
   const theme = useMantineTheme();
+
+  const canEdit = true;
 
   return (
     <CardContainer className={classes.boardDetailViewer}>
@@ -71,21 +78,56 @@ export function GameBoardDetailViewer() {
           </TypographyStylesProvider>
         </Stack>
         {/* 게시글 푸터 */}
-        <Group className={classes.footerGroup} spacing={"sm"}>
-          <Group spacing={"0.3rem"}>
-            <IconMessages stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-            <Text fz={14}>1</Text>
+        <Group className={classes.footerGroup} position="apart">
+          <Group spacing={"sm"}>
+            <Group spacing={"0.3rem"}>
+              <IconMessages stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              <Text fz={14}>1</Text>
+            </Group>
+            <Group spacing={"0.3rem"}>
+              <IconHeart stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+              <Text fz={14}>2</Text>
+            </Group>
+            <InvisibleButton>
+              <IconShare stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+            </InvisibleButton>
+            <InvisibleButton>
+              <IconBookmark stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+            </InvisibleButton>
           </Group>
-          <Group spacing={"0.3rem"}>
-            <IconHeart stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-            <Text fz={14}>2</Text>
-          </Group>
-          <InvisibleButton>
-            <IconShare stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-          </InvisibleButton>
-          <InvisibleButton>
-            <IconBookmark stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-          </InvisibleButton>
+          <Menu shadow="md" width={120} position="bottom-end" offset={1}>
+            <Menu.Target>
+              <UnstyledButton className={classes.dotButton}>
+                <IconDotsVertical />
+              </UnstyledButton>
+            </Menu.Target>
+            <Menu.Dropdown>
+              {!canEdit && (
+                <Menu.Item icon={<IconBell size={18} stroke={2} />} className={classes.menuItem}>
+                  신고하기
+                </Menu.Item>
+              )}
+              {canEdit && (
+                <>
+                  <Menu.Item
+                    onClick={() => {}}
+                    icon={<IconPencil size={18} stroke={2} />}
+                    className={classes.menuItem}
+                  >
+                    수정하기
+                  </Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Item
+                    onClick={() => {}}
+                    icon={<IconTrash size={18} stroke={2} />}
+                    className={classes.menuItem}
+                  >
+                    삭제하기
+                  </Menu.Item>
+                </>
+              )}
+            </Menu.Dropdown>
+          </Menu>
         </Group>
         {/* 게시글 댓글 파트 */}
         <Box className={classes.marginLeft}>

@@ -1,8 +1,5 @@
-import CardContainer from "../../components/common/CardContainer/CardContainer";
-import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
+import { useRouter } from "next/router";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
-import { MainTab } from "../../components/pages/game/MainTab/MainTab";
-import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
 import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary";
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
@@ -23,6 +20,8 @@ export const TabClicklContext = createContext({
 });
 
 function Game() {
+  const router = useRouter();
+  const id = router.query.id ? router.query.id.toString() : undefined;
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
   // tab 클릭 시 페이지 상단으로 이동 관련
   const tabRef = useRef<HTMLDivElement>(null);
@@ -32,7 +31,7 @@ function Game() {
   const ontabClickFast = () => {
     tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   };
-  const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
+  // const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
   // 추후 수정
   // router.query.name
   const {
