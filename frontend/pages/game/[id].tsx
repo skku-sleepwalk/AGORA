@@ -56,7 +56,9 @@ function Game() {
           <GameRightSide postData={postData} loading={isPostLoading} mutate={mutatePost} />
         }
       >
-        {activeTab === "gameInfo" && <GameInfo />}
+        {activeTab === "gameInfo" && (
+          <GameInfo postData={postData} loading={isPostLoading} mutate={mutatePost} />
+        )}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
         {activeTab === "board" && <GameBoardDetailViewer />}

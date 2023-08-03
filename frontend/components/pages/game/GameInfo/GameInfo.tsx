@@ -2,9 +2,14 @@ import { Stack, Text, TypographyStylesProvider } from "@mantine/core";
 import { useGameInfoStyles } from "./GameInfo.styles";
 import { useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { MOCKUP_CONTENT } from "../../../../mockups/post";
-
-export function GameInfo() {
+import { GameStore } from "../../../../types/api/store";
+import { KeyedMutator } from "swr";
+interface GameDataProps {
+  postData: GameStore | undefined;
+  loading?: boolean;
+  mutate?: KeyedMutator<GameStore>;
+}
+export function GameInfo({ postData, loading, mutate }: GameDataProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameInfoStyles();
 
@@ -16,7 +21,7 @@ export function GameInfo() {
           <div
             className={classes.content}
             dangerouslySetInnerHTML={{
-              __html: MOCKUP_CONTENT,
+              __html: postData?.data.information.description || "",
             }}
           />
         </TypographyStylesProvider>
@@ -29,7 +34,7 @@ export function GameInfo() {
           <div
             className={classes.content}
             dangerouslySetInnerHTML={{
-              __html: MOCKUP_CONTENT,
+              __html: postData?.data.information.specification || "",
             }}
           />
         </TypographyStylesProvider>

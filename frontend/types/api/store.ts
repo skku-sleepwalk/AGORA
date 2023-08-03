@@ -11,6 +11,11 @@ export interface StoreData {
   deletedAt: Date;
   cost: Cost | undefined;
 }
+export interface Information {
+  id: string;
+  description: string;
+  specification: string;
+}
 export interface GameStore {
   data: {
     id: string;
@@ -28,6 +33,7 @@ export interface GameStore {
     createdAt: Date;
     updatedAt: Date;
     deletedAt: Date;
+    information: Information;
     price: number;
     author: User;
     likedUsers: Array<User> | undefined;
