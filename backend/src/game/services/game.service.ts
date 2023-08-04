@@ -5,10 +5,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from 'src/entites/game.entity';
-import { GameGenre } from 'src/entites/game.genre.entity';
-import { GameLike } from 'src/entites/game.like.entity';
-import { GameTagRelation } from 'src/entites/game.tag.relation.entity';
+import { Game } from 'src/entites/game/game.entity';
+import { GameGenre } from 'src/entites/game/game.genre.entity';
+import { GameLike } from 'src/entites/game/game.like.entity';
+import { GameTagRelation } from 'src/entites/game/game.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import {
@@ -17,8 +17,8 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { GameDto } from '../dto/game.dto';
-import { GameReview } from 'src/entites/game.review.entity';
-import { GameInformation } from 'src/entites/game.information.entity';
+import { GameReview } from 'src/entites/game/game.review.entity';
+import { GameInformation } from 'src/entites/game/game.information.entity';
 // NestJS에서 사용되는 각종 데코레이터 및 필요한 모듈들을 import합니다.
 // Injectable 데코레이터를 통해 이 서비스가 주입 가능한 클래스임을 선언합니다.
 // @InjectRepository를 통해 TypeORM에서 사용할 Repository를 주입합니다.

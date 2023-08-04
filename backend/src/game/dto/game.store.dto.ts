@@ -5,7 +5,7 @@ import {
   IsNumber,
   ValidateNested,
 } from 'class-validator';
-import { GameStore } from 'src/entites/game.store.entity';
+import { GameStore } from 'src/entites/game/game.store.entity';
 import { GameCostDto } from './game.cost.dto';
 
 export class GameStoreDto extends PickType(PartialType(GameStore), [

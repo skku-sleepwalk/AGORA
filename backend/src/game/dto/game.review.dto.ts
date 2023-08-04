@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
-import { GameReview } from 'src/entites/game.review.entity';
+import { GameReview } from 'src/entites/game/game.review.entity';
 
 export class GameReviewDto extends PickType(GameReview, [
   'id',

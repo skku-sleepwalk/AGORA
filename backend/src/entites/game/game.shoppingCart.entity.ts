@@ -1,5 +1,5 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { GameStore } from './game.store.entity';
 
 @Entity('GameShoppingCartItem')

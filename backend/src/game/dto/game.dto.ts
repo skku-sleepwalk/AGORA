@@ -5,7 +5,7 @@ import {
   IsNumber,
   ValidateNested,
 } from 'class-validator';
-import { Game } from 'src/entites/game.entity';
+import { Game } from 'src/entites/game/game.entity';
 import { GameInformationDto } from './game.information.dto';
 import { GameTagDto } from './game.tag.dto';
 import { GameStoreDto } from './game.store.dto';

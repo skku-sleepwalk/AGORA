@@ -5,11 +5,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CommunityBoard } from 'src/entites/community.board.entity';
-import { CommunityCategory } from 'src/entites/community.category.entity';
+import { CommunityBoard } from 'src/entites/community/community.board.entity';
+import { CommunityCategory } from 'src/entites/community/community.category.entity';
 import { User } from 'src/entites/user.entity';
 import { CommunityBoardDto } from '../dto/community.board.dto';
-import { CommunityBoardLike } from 'src/entites/community.board.like.entity';
+import { CommunityBoardLike } from 'src/entites/community/community.board.like.entity';
 import {
   Cursor,
   PaginationOptions,

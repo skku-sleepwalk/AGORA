@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { GameBoardCategory } from './game.board.category.entity';
 import { GameBoardLike } from './game.board.like.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
 

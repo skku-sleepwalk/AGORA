@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 import { CommunityCategory } from './community.category.entity';
 import { CommunityBoardLike } from './community.board.like.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('CommunityBoard')

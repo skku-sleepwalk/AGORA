@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from 'src/entites/game.entity';
-import { PlayTime } from 'src/entites/game.playtime.entity';
+import { Game } from 'src/entites/game/game.entity';
+import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 

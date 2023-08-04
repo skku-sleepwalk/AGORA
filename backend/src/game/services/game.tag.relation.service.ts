@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from 'src/entites/game.entity';
-import { GameTagRelation } from 'src/entites/game.tag.relation.entity';
+import { Game } from 'src/entites/game/game.entity';
+import { GameTagRelation } from 'src/entites/game/game.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 

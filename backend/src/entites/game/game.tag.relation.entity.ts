@@ -1,6 +1,6 @@
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { GameTag } from './game.tag.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
 

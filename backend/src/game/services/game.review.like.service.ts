@@ -4,10 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameReview } from 'src/entites/game.review.entity';
+import { GameReview } from 'src/entites/game/game.review.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
-import { GameReviewLike } from 'src/entites/game.review.like.entity';
+import { GameReviewLike } from 'src/entites/game/game.review.like.entity';
 
 @Injectable()
 export class GameReviewLikeService {

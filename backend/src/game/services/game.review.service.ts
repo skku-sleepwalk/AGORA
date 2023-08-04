@@ -5,9 +5,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Game } from 'src/entites/game.entity';
-import { GameReview } from 'src/entites/game.review.entity';
-import { GameReviewLike } from 'src/entites/game.review.like.entity';
+import { Game } from 'src/entites/game/game.entity';
+import { GameReview } from 'src/entites/game/game.review.entity';
+import { GameReviewLike } from 'src/entites/game/game.review.like.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 import {
@@ -16,8 +16,8 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { GameReviewDto } from '../dto/game.review.dto';
-import { GameReviewDislike } from 'src/entites/game.review.dislike.entity';
-import { PlayTime } from 'src/entites/game.playtime.entity';
+import { GameReviewDislike } from 'src/entites/game/game.review.dislike.entity';
+import { PlayTime } from 'src/entites/game/game.playtime.entity';
 
 @Injectable()
 export class GameReviewService {

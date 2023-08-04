@@ -1,5 +1,5 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { CommunityBoard } from 'src/entites/community.board.entity';
+import { CommunityBoard } from 'src/entites/community/community.board.entity';
 import { IsArray, IsNotEmpty } from 'class-validator';
 
 export class UpdateCommunityBoardDto extends PickType(CommunityBoard, [

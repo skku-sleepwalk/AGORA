@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameBoardCategory } from 'src/entites/game.board.category.entity';
+import { GameBoardCategory } from 'src/entites/game/game.board.category.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

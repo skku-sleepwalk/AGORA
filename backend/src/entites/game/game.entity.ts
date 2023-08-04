@@ -14,7 +14,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GameStore } from './game.store.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { GameReview } from './game.review.entity';
 import { GameBoard } from './game.board.entity';
 import { PlayTime } from './game.playtime.entity';

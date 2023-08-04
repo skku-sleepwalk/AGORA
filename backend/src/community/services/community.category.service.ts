@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommunityCategory } from 'src/entites/community.category.entity';
+import { CommunityCategory } from 'src/entites/community/community.category.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

@@ -1,8 +1,8 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
-import { CommunityBoard } from 'src/entites/community.board.entity';
-import { CommunityCategory } from 'src/entites/community.category.entity';
+import { CommunityBoard } from 'src/entites/community/community.board.entity';
+import { CommunityCategory } from 'src/entites/community/community.category.entity';
 
 export class CommunityBoardDto extends PickType(CommunityBoard, [
   'id',

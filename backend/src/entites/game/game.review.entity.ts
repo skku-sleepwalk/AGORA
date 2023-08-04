@@ -10,7 +10,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { GameReviewComment } from './game.review.comment.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { GameReviewLike } from './game.review.like.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
@@ -52,14 +52,6 @@ export class GameReview {
   @ApiProperty({ example: '재미있어요', description: '리뷰 내용' })
   @Column({ nullable: false })
   content: string;
-
-  @ApiProperty({ example: 3, description: '좋아요 수' })
-  @Column({ nullable: false, default: 0 })
-  likeCount: number;
-
-  @ApiProperty({ example: 4, description: '싫어요 수' })
-  @Column({ nullable: false, default: 0 })
-  unlikeCount: number;
 
   @ApiProperty({ description: '댓글 수', example: 5 })
   commentCount: number;

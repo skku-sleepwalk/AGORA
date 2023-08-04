@@ -1,13 +1,6 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-import { User } from './user.entity';
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from '../user.entity';
 import { Game } from './game.entity';
-import { LikeAction } from 'src/common/types/likeAction.type';
 
 @Entity('GameLike')
 export class GameLike {
@@ -19,9 +12,6 @@ export class GameLike {
   game: Game;
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'Id', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   user: User;
-
-  @Column('varchar', { nullable: true, default: null })
-  likeAction: LikeAction;
 }

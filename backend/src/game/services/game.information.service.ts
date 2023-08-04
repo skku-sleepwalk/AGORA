@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameInformation } from 'src/entites/game.information.entity';
-import { Game } from 'src/entites/game.entity';
+import { GameInformation } from 'src/entites/game/game.information.entity';
+import { Game } from 'src/entites/game/game.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 

@@ -13,7 +13,7 @@ import {
 } from 'typeorm';
 
 import { GameCost } from './game.cost.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { GameShoppingCartItem } from './game.shoppingCart.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';

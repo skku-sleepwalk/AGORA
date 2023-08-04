@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { GameBoard } from 'src/entites/game.board.entity';
+import { GameBoard } from 'src/entites/game/game.board.entity';
 
 export class CreateGameBoardDto extends PickType(PartialType(GameBoard), [
   'title',

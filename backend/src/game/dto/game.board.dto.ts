@@ -7,8 +7,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { UserDto } from 'src/common/dto/user.dto';
-import { GameBoardCategory } from 'src/entites/game.board.category.entity';
-import { GameBoard } from 'src/entites/game.board.entity';
+import { GameBoardCategory } from 'src/entites/game/game.board.category.entity';
+import { GameBoard } from 'src/entites/game/game.board.entity';
 
 export class GameBoardDto extends PickType(GameBoard, [
   'id',

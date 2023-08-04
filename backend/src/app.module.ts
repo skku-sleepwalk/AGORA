@@ -8,35 +8,36 @@ import { UsersModule } from './user/user.module';
 import dotenv from 'dotenv';
 
 import { User } from './entites/user.entity';
-import { CommunityCategory } from './entites/community.category.entity';
+import { CommunityCategory } from './entites/community/community.category.entity';
 
-import { GameBoardCategory } from './entites/game.board.category.entity';
-import { GameBoard } from './entites/game.board.entity';
-import { GameBoardLike } from './entites/game.board.like.entity';
-import { GameCost } from './entites/game.cost.entity';
-import { GameGenre } from './entites/game.genre.entity';
-import { PlayTime } from './entites/game.playtime.entity';
-import { GameReviewComment } from './entites/game.review.comment.entity';
-import { GameReviewCommentLike } from './entites/game.review.comment.like.entity';
-import { GameShoppingCartItem } from './entites/game.shoppingCart.entity';
-import { GameStore } from './entites/game.store.entity';
-import { GameTag } from './entites/game.tag.entity';
-import { GameTagRelation } from './entites/game.tag.relation.entity';
-import { GameReview } from './entites/game.review.entity';
-import { GameReviewLike } from './entites/game.review.like.entity';
-import { CommunityBoardLike } from './entites/community.board.like.entity';
+import { GameBoardCategory } from './entites/game/game.board.category.entity';
+import { GameBoard } from './entites/game/game.board.entity';
+import { GameBoardLike } from './entites/game/game.board.like.entity';
+import { GameCost } from './entites/game/game.cost.entity';
+import { GameGenre } from './entites/game/game.genre.entity';
+import { PlayTime } from './entites/game/game.playtime.entity';
+import { GameReviewComment } from './entites/game/game.review.comment.entity';
+import { GameReviewCommentLike } from './entites/game/game.review.comment.like.entity';
+import { GameShoppingCartItem } from './entites/game/game.shoppingCart.entity';
+import { GameStore } from './entites/game/game.store.entity';
+import { GameTag } from './entites/game/game.tag.entity';
+import { GameTagRelation } from './entites/game/game.tag.relation.entity';
+import { GameReview } from './entites/game/game.review.entity';
+import { GameReviewLike } from './entites/game/game.review.like.entity';
+import { CommunityBoardLike } from './entites/community/community.board.like.entity';
 
 import { CommunityModule } from './community/community.module';
 import { GameStoreModule } from './game/game.module';
-import { Game } from './entites/game.entity';
-import { GameInformation } from './entites/game.information.entity';
-import { CommunityBoard } from './entites/community.board.entity';
-import { GameLike } from './entites/game.like.entity';
-import { GameReviewDislike } from './entites/game.review.dislike.entity';
-import { GameReviewCommentDislike } from './entites/game.review.comment.dislike.entity';
+import { Game } from './entites/game/game.entity';
+import { GameInformation } from './entites/game/game.information.entity';
+import { CommunityBoard } from './entites/community/community.board.entity';
+import { GameLike } from './entites/game/game.like.entity';
+import { GameReviewDislike } from './entites/game/game.review.dislike.entity';
+import { GameReviewCommentDislike } from './entites/game/game.review.comment.dislike.entity';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from './upload/upload.module';
+import { AssetModule } from './asset/asset.module';
 
 dotenv.config();
 
@@ -111,6 +112,7 @@ dotenv.config();
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
+    AssetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

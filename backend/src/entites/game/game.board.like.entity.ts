@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { GameBoard } from './game.board.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 import { LikeAction } from 'src/common/types/likeAction.type';
 
 @Entity('GameBoardLike')

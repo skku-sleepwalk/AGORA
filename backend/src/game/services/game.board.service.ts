@@ -4,9 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameBoardCategory } from 'src/entites/game.board.category.entity';
-import { GameBoard } from 'src/entites/game.board.entity';
-import { Game } from 'src/entites/game.entity';
+import { GameBoardCategory } from 'src/entites/game/game.board.category.entity';
+import { GameBoard } from 'src/entites/game/game.board.entity';
+import { Game } from 'src/entites/game/game.entity';
 import { User } from 'src/entites/user.entity';
 import { In, Repository } from 'typeorm';
 import {
@@ -15,7 +15,7 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { GameBoardDto } from '../dto/game.board.dto';
-import { GameBoardLike } from 'src/entites/game.board.like.entity';
+import { GameBoardLike } from 'src/entites/game/game.board.like.entity';
 // NestJS 데코레이터와 함께 사용하는 GameBoardService 클래스
 @Injectable()
 export class GameBoardService {

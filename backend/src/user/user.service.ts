@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { PlayTime } from 'src/entites/game.playtime.entity';
+import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 // import bcrypt from 'bcrypt';

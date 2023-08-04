@@ -7,24 +7,27 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { CommunityBoard } from './community.board.entity';
-import { GameStore } from './game.store.entity';
-import { PlayTime } from './game.playtime.entity';
-import { GameTagRelation } from './game.tag.relation.entity';
-import { GameShoppingCartItem } from './game.shoppingCart.entity';
-import { GameReview } from './game.review.entity';
-import { GameBoardLike } from './game.board.like.entity';
-import { GameReviewComment } from './game.review.comment.entity';
-import { GameReviewLike } from './game.review.like.entity';
-import { GameBoard } from './game.board.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { CommunityBoardLike } from './community.board.like.entity';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { Game } from './game.entity';
-import { GameLike } from './game.like.entity';
-import { GameReviewDislike } from './game.review.dislike.entity';
-import { GameReviewCommentDislike } from './game.review.comment.dislike.entity';
-import { GameReviewCommentLike } from './game.review.comment.like.entity';
+import { CommunityBoard } from './community/community.board.entity';
+import { CommunityBoardLike } from './community/community.board.like.entity';
+import { Game } from './game/game.entity';
+import { GameStore } from './game/game.store.entity';
+import { PlayTime } from './game/game.playtime.entity';
+import { GameTagRelation } from './game/game.tag.relation.entity';
+import { GameShoppingCartItem } from './game/game.shoppingCart.entity';
+import { GameReview } from './game/game.review.entity';
+import { GameReviewLike } from './game/game.review.like.entity';
+import { GameReviewDislike } from './game/game.review.dislike.entity';
+import { GameReviewComment } from './game/game.review.comment.entity';
+import { GameReviewCommentLike } from './game/game.review.comment.like.entity';
+import { GameReviewCommentDislike } from './game/game.review.comment.dislike.entity';
+import { GameBoard } from './game/game.board.entity';
+import { GameBoardLike } from './game/game.board.like.entity';
+import { GameLike } from './game/game.like.entity';
+import { Asset } from './asset/asset.entity';
+import { AssetReview } from './asset/asset.review.entity';
+import { AssetReviewComment } from './asset/asset.review.comment.entity';
 
 @Entity('User')
 export class User {
@@ -124,4 +127,13 @@ export class User {
 
   @OneToMany(() => GameLike, (relation) => relation.user)
   gameLikes: Array<GameLike>;
+
+  @OneToMany(() => Asset, (asset) => asset.author)
+  assets: Array<Asset>;
+
+  @OneToMany(() => AssetReview, (review) => review.author)
+  assetReviews: Array<AssetReview>;
+
+  @OneToMany(() => AssetReviewComment, (comment) => comment.author)
+  assetReviewComments: Array<AssetReviewComment>;
 }

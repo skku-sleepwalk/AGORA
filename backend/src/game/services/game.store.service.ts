@@ -1,13 +1,13 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameStore, SNSUrls } from 'src/entites/game.store.entity';
+import { GameStore, SNSUrls } from 'src/entites/game/game.store.entity';
 import { DataSource, Repository } from 'typeorm';
-import { GameCost } from 'src/entites/game.cost.entity';
+import { GameCost } from 'src/entites/game/game.cost.entity';
 import { User } from 'src/entites/user.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Game } from 'src/entites/game.entity';
+import { Game } from 'src/entites/game/game.entity';
 import { GameStoreDto } from '../dto/game.store.dto';
 import { GameCostDto } from '../dto/game.cost.dto';
-import { GameLike } from 'src/entites/game.like.entity';
+import { GameLike } from 'src/entites/game/game.like.entity';
 
 @Injectable()
 export class GameStoreService {

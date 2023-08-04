@@ -1,13 +1,6 @@
-import { LikeAction } from 'src/common/types/likeAction.type';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { GameReview } from './game.review.entity';
-import { User } from './user.entity';
+import { User } from '../user.entity';
 
 @Entity('GameReviewDislike')
 export class GameReviewDislike {
