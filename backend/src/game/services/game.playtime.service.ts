@@ -39,13 +39,13 @@ export class GamePlaytimeService {
       where: { game: { id: gameId }, user: { id: user.id } },
     });
     if (!playtime) {
-      this.playtimeRepository.save({
+      await this.playtimeRepository.save({
         game,
         user,
         playtime: additionalPlaytime,
       });
     } else {
-      this.playtimeRepository.save({
+      await this.playtimeRepository.save({
         ...playtime,
         playtime: playtime.playtime + additionalPlaytime,
       });

@@ -10,13 +10,13 @@ import { Game } from './game.entity';
 
 @Entity('PlayTime')
 export class PlayTime {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   readonly id: string;
 
   @ManyToOne(() => Game, (game) => game.playtimes, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
   readonly game: Game;
 
   @ManyToOne(() => User, (user) => user.playtimes, {

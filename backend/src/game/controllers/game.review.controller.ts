@@ -64,6 +64,7 @@ export class GameReviewController {
     @Query('afterCursor') afterCursor: string,
     @Query('beforeCursor') beforeCursor: string,
   ) {
+    console.log(gameId);
     return this.gameReviewService.getManyGameReview(
       userEmail,
       { afterCursor, beforeCursor },

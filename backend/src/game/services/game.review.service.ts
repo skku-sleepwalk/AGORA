@@ -187,11 +187,13 @@ export class GameReviewService {
 
   // 특정 게임에 대한 여러 리뷰를 조회하는 메서드
   async getManyGameReview(userEmail: string, _cursor: Cursor, gameId: string) {
+    console.log(gameId);
     // gameReview 레포지토리에서 gameId에 해당하는 게임을 조회하는 쿼리 빌더 생성
     const queryBuilder = this.gameReviewRepository
       .createQueryBuilder('review')
+      .leftJoinAndSelect('review.author', 'author')
+      .leftJoinAndSelect('review.game', 'game')
       .where('review.gameId = :gameId', { gameId });
-
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<GameReview> = {
       entity: GameReview,
