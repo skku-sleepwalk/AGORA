@@ -32,7 +32,17 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  console.log(postData?.data?.genres);
+
+  const createstring = postData?.data.createdAt;
+  console.log("데이터:", typeof postData?.data.createdAt);
+  // // const year = createstring?.getFullYear();
+  // // const month = String(createstring?.getMonth() + 1).padStart(2, "0");
+  // // const day = String(createstring?.getDate()).padStart(2, "0");
+  let [year, month, day] = createstring?.split("-") || [null, null, null];
+  day = day?.slice(0, 2) || null;
+  console.log("데이터:", year);
+  const formattedString = `${year}년 ${month}월 ${day}일`;
+  // const formattedString = 1;
   const handleIsLiking = () => {
     setIsLiking((prev) => !prev);
   };
@@ -179,7 +189,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
           </Text>
         </Group>
         <Text className={cx(classes.grayText, classes.marginBottom)} fw={"bold"}>
-          출시일: 2016년 2월 17일
+          출시일: {formattedString}
         </Text>
         <Divider />
         <Text className={cx(classes.marginLeft, classes.marginTop)} fw={"bold"}>

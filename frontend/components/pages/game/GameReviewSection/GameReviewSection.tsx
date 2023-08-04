@@ -14,15 +14,24 @@ import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
-
-export function GameReviewSection() {
+import { useDetailGameReview } from "../../../../hooks/useGameReview";
+export interface idid {
+  id: string | undefined;
+}
+export function GameReviewSection({ id }: idid) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
   const theme = useMantineTheme();
 
   const canReview = true;
-  const hasReview = true;
-
+  const hasReview = false;
+  const {
+    data: commentData,
+    setSize: setCommentSize,
+    isLast: isLastComment,
+    isLoading: isCommentLoading,
+    mutate: mutateComment,
+  } = useDetailGameReview(id ? id : "");
   return (
     <Stack spacing={"xl"} className={classes.all}>
       <Text fz={smallScreen ? 28 : 32}>후기</Text>
@@ -39,7 +48,10 @@ export function GameReviewSection() {
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
               {canReview && !hasReview && (
-                <GameTextWriter placeholder={"도움이 되는 착한 후기를 남겨보세요."} />
+                <GameTextWriter
+                  placeholder={"도움이 되는 착한 후기를 남겨보세요."}
+                  id={id ? id : ""}
+                />
               )}
               {!canReview && (
                 <TextInput
@@ -53,9 +65,22 @@ export function GameReviewSection() {
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
-          <GameReview />
-          <GameReview />
-          <GameReview />
+          {commentData?.map((data) => {
+            return data.data.data?.map((data) => (
+              <GameReview
+                content={data.content}
+                // key={data.id}
+                // post={data}
+                // onSubmitComment={async (content, parentId) => {
+                //   return onSubmitComment?.(content, parentId);
+                // }}
+              />
+            ));
+          })}
+
+          <GameReview content="적당한 예시 리뷰" />
+          <GameReview content="적당한 예시 리뷰" />
+          <GameReview content="적당한 예시 리뷰" />
         </Stack>
       </CardContainer>
     </Stack>

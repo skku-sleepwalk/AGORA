@@ -12,9 +12,6 @@ interface GameDataProps {
   mutate?: KeyedMutator<GameStore>;
 }
 export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
-
-
-
   const { classes, cx } = useGameRightSideStyles();
 
   const theme = useMantineTheme();
@@ -158,18 +155,18 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
           <Stack spacing={"sm"} className={classes.containerPadding}>
             <Text fw={"bold"}>구매</Text>
             <Text fz={22} fw={"bold"}>
-              Stardew Valley
+              {postData?.data.store.title}
             </Text>
             <Group className={classes.marginTop} spacing={"xs"} position="right">
               {true && (
                 <Box className={classes.percent}>
                   <Text fz={16} fw={"bold"}>
-                    -18.8%
+                    -{postData?.data.store.cost?.salePercentage}%
                   </Text>
                 </Box>
               )}
               <Text fz={26} fw={"bold"}>
-                ￦ 13,000
+                ￦ {postData?.data.store.cost?.saledPrice}
               </Text>
               {true && (
                 <Text
@@ -178,7 +175,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   td="line-through"
                   c={theme.colors.gray[6]}
                 >
-                  ￦ 16,000
+                  ￦ {postData?.data.store.cost?.defaultPrice}
                 </Text>
               )}
             </Group>
