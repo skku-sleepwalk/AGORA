@@ -289,7 +289,7 @@ export class GameReviewService {
     }
 
     // 4. 리뷰 삭제
-    await this.gameRepository.delete(review.id);
+    await this.gameReviewRepository.delete(review.id);
 
     return true;
   }
