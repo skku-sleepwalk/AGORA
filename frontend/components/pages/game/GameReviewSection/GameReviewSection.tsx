@@ -15,13 +15,13 @@ import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
 
-export function GameReviewSection() {
+export function GameReviewSection(id: string) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
   const theme = useMantineTheme();
 
   const canReview = true;
-  const hasReview = true;
+  const hasReview = false;
 
   return (
     <Stack spacing={"xl"} className={classes.all}>
@@ -39,7 +39,7 @@ export function GameReviewSection() {
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
               {canReview && !hasReview && (
-                <GameTextWriter placeholder={"도움이 되는 착한 후기를 남겨보세요."} />
+                <GameTextWriter placeholder={"도움이 되는 착한 후기를 남겨보세요."} id={id} />
               )}
               {!canReview && (
                 <TextInput

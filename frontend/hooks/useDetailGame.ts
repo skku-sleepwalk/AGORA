@@ -7,8 +7,3 @@ function useDetailGame(id?: string) {
 }
 
 export default useDetailGame;
-
-// export function useDetailGameReview(id?: string) {
-//   const response = useSWR<GameStore>(id ? `http://localhost:8000/game/${id}` : null);
-//   return response;
-// }

@@ -25,6 +25,12 @@ export function GameBoardWriter({ opened, close }: GameBoardWriterProps) {
   return (
     <FocusTrap active={opened}>
       <Stack className={classes.editorContainer} spacing={17}>
+        {/* <form onSubmit={form.onSubmit((values) => {
+            const content = editorRef.current!.getHTML();
+            const postData = {
+              ...values,
+              content,
+            };> */}
         <Group align="flex-end">
           <TextInput
             className={classes.title}
@@ -40,6 +46,7 @@ export function GameBoardWriter({ opened, close }: GameBoardWriterProps) {
             }}
           />
         </Group>
+        {/* </form> */}
         <RichEditor content={""} ref={editorRef} />
         <Group position="right">
           <ButtonProgress CloseModal={close} text="게시글 작성" type="submit" />

@@ -85,3 +85,39 @@ export interface GetStoreListResponse {
     };
   };
 }
+//여기부터 review
+
+export interface Review {
+  id: string;
+  content: string;
+  rating: number;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+    description: string;
+    token: number;
+    rating: number;
+    totalPlaytime: number;
+    playtime: number;
+  };
+  likeCount: number;
+  dislikeCount: number;
+  like: boolean;
+  dislike: boolean;
+}
+export interface ReviewResponse {
+  data: Review;
+} //이거 맞는지 모르겠다
+export interface GetReviewListResponse {
+  data: {
+    data: Review[];
+    cursor: {
+      afterCursor: string | null;
+      beforeCursor: string | null;
+    };
+  };
+}
