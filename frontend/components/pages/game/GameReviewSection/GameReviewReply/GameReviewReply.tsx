@@ -28,13 +28,13 @@ import { ShortenText } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameReviewReplyProps {
   opened: boolean;
+  content: string;
 }
 
-export function GameReviewReply({ opened }: GameReviewReplyProps) {
+export function GameReviewReply({ opened, content }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
-
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
     text: MOCKUP_CONTENT,
@@ -87,7 +87,7 @@ export function GameReviewReply({ opened }: GameReviewReplyProps) {
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
-                  __html: shortenedText,
+                  __html: content,
                 }}
               />
             )}
@@ -95,7 +95,7 @@ export function GameReviewReply({ opened }: GameReviewReplyProps) {
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
-                  __html: MOCKUP_CONTENT,
+                  __html: content,
                 }}
               />
             )}

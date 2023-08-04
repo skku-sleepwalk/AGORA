@@ -25,12 +25,36 @@ import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
+import {
+  ReviewLike,
+  ReviewLikeDel,
+  ReviewDislikeDel,
+  ReviewDislike,
+  useReviewComment,
+} from "../../../../../hooks/useGameReview";
 
-export function GameReview(data: { content: string }) {
+export function GameReview(data: {
+  content: string;
+  id: string;
+  like: number;
+  dislike: number;
+  gameId: string | undefined;
+}) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
+  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
+  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
 
+  console.log("근데 이건 왜?", data.id ? data.id : "아직이야");
+
+  const {
+    data: commentData,
+    setSize: setCommentSize,
+    isLast: isLastComment,
+    isLoading: isCommentLoading,
+    mutate: mutateComment,
+  } = useReviewComment(data.gameId, data.id);
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
     text: data.content,
@@ -41,12 +65,24 @@ export function GameReview(data: { content: string }) {
   // 후기 좋아요 싫어요 관련 로직
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
   const handleGoodState = () => {
+    if (goodBadstate.good) {
+      ReviewLikeDel(data.gameId, data.id);
+    } else {
+      ReviewLike(data.gameId, data.id);
+    }
+
     setGoodBadState({ good: !goodBadstate.good });
     if (!goodBadstate.good && goodBadstate.bad) {
       setGoodBadState({ bad: !goodBadstate.bad });
     }
   };
   const handleBadState = () => {
+    if (goodBadstate.bad) {
+      ReviewDislikeDel(data.gameId, data.id);
+    } else {
+      ReviewDislike(data.gameId, data.id);
+    }
+
     setGoodBadState({ bad: !goodBadstate.bad });
     if (goodBadstate.good && !goodBadstate.bad) {
       setGoodBadState({ good: !goodBadstate.good });
@@ -55,7 +91,7 @@ export function GameReview(data: { content: string }) {
 
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
-  const canReview = false;
+  const canReview = true;
 
   return (
     <Box>
@@ -137,7 +173,7 @@ export function GameReview(data: { content: string }) {
                 ) : (
                   <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                2
+                {data.like + ""}
               </Group>
             </Button>
             <Button
@@ -153,7 +189,7 @@ export function GameReview(data: { content: string }) {
                 ) : (
                   <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                1
+                {data.dislike + ""}
               </Group>
             </Button>
           </Group>
@@ -170,7 +206,13 @@ export function GameReview(data: { content: string }) {
             />
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
-              {canReview && <GameTextWriter placeholder={"후기에 답글을 달아보세요."} id="" />}
+              {canReview && (
+                <GameTextWriter
+                  placeholder={"후기에 답글을 달아보세요."}
+                  id={data.gameId}
+                  commentid={data.id}
+                />
+              )}
               {!canReview && (
                 <TextInput
                   className={classes.reviewNo}
@@ -180,9 +222,22 @@ export function GameReview(data: { content: string }) {
               )}
             </Box>
           </Group>
+          {commentData?.map((data) => {
+            return data.data.data.map((data) => (
+              <GameReviewReply
+                opened={opened}
+                content={data.content}
+                // key={data.id}
+                // post={data}
+                // onSubmitComment={async (content, parentId) => {
+                //   return onSubmitComment?.(content, parentId);
+                // }}
+              />
+            ));
+          })}
+          {/* <GameReviewReply opened={opened} />
           <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
+          <GameReviewReply opened={opened} /> */}
         </Collapse>
       </Stack>
     </Box>

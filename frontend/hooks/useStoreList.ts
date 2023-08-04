@@ -53,7 +53,6 @@ function useStoreList(settings: useStoreListSettings = {}) {
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, settings),
     (url) => fetcher(url, token)
   );
-  console.log("Token is " + token);
   const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
   const isEmpty = response.data?.[0]?.data.data.length === 0;
   return {
