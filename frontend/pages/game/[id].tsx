@@ -61,8 +61,8 @@ function Game() {
         )}
         {activeTab === "gameNews" && <GameNewsSection />}
         {activeTab === "review" && <GameReviewSection />}
-        {activeTab === "board" && <GameBoardDetailViewer />}
-        {/* {activeTab === "board" && <GameBoardSection />} */}
+        {/* {activeTab === "board" && <GameBoardDetailViewer />} */}
+        {activeTab === "board" && <GameBoardSection />}
       </GameLayout>
     </TabClicklContext.Provider>
   );
