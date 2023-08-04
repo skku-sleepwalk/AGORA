@@ -32,6 +32,7 @@ import {
   ReviewDislike,
   useReviewComment,
 } from "../../../../../hooks/useGameReview";
+import useAuth from "../../../../../hooks/useAuth";
 
 export function GameReview(data: {
   content: string;
@@ -47,7 +48,7 @@ export function GameReview(data: {
   console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
 
   console.log("근데 이건 왜?", data.id ? data.id : "아직이야");
-
+  const { token } = useAuth();
   const {
     data: commentData,
     setSize: setCommentSize,
@@ -66,9 +67,9 @@ export function GameReview(data: {
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
   const handleGoodState = () => {
     if (goodBadstate.good) {
-      ReviewLikeDel(data.gameId, data.id);
+      ReviewLikeDel(data.gameId, data.id, token);
     } else {
-      ReviewLike(data.gameId, data.id);
+      ReviewLike(data.gameId, data.id, token);
     }
 
     setGoodBadState({ good: !goodBadstate.good });
@@ -78,9 +79,9 @@ export function GameReview(data: {
   };
   const handleBadState = () => {
     if (goodBadstate.bad) {
-      ReviewDislikeDel(data.gameId, data.id);
+      ReviewDislikeDel(data.gameId, data.id, token);
     } else {
-      ReviewDislike(data.gameId, data.id);
+      ReviewDislike(data.gameId, data.id, token);
     }
 
     setGoodBadState({ bad: !goodBadstate.bad });
