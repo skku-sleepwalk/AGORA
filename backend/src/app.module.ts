@@ -38,6 +38,15 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from './upload/upload.module';
 import { AssetModule } from './asset/asset.module';
+import { Asset } from './entites/asset/asset.entity';
+import { AssetCost } from './entites/asset/asset.cost.entity';
+import { AssetLike } from './entites/asset/asset.like.entity';
+import { AssetReview } from './entites/asset/asset.review.entity';
+import { AssetReviewComment } from './entites/asset/asset.review.comment.entity';
+import { AssetReviewCommentLike } from './entites/asset/asset.review.comment.like.entity';
+import { AssetReviewCommentDislike } from './entites/asset/asset.review.comment.dislike.entity';
+import { AssetReviewLike } from './entites/asset/asset.review.like.entity';
+import { AssetReviewDislike } from './entites/asset/asset.review.dislike.entity';
 
 dotenv.config();
 
@@ -75,6 +84,15 @@ dotenv.config();
         GameLike,
         GameTag,
         GameTagRelation,
+        Asset,
+        AssetCost,
+        AssetLike,
+        AssetReview,
+        AssetReviewLike,
+        AssetReviewDislike,
+        AssetReviewComment,
+        AssetReviewCommentLike,
+        AssetReviewCommentDislike,
       ],
       synchronize: true,
       logging: true,
@@ -104,15 +122,24 @@ dotenv.config();
       GameLike,
       GameTag,
       GameTagRelation,
+      Asset,
+      AssetCost,
+      AssetLike,
+      AssetReview,
+      AssetReviewLike,
+      AssetReviewDislike,
+      AssetReviewComment,
+      AssetReviewCommentLike,
+      AssetReviewCommentDislike,
     ]),
-    UploadModule,
-    UsersModule,
-    CommunityModule,
-    GameStoreModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
     AssetModule,
+    UploadModule,
+    UsersModule,
+    CommunityModule,
+    GameStoreModule,
   ],
   controllers: [AppController],
   providers: [AppService],

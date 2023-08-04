@@ -2,7 +2,7 @@ import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from '../user.entity';
 import { AssetReviewComment } from './asset.review.comment.entity';
 
-@Entity('AssetReviewLike')
+@Entity('AssetReviewCommentLike')
 export class AssetReviewCommentLike {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;

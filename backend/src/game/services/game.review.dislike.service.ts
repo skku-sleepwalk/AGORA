@@ -81,9 +81,8 @@ export class GameReviewDislikeService {
 
     const dislike = await this.gameReviewDislikeRepository.findOne({
       where: {
-        id: reviewId,
         user: { email: userEmail },
-        review: { game: { id: gameId } },
+        review: { id: reviewId, game: { id: gameId } },
       },
     });
     if (!dislike) {

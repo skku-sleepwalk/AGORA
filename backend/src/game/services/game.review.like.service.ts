@@ -81,9 +81,8 @@ export class GameReviewLikeService {
 
     const like = await this.gameReviewLikeRepository.findOne({
       where: {
-        id: reviewId,
         user: { email: userEmail },
-        review: { game: { id: gameId } },
+        review: { id: reviewId },
       },
     });
     if (!like) {
