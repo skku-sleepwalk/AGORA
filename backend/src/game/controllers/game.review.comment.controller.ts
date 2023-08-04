@@ -20,8 +20,8 @@ import {
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { GameReviewCommentService } from '../services/game.review.comment.service';
 import { CreateGameReviewCommentDto } from '../dto/create.game.review.comment.dto';
-import { GameReviewDto } from '../dto/game.review.dto';
 import { UpdateGameReviewCommentDto } from '../dto/update.game.review.comment.dto';
+import { GameReviewCommentDto } from '../dto/game.review.comment.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('GameReviewComment')
@@ -47,7 +47,7 @@ export class GameReviewCommentController {
   }
 
   @ApiOperation({ summary: '리뷰에 해당하는 댓글 가져오기' })
-  @ApiResponse({ type: GameReviewDto })
+  @ApiResponse({ type: GameReviewCommentDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',
