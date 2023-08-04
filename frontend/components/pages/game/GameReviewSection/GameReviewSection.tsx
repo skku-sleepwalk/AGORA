@@ -14,7 +14,7 @@ import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
-
+import { useDetailGameReview } from "../../../../hooks/useGameReview";
 export function GameReviewSection(id: string) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
@@ -22,7 +22,13 @@ export function GameReviewSection(id: string) {
 
   const canReview = true;
   const hasReview = false;
-
+  const {
+    data: commentData,
+    setSize: setCommentSize,
+    isLast: isLastComment,
+    isLoading: isCommentLoading,
+    mutate: mutateComment,
+  } = useDetailGameReview(id);
   return (
     <Stack spacing={"xl"} className={classes.all}>
       <Text fz={smallScreen ? 28 : 32}>후기</Text>
@@ -53,9 +59,22 @@ export function GameReviewSection(id: string) {
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
-          <GameReview />
-          <GameReview />
-          <GameReview />
+          {commentData?.map((data) => {
+            return data.data.data.map((data) => (
+              <GameReview
+                content={data.content}
+                // key={data.id}
+                // post={data}
+                // onSubmitComment={async (content, parentId) => {
+                //   return onSubmitComment?.(content, parentId);
+                // }}
+              />
+            ));
+          })}
+
+          <GameReview content="적당한 예시 리뷰" />
+          <GameReview content="적당한 예시 리뷰" />
+          <GameReview content="적당한 예시 리뷰" />
         </Stack>
       </CardContainer>
     </Stack>
