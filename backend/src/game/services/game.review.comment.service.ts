@@ -27,6 +27,7 @@ export class GameReviewCommentService {
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
+  // 게임 리뷰 댓글을 가공하여 반환하는 메서드
   async commentModifying(
     userEmail: string,
     comment: GameReviewCommentDto,
@@ -62,6 +63,8 @@ export class GameReviewCommentService {
 
     return { ...comment, like, dislike, likeCount, dislikeCount };
   }
+
+  // 게임 리뷰 댓글 리스트를 가공하여 반환하는 메서드
   async dataModifying(
     userEmail: string,
     data: Array<GameReviewCommentDto>,
@@ -73,6 +76,7 @@ export class GameReviewCommentService {
     );
   }
 
+  // 게임 리뷰에 댓글을 작성하는 메서드
   async postGameReviewComment(
     userEmail: string,
     gameId: string,
@@ -110,6 +114,7 @@ export class GameReviewCommentService {
     return true;
   }
 
+  // 게임 리뷰에 속한 댓글 리스트를 페이징 처리하여 반환하는 메서드
   async getManyGameReviewComment(
     userEmail: string,
     _cursor: Cursor,
@@ -143,6 +148,7 @@ export class GameReviewCommentService {
     return { data: dataModified, cursor };
   }
 
+  // 게임 리뷰 댓글을 수정하는 메서드
   async updateGameReviewComment(
     userEmail: string,
     gameId: string,
@@ -177,10 +183,10 @@ export class GameReviewCommentService {
     comment.content = content;
     this.gameReviewCommentRepository.save(comment);
 
-    // 로직 구현
     return true;
   }
 
+  // 게임 리뷰 댓글을 삭제하는 메서드
   async deleteGameReviewComment(
     userEmail: string,
     gameId: string,

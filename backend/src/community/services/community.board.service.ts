@@ -29,57 +29,66 @@ export class CommunityBoardService {
     private readonly userRepository: Repository<User>,
   ) {}
 
+  // TypeORM QueryBuilder를 생성하는 메서드
   createQueryBuilder() {
     const queryBuilder = this.communityBoardRepository
       .createQueryBuilder('board')
-      .withDeleted()
+      .withDeleted() // Soft Delete된 데이터도 조회하기 위해 withDeleted()를 사용
       .leftJoinAndSelect('board.author', 'author')
-      .leftJoinAndSelect('board.categories', 'categories');
+      .leftJoinAndSelect('board.categories', 'categories')
+      .leftJoinAndSelect('board.parent', 'parent');
     return queryBuilder;
   }
 
+  // 하위 게시물 개수를 재귀적으로 계산하는 메서드
   async getChildCount(parentId: string): Promise<number> {
     if (!parentId) {
       return 0; // parentId가 제공되지 않으면 0을 반환하여 자식이 없음을 표시합니다.
     }
 
+    // parentId를 가진 하위 게시물들을 조회하고 개수를 세어 반환합니다.
     const [children, count] = await this.communityBoardRepository.findAndCount({
       where: { parent: { id: parentId } },
     });
 
     let totalCount = count; // 즉시 하위 항목들의 개수로 totalCount를 초기화합니다.
 
+    // 각 하위 게시물들에 대해 getChildCount를 재귀적으로 호출하여 하위 항목들의 개수를 얻고, 총 개수에 더합니다.
     for (const child of children) {
-      const childCount = await this.getChildCount(child.id); // 각 자식에 대해 getChildCount를 재귀적으로 호출하여 하위 항목들의 개수를 얻습니다.
-      totalCount += childCount; // 각 자식의 하위 항목들의 개수를 totalCount에 더하여 총 하위 항목들의 개수를 구합니다.
+      const childCount = await this.getChildCount(child.id);
+      totalCount += childCount;
     }
 
     return totalCount;
   }
 
+  // 게시물 정보를 가공하여 반환하는 메서드
   async boardModifying(
     userEmail: string,
     board: CommunityBoardDto | null,
   ): Promise<CommunityBoardDto> {
     if (!board) {
-      return null;
+      return null; // board가 null이면 null을 반환하여 처리를 마무리합니다.
     }
+
+    // 해당 게시물에 대한 좋아요 여부와 개수를 조회합니다.
     const [likeRelations, likeCount] =
       await this.communityBoardLikeRepository.findAndCount({
         where: { board: { id: board.id } },
         relations: ['user'],
       });
 
-    // 좋아요 여부에 따라 like 속성 추가
+    // 좋아요 여부에 따라 like 속성을 추가합니다.
     const like =
       likeRelations.filter((relation) => relation.user.email === userEmail)
         .length > 0
         ? true
         : false;
 
+    // 자식 게시물 개수를 조회합니다.
     const childCount = await this.getChildCount(board.id);
 
-    // game 데이터에 like 속성 추가하여 반환
+    // 게시물 데이터에 like 속성과 childCount 속성을 추가하여 반환합니다.
     return {
       ...board,
       like,
@@ -88,6 +97,7 @@ export class CommunityBoardService {
     };
   }
 
+  // 게시물 배열에 대해 boardModifying 메서드를 적용하여 변경된 게시물 배열을 반환하는 메서드
   async dataModifying(
     userEmail: string,
     data: Array<CommunityBoardDto>,
@@ -95,11 +105,11 @@ export class CommunityBoardService {
     return await Promise.all(
       data.map(async (board) => {
         return this.boardModifying(userEmail, board);
-        // userEmail과 game.id를 이용하여 좋아요 여부 조회
       }),
     );
   }
 
+  // 게시물 리스트를 페이징 처리하여 반환하는 메서드
   async paginating(
     userEmail: string,
     _cursor: Cursor,
@@ -118,13 +128,17 @@ export class CommunityBoardService {
     const paginator = buildPaginator(paginationOption);
     paginator.setAlias('board');
     const { data, cursor } = await paginator.paginate(queryBuilder);
+
+    // data 배열을 가공하여 반환합니다.
     const dataModified: Array<CommunityBoardDto> = await this.dataModifying(
       userEmail,
       data,
     );
+
     return { data: dataModified, cursor };
   }
 
+  // 새로운 게시물을 생성하는 메서드
   async createBoard(
     userEmail: string,
     title: string,
@@ -132,10 +146,12 @@ export class CommunityBoardService {
     categoryNames: Array<string>,
     parentId: string,
   ) {
+    // 트랜잭션을 위한 QueryRunner 생성
     const queryRunner =
       this.communityBoardRepository.manager.connection.createQueryRunner();
     queryRunner.connect();
     queryRunner.startTransaction();
+
     const user: User = userEmail
       ? await queryRunner.manager.getRepository(User).findOne({
           where: { email: userEmail },
@@ -144,6 +160,7 @@ export class CommunityBoardService {
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
+
     try {
       const parent = parentId
         ? await this.communityBoardRepository.findOne({
@@ -151,12 +168,14 @@ export class CommunityBoardService {
           })
         : null;
 
+      // 새로운 게시물 엔티티를 생성합니다.
       const newBoard: CommunityBoard = queryRunner.manager
         .getRepository(CommunityBoard)
         .create({ author: user, title, content, parent });
 
       const categories: CommunityCategory[] = [];
 
+      // 카테고리를 조회하여 존재하는 경우 categories 배열에 추가합니다.
       for (const categoryName of categoryNames) {
         const category = await queryRunner.manager
           .getRepository(CommunityCategory)
@@ -171,6 +190,7 @@ export class CommunityBoardService {
       }
       newBoard.categories = categories;
       await queryRunner.manager.save(CommunityBoard, newBoard);
+
       // 트랜잭션 커밋
       await queryRunner.commitTransaction();
     } catch (error) {
@@ -178,20 +198,22 @@ export class CommunityBoardService {
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
-      // 트랜잭션 종료 및 쿼리 러너 반환
+      // 트랜잭션 종료 및 QueryRunner 반환
       await queryRunner.release();
     }
   }
 
+  // 게시물 하나를 조회하고 가공하여 반환하는 메서드
   async getOneBoard(userEmail: string, id: string) {
     const board = await this.communityBoardRepository.findOne({
       where: { id },
-      relations: ['author', 'categories'],
+      relations: ['author', 'categories', 'parent'],
     });
     const boardModified = this.boardModifying(userEmail, board);
     return boardModified;
   }
 
+  // 특정 카테고리에 속한 게시물 리스트를 페이징 처리하여 반환하는 메서드
   async getCommunityBoardByCategory(
     userEmail: string,
     _cursor: Cursor,
@@ -210,6 +232,7 @@ export class CommunityBoardService {
     return { data, cursor };
   }
 
+  // 검색어와 카테고리에 해당하는 게시물 리스트를 페이징 처리하여 반환하는 메서드
   async searchBoard(
     userEmail: string,
     _cursor: Cursor,
@@ -239,6 +262,7 @@ export class CommunityBoardService {
     return { data, cursor };
   }
 
+  // 특정 게시물의 자식 게시물 리스트를 페이징 처리하여 반환하는 메서드
   async getChild(userEmail: string, _cursor: Cursor, parentId: string) {
     const queryBuilder = this.createQueryBuilder().where(
       'board.parentId =:parentId',
@@ -252,6 +276,7 @@ export class CommunityBoardService {
     return { data, cursor };
   }
 
+  // 게시물을 수정하는 메서드
   async updateCommunityBoard(
     userEmail: string,
     boardId: string,
@@ -276,7 +301,7 @@ export class CommunityBoardService {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
-      // 2. CommunityBoard 엔티티를 gameId로 찾기
+      // 2. CommunityBoard 엔티티를 boardId로 찾기
       const board = boardId
         ? await this.communityBoardRepository.findOne({
             where: { id: boardId },
@@ -287,12 +312,12 @@ export class CommunityBoardService {
         throw new NotFoundException('게시물을 찾을 수 없습니다.');
       }
 
-      // 3. 현재 유저가 해당 게임의 작성자인지 확인
+      // 3. 현재 유저가 해당 게시물의 작성자인지 확인
       if (board.author.id !== user.id) {
-        throw new ForbiddenException('해당 게임의 작성자가 아닙니다.');
+        throw new ForbiddenException('해당 게시물의 작성자가 아닙니다.');
       }
 
-      // 4. GameBoard 엔티티 수정
+      // 4. CommunityBoard 엔티티 수정
       board.title = title;
       board.content = content;
 
@@ -311,7 +336,7 @@ export class CommunityBoardService {
         }
       }
 
-      // 6. GameBoard와 GameBoardCategory 관계 설정
+      // 6. CommunityBoard와 CommunityBoardCategory 관계 설정
       board.categories = categories;
       await queryRunner.manager.save(CommunityBoard, board);
 
@@ -322,11 +347,12 @@ export class CommunityBoardService {
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
-      // 트랜잭션 종료 및 쿼리 러너 반환
+      // 트랜잭션 종료 및 QueryRunner 반환
       await queryRunner.release();
     }
   }
 
+  // 게시물을 삭제하는 메서드
   async deleteGameBoard(userEmail: string, boardId: string) {
     // 1. 현재 유저 가져오기
     const user = userEmail
@@ -338,7 +364,7 @@ export class CommunityBoardService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    // 2. communityBoard 엔티티 가져오기
+    // 2. CommunityBoard 엔티티 가져오기
     const board = boardId
       ? await this.communityBoardRepository.findOne({
           where: { id: boardId },
@@ -349,21 +375,24 @@ export class CommunityBoardService {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
 
-    // 3. 현재 유저가 해당 게임의 작성자인지 확인
+    // 3. 현재 유저가 해당 게시물의 작성자인지 확인
     if (board.author.id !== user.id) {
-      throw new ForbiddenException('해당 게시글의 작성자가 아닙니다.');
+      throw new ForbiddenException('해당 게시물의 작성자가 아닙니다.');
     }
 
-    // 4. 게시글 삭제
+    // 4. 게시물 삭제
     if ((await this.getChildCount(board.id)) > 0) {
+      // 하위 게시물이 있으면 Soft Delete 수행
       await this.communityBoardRepository.softDelete(board.id);
     } else {
+      // 하위 게시물이 없으면 Hard Delete 수행
       await this.communityBoardRepository.delete(board.id);
     }
 
     return true;
   }
 
+  // 부모 게시물들의 삭제 상태를 업데이트하는 메서드
   async updateAncestorDeletedStatus(boardId: string): Promise<void> {
     const board = await this.communityBoardRepository.findOne({
       where: { id: boardId },
@@ -373,7 +402,7 @@ export class CommunityBoardService {
     const childCount = await this.getChildCount(board.id);
 
     if (childCount === 0 && board.deletedAt) {
-      // 자식이 없고, 현재 게시글이 삭제 상태라면 hard delete 수행
+      // 자식이 없고, 현재 게시물이 삭제 상태라면 하드 삭제 수행
       await this.communityBoardRepository.delete(board.id);
     }
 

@@ -12,18 +12,22 @@ import { GameLike } from 'src/entites/game.like.entity';
 @Injectable()
 export class GameStoreService {
   constructor(
+    // GameStore, Game, GameLike, GameCost, User 엔티티의 Repository 주입
     @InjectRepository(GameStore)
     private readonly gameStoreRepository: Repository<GameStore>,
-    @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(Game)
+    private readonly gameRepository: Repository<Game>,
     @InjectRepository(GameLike)
     private readonly gameLikeRepository: Repository<GameLike>,
     @InjectRepository(GameCost)
     private readonly gameCostRepository: Repository<GameCost>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    // 데이터베이스 연결을 위한 DataSource 주입
     private readonly dataSource: DataSource,
   ) {}
 
+  // 게임 스토어를 추가하는 메서드
   async postGameStore(
     userEmail: string,
     gameId: string,
@@ -95,11 +99,14 @@ export class GameStoreService {
     }
   }
 
+  // 특정 게임의 스토어 정보를 조회하는 메서드
   async getGameStore(userEmail: string, gameId: string) {
+    // GameStore 엔티티와 관련된 정보를 조회
     const gameStore: GameStoreDto = await this.gameStoreRepository.findOne({
       where: { game: { id: gameId } },
       relations: ['cost'],
     });
+    // 게임의 좋아요 여부와 좋아요 수를 조회하여 GameStoreDto에 추가
     const [relations, likeCount] = await this.gameLikeRepository.findAndCount({
       where: { game: { id: gameId } },
       relations: ['user'],
@@ -113,6 +120,7 @@ export class GameStoreService {
     return gameStore;
   }
 
+  // 게임 스토어 정보를 업데이트하는 메서드
   async updateGameStore(
     userEmail: string,
     gameId: string,
@@ -127,6 +135,7 @@ export class GameStoreService {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
     try {
       // 2. 유저 가져오기
       const user = userEmail
@@ -158,9 +167,7 @@ export class GameStoreService {
       await queryRunner.manager.save(GameStore, gameStore);
 
       // 5. GameCost 엔티티 수정 및 저장
-      console.log(gameStore);
       cost.id = gameStore.cost.id;
-      console.log(cost);
       await queryRunner.manager.save(GameCost, cost);
 
       // 트랜잭션 커밋
