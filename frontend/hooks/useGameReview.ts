@@ -51,6 +51,7 @@ export interface ReviewPostBody {
   content: string;
   rating: number;
 }
+export interface Likes {}
 export interface ReviewCommentBody {
   content: string;
 }
@@ -138,9 +139,9 @@ export async function ReviewLike(
   reviewId: string,
   token?: string
 ): Promise<ReviewResponse> {
-  const { data } = await axios.post<AxiosResponse<ReviewResponse>>(
+  const { data } = await axios.post<Likes, AxiosResponse<ReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
-
+    {},
     {
       headers: {
         "Content-Type": "application/json",
@@ -155,7 +156,7 @@ export async function ReviewLikeDel(
   reviewId: string,
   token?: string
 ): Promise<ReviewResponse> {
-  const { data } = await axios.delete<AxiosResponse<ReviewResponse>>(
+  const { data } = await axios.delete<Likes, AxiosResponse<ReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
 
     {
@@ -173,9 +174,9 @@ export async function ReviewDislike(
   reviewId: string,
   token?: string
 ): Promise<ReviewResponse> {
-  const { data } = await axios.post<AxiosResponse<ReviewResponse>>(
+  const { data } = await axios.post<Likes, AxiosResponse<ReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
-
+    {},
     {
       headers: {
         "Content-Type": "application/json",
@@ -190,7 +191,7 @@ export async function ReviewDislikeDel(
   reviewId: string,
   token?: string
 ): Promise<ReviewResponse> {
-  const { data } = await axios.delete<AxiosResponse<ReviewResponse>>(
+  const { data } = await axios.delete<Likes, AxiosResponse<ReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
 
     {
