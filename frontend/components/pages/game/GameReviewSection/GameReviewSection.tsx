@@ -15,7 +15,10 @@ import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
 import { useDetailGameReview } from "../../../../hooks/useGameReview";
-export function GameReviewSection(id: string) {
+export interface idid {
+  id: string | undefined;
+}
+export function GameReviewSection({ id }: idid) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -28,7 +31,7 @@ export function GameReviewSection(id: string) {
     isLast: isLastComment,
     isLoading: isCommentLoading,
     mutate: mutateComment,
-  } = useDetailGameReview(id);
+  } = useDetailGameReview(id ? id : "");
   return (
     <Stack spacing={"xl"} className={classes.all}>
       <Text fz={smallScreen ? 28 : 32}>후기</Text>
@@ -45,7 +48,10 @@ export function GameReviewSection(id: string) {
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 */}
               {canReview && !hasReview && (
-                <GameTextWriter placeholder={"도움이 되는 착한 후기를 남겨보세요."} id={id} />
+                <GameTextWriter
+                  placeholder={"도움이 되는 착한 후기를 남겨보세요."}
+                  id={id ? id : ""}
+                />
               )}
               {!canReview && (
                 <TextInput
@@ -60,7 +66,7 @@ export function GameReviewSection(id: string) {
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
           {commentData?.map((data) => {
-            return data.data.data.map((data) => (
+            return data.data.data?.map((data) => (
               <GameReview
                 content={data.content}
                 // key={data.id}

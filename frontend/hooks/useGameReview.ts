@@ -32,7 +32,7 @@ export function useDetailGameReview(id: string) {
   );
   console.log("Token is " + token);
   const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
-  const isEmpty = response.data?.[0]?.data.data.length === 0;
+  const isEmpty = response.data?.[0]?.data?.data?.length === 0;
   return {
     ...response,
     isLast,
