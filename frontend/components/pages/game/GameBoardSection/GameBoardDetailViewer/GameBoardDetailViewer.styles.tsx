@@ -37,5 +37,18 @@ export const useGameBoardDetailViewerStyles = createStyles(
 
       borderBottom: `1px solid ${theme.black}`,
     },
+
+    dotButton: {
+      height: 25,
+      borderRadius: 5,
+
+      "&:hover": {
+        backgroundColor: theme.colors.gray[1],
+      },
+    },
+
+    menuItem: {
+      padding: 5,
+    },
   })
 );

@@ -38,5 +38,18 @@ export const useGameBoardCommentStyles = createStyles(
     marginLeft: {
       marginLeft: smallScreen ? "2.9rem" : "4rem",
     },
+
+    dotButton: {
+      height: 25,
+      borderRadius: 5,
+
+      "&:hover": {
+        backgroundColor: theme.colors.gray[1],
+      },
+    },
+
+    menuItem: {
+      padding: 5,
+    },
   })
 );

@@ -108,6 +108,6 @@ export class GameTagRelationService {
       throw new NotFoundException('관계를 찾을 수 없습니다.');
     }
 
-    this.gameTagRelationRepository.delete(relation);
+    this.gameTagRelationRepository.delete(relation.id);
   }
 }

@@ -32,6 +32,8 @@ export class GameStoreService {
     snsUrls: SNSUrls,
     developer: string,
     distributor: string,
+    imgUrls: Array<string>,
+    iconUrl: string,
   ) {
     // 1. Transaction 시작
     const queryRunner = this.dataSource.createQueryRunner();
@@ -59,7 +61,7 @@ export class GameStoreService {
 
       // 4. 게임 엔티티와 관련된 GameStore가 이미 존재하는지 확인
       const existingGameStore = await this.gameStoreRepository.findOne({
-        where: { game },
+        where: { game: { id: gameId } },
       });
       if (existingGameStore) {
         throw new NotFoundException('해당 게임의 스토어가 이미 존재합니다.');
@@ -70,14 +72,17 @@ export class GameStoreService {
       const savedCost = await queryRunner.manager.save(newGameCost);
 
       // 6. GameStore 엔티티 생성 및 저장
-      const newGameStore = new GameStore();
-      newGameStore.title = title;
-      newGameStore.snsUrls = snsUrls;
-      newGameStore.developer = developer;
-      newGameStore.distributor = distributor;
-      newGameStore.cost = savedCost;
-      newGameStore.game = game;
-      newGameStore.author = user;
+      const newGameStore = this.gameStoreRepository.create({
+        title,
+        snsUrls,
+        developer,
+        distributor,
+        cost: savedCost,
+        game,
+        author: user,
+        imgUrls,
+        iconUrl,
+      });
       await queryRunner.manager.save(newGameStore);
 
       // 7. Transaction 커밋
@@ -118,6 +123,8 @@ export class GameStoreService {
     distributor: string,
     snsUrls: SNSUrls,
     title: string,
+    imgUrls: Array<string>,
+    iconUrl: string,
   ) {
     // 1. Transaction 시작
     const queryRunner = this.dataSource.createQueryRunner();
@@ -150,6 +157,8 @@ export class GameStoreService {
       gameStore.developer = developer;
       gameStore.snsUrls = snsUrls;
       gameStore.title = title;
+      gameStore.imgUrls = imgUrls;
+      gameStore.iconUrl = iconUrl;
       await queryRunner.manager.save(GameStore, gameStore);
 
       // 5. GameCost 엔티티 수정 및 저장

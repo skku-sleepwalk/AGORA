@@ -46,6 +46,15 @@ export const useGameReviewMineStyles = createStyles(
       padding: "0rem 0.5rem",
     },
 
+    dotButton: {
+      height: 25,
+      borderRadius: 5,
+
+      "&:hover": {
+        backgroundColor: theme.colors.gray[1],
+      },
+    },
+
     menuItem: {
       padding: 5,
     },

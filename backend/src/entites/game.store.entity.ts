@@ -46,6 +46,14 @@ export class GameStore {
   @Column({ nullable: false })
   developer: string;
 
+  @ApiProperty({ description: '게임 이미지 url들' })
+  @Column('varchar', { array: true, nullable: false })
+  imgUrls: Array<string>;
+
+  @ApiProperty({ description: '게임 아이콘 url' })
+  @Column({ nullable: false })
+  iconUrl: string;
+
   @ApiProperty({
     example: {
       id: 'uuid',
