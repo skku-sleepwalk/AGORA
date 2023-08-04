@@ -30,7 +30,7 @@ export interface GameStore {
     // description: string;
     // distributor: string;
     // developer: string;
-    createdAt: Date;
+    createdAt: string;
     updatedAt: Date;
     deletedAt: Date;
     information: Information;

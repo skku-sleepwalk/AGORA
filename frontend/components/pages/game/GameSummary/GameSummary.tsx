@@ -34,12 +34,15 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   const createstring = postData?.data.createdAt;
-  console.log(postData?.data);
-  const year = createstring?.getFullYear();
-  const month = String(createstring?.getMonth() + 1).padStart(2, "0");
-  const day = String(createstring?.getDate()).padStart(2, "0");
+  console.log("데이터:", typeof postData?.data.createdAt);
+  // // const year = createstring?.getFullYear();
+  // // const month = String(createstring?.getMonth() + 1).padStart(2, "0");
+  // // const day = String(createstring?.getDate()).padStart(2, "0");
+  let [year, month, day] = createstring?.split("-");
+  day = day.slice(0, 2);
+  console.log("데이터:", year);
   const formattedString = `${year}년 ${month}월 ${day}일`;
-
+  // const formattedString = 1;
   const handleIsLiking = () => {
     setIsLiking((prev) => !prev);
   };
