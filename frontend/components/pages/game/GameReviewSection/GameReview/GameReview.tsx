@@ -25,12 +25,29 @@ import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
 import { useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
-import { useReviewComment } from "../../../../../hooks/useGameReview";
+import {
+  ReviewLike,
+  ReviewLikeDel,
+  ReviewDislikeDel,
+  ReviewDislike,
+  useReviewComment,
+} from "../../../../../hooks/useGameReview";
 
-export function GameReview(data: { content: string; id: string; gameId: string | undefined }) {
+export function GameReview(data: {
+  content: string;
+  id: string;
+  like: number;
+  dislike: number;
+  gameId: string | undefined;
+}) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
+  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
+  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
+
+  console.log("근데 이건 왜?", data.id ? data.id : "아직이야");
+
   const {
     data: commentData,
     setSize: setCommentSize,
@@ -48,12 +65,24 @@ export function GameReview(data: { content: string; id: string; gameId: string |
   // 후기 좋아요 싫어요 관련 로직
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
   const handleGoodState = () => {
+    if (goodBadstate.good) {
+      ReviewLikeDel(data.gameId, data.id);
+    } else {
+      ReviewLike(data.gameId, data.id);
+    }
+
     setGoodBadState({ good: !goodBadstate.good });
     if (!goodBadstate.good && goodBadstate.bad) {
       setGoodBadState({ bad: !goodBadstate.bad });
     }
   };
   const handleBadState = () => {
+    if (goodBadstate.bad) {
+      ReviewDislikeDel(data.gameId, data.id);
+    } else {
+      ReviewDislike(data.gameId, data.id);
+    }
+
     setGoodBadState({ bad: !goodBadstate.bad });
     if (goodBadstate.good && !goodBadstate.bad) {
       setGoodBadState({ good: !goodBadstate.good });
@@ -144,7 +173,7 @@ export function GameReview(data: { content: string; id: string; gameId: string |
                 ) : (
                   <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                2
+                {data.like + ""}
               </Group>
             </Button>
             <Button
@@ -160,7 +189,7 @@ export function GameReview(data: { content: string; id: string; gameId: string |
                 ) : (
                   <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                1
+                {data.dislike + ""}
               </Group>
             </Button>
           </Group>
@@ -194,8 +223,6 @@ export function GameReview(data: { content: string; id: string; gameId: string |
             </Box>
           </Group>
           {commentData?.map((data) => {
-            console.log("리뷰:", data);
-            console.log("그야 이것이기 때문이지!!", data.data.data[0]);
             return data.data.data.map((data) => (
               <GameReviewReply
                 opened={opened}

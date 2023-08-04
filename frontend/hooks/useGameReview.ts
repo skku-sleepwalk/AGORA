@@ -37,7 +37,6 @@ export function useDetailGameReview(id: string) {
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, id),
     (url) => fetcher(url, token)
   );
-  console.log("Token is " + token);
   const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
   const isEmpty = response.data?.[0]?.data?.data?.length === 0;
   return {
@@ -124,7 +123,6 @@ export function useReviewComment(id: string, reviewId: string) {
     (pageIndex, previousPageData) => getKey2(pageIndex, previousPageData, id, reviewId),
     (url) => fetcher(url, token)
   );
-  console.log("Token is " + token);
   const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
   const isEmpty = response.data?.[0]?.data?.data?.length === 0;
   return {
@@ -132,4 +130,75 @@ export function useReviewComment(id: string, reviewId: string) {
     isLast,
     isEmpty,
   };
+}
+/////
+//like 관련
+export async function ReviewLike(
+  id: string,
+  reviewId: string,
+  token?: string
+): Promise<ReviewResponse> {
+  const { data } = await axios.post<AxiosResponse<ReviewResponse>>(
+    "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
+
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    }
+  );
+  return data;
+}
+export async function ReviewLikeDel(
+  id: string,
+  reviewId: string,
+  token?: string
+): Promise<ReviewResponse> {
+  const { data } = await axios.delete<AxiosResponse<ReviewResponse>>(
+    "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
+
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    }
+  );
+  return data;
+}
+
+export async function ReviewDislike(
+  id: string,
+  reviewId: string,
+  token?: string
+): Promise<ReviewResponse> {
+  const { data } = await axios.post<AxiosResponse<ReviewResponse>>(
+    "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
+
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    }
+  );
+  return data;
+}
+export async function ReviewDislikeDel(
+  id: string,
+  reviewId: string,
+  token?: string
+): Promise<ReviewResponse> {
+  const { data } = await axios.delete<AxiosResponse<ReviewResponse>>(
+    "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
+
+    {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${token}`,
+      },
+    }
+  );
+  return data;
 }

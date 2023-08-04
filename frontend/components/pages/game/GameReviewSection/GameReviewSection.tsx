@@ -66,12 +66,14 @@ export function GameReviewSection({ id }: idid) {
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
           {commentData?.map((data) => {
-            console.log("리뷰:", data);
+            console.log("리뷰:", data.data.data[0].likeCount);
             return data.data.data?.map((data) => (
               <GameReview
                 content={data.content}
                 gameId={id}
                 id={data.id}
+                like={data.likeCount}
+                dislike={data.dislikeCount}
                 // key={data.id}
                 // post={data}
                 // onSubmitComment={async (content, parentId) => {
