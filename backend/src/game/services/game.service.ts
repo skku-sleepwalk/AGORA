@@ -139,6 +139,7 @@ export class GameService {
     genreNames: Array<string>,
     description: string,
     specification: string,
+    iconUrl: string,
   ) {
     // 트랜잭션 시작
     const queryRunner = this.dataSource.manager.connection.createQueryRunner();
@@ -171,6 +172,7 @@ export class GameService {
         author: user,
         shortContent,
         shortImgUrl,
+        iconUrl,
       });
       queryRunner.manager.save(newGame);
 
@@ -211,7 +213,7 @@ export class GameService {
   async getOneGame(userEmail: string, gameId: string) {
     // gameId에 해당하는 게임 데이터를 조회
     const _game: GameDto = await this.gameRepository.findOne({
-      relations: ['information', 'genres', 'author', 'store'],
+      relations: ['information', 'genres', 'author', 'store', 'store.cost'],
       where: { id: gameId },
     });
     if (!_game) {
@@ -294,6 +296,7 @@ export class GameService {
     genreNames: Array<string>,
     description: string,
     specification: string,
+    iconUrl: string,
   ) {
     // 트랜잭션 시작
     const queryRunner = this.dataSource.manager.connection.createQueryRunner();
@@ -337,6 +340,7 @@ export class GameService {
       game.information = information;
       game.downloadUrl = downloadUrl;
       game.executablePath = executablePath;
+      game.iconUrl = iconUrl;
       await queryRunner.manager.save(Game, game);
 
       // 5. Genre 엔티티 생성 및 저장 (중복 방지)

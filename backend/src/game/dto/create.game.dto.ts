@@ -8,6 +8,7 @@ export class CreateGameDto extends PickType(Game, [
   'executablePath',
   'shortContent',
   'shortImgUrl',
+  'iconUrl',
 ]) {
   @IsNotEmpty()
   @IsArray()

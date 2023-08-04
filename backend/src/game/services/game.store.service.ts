@@ -33,7 +33,6 @@ export class GameStoreService {
     developer: string,
     distributor: string,
     imgUrls: Array<string>,
-    iconUrl: string,
   ) {
     // 1. Transaction 시작
     const queryRunner = this.dataSource.createQueryRunner();
@@ -81,7 +80,6 @@ export class GameStoreService {
         game,
         author: user,
         imgUrls,
-        iconUrl,
       });
       await queryRunner.manager.save(newGameStore);
 
@@ -124,7 +122,6 @@ export class GameStoreService {
     snsUrls: SNSUrls,
     title: string,
     imgUrls: Array<string>,
-    iconUrl: string,
   ) {
     // 1. Transaction 시작
     const queryRunner = this.dataSource.createQueryRunner();
@@ -158,7 +155,6 @@ export class GameStoreService {
       gameStore.snsUrls = snsUrls;
       gameStore.title = title;
       gameStore.imgUrls = imgUrls;
-      gameStore.iconUrl = iconUrl;
       await queryRunner.manager.save(GameStore, gameStore);
 
       // 5. GameCost 엔티티 수정 및 저장

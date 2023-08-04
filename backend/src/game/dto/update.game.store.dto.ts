@@ -8,5 +8,4 @@ export class UpdateGameStoreDto extends PickType(PartialType(GameStore), [
   'snsUrls',
   'cost',
   'imgUrls',
-  'iconUrl',
 ]) {}

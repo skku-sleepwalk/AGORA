@@ -7,6 +7,7 @@ export class UpdateGameDto extends PickType(PartialType(Game), [
   'executablePath',
   'shortContent',
   'shortImgUrl',
+  'iconUrl',
 ]) {
   @IsNotEmpty()
   @IsArray()

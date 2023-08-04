@@ -10,7 +10,6 @@ export class CreateGameStoreDto extends PickType(GameStore, [
   'developer',
   'distributor',
   'imgUrls',
-  'iconUrl',
 ]) {
   @ApiProperty({
     description: '가격 상세',
