@@ -23,7 +23,9 @@ export interface PostBoardBody {
   parentId?: string;
   categoryNames: string[];
 }
-
+export interface PostBoardResponse {
+  data: null;
+}
 export interface GetBoardResponse {
   data: Board;
 }
