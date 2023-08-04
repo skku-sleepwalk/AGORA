@@ -35,7 +35,7 @@ const getKey = (
   }
 
   if (name) return `http://localhost:8000/game?${queryString}`; //이거 맞는지 모르겠음
-  else return `http://localhost:8000/developer-community-boards/main?${queryString}`; //작동X해야함
+  else return `http://localhost:8000/community/board?${queryString}`; //작동X해야함
 };
 ////////////////
 

@@ -19,6 +19,7 @@ export class GameDto extends PickType(Game, [
   'executablePath',
   'shortContent',
   'shortImgUrl',
+  'iconUrl',
   'createdAt',
   'deletedAt',
   'updatedAt',

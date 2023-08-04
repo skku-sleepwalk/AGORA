@@ -71,6 +71,10 @@ export class Game {
   @Column({ nullable: false })
   shortContent: string;
 
+  @ApiProperty({ description: '게임 아이콘 url' })
+  @Column({ nullable: true })
+  iconUrl: string;
+
   @OneToOne(() => GameStore, (gameStore) => gameStore.game, { cascade: true })
   readonly store: GameStore;
 

@@ -67,7 +67,7 @@ function RichTextEditorControlGroup({ editor }: RichTextEditorControlGroupProps)
                 const uploadResults = await Promise.all(uploadPromises);
                 const urls = uploadResults
                   .filter((result): result is PostUploadImageResponse => result !== null)
-                  .map(({ url }) => url);
+                  .map(({ data: { url } }) => url);
                 setImageUploading(false);
                 const { state } = editor!.view;
                 let { tr } = state;

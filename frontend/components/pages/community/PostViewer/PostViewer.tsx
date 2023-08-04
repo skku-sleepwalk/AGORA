@@ -20,7 +20,7 @@ import { extractImageSrc, removeImgTags } from "../../../../utils/api/ViewPhotos
 import { useRouter } from "next/router";
 import { createContext, useContext } from "react";
 import { CategoryNum, Values } from "../../../../constants/category";
-import { CheckIsliking, onLikeClick } from "../../../../utils/api/onLikeClick";
+import { onLikeClick } from "../../../../utils/api/onLikeClick";
 import { CommunityContext } from "../../../../pages/community";
 import useAuth from "../../../../hooks/useAuth";
 import {
@@ -94,17 +94,13 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
       data.push(value.label);
     });
   }
-
   // boards/likedUsers에 현재 user-id가 들어있는 지 확인
-  const isliking = user
-    ? CheckIsliking({
-        likedUsers: post.likedUsers,
-        userId: user.id,
-      })
-    : false;
+  const isliking = post.like;
 
   // post가 post인지 child인지 확인
-  const postType = post.parent === null ? "post" : "child";
+  const postType = post.parent ? "child" : "post";
+
+  console.log("postType", postType, post);
 
   const { mutatePost } = useContext(CommunityContext);
 
@@ -135,7 +131,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                 </Group>
               </InvisibleButton>
             )}
-            <PostHeader user={post.writer} date={post.createdAt} />
+            <PostHeader user={post.author} date={post.createdAt} />
             <Stack spacing={7}>
               <Title order={3}>{post.title}</Title>
               <Container className={classes.contentWrapper}>
@@ -179,7 +175,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
               <MultiSelect
                 className={classes.multiSelect}
                 data={data}
-                value={post.categoryTypes.map((item) => item.name)}
+                value={post.categories.map((item) => item.name)}
                 readOnly
               />
               <Group spacing={13}>
@@ -191,7 +187,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                   <InvisibleButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      onLikeClick({ boardId: post.id, token })
+                      onLikeClick({ data: { boardId: post.id, token } }, isliking)
                         .then(() => {
                           mutatePost();
                         })
@@ -210,7 +206,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                     )}
                     {!isliking && <IconHeart size={20} stroke={1.3} />}
                   </InvisibleButton>
-                  <Text fz="sm">{post.like}</Text>
+                  <Text fz="sm">{post.likeCount}</Text>
                 </Group>
                 <InvisibleButton
                   onClick={(e) => {

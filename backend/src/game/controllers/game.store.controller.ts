@@ -39,7 +39,6 @@ export class GameStoresController {
       data.developer,
       data.distributor,
       data.imgUrls,
-      data.iconUrl,
     );
   }
 
@@ -71,7 +70,6 @@ export class GameStoresController {
       data.snsUrls,
       data.title,
       data.imgUrls,
-      data.iconUrl,
     );
   }
 }

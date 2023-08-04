@@ -47,6 +47,7 @@ export class GameContorller {
       data.genreNames,
       data.description,
       data.specification,
+      data.iconUrl,
     );
   }
 
@@ -143,6 +144,7 @@ export class GameContorller {
       data.genreNames,
       data.description,
       data.specification,
+      data.iconUrl,
     );
   }
 

@@ -13,7 +13,6 @@ export class GameStoreDto extends PickType(PartialType(GameStore), [
   'snsUrls',
   'title',
   'imgUrls',
-  'iconUrl',
   'createdAt',
   'updatedAt',
   'deletedAt',

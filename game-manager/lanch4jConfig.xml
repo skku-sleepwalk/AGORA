@@ -12,7 +12,7 @@
   <supportUrl></supportUrl>
   <stayAlive>false</stayAlive>
   <restartOnCrash>false</restartOnCrash>
-  <manifest></manifest>
+  <manifest>.\manifest.xml</manifest>
   <icon></icon>
   <classPath>
     <mainClass>main.Main</mainClass>
