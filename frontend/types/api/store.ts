@@ -110,11 +110,44 @@ export interface Review {
   dislike: boolean;
 }
 export interface ReviewResponse {
-  data: Review;
+  data: null;
 } //이거 맞는지 모르겠다
 export interface GetReviewListResponse {
   data: {
     data: Review[];
+    cursor: {
+      afterCursor: string | null;
+      beforeCursor: string | null;
+    };
+  };
+}
+
+export interface Review {
+  id: string;
+  content: string;
+
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
+  author: {
+    id: string;
+    name: string;
+    email: string;
+    description: string;
+    token: number;
+    rating: number;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+  };
+  like: boolean;
+  dislike: boolean;
+  likeCount: number;
+  dislikeCount: number;
+}
+export interface GetReviewCommentListResponse {
+  data: {
+    data: ReviewComment[];
     cursor: {
       afterCursor: string | null;
       beforeCursor: string | null;
