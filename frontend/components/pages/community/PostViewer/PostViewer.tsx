@@ -181,7 +181,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
               <Group spacing={13}>
                 <Group spacing={8}>
                   <IconMessage size={20} stroke={1.3} />
-                  <Text fz="sm">{post.child}</Text>
+                  <Text fz="sm">{post.childCount}</Text>
                 </Group>
                 <Group spacing={8}>
                   <InvisibleButton

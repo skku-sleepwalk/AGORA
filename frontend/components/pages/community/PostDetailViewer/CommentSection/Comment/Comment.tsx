@@ -145,7 +145,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
                       setIsDeleting({ delete: false });
                       // 댓글 삭제시 함수
                       //비동기
-                      deletePost(post.id).then(() => {
+                      deletePost(post.id, token).then(() => {
                         mutateReply !== undefined ? mutateReply() : null;
                         mutateCommentList();
                         mutateComment();

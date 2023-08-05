@@ -16,6 +16,7 @@ import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton"
 import deletePost from "../../../../../utils/api/deletepost";
 import { useSetState } from "@mantine/hooks";
 import { useRouter } from "next/router";
+import useAuth from "../../../../../hooks/useAuth";
 
 export interface PostFooterProps {
   onCommentClick?: () => void;
@@ -50,6 +51,7 @@ PostFooterProps) {
   const router = useRouter();
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
+  const { token } = useAuth();
 
   return (
     <Stack spacing={0}>
@@ -74,7 +76,7 @@ PostFooterProps) {
                 onClick={() => {
                   setIsDeleting({ delete: false });
                   // 게시글 삭제시 함수
-                  deletePost(postId).then(() => {
+                  deletePost(postId, token).then(() => {
                     // closeFunction();
                     router.push("/community");
                   });
