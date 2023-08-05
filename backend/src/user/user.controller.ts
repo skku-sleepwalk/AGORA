@@ -36,6 +36,7 @@ export class UsersController {
   }
 
   @Get()
+  @ApiOperation({ summary: '유저 전체 조회' })
   @ApiResponse({ type: UserDto, isArray: true })
   get() {
     return this.userService.get();
