@@ -20,34 +20,6 @@ export interface shortenTextProps {
   length: number;
 }
 
-export function ShortenText({ text, length }: shortenTextProps): [string, boolean] {
-  if (text.length <= length) {
-    return [text, false];
-  }
-
-  const lines = text.split("<br/>"); // br 태그를 기준으로 문자열을 split
-  let shortenedText = "";
-  let currentLength = 0;
-
-  for (const line of lines) {
-    if (line.length + currentLength <= length) {
-      // 현재 줄에 더해서 제한 글자 수를 넘지 않으면 해당 줄을 그대로 추가
-      shortenedText += line + "<br/>";
-      currentLength += line.length;
-    } else {
-      // 현재 줄에 더해서 제한 글자 수를 넘어가면 일부만 추가 (br태그가 끊기지 않도록 중간에 -5 실행)
-      const remainLength = length - currentLength - 5;
-      if (remainLength > 0) {
-        shortenedText += line.substring(0, remainLength);
-      }
-
-      break; // 제한 글자 수로 맞춤
-    }
-  }
-
-  return [shortenedText + "...", true];
-}
-
 export interface GameTextWriterProps {
   onSaveClick?: () => void;
   placeholder: string;

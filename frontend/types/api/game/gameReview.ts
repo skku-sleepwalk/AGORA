@@ -18,6 +18,10 @@ export interface GameReviewResponse {
   data: null;
 } //이거 맞는지 모르겠다
 
+export interface MyGameReviewResponse {
+  data: GameReview;
+}
+
 export interface GetGameReviewListResponse {
   data: {
     data: GameReview[];

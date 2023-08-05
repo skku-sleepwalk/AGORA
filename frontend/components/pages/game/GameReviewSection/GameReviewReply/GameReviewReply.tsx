@@ -5,6 +5,7 @@ import {
   Divider,
   Group,
   Menu,
+  Spoiler,
   Stack,
   Text,
   TypographyStylesProvider,
@@ -23,8 +24,6 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
-import { useState } from "react";
-import { ShortenText } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameReviewReplyProps {
   opened: boolean;
@@ -35,12 +34,6 @@ export function GameReviewReply({ opened, content }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
-  // 자세히 보기 관련 로직
-  const [shortenedText, isShorten] = ShortenText({
-    text: MOCKUP_CONTENT,
-    length: smallScreen ? 60 : 150,
-  });
-  const [viewMore, setViewMore] = useState<boolean>(false);
 
   // 답글 좋아요 싫어요 관련 로직
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
@@ -83,33 +76,19 @@ export function GameReviewReply({ opened, content }: GameReviewReplyProps) {
         {/* 후기 내용 */}
         <Stack className={classes.marginLeft} spacing={0}>
           <TypographyStylesProvider className={classes.reviewTypo}>
-            {!viewMore && (
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: content,
-                }}
-              />
-            )}
-            {viewMore && (
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: content,
-                }}
-              />
-            )}
-          </TypographyStylesProvider>
-          {isShorten && !viewMore && (
-            <UnstyledButton
-              className={classes.viewMoreButton}
-              fz={smallScreen ? 14 : 16}
-              c={theme.colors.gray[4]}
-              onClick={() => setViewMore(true)}
+            <Spoiler
+              maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
+              showLabel="자세히 보기"
+              hideLabel="숨기기"
             >
-              자세히 보기
-            </UnstyledButton>
-          )}
+              <div
+                className={classes.content}
+                dangerouslySetInnerHTML={{
+                  __html: content,
+                }}
+              />
+            </Spoiler>
+          </TypographyStylesProvider>
         </Stack>
         {/* 후기 하단 버튿들 */}
         <Group className={classes.marginLeft} position="right" spacing={"xs"}>

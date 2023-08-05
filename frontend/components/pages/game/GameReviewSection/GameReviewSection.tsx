@@ -8,7 +8,7 @@ import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
 import { useDetailGameReview } from "../../../../hooks/useGameReview";
 import useAuth from "../../../../hooks/useAuth";
 import { PlaytimesInUser } from "../../../../types/api/user";
-import { GetMyGameReview } from "../../../../utils/api/game/getMyGameReview";
+import { useMyGameReview } from "../../../../hooks/useMyGameReview";
 
 export interface GameReviewSectionProps {
   gameId: string;
@@ -35,17 +35,17 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
 
   const { user, token } = useAuth();
 
-  const canReview = user !== undefined;
-  // const hasReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
+  // const canReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
+  const canReview = true;
+  // const hasReview = user !== undefined;
   const hasReview = true;
-  // console.log(user?.playtimes);
 
   // 자신이 작성한 후기 관련
   const gameReviewMine = (() => {
     if (token !== undefined) {
-      const myReviewData = GetMyGameReview({ gameId: id, userEmail: token });
+      const { data: myReviewData } = useMyGameReview(id);
       if (myReviewData !== undefined) {
-        return <GameReviewMine gameId={id} userEmail={token} data={myReviewData} />;
+        return <GameReviewMine gameId={id} data={myReviewData.data} />;
       }
     }
     return <></>;

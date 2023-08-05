@@ -5,6 +5,7 @@ import {
   Collapse,
   Divider,
   Group,
+  Spoiler,
   Stack,
   Text,
   TextInput,
@@ -21,9 +22,8 @@ import {
   IconThumbUpFilled,
 } from "@tabler/icons-react";
 import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
-import { useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
-import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
+import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
 import {
   ReviewLike,
   ReviewLikeDel,
@@ -53,13 +53,6 @@ export function GameReview(data: {
     isLoading: isCommentLoading,
     mutate: mutateComment,
   } = useReviewComment(data.gameId, data.id);
-
-  // 자세히 보기 관련 로직
-  const [shortenedText, isShorten] = ShortenText({
-    text: data.content,
-    length: smallScreen ? 70 : 200,
-  });
-  const [viewMore, setViewMore] = useState<boolean>(false);
 
   // 후기 좋아요 싫어요 관련 로직
   const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
@@ -118,33 +111,19 @@ export function GameReview(data: {
         {/* 후기 내용 */}
         <Stack className={classes.marginLeft} spacing={0}>
           <TypographyStylesProvider className={classes.reviewTypo}>
-            {!viewMore && (
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: shortenedText,
-                }}
-              />
-            )}
-            {viewMore && (
+            <Spoiler
+              maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
+              showLabel="자세히 보기"
+              hideLabel="숨기기"
+            >
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
                   __html: data.content,
                 }}
               />
-            )}
+            </Spoiler>
           </TypographyStylesProvider>
-          {isShorten && !viewMore && (
-            <UnstyledButton
-              className={classes.viewMoreButton}
-              fz={smallScreen ? 14 : 16}
-              c={theme.colors.gray[4]}
-              onClick={() => setViewMore(true)}
-            >
-              자세히 보기
-            </UnstyledButton>
-          )}
         </Stack>
         {/* 후기 하단 버튿들 */}
         <Group className={classes.marginLeft} position="apart">
