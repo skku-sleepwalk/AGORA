@@ -23,7 +23,7 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { ShortenText } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameReviewReplyProps {

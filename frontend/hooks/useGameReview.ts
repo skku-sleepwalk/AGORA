@@ -1,8 +1,8 @@
 import {
-  GetReviewListResponse,
-  ReviewResponse,
-  GetReviewCommentListResponse,
-} from "../types/api/store";
+  GetGameReviewListResponse,
+  GameReviewResponse,
+  GetGameReviewCommentListResponse,
+} from "../types/api/game/gameReview";
 import useSWRInfinite from "swr/infinite";
 import { stringify } from "querystring";
 import { fetcher } from "../utils/fetcher";
@@ -11,7 +11,11 @@ import axios, { AxiosResponse } from "axios";
 //사실 지금 이거 기억 안남
 
 //이거 infinite로 해야함
-const getKey = (pageIndex: number, previousPageData: GetReviewListResponse | null, id: string) => {
+const getKey = (
+  pageIndex: number,
+  previousPageData: GetGameReviewListResponse | null,
+  id: string
+) => {
   if (previousPageData && previousPageData.data.cursor.afterCursor === null) return null;
 
   let queryString = "";
@@ -33,7 +37,7 @@ const getKey = (pageIndex: number, previousPageData: GetReviewListResponse | nul
 
 export function useDetailGameReview(id: string) {
   const { token } = useAuth();
-  const response = useSWRInfinite<GetReviewListResponse>(
+  const response = useSWRInfinite<GetGameReviewListResponse>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, id),
     (url) => fetcher(url, token)
   );
@@ -59,8 +63,8 @@ export async function uploadReview(
   post: ReviewPostBody,
   id: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.post<ReviewPostBody, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.post<ReviewPostBody, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review",
     post,
     {
@@ -78,8 +82,8 @@ export async function uploadReviewComment(
   id: string,
   commentId: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.post<ReviewPostBody, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.post<ReviewPostBody, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + commentId + "/comment",
     post,
     {
@@ -96,7 +100,7 @@ export async function uploadReviewComment(
 
 const getKey2 = (
   pageIndex: number,
-  previousPageData: GetReviewCommentListResponse | null,
+  previousPageData: GetGameReviewCommentListResponse | null,
   id: string,
   reviewId: string
 ) => {
@@ -120,7 +124,7 @@ const getKey2 = (
 
 export function useReviewComment(id: string, reviewId: string) {
   const { token } = useAuth();
-  const response = useSWRInfinite<GetReviewCommentListResponse>(
+  const response = useSWRInfinite<GetGameReviewCommentListResponse>(
     (pageIndex, previousPageData) => getKey2(pageIndex, previousPageData, id, reviewId),
     (url) => fetcher(url, token)
   );
@@ -138,8 +142,8 @@ export async function ReviewLike(
   id: string,
   reviewId: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.post<Likes, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.post<Likes, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
     {},
     {
@@ -155,8 +159,8 @@ export async function ReviewLikeDel(
   id: string,
   reviewId: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.delete<Likes, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.delete<Likes, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/like",
 
     {
@@ -173,8 +177,8 @@ export async function ReviewDislike(
   id: string,
   reviewId: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.post<Likes, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.post<Likes, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
     {},
     {
@@ -190,8 +194,8 @@ export async function ReviewDislikeDel(
   id: string,
   reviewId: string,
   token?: string
-): Promise<ReviewResponse> {
-  const { data } = await axios.delete<Likes, AxiosResponse<ReviewResponse>>(
+): Promise<GameReviewResponse> {
+  const { data } = await axios.delete<Likes, AxiosResponse<GameReviewResponse>>(
     "http://localhost:8000/game/" + id + "/review/" + reviewId + "/dislike",
 
     {

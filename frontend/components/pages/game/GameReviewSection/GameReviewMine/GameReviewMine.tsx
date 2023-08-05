@@ -26,18 +26,26 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
+import { GameReview } from "../../../../../types/api/game/gameReview";
+import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 
-export function GameReviewMine() {
+export interface GameReviewMineProps {
+  gameId: string;
+  userEmail: string;
+  data: GameReview;
+}
+
+export function GameReviewMine({ gameId, userEmail, data }: GameReviewMineProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewMineStyles({ smallScreen });
   const theme = useMantineTheme();
 
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
-    text: MOCKUP_CONTENT,
+    text: data.content,
     length: smallScreen ? 70 : 200,
   });
   const [viewMore, setViewMore] = useState<boolean>(false);
@@ -70,7 +78,7 @@ export function GameReviewMine() {
             내가 작성한 후기
           </Text>
           <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-            15일 전
+            {getRelativeTime(data.createdAt)}
           </Text>
         </Group>
         {/* 후기 내용 */}
@@ -88,7 +96,7 @@ export function GameReviewMine() {
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
-                  __html: MOCKUP_CONTENT,
+                  __html: data.content,
                 }}
               />
             )}
@@ -130,7 +138,7 @@ export function GameReviewMine() {
                 ) : (
                   <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                2
+                {data.likeCount}
               </Group>
             </Button>
             <Button
@@ -146,7 +154,7 @@ export function GameReviewMine() {
                 ) : (
                   <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                1
+                {data.dislikeCount}
               </Group>
             </Button>
             <Menu shadow="md" width={120} position="bottom-end" offset={10}>
@@ -178,8 +186,10 @@ export function GameReviewMine() {
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
             <Box className={classes.reviewEditorBox}>
-              {/* 후기 작성 에디터 파트 */}
-              {canReview && <GameTextWriter placeholder={"후기에 답글을 달아보세요."} />}
+              {/* 후기 답글 작성 에디터 파트 */}
+              {/* {canReview && (
+                <GameTextWriter id={data.id} placeholder={"후기에 답글을 달아보세요."} />
+              )} */}
               {!canReview && (
                 <TextInput
                   className={classes.reviewNo}
@@ -189,9 +199,9 @@ export function GameReviewMine() {
               )}
             </Box>
           </Group>
+          {/* <GameReviewReply opened={opened} />
           <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
+          <GameReviewReply opened={opened} /> */}
         </Collapse>
       </Stack>
     </Box>

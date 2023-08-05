@@ -13,7 +13,6 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 import { useGameReviewStyles } from "./GameReview.styles";
-import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
   IconMessages,
   IconThumbDown,
@@ -39,16 +38,14 @@ export function GameReview(data: {
   id: string;
   like: number;
   dislike: number;
-  gameId: string | undefined;
+  gameId: string;
 }) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
-  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
-  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
 
-  console.log("근데 이건 왜?", data.id ? data.id : "아직이야");
   const { token } = useAuth();
+
   const {
     data: commentData,
     setSize: setCommentSize,
@@ -56,6 +53,7 @@ export function GameReview(data: {
     isLoading: isCommentLoading,
     mutate: mutateComment,
   } = useReviewComment(data.gameId, data.id);
+
   // 자세히 보기 관련 로직
   const [shortenedText, isShorten] = ShortenText({
     text: data.content,
