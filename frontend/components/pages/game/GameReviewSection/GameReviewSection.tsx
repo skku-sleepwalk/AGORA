@@ -37,19 +37,8 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
 
   // const canReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
   const canReview = true;
-  // const hasReview = user !== undefined;
-  const hasReview = true;
 
-  // 자신이 작성한 후기 관련
-  const gameReviewMine = (() => {
-    if (token !== undefined) {
-      const { data: myReviewData } = useMyGameReview(id);
-      if (myReviewData !== undefined) {
-        return <GameReviewMine gameId={id} data={myReviewData.data} />;
-      }
-    }
-    return <></>;
-  })();
+  const { data: myReviewData } = useMyGameReview(id);
 
   const {
     data: commentData,
@@ -75,24 +64,29 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
             <Box className={classes.reviewEditorBox}>
               {/* 후기 작성 에디터 파트 혹은 자신이 작성한 후기 보여지는 파트 */}
               {!canReview ? (
+                // 후기 작성 불가
                 <TextInput
                   className={classes.reviewNo}
                   placeholder="게임을 플레이하고 솔직한 후기를 남겨보세요."
                   disabled
                 />
-              ) : !hasReview ? (
+              ) : !myReviewData ? (
+                // myReviewData가 undefined인 경우 제외
+                <></>
+              ) : myReviewData.data === null ? (
+                // 후기 작성 가능 && 작성한 후기 없음
                 <GameTextWriter
                   placeholder={"도움이 되는 착한 후기를 남겨보세요."}
                   id={id ? id : ""}
                 />
               ) : (
-                gameReviewMine
+                // 작성한 후기 있음
+                <GameReviewMine gameId={id} data={myReviewData.data} />
               )}
             </Box>
           </Group>
           {/* 다른 사람이 작성한 후기 보여지는 파트 */}
           {commentData?.map((data) => {
-            // console.log("리뷰:", data.data.data[0].likeCount);
             return data.data.data?.map((data) => (
               <GameReview
                 content={data.content}
@@ -108,10 +102,6 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
               />
             ));
           })}
-
-          {/* <GameReview content="적당한 예시 리뷰" id="" gameId={id} />
-          <GameReview content="적당한 예시 리뷰" id="" gameId={id} />
-          <GameReview content="적당한 예시 리뷰" id="" gameId={id} /> */}
         </Stack>
       </CardContainer>
     </Stack>
