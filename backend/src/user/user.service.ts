@@ -1,5 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserDto } from 'src/common/dto/user.dto';
 import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
@@ -47,5 +48,22 @@ export class UserService {
       return { ...user, totalPlaytime };
     });
     return users;
+  }
+
+  async getUser(id: string) {
+    const user: UserDto = await this.userRepository.findOne({ where: { id } });
+
+    const playtimes = await this.playtimeRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['game'],
+    });
+    const totalPlaytime = playtimes
+      .map((playtime) => playtime.playtime)
+      .reduce((acc, current) => acc + current, 0);
+    user.totalPlaytime = totalPlaytime;
+    user.playtime = playtimes.map((playtime) => ({
+      game: playtime.game,
+      playtime: playtime.playtime,
+    }));
   }
 }

@@ -1,5 +1,6 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, ValidateNested } from 'class-validator';
+import { Game } from 'src/entites/game/game.entity';
 import { User } from 'src/entites/user.entity';
 
 export class UserDto extends PickType(User, [
@@ -26,6 +27,6 @@ export class UserDto extends PickType(User, [
     required: false,
   })
   @IsOptional()
-  @IsNumber()
-  playtime?: number;
+  @ValidateNested()
+  playtime?: Array<{ game: Game; playtime: number }>;
 }

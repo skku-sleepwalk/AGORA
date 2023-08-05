@@ -46,27 +46,27 @@ export class UsersController {
   @ApiParam({ name: 'id', required: true, description: '유저 아이디' })
   @Get(':id')
   getUsers(@Param('id') id: string) {
-    return id;
+    return this.userService.getUser(id);
   }
 
-  @ApiResponse({ status: 200, description: '성공', type: UserDto })
-  @ApiResponse({ status: 500, description: '서버에러' })
-  @ApiOperation({ summary: '로그인' })
-  @UseGuards(LocalAuthGuard)
-  @Post('login')
-  logIn(@Users() user) {
-    return user;
-  }
+  // @ApiResponse({ status: 200, description: '성공', type: UserDto })
+  // @ApiResponse({ status: 500, description: '서버에러' })
+  // @ApiOperation({ summary: '로그인' })
+  // @UseGuards(LocalAuthGuard)
+  // @Post('login')
+  // logIn(@Users() user) {
+  //   return user;
+  // }
 
   // @ApiResponse({ status: 200, description: '성공', type: UserDto })
   // @ApiResponse({ status: 500, description: '서버에러' })
   // @ApiOperation({summary: '유저 정보 수정'})
 
-  @ApiOperation({ summary: '로그아웃' })
-  @Post('logout')
-  logOut(@Req() req, @Res() res) {
-    req.logOut();
-    res.clearCookie('connect.sid', { httpOnly: true });
-    res.send('ok');
-  }
+  // @ApiOperation({ summary: '로그아웃' })
+  // @Post('logout')
+  // logOut(@Req() req, @Res() res) {
+  //   req.logOut();
+  //   res.clearCookie('connect.sid', { httpOnly: true });
+  //   res.send('ok');
+  // }
 }
