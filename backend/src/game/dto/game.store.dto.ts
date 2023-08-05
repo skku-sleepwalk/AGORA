@@ -1,4 +1,4 @@
-import { ApiProperty, PartialType, PickType } from '@nestjs/swagger';
+import { ApiProperty, PickType } from '@nestjs/swagger';
 import {
   IsBoolean,
   IsNotEmpty,
@@ -8,7 +8,7 @@ import {
 import { GameStore } from 'src/entites/game/game.store.entity';
 import { GameCostDto } from './game.cost.dto';
 
-export class GameStoreDto extends PickType(PartialType(GameStore), [
+export class GameStoreDto extends PickType(GameStore, [
   'id',
   'snsUrls',
   'title',

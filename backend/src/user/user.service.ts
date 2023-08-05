@@ -61,7 +61,7 @@ export class UserService {
       .map((playtime) => playtime.playtime)
       .reduce((acc, current) => acc + current, 0);
     user.totalPlaytime = totalPlaytime;
-    user.playtime = playtimes.map((playtime) => ({
+    user.playtimes = playtimes.map((playtime) => ({
       game: playtime.game,
       playtime: playtime.playtime,
     }));

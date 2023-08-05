@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
-import { IsNumber, IsOptional, ValidateNested } from 'class-validator';
-import { Game } from 'src/entites/game/game.entity';
+import { IsNumber, IsOptional } from 'class-validator';
 import { User } from 'src/entites/user.entity';
+import { PlaytimesDto } from './playtimes.dto';
 
 export class UserDto extends PickType(User, [
   'id',
@@ -23,10 +23,16 @@ export class UserDto extends PickType(User, [
   totalPlaytime?: number;
 
   @ApiProperty({
-    description: '게임 별 플레이 시간(리뷰 불러올때만)',
+    description: '플레이 시간(리뷰 불러올때만)',
     required: false,
   })
   @IsOptional()
-  @ValidateNested()
-  playtime?: Array<{ game: Game; playtime: number }>;
+  @IsNumber()
+  playtime?: number;
+
+  @ApiProperty({
+    description: '전체 게임 별 플레이 시간',
+    type: () => PlaytimesDto,
+  })
+  playtimes?: PlaytimesDto[];
 }
