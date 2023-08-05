@@ -65,5 +65,6 @@ export class UserService {
       game: playtime.game,
       playtime: playtime.playtime,
     }));
+    return user;
   }
 }
