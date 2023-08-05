@@ -33,6 +33,7 @@ export class UserDto extends PickType(User, [
   @ApiProperty({
     description: '전체 게임 별 플레이 시간',
     type: () => PlaytimesDto,
+    isArray: true,
   })
   playtimes?: PlaytimesDto[];
 }
