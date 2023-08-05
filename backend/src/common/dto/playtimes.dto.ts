@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { GameDto } from 'src/game/dto/game.dto';
+import { Game } from 'src/entites/game/game.entity';
 
 export class PlaytimesDto {
-  @ApiProperty({ description: '게임', type: () => GameDto })
-  game: GameDto;
+  @ApiProperty({ description: '게임', type: () => Game })
+  game: Game;
   @ApiProperty({ description: '플레이 시간', example: 100 })
   playtime: number;
 }
