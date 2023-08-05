@@ -1,9 +1,16 @@
 import axios, { AxiosResponse } from "axios";
 
-export default async function deletePost(postId: string): Promise<void> {
+export default async function deletePost(postId: string, token?: string): Promise<void> {
   try {
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: token,
+    };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/community/board/${postId}`
+      `http://localhost:8000/community/board/${postId}`,
+      {
+        headers,
+      }
     );
     console.log(response.data); // 삭제된 포스트의 응답 데이터 처리
 
