@@ -7,11 +7,22 @@ import { AssetReviewCommentLike } from 'src/entites/asset/asset.review.comment.l
 import { AssetReviewDislike } from 'src/entites/asset/asset.review.dislike.entity';
 import { AssetReview } from 'src/entites/asset/asset.review.entity';
 import { AssetReviewLike } from 'src/entites/asset/asset.review.like.entity';
+import { AssetService } from './services/asset.service';
+import { AssetLike } from 'src/entites/asset/asset.like.entity';
+import { AssetTag } from 'src/entites/asset/asset.tag.entity';
+import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
+import { User } from 'src/entites/user.entity';
+import { AssetCost } from 'src/entites/asset/asset.cost.entity';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
+      User,
       Asset,
+      AssetCost,
+      AssetLike,
+      AssetTag,
+      AssetTagRelation,
       AssetReview,
       AssetReviewComment,
       AssetReviewLike,
@@ -21,6 +32,6 @@ import { AssetReviewLike } from 'src/entites/asset/asset.review.like.entity';
     ]),
   ],
   controllers: [],
-  providers: [],
+  providers: [AssetService],
 })
 export class AssetModule {}

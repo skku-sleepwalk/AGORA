@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,6 +21,7 @@ export class AssetReview {
   id: string;
 
   @ManyToOne(() => Asset, (asset) => asset.reviews)
+  @JoinColumn({ name: 'assetId', referencedColumnName: 'id' })
   asset: Asset;
 
   @ApiProperty({ description: '내용', example: '좋아요' })
@@ -32,6 +34,7 @@ export class AssetReview {
 
   @ApiProperty({ description: '작성자', type: () => User })
   @ManyToOne(() => User, (user) => user.assetReviews)
+  @JoinColumn({ name: 'authorId', referencedColumnName: 'id' })
   author: User;
 
   @OneToMany(() => AssetReviewComment, (comment) => comment.review, {
