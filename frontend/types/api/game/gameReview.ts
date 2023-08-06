@@ -7,7 +7,7 @@ export interface GameReview {
   createdAt: string;
   updatedAt: string;
   deletedAt: string;
-  author: User[];
+  author: User;
   likeCount: number;
   dislikeCount: number;
   like: boolean;

@@ -25,44 +25,82 @@ import {
   IconThumbUpFilled,
   IconTrash,
 } from "@tabler/icons-react";
-import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameReview } from "../../../../../types/api/game/gameReview";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
-import deleteGameReview from "../../../../../utils/api/game/deleteGameReview";
+import deleteGameReview from "../../../../../utils/api/game/gameReview/deleteGameReview";
 import useAuth from "../../../../../hooks/useAuth";
-import { mutate } from "swr";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { GameReviewSectionContext } from "../GameReviewSection";
+import { showNotification } from "../../../../../utils/notifications";
+import {
+  DelGameReviewDislike,
+  DelGameReviewLike,
+  PostGameReviewDislike,
+  PostGameReviewLike,
+} from "../../../../../utils/api/game/gameReview/GameReviewLike";
 
 export interface GameReviewMineProps {
-  mutateGameReviewMine?: () => void;
   gameId: string;
   data: GameReview;
 }
 
-export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameReviewMineProps) {
+export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewMineStyles({ smallScreen });
   const theme = useMantineTheme();
 
   const { user, token } = useAuth();
 
+  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+
   // 수정 관련 로직
   const [isEditing, setIsEditing] = useState(false);
 
   // 후기 좋아요 싫어요 관련 로직
-  const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
-  const handleGoodState = () => {
-    setGoodBadState({ good: !goodBadstate.good });
-    if (!goodBadstate.good && goodBadstate.bad) {
-      setGoodBadState({ bad: !goodBadstate.bad });
+  const handleLike = () => {
+    if (data.like) {
+      DelGameReviewLike(gameId, data.id, token).then(() => {
+        mutateGameReviewMine();
+        mutateGameReview();
+      });
+    } else {
+      PostGameReviewLike(gameId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.dislike) {
+          DelGameReviewDislike(gameId, data.id, token).then(() => {
+            mutateGameReviewMine();
+            mutateGameReview();
+          });
+        } else {
+          mutateGameReviewMine();
+          mutateGameReview();
+        }
+      });
     }
   };
-  const handleBadState = () => {
-    setGoodBadState({ bad: !goodBadstate.bad });
-    if (goodBadstate.good && !goodBadstate.bad) {
-      setGoodBadState({ good: !goodBadstate.good });
+
+  const handleDislike = () => {
+    if (data.dislike) {
+      DelGameReviewDislike(gameId, data.id, token).then(() => {
+        mutateGameReviewMine();
+        mutateGameReview();
+      });
+    } else {
+      PostGameReviewDislike(gameId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.like) {
+          DelGameReviewLike(gameId, data.id, token).then(() => {
+            mutateGameReviewMine();
+            mutateGameReview();
+          });
+        } else {
+          mutateGameReviewMine();
+          mutateGameReview();
+        }
+      });
     }
   };
 
@@ -118,10 +156,10 @@ export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameRevie
                 size="xs"
                 variant="outline"
                 color="dark"
-                onClick={handleGoodState}
+                onClick={handleLike}
               >
                 <Group spacing={"xs"}>
-                  {goodBadstate.good ? (
+                  {data.like ? (
                     <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                   ) : (
                     <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
@@ -134,10 +172,10 @@ export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameRevie
                 size="xs"
                 variant="outline"
                 color="dark"
-                onClick={handleBadState}
+                onClick={handleDislike}
               >
                 <Group spacing={"xs"}>
-                  {goodBadstate.bad ? (
+                  {data.dislike ? (
                     <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                   ) : (
                     <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
@@ -166,8 +204,10 @@ export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameRevie
                     icon={<IconTrash size={18} stroke={2} />}
                     className={classes.menuItem}
                     onClick={() => {
-                      deleteGameReview(gameId, data.id, token);
-                      mutateGameReviewMine !== undefined ? mutateGameReviewMine() : null;
+                      deleteGameReview(gameId, data.id, token).then(() => {
+                        mutateGameReviewMine();
+                        showNotification("후기 삭제 완료!", "후기가 정상적으로 삭제되었습니다.");
+                      });
                     }}
                   >
                     삭제하기
@@ -189,7 +229,11 @@ export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameRevie
               <Box className={classes.reviewEditorBox}>
                 {/* 후기 답글 작성 에디터 파트 */}
                 {canReview && (
-                  <GameTextWriter gameId={data.id} placeholder={"후기에 답글을 달아보세요."} />
+                  <GameTextWriter
+                    gameId={gameId}
+                    commentId={data.id}
+                    placeholder={"후기에 답글을 달아보세요."}
+                  />
                 )}
                 {!canReview && (
                   <TextInput
@@ -208,10 +252,8 @@ export function GameReviewMine({ mutateGameReviewMine, gameId, data }: GameRevie
       )}
       {isEditing && (
         <GameTextWriter
-          mutate={mutateGameReviewMine}
           placeholder={"도움이 되는 착한 후기를 남겨보세요."}
           gameId={gameId}
-          isPatch={true}
           content={data.content}
         />
       )}

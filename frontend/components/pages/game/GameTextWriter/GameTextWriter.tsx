@@ -4,10 +4,12 @@ import { showNotification } from "../../../../utils/notifications";
 import { IconSend } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
-import { uploadReview, uploadReviewComment } from "../../../../hooks/useGameReview";
+import { useContext, useState } from "react";
 import useAuth from "../../../../hooks/useAuth";
-import { patchGameReview } from "../../../../utils/api/game/patchGameReview";
+import { patchGameReview } from "../../../../utils/api/game/gameReview/patchGameReview";
+import { GameReviewSectionContext } from "../GameReviewSection/GameReviewSection";
+import { PostGameReview } from "../../../../utils/api/game/gameReview/postGameReview";
+import { PostGameReviewComment } from "../../../../utils/api/game/gameReview/postGameReviewComment";
 
 export function HandleText(text: string): string {
   // 정규식을 사용하여 줄바꿈 문자를 <br> 태그로 바꿉니다.
@@ -17,51 +19,52 @@ export function HandleText(text: string): string {
 }
 
 export interface GameTextWriterProps {
-  mutate?: () => void;
-  patchText?: () => void;
   placeholder: string;
   gameId: string;
   commentId?: string | undefined;
-  isPatch?: boolean;
   content?: string;
 }
 
-export function GameTextWriter({
-  mutate,
-  placeholder,
-  gameId,
-  commentId,
-  isPatch,
-  content,
-}: GameTextWriterProps) {
+export function GameTextWriter({ placeholder, gameId, commentId, content }: GameTextWriterProps) {
   const theme = useMantineTheme();
 
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes } = useGameTextWriterStyles({ smallScreen });
-  const [textAreaValue, setTextAreaValue] = useState(isPatch && content ? content : "");
+
   const { token } = useAuth();
+  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+
+  const [textAreaValue, setTextAreaValue] = useState(content ? content : "");
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // 여기에서 폼이 제출되었을 때 처리할 작업을 수행합니다.
-    if (isPatch && content) {
+    if (content) {
+      // 게임 리뷰 PATCH
       patchGameReview({
         gameId: gameId,
         data: { content: textAreaValue, rating: 0 },
         token: token,
+      }).then(() => {
+        setTextAreaValue("");
+        mutateGameReviewMine();
+        showNotification("후기 수정 완료!", "후기가 정상적으로 수정되었습니다.");
       });
     } else if (commentId) {
-      uploadReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
+      // 게임 리뷰 댓글 POST
+      PostGameReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
         setTextAreaValue("");
+        showNotification("댓글 등록 완료!", "댓글이 정상적으로 수정되었습니다.");
       });
     } else {
-      uploadReview({ content: textAreaValue, rating: 5 }, gameId, token).then(() => {
+      // 게임 리뷰 POST
+      PostGameReview({ content: textAreaValue, rating: 5 }, gameId, token).then(() => {
         setTextAreaValue("");
+        mutateGameReview();
+        mutateGameReviewMine();
+        showNotification("후기 등록 완료!", "후기가 정상적으로 등록되었습니다.");
       });
     }
-
-    // 예시로 콘솔에 textarea의 값만 출력하도록 했습니다.
-    // 폼 제출 후 다른 작업을 수행하고 싶다면 여기에 코드를 추가하면 됩니다.
-    console.log("Textarea value:", textAreaValue);
   };
 
   return (
@@ -87,7 +90,6 @@ export function GameTextWriter({
             } else {
               // 꼭 HandleText 함수 실행 후에 서버에 저장할 것!
               setTextAreaValue(HandleText(inputText));
-              mutate !== undefined ? mutate() : null;
             }
           }}
         >

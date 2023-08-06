@@ -1,13 +1,9 @@
 import axios from "axios";
-
-export interface patchGameReview {
-  content: string;
-  rating: number;
-}
+import { gameReviewData } from "./postGameReview";
 
 export interface patchGameReviewResponse {
   gameId: string;
-  data: patchGameReview;
+  data: gameReviewData;
   token?: string;
 }
 
