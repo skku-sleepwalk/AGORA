@@ -75,10 +75,9 @@ export class GameReviewCommentLikeService {
   ) {
     const like = await this.gameReviewCommentLikeRepository.findOne({
       where: {
-        id: gameReviewCommentId,
         comment: {
-          id: gameReviewId,
-          review: { id: gameReviewId, game: { id: gameId } },
+          id: gameReviewCommentId,
+          review: { id: gameReviewId },
         },
         user: { email: userEmail },
       },
