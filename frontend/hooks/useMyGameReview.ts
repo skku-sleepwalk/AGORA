@@ -1,5 +1,4 @@
 import useSWR from "swr";
-import axios from "axios";
 import { MyGameReviewResponse } from "../types/api/game/gameReview";
 import useAuth from "./useAuth";
 import { fetcher } from "../utils/fetcher";

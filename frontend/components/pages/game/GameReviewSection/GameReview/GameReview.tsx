@@ -187,8 +187,8 @@ export function GameReview(data: {
               {canReview && (
                 <GameTextWriter
                   placeholder={"후기에 답글을 달아보세요."}
-                  id={data.gameId}
-                  commentid={data.id}
+                  gameId={data.gameId}
+                  commentId={data.id}
                 />
               )}
               {!canReview && (

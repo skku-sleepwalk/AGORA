@@ -38,7 +38,7 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
   // const canReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
   const canReview = true;
 
-  const { data: myReviewData } = useMyGameReview(id);
+  const { data: myReviewData, mutate: mutateGameReviewMine } = useMyGameReview(id);
 
   const {
     data: commentData,
@@ -76,12 +76,17 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
               ) : myReviewData.data === null ? (
                 // 후기 작성 가능 && 작성한 후기 없음
                 <GameTextWriter
+                  mutate={mutateGameReviewMine}
                   placeholder={"도움이 되는 착한 후기를 남겨보세요."}
-                  id={id ? id : ""}
+                  gameId={id ? id : ""}
                 />
               ) : (
                 // 작성한 후기 있음
-                <GameReviewMine gameId={id} data={myReviewData.data} />
+                <GameReviewMine
+                  mutateGameReviewMine={mutateGameReviewMine}
+                  gameId={id}
+                  data={myReviewData.data}
+                />
               )}
             </Box>
           </Group>

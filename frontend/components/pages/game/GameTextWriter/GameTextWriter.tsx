@@ -7,6 +7,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useState } from "react";
 import { uploadReview, uploadReviewComment } from "../../../../hooks/useGameReview";
 import useAuth from "../../../../hooks/useAuth";
+import { patchGameReview } from "../../../../utils/api/game/patchGameReview";
 
 export function HandleText(text: string): string {
   // 정규식을 사용하여 줄바꿈 문자를 <br> 태그로 바꿉니다.
@@ -15,34 +16,45 @@ export function HandleText(text: string): string {
   return handledText;
 }
 
-export interface shortenTextProps {
-  text: string;
-  length: number;
-}
-
 export interface GameTextWriterProps {
-  onSaveClick?: () => void;
+  mutate?: () => void;
+  patchText?: () => void;
   placeholder: string;
-  id: string;
-  commentid?: string | undefined;
+  gameId: string;
+  commentId?: string | undefined;
+  isPatch?: boolean;
+  content?: string;
 }
 
-export function GameTextWriter({ onSaveClick, placeholder, id, commentid }: GameTextWriterProps) {
+export function GameTextWriter({
+  mutate,
+  placeholder,
+  gameId,
+  commentId,
+  isPatch,
+  content,
+}: GameTextWriterProps) {
   const theme = useMantineTheme();
 
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes } = useGameTextWriterStyles({ smallScreen });
-  const [textAreaValue, setTextAreaValue] = useState("");
+  const [textAreaValue, setTextAreaValue] = useState(isPatch && content ? content : "");
   const { token } = useAuth();
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // 여기에서 폼이 제출되었을 때 처리할 작업을 수행합니다.
-    if (commentid) {
-      uploadReviewComment({ content: textAreaValue }, id, commentid, token).then(() => {
+    if (isPatch && content) {
+      patchGameReview({
+        gameId: gameId,
+        data: { content: textAreaValue, rating: 0 },
+        token: token,
+      });
+    } else if (commentId) {
+      uploadReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
         setTextAreaValue("");
       });
     } else {
-      uploadReview({ content: textAreaValue, rating: 5 }, id, token).then(() => {
+      uploadReview({ content: textAreaValue, rating: 5 }, gameId, token).then(() => {
         setTextAreaValue("");
       });
     }
@@ -75,9 +87,7 @@ export function GameTextWriter({ onSaveClick, placeholder, id, commentid }: Game
             } else {
               // 꼭 HandleText 함수 실행 후에 서버에 저장할 것!
               setTextAreaValue(HandleText(inputText));
-              //왜필요한지 모르겠어서 지움
-
-              onSaveClick !== undefined ? onSaveClick() : null;
+              mutate !== undefined ? mutate() : null;
             }
           }}
         >
