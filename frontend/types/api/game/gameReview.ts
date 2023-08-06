@@ -16,7 +16,7 @@ export interface GameReview {
 
 export interface GameReviewResponse {
   data: null;
-} //이거 맞는지 모르겠다
+}
 
 export interface GetGameReviewListResponse {
   data: {

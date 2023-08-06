@@ -34,8 +34,9 @@ import {
 } from "../../../../../utils/api/game/gameReview/GameReviewLike";
 import { GameReview } from "../../../../../types/api/game/gameReview";
 import { createContext, useContext } from "react";
-import { GameReviewSectionContext, authorPlaytime } from "../GameReviewSection";
+import { GameReviewSectionContext, authorPlaytime, hasPlaytime } from "../GameReviewSection";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
+import { useUserPlaytimes } from "../../../../../hooks/useUserPlaytimes";
 
 export interface GameReviewProps {
   gameId: string;
@@ -121,7 +122,9 @@ export function GameReview({ gameId, data }: GameReviewProps) {
 
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
-  const canReview = true;
+
+  const { data: me } = useUserPlaytimes();
+  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, gameId) : false;
 
   return (
     <GameReviewContext.Provider value={{ mutategameReviewComment }}>

@@ -10,6 +10,7 @@ import useAuth from "../../../../hooks/useAuth";
 import { useMyGameReview } from "../../../../hooks/useMyGameReview";
 import { createContext } from "react";
 import { PlaytimesInUser } from "../../../../types/api/user";
+import { useUserPlaytimes } from "../../../../hooks/useUserPlaytimes";
 
 export interface GameReviewSectionProps {
   gameId: string;
@@ -24,17 +25,17 @@ export function authorPlaytime(playtime: number): string {
 }
 
 // 유저의 플레이 타임 확인 관련
-export function findPlaytimeById(playtimes: PlaytimesInUser[], id: string): number | null {
+export function hasPlaytime(playtimes: PlaytimesInUser[], gameId: string): boolean {
   if (playtimes === undefined) {
-    return null;
+    return false;
   }
 
   for (const playtime of playtimes) {
-    if (playtime.game.id === id) {
-      return playtime.playtime;
+    if (playtime.game.id === gameId) {
+      return true;
     }
   }
-  return null;
+  return false;
 }
 
 // mutate 관련 context
@@ -46,13 +47,10 @@ export const GameReviewSectionContext = createContext({
 export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewSectionStyles({ smallScreen });
-  const theme = useMantineTheme();
-
   const { user, token } = useAuth();
 
-  // const canReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
-  const canReview = true;
-  console.log(user?.playtime);
+  const { data: me } = useUserPlaytimes();
+  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, id) : false;
 
   const { data: myReviewData, mutate: mutateGameReviewMine } = useMyGameReview(id);
 

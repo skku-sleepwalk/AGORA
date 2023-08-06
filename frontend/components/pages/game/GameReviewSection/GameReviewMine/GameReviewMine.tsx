@@ -34,7 +34,7 @@ import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 import deleteGameReview from "../../../../../utils/api/game/gameReview/deleteGameReview";
 import useAuth from "../../../../../hooks/useAuth";
 import { createContext, useContext, useState } from "react";
-import { GameReviewSectionContext } from "../GameReviewSection";
+import { GameReviewSectionContext, hasPlaytime } from "../GameReviewSection";
 import { showNotification } from "../../../../../utils/notifications";
 import {
   DelGameReviewDislike,
@@ -43,6 +43,7 @@ import {
   PostGameReviewLike,
 } from "../../../../../utils/api/game/gameReview/GameReviewLike";
 import { useGameReviewList } from "../../../../../hooks/useGameReview";
+import { useUserPlaytimes } from "../../../../../hooks/useUserPlaytimes";
 
 export interface GameReviewMineProps {
   gameId: string;
@@ -120,7 +121,9 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
 
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
-  const canReview = true;
+
+  const { data: me } = useUserPlaytimes();
+  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, gameId) : false;
 
   return (
     <GameReviewMineContext.Provider value={{ mutategameReviewMineComment }}>
