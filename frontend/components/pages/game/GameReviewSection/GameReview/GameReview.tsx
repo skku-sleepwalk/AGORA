@@ -228,8 +228,7 @@ export function GameReview({ gameId, data }: GameReviewProps) {
                   <GameTextWriter
                     placeholder={"후기에 답글을 달아보세요."}
                     gameId={gameId}
-                    commentId={data.id}
-                    authorEmail={data.author.email}
+                    reviewId={data.id}
                   />
                 )}
                 {!canReview && (

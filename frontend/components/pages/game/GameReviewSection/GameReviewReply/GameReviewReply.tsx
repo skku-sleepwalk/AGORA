@@ -32,14 +32,22 @@ import { GameReviewMineContext } from "../GameReviewMine/GameReviewMine";
 import deleteGameReviewComment from "../../../../../utils/api/game/gameReview/deleteGameReviewComment";
 import useAuth from "../../../../../hooks/useAuth";
 import { showNotification } from "../../../../../utils/notifications";
+import {
+  DelGameReviewCommentDislike,
+  DelGameReviewCommentLike,
+  PostGameReviewCommentDislike,
+  PostGameReviewCommentLike,
+} from "../../../../../utils/api/game/gameReview/gameReviewCommentLike";
+import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameReviewReplyProps {
   gameId: string;
   reviewId: string;
   data: GameReview;
+  isInReviewMine?: boolean;
 }
 
-export function GameReviewReply({ gameId, reviewId, data }: GameReviewReplyProps) {
+export function GameReviewReply({ gameId, reviewId, data, isInReviewMine }: GameReviewReplyProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewReplyStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -49,18 +57,60 @@ export function GameReviewReply({ gameId, reviewId, data }: GameReviewReplyProps
   const { mutategameReviewComment } = useContext(GameReviewContext);
   const { mutategameReviewMineComment } = useContext(GameReviewMineContext);
 
-  // 답글 좋아요 싫어요 관련 로직
-  const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
-  const handleGoodState = () => {
-    setGoodBadState({ good: !goodBadstate.good });
-    if (!goodBadstate.good && goodBadstate.bad) {
-      setGoodBadState({ bad: !goodBadstate.bad });
+  // 후기 좋아요 싫어요 관련 로직
+  const handleLike = () => {
+    if (data.like) {
+      DelGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+        mutategameReviewComment();
+        if (isInReviewMine) {
+          mutategameReviewMineComment();
+        }
+      });
+    } else {
+      PostGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.dislike) {
+          DelGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+            mutategameReviewComment();
+            if (isInReviewMine) {
+              mutategameReviewMineComment();
+            }
+          });
+        } else {
+          mutategameReviewComment();
+          if (isInReviewMine) {
+            mutategameReviewMineComment();
+          }
+        }
+      });
     }
   };
-  const handleBadState = () => {
-    setGoodBadState({ bad: !goodBadstate.bad });
-    if (goodBadstate.good && !goodBadstate.bad) {
-      setGoodBadState({ good: !goodBadstate.good });
+
+  const handleDislike = () => {
+    if (data.dislike) {
+      DelGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+        mutategameReviewComment();
+        if (isInReviewMine) {
+          mutategameReviewMineComment();
+        }
+      });
+    } else {
+      PostGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.like) {
+          DelGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+            mutategameReviewComment();
+            if (isInReviewMine) {
+              mutategameReviewMineComment();
+            }
+          });
+        } else {
+          mutategameReviewComment();
+          if (isInReviewMine) {
+            mutategameReviewMineComment();
+          }
+        }
+      });
     }
   };
 
@@ -91,92 +141,109 @@ export function GameReviewReply({ gameId, reviewId, data }: GameReviewReplyProps
           </Text>
         </Group>
         {/* 후기 내용 */}
-        <Stack className={classes.marginLeft} spacing={0}>
-          <TypographyStylesProvider className={classes.reviewTypo}>
-            <Spoiler
-              className={classes.spoiler}
-              maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
-              showLabel="자세히 보기"
-              hideLabel="숨기기"
-            >
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: data.content,
-                }}
-              />
-            </Spoiler>
-          </TypographyStylesProvider>
-        </Stack>
-        {/* 후기 하단 버튿들 */}
-        <Group className={classes.marginLeft} position="right" spacing={"xs"}>
-          <Button
-            className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
-            size="xs"
-            variant="outline"
-            color="dark"
-            onClick={handleGoodState}
-          >
-            <Group spacing={"xs"}>
-              {goodBadstate.good ? (
-                <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-              ) : (
-                <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-              )}
-              <Text>{data.likeCount}</Text>
-            </Group>
-          </Button>
-          <Button
-            className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
-            size="xs"
-            variant="outline"
-            color="dark"
-            onClick={handleBadState}
-          >
-            <Group spacing={"xs"}>
-              {goodBadstate.bad ? (
-                <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-              ) : (
-                <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-              )}
-              <Text>{data.dislikeCount}</Text>
-            </Group>
-          </Button>
-          <Menu shadow="md" width={120} position="bottom-end" offset={10}>
-            <Menu.Target>
-              <UnstyledButton className={classes.dotButton}>
-                <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-              </UnstyledButton>
-            </Menu.Target>
-            <Menu.Dropdown>
-              <Menu.Item
-                icon={<IconPencil size={18} stroke={2} />}
-                className={classes.menuItem}
-                onClick={() => {
-                  setIsEditing(true);
-                }}
+        {!isEditing && (
+          <>
+            <Stack className={classes.marginLeft} spacing={0}>
+              <TypographyStylesProvider className={classes.reviewTypo}>
+                <Spoiler
+                  className={classes.spoiler}
+                  maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
+                  showLabel="자세히 보기"
+                  hideLabel="숨기기"
+                >
+                  <div
+                    className={classes.content}
+                    dangerouslySetInnerHTML={{
+                      __html: data.content,
+                    }}
+                  />
+                </Spoiler>
+              </TypographyStylesProvider>
+            </Stack>
+            {/* 후기 하단 버튿들 */}
+            <Group className={classes.marginLeft} position="right" spacing={"xs"}>
+              <Button
+                className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
+                size="xs"
+                variant="outline"
+                color="dark"
+                onClick={handleLike}
               >
-                수정하기
-              </Menu.Item>
-              <Menu.Divider />
-              <Menu.Item
-                onClick={() => {
-                  deleteGameReviewComment(gameId, reviewId, data.id, token).then(() => {
-                    mutategameReviewComment();
-                    if (data.author.email === token) {
-                      mutategameReviewMineComment();
-                    }
-                    showNotification("댓글 삭제 완료!", "댓글이 정상적으로 삭제되었습니다.");
-                  });
-                }}
-                icon={<IconTrash size={18} stroke={2} />}
-                className={classes.menuItem}
+                <Group spacing={"xs"}>
+                  {data.like ? (
+                    <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                  ) : (
+                    <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                  )}
+                  <Text>{data.likeCount}</Text>
+                </Group>
+              </Button>
+              <Button
+                className={cx(classes.button, smallScreen ? classes.buttonPadding : null)}
+                size="xs"
+                variant="outline"
+                color="dark"
+                onClick={handleDislike}
               >
-                삭제하기
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
-        </Group>
+                <Group spacing={"xs"}>
+                  {data.dislike ? (
+                    <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                  ) : (
+                    <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                  )}
+                  <Text>{data.dislikeCount}</Text>
+                </Group>
+              </Button>
+              <Menu shadow="md" width={120} position="bottom-end" offset={10}>
+                <Menu.Target>
+                  <UnstyledButton className={classes.dotButton}>
+                    <IconDotsVertical stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    icon={<IconPencil size={18} stroke={2} />}
+                    className={classes.menuItem}
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
+                  >
+                    수정하기
+                  </Menu.Item>
+                  <Menu.Divider />
+                  <Menu.Item
+                    onClick={() => {
+                      deleteGameReviewComment(gameId, reviewId, data.id, token).then(() => {
+                        mutategameReviewComment();
+                        if (data.author.email === token) {
+                          mutategameReviewMineComment();
+                        }
+                        showNotification("댓글 삭제 완료!", "댓글이 정상적으로 삭제되었습니다.");
+                      });
+                    }}
+                    icon={<IconTrash size={18} stroke={2} />}
+                    className={classes.menuItem}
+                  >
+                    삭제하기
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
+          </>
+        )}
+        {isEditing && (
+          <Box className={classes.marginLeft}>
+            <GameTextWriter
+              completePatch={() => setIsEditing(false)}
+              placeholder={"도움이 되는 착한 후기를 남겨보세요."}
+              gameId={gameId}
+              reviewId={reviewId}
+              commentId={data.id}
+              content={data.content}
+              isInReviewMine={true}
+            />
+          </Box>
+        )}
       </Stack>
     </Box>
   );

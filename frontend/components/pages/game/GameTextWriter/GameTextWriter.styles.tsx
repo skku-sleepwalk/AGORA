@@ -13,23 +13,10 @@ export const useGameTextWriterStyles = createStyles(
       alignItems: "flex-end",
     },
 
-    textarea: {
+    editor: {
       flexGrow: 1,
-
-      ".mantine-Textarea-root, .mantine-Textarea-wrapper, .mantine-Textarea-input": {
-        flexGrow: 1,
-      },
-
-      ".mantine-Textarea-wrapper": {
-        borderRadius: theme.radius.sm,
-        border: `1px solid ${theme.colors.gray[4]}`,
-      },
-
-      ".mantine-Textarea-input": {
-        padding: smallScreen ? "0.4rem 0.5rem" : "0.75rem 0.65rem",
-        border: "none",
-        backgroundColor: "transparent",
-        lineHeight: 1.2,
+      ".mantine-RichTextEditor-content": {
+        fontSize: smallScreen ? theme.fontSizes.xs : theme.fontSizes.sm,
       },
     },
 
