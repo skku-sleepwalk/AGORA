@@ -1,14 +1,15 @@
-import { Avatar, Box, Group, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
+import { Avatar, Box, Group, Loader, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
-import { useGameReview } from "../../../../hooks/useGameReview";
+import { useGameReviewList } from "../../../../hooks/useGameReview";
 import useAuth from "../../../../hooks/useAuth";
 import { useMyGameReview } from "../../../../hooks/useMyGameReview";
 import { createContext } from "react";
+import { PlaytimesInUser } from "../../../../types/api/user";
 
 export interface GameReviewSectionProps {
   gameId: string;
@@ -20,6 +21,20 @@ export function authorPlaytime(playtime: number): string {
     return `${playtime}분 플레이`;
   }
   return `${playtime / 60}시간 플레이`;
+}
+
+// 유저의 플레이 타임 확인 관련
+export function findPlaytimeById(playtimes: PlaytimesInUser[], id: string): number | null {
+  if (playtimes === undefined) {
+    return null;
+  }
+
+  for (const playtime of playtimes) {
+    if (playtime.game.id === id) {
+      return playtime.playtime;
+    }
+  }
+  return null;
 }
 
 // mutate 관련 context
@@ -37,6 +52,7 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
 
   // const canReview = user !== undefined ? findPlaytimeById(user.playtimes, id) !== null : false;
   const canReview = true;
+  console.log(user?.playtime);
 
   const { data: myReviewData, mutate: mutateGameReviewMine } = useMyGameReview(id);
 
@@ -45,7 +61,7 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
     setSize: setGameReviewSize,
     isLoading: isGameReviewLoading,
     mutate: mutateGameReview,
-  } = useGameReview(id ? id : "");
+  } = useGameReviewList({ gameId: id });
 
   return (
     <GameReviewSectionContext.Provider value={{ mutateGameReview, mutateGameReviewMine }}>
@@ -87,18 +103,13 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
             </Group>
             {/* 다른 사람이 작성한 후기 보여지는 파트 */}
             {gameReviewData?.map((data) => {
-              return data.data.data?.map((data) => (
-                <GameReview
-                  gameId={id}
-                  data={data}
-                  // key={data.id}
-                  // post={data}
-                  // onSubmitComment={async (content, parentId) => {
-                  //   return onSubmitComment?.(content, parentId);
-                  // }}
-                />
-              ));
+              return data.data.data?.map((data) => <GameReview gameId={id} data={data} />);
             })}
+            {isGameReviewLoading && (
+              <Box className={classes.loader}>
+                <Loader variant="dots" />
+              </Box>
+            )}
           </Stack>
         </CardContainer>
       </Stack>

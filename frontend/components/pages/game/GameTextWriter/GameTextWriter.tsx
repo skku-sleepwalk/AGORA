@@ -10,6 +10,8 @@ import { patchGameReview } from "../../../../utils/api/game/gameReview/patchGame
 import { GameReviewSectionContext } from "../GameReviewSection/GameReviewSection";
 import { PostGameReview } from "../../../../utils/api/game/gameReview/postGameReview";
 import { PostGameReviewComment } from "../../../../utils/api/game/gameReview/postGameReviewComment";
+import { GameReviewContext } from "../GameReviewSection/GameReview/GameReview";
+import { GameReviewMineContext } from "../GameReviewSection/GameReviewMine/GameReviewMine";
 
 export function HandleText(text: string): string {
   // 정규식을 사용하여 줄바꿈 문자를 <br> 태그로 바꿉니다.
@@ -19,13 +21,22 @@ export function HandleText(text: string): string {
 }
 
 export interface GameTextWriterProps {
+  completePatch?: () => void;
   placeholder: string;
   gameId: string;
-  commentId?: string | undefined;
-  content?: string;
+  commentId?: string | undefined; // 후기 댓글 용
+  authorEmail?: string; // 후기 댓글 용
+  content?: string; // PATCH 용
 }
 
-export function GameTextWriter({ placeholder, gameId, commentId, content }: GameTextWriterProps) {
+export function GameTextWriter({
+  completePatch,
+  placeholder,
+  gameId,
+  commentId,
+  authorEmail,
+  content,
+}: GameTextWriterProps) {
   const theme = useMantineTheme();
 
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -33,6 +44,8 @@ export function GameTextWriter({ placeholder, gameId, commentId, content }: Game
 
   const { token } = useAuth();
   const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+  const { mutategameReviewComment } = useContext(GameReviewContext);
+  const { mutategameReviewMineComment } = useContext(GameReviewMineContext);
 
   const [textAreaValue, setTextAreaValue] = useState(content ? content : "");
 
@@ -47,6 +60,8 @@ export function GameTextWriter({ placeholder, gameId, commentId, content }: Game
         token: token,
       }).then(() => {
         setTextAreaValue("");
+        completePatch !== undefined ? completePatch() : null;
+        mutateGameReview();
         mutateGameReviewMine();
         showNotification("후기 수정 완료!", "후기가 정상적으로 수정되었습니다.");
       });
@@ -54,6 +69,10 @@ export function GameTextWriter({ placeholder, gameId, commentId, content }: Game
       // 게임 리뷰 댓글 POST
       PostGameReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
         setTextAreaValue("");
+        mutategameReviewComment();
+        if (authorEmail === token) {
+          mutategameReviewMineComment();
+        }
         showNotification("댓글 등록 완료!", "댓글이 정상적으로 수정되었습니다.");
       });
     } else {
