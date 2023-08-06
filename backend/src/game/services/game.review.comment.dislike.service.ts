@@ -35,7 +35,7 @@ export class GameReviewCommentDislikeService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
-    const reviewComment = gameReviewCommentId
+    const comment = gameReviewCommentId
       ? await this.gameReviewCommentRepository.findOne({
           where: {
             id: gameReviewCommentId,
@@ -43,7 +43,7 @@ export class GameReviewCommentDislikeService {
           },
         })
       : null;
-    if (!reviewComment) {
+    if (!comment) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
 
@@ -61,7 +61,7 @@ export class GameReviewCommentDislikeService {
     if (existingDislike) {
       throw new ConflictException('이미 싫어요가 존재합니다.');
     }
-    await this.gameReviewCommentDislikeRepository.save({ user, reviewComment });
+    await this.gameReviewCommentDislikeRepository.save({ user, comment });
     return true;
   }
 
