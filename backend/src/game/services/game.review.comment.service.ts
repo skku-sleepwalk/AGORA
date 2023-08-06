@@ -12,6 +12,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { GameReviewCommentDto } from '../dto/game.review.comment.dto';
 import { GameReviewCommentDislike } from 'src/entites/game/game.review.comment.dislike.entity';
+import { PlayTime } from 'src/entites/game/game.playtime.entity';
 
 @Injectable()
 export class GameReviewCommentService {
@@ -24,13 +25,15 @@ export class GameReviewCommentService {
     private gameReviewCommentDislikeRepository: Repository<GameReviewCommentDislike>,
     @InjectRepository(GameReview)
     private gameReviewRepository: Repository<GameReview>,
+    @InjectRepository(PlayTime)
+    private readonly playTimeRepository: Repository<PlayTime>,
     @InjectRepository(User) private userRepository: Repository<User>,
   ) {}
 
   // 게임 리뷰 댓글을 가공하여 반환하는 메서드
   async commentModifying(
     userEmail: string,
-    comment: GameReviewCommentDto,
+    comment: GameReviewComment,
   ): Promise<GameReviewCommentDto> {
     // userEmail과 gameReview.id를 이용하여 좋아요 여부 조회
     const [likes, likeCount] = await this.gameReviewCommentLikeRepository
@@ -61,13 +64,30 @@ export class GameReviewCommentService {
         ? true
         : false;
 
-    return { ...comment, like, dislike, likeCount, dislikeCount };
+    // 사용자의 플레이타임 정보를 가져와서 리뷰 정보에 추가
+    const playtime = (
+      await this.playTimeRepository.findOne({
+        where: {
+          user: { email: userEmail },
+          game: { id: comment.review.game.id },
+        },
+      })
+    ).playtime;
+    const { author, review, ...toReturn } = comment;
+    return {
+      author: { playtime, ...author },
+      like,
+      likeCount,
+      dislike,
+      dislikeCount,
+      ...toReturn,
+    };
   }
 
   // 게임 리뷰 댓글 리스트를 가공하여 반환하는 메서드
   async dataModifying(
     userEmail: string,
-    data: Array<GameReviewCommentDto>,
+    data: Array<GameReviewComment>,
   ): Promise<Array<GameReviewCommentDto>> {
     return await Promise.all(
       data.map(async (review) => {
@@ -125,6 +145,8 @@ export class GameReviewCommentService {
     const queryBuilder = this.gameReviewCommentRepository
       .createQueryBuilder('comment')
       .leftJoinAndSelect('comment.author', 'author')
+      .leftJoinAndSelect('comment.review', 'review')
+      .leftJoinAndSelect('review.game', 'game')
       .where('comment.reviewId = :reviewId', { reviewId });
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<GameReviewComment> = {
