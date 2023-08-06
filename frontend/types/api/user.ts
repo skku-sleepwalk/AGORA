@@ -1,22 +1,29 @@
+import { gameInUser } from "./game/game";
+
+export interface PlaytimesInUser {
+  game: gameInUser;
+  playtime: number;
+}
+
 export interface User {
   id: string;
   name: string;
-  description: string | null;
   email: string;
+  description: string;
   token: number;
   rating: number;
-  totalPlayTime: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
+  totalPlaytime: number;
+  playtime: number;
+  playtimes: PlaytimesInUser[];
 }
+
 export interface GetUserResponse {
   data: User[];
 }
 export interface PostUserBody {
   name: string;
   email: string;
-  description?: string;
+  description: string;
 }
 
 export type PostUserResponse = User;

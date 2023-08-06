@@ -28,10 +28,6 @@ export const useGameReviewReplyStyles = createStyles(
       },
     },
 
-    viewMoreButton: {
-      paddingTop: "0.3rem",
-    },
-
     button: {
       "&:hover": {
         backgroundColor: theme.colors.gray[1],

@@ -5,15 +5,14 @@ import {
   Collapse,
   Divider,
   Group,
+  Spoiler,
   Stack,
   Text,
   TextInput,
   TypographyStylesProvider,
-  UnstyledButton,
   useMantineTheme,
 } from "@mantine/core";
 import { useGameReviewStyles } from "./GameReview.styles";
-import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
   IconMessages,
   IconThumbDown,
@@ -21,72 +20,100 @@ import {
   IconThumbUp,
   IconThumbUpFilled,
 } from "@tabler/icons-react";
-import { useDisclosure, useMediaQuery, useSetState } from "@mantine/hooks";
-import { useState } from "react";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
-import { GameTextWriter, ShortenText } from "../../GameTextWriter/GameTextWriter";
-import {
-  ReviewLike,
-  ReviewLikeDel,
-  ReviewDislikeDel,
-  ReviewDislike,
-  useReviewComment,
-} from "../../../../../hooks/useGameReview";
+import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
+import { useReviewComment } from "../../../../../hooks/useGameReview";
 import useAuth from "../../../../../hooks/useAuth";
+import {
+  DelGameReviewDislike,
+  DelGameReviewLike,
+  PostGameReviewDislike,
+  PostGameReviewLike,
+} from "../../../../../utils/api/game/gameReview/GameReviewLike";
+import { GameReview } from "../../../../../types/api/game/gameReview";
+import { useContext } from "react";
+import { GameReviewSectionContext, authorPlaytime } from "../GameReviewSection";
+import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 
-export function GameReview(data: {
-  content: string;
-  id: string;
-  like: number;
-  dislike: number;
-  gameId: string | undefined;
-}) {
+export interface GameReviewProps {
+  gameId: string;
+  data: GameReview;
+}
+
+export function GameReview({ gameId, data }: GameReviewProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
-  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
-  console.log("좋아요!", data.like == 0 ? data.like : "아직이야");
 
-  console.log("근데 이건 왜?", data.id ? data.id : "아직이야");
   const { token } = useAuth();
+  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+
   const {
     data: commentData,
     setSize: setCommentSize,
     isLast: isLastComment,
     isLoading: isCommentLoading,
     mutate: mutateComment,
-  } = useReviewComment(data.gameId, data.id);
-  // 자세히 보기 관련 로직
-  const [shortenedText, isShorten] = ShortenText({
-    text: data.content,
-    length: smallScreen ? 70 : 200,
-  });
-  const [viewMore, setViewMore] = useState<boolean>(false);
+  } = useReviewComment(gameId, data.id);
+
+  // console.log(findPlaytimeById(data.author.playtimes, gameId));
+  console.log(data.author);
 
   // 후기 좋아요 싫어요 관련 로직
-  const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
-  const handleGoodState = () => {
-    if (goodBadstate.good) {
-      ReviewLikeDel(data.gameId, data.id, token);
+  const handleLike = () => {
+    if (data.like) {
+      DelGameReviewLike(gameId, data.id, token).then(() => {
+        mutateGameReview();
+        if (data.author.email === token) {
+          mutateGameReviewMine();
+        }
+      });
     } else {
-      ReviewLike(data.gameId, data.id, token);
-    }
-
-    setGoodBadState({ good: !goodBadstate.good });
-    if (!goodBadstate.good && goodBadstate.bad) {
-      setGoodBadState({ bad: !goodBadstate.bad });
+      PostGameReviewLike(gameId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.dislike) {
+          DelGameReviewDislike(gameId, data.id, token).then(() => {
+            mutateGameReview();
+            if (data.author.email === token) {
+              mutateGameReviewMine();
+            }
+          });
+        } else {
+          mutateGameReview();
+          if (data.author.email === token) {
+            mutateGameReviewMine();
+          }
+        }
+      });
     }
   };
-  const handleBadState = () => {
-    if (goodBadstate.bad) {
-      ReviewDislikeDel(data.gameId, data.id, token);
-    } else {
-      ReviewDislike(data.gameId, data.id, token);
-    }
 
-    setGoodBadState({ bad: !goodBadstate.bad });
-    if (goodBadstate.good && !goodBadstate.bad) {
-      setGoodBadState({ good: !goodBadstate.good });
+  const handleDislike = () => {
+    if (data.dislike) {
+      DelGameReviewDislike(gameId, data.id, token).then(() => {
+        mutateGameReview();
+        if (data.author.email === token) {
+          mutateGameReviewMine();
+        }
+      });
+    } else {
+      PostGameReviewDislike(gameId, data.id, token).then(() => {
+        // 좋아요 싫어요 동시 선택이 안되도록
+        if (data.like) {
+          DelGameReviewLike(gameId, data.id, token).then(() => {
+            mutateGameReview();
+            if (data.author.email === token) {
+              mutateGameReviewMine();
+            }
+          });
+        } else {
+          mutateGameReview();
+          if (data.author.email === token) {
+            mutateGameReviewMine();
+          }
+        }
+      });
     }
   };
 
@@ -107,46 +134,32 @@ export function GameReview(data: {
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
             <Stack spacing={"0.2rem"}>
-              <Text fz={smallScreen ? 14 : 18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
+              <Text fz={smallScreen ? 14 : 18}>{data.author.name}</Text>
               <Text fz={smallScreen ? 12 : 14} color={theme.colors.blue[4]}>
-                15일 동안 30시간 플레이
+                {authorPlaytime(data.author.playtime)}
               </Text>
             </Stack>
           </Group>
           <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-            15일 전
+            {getRelativeTime(data.createdAt)}
           </Text>
         </Group>
         {/* 후기 내용 */}
         <Stack className={classes.marginLeft} spacing={0}>
           <TypographyStylesProvider className={classes.reviewTypo}>
-            {!viewMore && (
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: shortenedText,
-                }}
-              />
-            )}
-            {viewMore && (
+            <Spoiler
+              maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
+              showLabel="자세히 보기"
+              hideLabel="숨기기"
+            >
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
                   __html: data.content,
                 }}
               />
-            )}
+            </Spoiler>
           </TypographyStylesProvider>
-          {isShorten && !viewMore && (
-            <UnstyledButton
-              className={classes.viewMoreButton}
-              fz={smallScreen ? 14 : 16}
-              c={theme.colors.gray[4]}
-              onClick={() => setViewMore(true)}
-            >
-              자세히 보기
-            </UnstyledButton>
-          )}
         </Stack>
         {/* 후기 하단 버튿들 */}
         <Group className={classes.marginLeft} position="apart">
@@ -166,15 +179,15 @@ export function GameReview(data: {
               size="xs"
               variant="outline"
               color="dark"
-              onClick={handleGoodState}
+              onClick={handleLike}
             >
               <Group spacing={"xs"}>
-                {goodBadstate.good ? (
+                {data.like ? (
                   <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 ) : (
                   <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                {data.like + ""}
+                <Text>{data.likeCount}</Text>
               </Group>
             </Button>
             <Button
@@ -182,15 +195,15 @@ export function GameReview(data: {
               size="xs"
               variant="outline"
               color="dark"
-              onClick={handleBadState}
+              onClick={handleDislike}
             >
               <Group spacing={"xs"}>
-                {goodBadstate.bad ? (
+                {data.dislike ? (
                   <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 ) : (
                   <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
                 )}
-                {data.dislike + ""}
+                <Text>{data.dislikeCount}</Text>
               </Group>
             </Button>
           </Group>
@@ -210,8 +223,8 @@ export function GameReview(data: {
               {canReview && (
                 <GameTextWriter
                   placeholder={"후기에 답글을 달아보세요."}
-                  id={data.gameId}
-                  commentid={data.id}
+                  gameId={gameId}
+                  commentId={data.id}
                 />
               )}
               {!canReview && (
@@ -236,9 +249,6 @@ export function GameReview(data: {
               />
             ));
           })}
-          {/* <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} /> */}
         </Collapse>
       </Stack>
     </Box>

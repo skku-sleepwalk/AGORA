@@ -11,11 +11,13 @@ export interface StoreData {
   deletedAt: Date;
   cost: Cost | undefined;
 }
+
 export interface Information {
   id: string;
   description: string;
   specification: string;
 }
+
 export interface GameStore {
   data: {
     id: string;
@@ -79,75 +81,6 @@ export interface PlayTimeRelation {
 export interface GetStoreListResponse {
   data: {
     data: GameStore[];
-    cursor: {
-      afterCursor: string | null;
-      beforeCursor: string | null;
-    };
-  };
-}
-//여기부터 review
-
-export interface Review {
-  id: string;
-  content: string;
-  rating: number;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
-  author: {
-    id: string;
-    name: string;
-    email: string;
-    description: string;
-    token: number;
-    rating: number;
-    totalPlaytime: number;
-    playtime: number;
-  };
-  likeCount: number;
-  dislikeCount: number;
-  like: boolean;
-  dislike: boolean;
-}
-export interface ReviewResponse {
-  data: null;
-} //이거 맞는지 모르겠다
-export interface GetReviewListResponse {
-  data: {
-    data: Review[];
-    cursor: {
-      afterCursor: string | null;
-      beforeCursor: string | null;
-    };
-  };
-}
-
-export interface Review {
-  id: string;
-  content: string;
-
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string;
-  author: {
-    id: string;
-    name: string;
-    email: string;
-    description: string;
-    token: number;
-    rating: number;
-    createdAt: string;
-    updatedAt: string;
-    deletedAt: string;
-  };
-  like: boolean;
-  dislike: boolean;
-  likeCount: number;
-  dislikeCount: number;
-}
-export interface GetReviewCommentListResponse {
-  data: {
-    data: ReviewComment[];
     cursor: {
       afterCursor: string | null;
       beforeCursor: string | null;

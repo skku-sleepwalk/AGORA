@@ -4,9 +4,12 @@ import { showNotification } from "../../../../utils/notifications";
 import { IconSend } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useMediaQuery } from "@mantine/hooks";
-import { useState } from "react";
-import { uploadReview, uploadReviewComment } from "../../../../hooks/useGameReview";
+import { useContext, useState } from "react";
 import useAuth from "../../../../hooks/useAuth";
+import { patchGameReview } from "../../../../utils/api/game/gameReview/patchGameReview";
+import { GameReviewSectionContext } from "../GameReviewSection/GameReviewSection";
+import { PostGameReview } from "../../../../utils/api/game/gameReview/postGameReview";
+import { PostGameReviewComment } from "../../../../utils/api/game/gameReview/postGameReviewComment";
 
 export function HandleText(text: string): string {
   // 정규식을 사용하여 줄바꿈 문자를 <br> 태그로 바꿉니다.
@@ -15,69 +18,53 @@ export function HandleText(text: string): string {
   return handledText;
 }
 
-export interface shortenTextProps {
-  text: string;
-  length: number;
-}
-
-export function ShortenText({ text, length }: shortenTextProps): [string, boolean] {
-  if (text.length <= length) {
-    return [text, false];
-  }
-
-  const lines = text.split("<br/>"); // br 태그를 기준으로 문자열을 split
-  let shortenedText = "";
-  let currentLength = 0;
-
-  for (const line of lines) {
-    if (line.length + currentLength <= length) {
-      // 현재 줄에 더해서 제한 글자 수를 넘지 않으면 해당 줄을 그대로 추가
-      shortenedText += line + "<br/>";
-      currentLength += line.length;
-    } else {
-      // 현재 줄에 더해서 제한 글자 수를 넘어가면 일부만 추가 (br태그가 끊기지 않도록 중간에 -5 실행)
-      const remainLength = length - currentLength - 5;
-      if (remainLength > 0) {
-        shortenedText += line.substring(0, remainLength);
-      }
-
-      break; // 제한 글자 수로 맞춤
-    }
-  }
-
-  return [shortenedText + "...", true];
-}
-
 export interface GameTextWriterProps {
-  onSaveClick?: () => void;
   placeholder: string;
-  id: string;
-  commentid?: string | undefined;
+  gameId: string;
+  commentId?: string | undefined;
+  content?: string;
 }
 
-export function GameTextWriter({ onSaveClick, placeholder, id, commentid }: GameTextWriterProps) {
+export function GameTextWriter({ placeholder, gameId, commentId, content }: GameTextWriterProps) {
   const theme = useMantineTheme();
 
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes } = useGameTextWriterStyles({ smallScreen });
-  const [textAreaValue, setTextAreaValue] = useState("");
+
   const { token } = useAuth();
+  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+
+  const [textAreaValue, setTextAreaValue] = useState(content ? content : "");
+
   const handleSubmit = (event: any) => {
     event.preventDefault();
     // 여기에서 폼이 제출되었을 때 처리할 작업을 수행합니다.
-    if (commentid) {
-      uploadReviewComment({ content: textAreaValue }, id, commentid, token).then(() => {
+    if (content) {
+      // 게임 리뷰 PATCH
+      patchGameReview({
+        gameId: gameId,
+        data: { content: textAreaValue, rating: 0 },
+        token: token,
+      }).then(() => {
         setTextAreaValue("");
+        mutateGameReviewMine();
+        showNotification("후기 수정 완료!", "후기가 정상적으로 수정되었습니다.");
+      });
+    } else if (commentId) {
+      // 게임 리뷰 댓글 POST
+      PostGameReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
+        setTextAreaValue("");
+        showNotification("댓글 등록 완료!", "댓글이 정상적으로 수정되었습니다.");
       });
     } else {
-      uploadReview({ content: textAreaValue, rating: 5 }, id, token).then(() => {
+      // 게임 리뷰 POST
+      PostGameReview({ content: textAreaValue, rating: 5 }, gameId, token).then(() => {
         setTextAreaValue("");
+        mutateGameReview();
+        mutateGameReviewMine();
+        showNotification("후기 등록 완료!", "후기가 정상적으로 등록되었습니다.");
       });
     }
-
-    // 예시로 콘솔에 textarea의 값만 출력하도록 했습니다.
-    // 폼 제출 후 다른 작업을 수행하고 싶다면 여기에 코드를 추가하면 됩니다.
-    console.log("Textarea value:", textAreaValue);
   };
 
   return (
@@ -103,9 +90,6 @@ export function GameTextWriter({ onSaveClick, placeholder, id, commentid }: Game
             } else {
               // 꼭 HandleText 함수 실행 후에 서버에 저장할 것!
               setTextAreaValue(HandleText(inputText));
-              //왜필요한지 모르겠어서 지움
-
-              onSaveClick !== undefined ? onSaveClick() : null;
             }
           }}
         >
