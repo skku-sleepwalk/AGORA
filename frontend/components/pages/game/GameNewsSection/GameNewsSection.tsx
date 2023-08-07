@@ -4,7 +4,7 @@ import { GameNews } from "./GameNews/GameNews";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconPlus } from "@tabler/icons-react";
-import { TabClicklContext } from "../../../../pages/game/[id]";
+import { GameTabClicklContext } from "../../../../pages/game/[id]";
 import { useContext } from "react";
 
 export function GameNewsSection() {
@@ -13,7 +13,7 @@ export function GameNewsSection() {
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({ notice: false, update: false, develop: false });
-  const handleScroll = useContext(TabClicklContext);
+  const handleScroll = useContext(GameTabClicklContext);
 
   return (
     <Stack spacing={"xl"} className={classes.all}>
