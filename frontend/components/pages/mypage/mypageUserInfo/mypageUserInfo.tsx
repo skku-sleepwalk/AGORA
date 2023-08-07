@@ -14,18 +14,17 @@ export function MypageUserInfo() {
         radius={0}
         src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbQro8K%2FbtqDvh5lVQm%2FO765YYrxZwDO8mtY59Zo80%2Fimg.jpg"
       >
-        <Group className={classes.group} spacing={"xl"}>
+        <Group className={classes.group}>
           <Avatar
+            className={classes.avatar}
             src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1Tg4y%2FbtqDurHhxax%2FrFjK7yUIuO0fwMsZsvubU0%2Fimg.jpg"
-            w={"9rem"}
-            h={"9rem"}
             radius="50%"
           />
           <Stack>
-            <Text color="white" fz={"2.5rem"}>
+            <Text className={classes.username} color="white">
               {user?.name}
             </Text>
-            <Text color="white" fz={"1.4rem"}>
+            <Text className={classes.userinfo} color="white">
               팔로워 7명
             </Text>
           </Stack>

@@ -9,6 +9,7 @@ export const useMypageLayoutStyles = createStyles((theme) => ({
 
   userInfoContainer: {
     width: "100%",
+    aspectRatio: "45 / 8",
     height: "auto",
   },
 
