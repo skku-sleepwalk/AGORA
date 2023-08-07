@@ -109,7 +109,7 @@ function PostWriter() {
         >
           <FocusTrap active={opened}>
             <Stack className={classes.editorContainer} spacing={17}>
-              <UserInfo user={user!} />
+              {user && <UserInfo user={user} />}
               <TextInput
                 placeholder="멋진 제목을 입력해주세요."
                 data-autofocus
