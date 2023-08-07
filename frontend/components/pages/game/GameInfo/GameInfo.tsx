@@ -2,7 +2,7 @@ import { Stack, Text, TypographyStylesProvider } from "@mantine/core";
 import { useGameInfoStyles } from "./GameInfo.styles";
 import { useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { GameStore } from "../../../../types/api/store";
+import { GameStore } from "../../../../types/api/game/gameStore";
 import { KeyedMutator } from "swr";
 interface GameDataProps {
   postData: GameStore | undefined;

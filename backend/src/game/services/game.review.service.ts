@@ -77,12 +77,12 @@ export class GameReviewService {
         : false
       : false;
 
-    // 사용자의 플레이타임 정보를 가져와서 리뷰 정보에 추가
-    const playtime = (
-      await this.playTimeRepository.findOne({
-        where: { user: { email: userEmail }, game: { id: review.game.id } },
-      })
-    ).playtime;
+    // 작성자의 플레이타임 정보를 가져와서 리뷰 정보에 추가
+    const playtimeRelation = await this.playTimeRepository.findOne({
+      where: { user: { id: review.author.id }, game: { id: review.game.id } },
+    });
+    console.log(playtimeRelation);
+    const playtime = playtimeRelation.playtime;
 
     // 리뷰 정보를 GameReviewDto 형태로 반환
     return {

@@ -8,7 +8,7 @@ import { Rating } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";
-import { GameStore } from "../../../../types/api/store";
+import { GameStore } from "../../../../types/api/game/gameStore";
 import Link from "next/link";
 export interface PostViewerProps {
   post: GameStore;

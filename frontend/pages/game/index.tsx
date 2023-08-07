@@ -2,7 +2,7 @@ import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
 import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
-import useStoreList from "../../hooks/useStoreList";
+import useGameStoreList from "../../hooks/useGameStoreList";
 import { useRouter } from "next/router";
 import { createContext } from "react";
 import { useEffect } from "react";
@@ -22,7 +22,7 @@ export default function Main() {
     setSize: setPostSize,
     mutate: mutatePost,
     isEmpty,
-  } = useStoreList({
+  } = useGameStoreList({
     name: name ? name : undefined,
     // name.toString()
     //여기 tostring 에러 가능성 있음

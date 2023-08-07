@@ -4,7 +4,7 @@ import { useGameRightSideStyles } from "./GameRightSide.styles";
 import { useSetState } from "@mantine/hooks";
 
 import { useRef } from "react";
-import { GameStore } from "../../../../types/api/store";
+import { GameStore } from "../../../../types/api/game/gameStore";
 import { KeyedMutator } from "swr";
 interface GameDataProps {
   postData: GameStore | undefined;

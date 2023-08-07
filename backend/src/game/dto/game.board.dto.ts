@@ -49,7 +49,7 @@ export class GameBoardDto extends PickType(GameBoard, [
   @IsNumber()
   likeCount?: number;
 
-  @ApiProperty({ description: '좋아요 관계', type: () => Array<UserDto> })
+  @ApiProperty({ description: '좋아요 ', type: Boolean, example: true })
   @IsNotEmpty()
   @IsBoolean()
   like?: boolean;

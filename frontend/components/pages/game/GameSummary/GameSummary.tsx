@@ -18,7 +18,7 @@ import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
-import { GameStore } from "../../../../types/api/store";
+import { GameStore } from "../../../../types/api/game/gameStore";
 import useAuth from "../../../../hooks/useAuth";
 interface GameDataProps {
   postData: GameStore | undefined;

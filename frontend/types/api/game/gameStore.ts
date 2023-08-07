@@ -1,4 +1,4 @@
-import { User } from "./user";
+import { User } from "../user";
 
 export interface StoreData {
   id: string;
@@ -79,7 +79,7 @@ export interface PlayTimeRelation {
   gameStore: GameStore;
 }
 
-export interface GetStoreListResponse {
+export interface GetGameStoreListResponse {
   data: {
     data: GameStore[];
     cursor: {

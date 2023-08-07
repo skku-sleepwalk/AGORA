@@ -57,12 +57,6 @@ export class GameBoardLikeService {
     gameId: string,
     boardId: string,
   ) {
-    const like = await this.gameBoardLikeRepository.findOne({
-      where: {
-        user: { email: userEmail },
-        board: { id: boardId, game: { id: gameId } },
-      },
-    });
     const user = userEmail
       ? await this.userRepository.findOne({
           where: { email: userEmail },
@@ -81,6 +75,12 @@ export class GameBoardLikeService {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
 
+    const like = await this.gameBoardLikeRepository.findOne({
+      where: {
+        user: { email: userEmail },
+        board: { id: boardId, game: { id: gameId } },
+      },
+    });
     if (!like) {
       throw new NotFoundException('좋아요를 찾을 수 없습니다.');
     }
