@@ -166,7 +166,7 @@ export class GameBoardController {
     @Param('gameId') gameId: string,
     @Param('boardId') boardId: string,
   ) {
-    this.gameBoardService.getOneGameBoard(userEmail, gameId, boardId);
+    return this.gameBoardService.getOneGameBoard(userEmail, gameId, boardId);
   }
 
   @ApiOperation({ summary: '게시글 수정' })

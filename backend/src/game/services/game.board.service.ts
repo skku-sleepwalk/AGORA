@@ -246,6 +246,7 @@ export class GameBoardService {
       '(board.gameId = :gameId) AND (categories.name IN (:...categoryNames)) AND (board.title LIKE :search OR board.content LIKE :search)',
       { gameId, categoryNames, search: `%${search}%` },
     );
+
     const queryBuilder =
       boardType === 'parent'
         ? _queryBuilder.andWhere('board.parentId IS NULL')
