@@ -3,6 +3,7 @@ import { MypageTab } from "../components/pages/mypage/mypageTab/mypageTab";
 import { MypageUserInfo } from "../components/pages/mypage/mypageUserInfo/mypageUserInfo";
 import { Box } from "@mantine/core";
 import MypageLayout from "../components/pages/mypage/mypageLayout/mypageLayout";
+import { MypagePlaytimesSection } from "../components/pages/mypage/mypagePlaytimesSecion/mypagePlaytimesSection";
 
 export const MypageTabClicklContext = createContext({
   ontabClick: () => {},
@@ -28,7 +29,8 @@ function Main() {
         anchorSection={<div ref={tabRef}></div>}
         tabSection={<MypageTab activeTab={activeTab} setActiveTab={setActiveTab} />}
       >
-        <Box h={"50rem"}></Box>
+        {activeTab === "playtimes" && <MypagePlaytimesSection />}
+        {activeTab === "myPosts" && <Box h={"40rem"}></Box>}
       </MypageLayout>
     </MypageTabClicklContext.Provider>
   );
