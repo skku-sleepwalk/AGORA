@@ -9,6 +9,7 @@ import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";
 import { GameStore } from "../../../../types/api/store";
+import Link from "next/link";
 export interface PostViewerProps {
   post: GameStore;
   thumbnailUrl?: string;
@@ -79,67 +80,69 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
   const newarray = namesArray?.join(",");
   console.log(post.store?.cost);
   return (
-    <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
-      <Text size="xs" color="gray" style={margins}>
-        {newarray}
-      </Text>
-      {/* 여기 맵이든 뭐든 해야할듯 */}
+    <Link href={`/game/${post.id}`} style={{ textDecoration: "none", color: "black" }}>
+      <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>
+        <Text size="xs" color="gray" style={margins}>
+          {newarray}
+        </Text>
+        {/* 여기 맵이든 뭐든 해야할듯 */}
 
-      <Text font-weight="bold" size={20} style={margins}>
-        {post.title}
-      </Text>
+        <Text font-weight="bold" size={20} style={margins}>
+          {post.store.title}
+        </Text>
 
-      <Group spacing="9rem" align="flex-start" style={margins}>
-        <UserInfoSmall user={post.author} />
-        <Group spacing={0}>
-          <Group spacing={5} style={{ marginRight: "1rem" }}>
-            <IconHeart size={15} stroke={1.3} />
-            <Text size={"xs"}>({post.likeCount})</Text>
+        <Group spacing="9rem" align="flex-start" style={margins}>
+          <UserInfoSmall user={post.author} />
+          <Group spacing={0}>
+            <Group spacing={5} style={{ marginRight: "1rem" }}>
+              <IconHeart size={15} stroke={1.3} />
+              <Text size={"xs"}>({post.likeCount})</Text>
+            </Group>
           </Group>
         </Group>
-      </Group>
-      <Group>
-        {post.store.cost?.isSale ? (
-          <Text
-            style={{ marginLeft: "190px" }}
-            align="right"
-            td="line-through"
-            c="gray"
-            size={"md"}
-          >
-            \{post.store?.cost?.defaultPrice}
-          </Text>
-        ) : null}
-      </Group>
-      <div style={{ marginRight: "1rem" }}>
-        {post.store.cost?.isFree ? (
-          <Text align="right" size={"lg"}>
-            FREE
-          </Text>
-        ) : post.store.cost?.isSale ? (
-          <Group style={{ paddingLeft: "124px" }}>
-            <Text style={{ backgroundColor: "#F1A2A2" }}>-{post.store.cost.salePercentage}%</Text>
-            <Text size={"lg"}>\{post.store?.cost?.saledPrice}</Text>
-          </Group>
-        ) : (
-          <Text align="right" size={"lg"}>
-            \{post.store?.cost?.defaultPrice}
-          </Text>
-        )}
-      </div>
-      <div style={containerStyle}>
-        <img src={post.shortImgUrl} height={"400rem"} />
-        {/* hover 시에 반투명 창과 텍스트를 떠오르게 표시합니다. */}
-        {isHovered && (
-          <div>
-            <div style={overlayStyle}></div>
-            <div style={overlayStyle2}>
-              <p>{post.shortContent}</p>
-              {/* 추가적인 텍스트 또는 아이콘 등을 넣을 수 있습니다. */}
+        <Group>
+          {post.store.cost?.isSale ? (
+            <Text
+              style={{ marginLeft: "190px" }}
+              align="right"
+              td="line-through"
+              c="gray"
+              size={"md"}
+            >
+              \{post.store?.cost?.defaultPrice}
+            </Text>
+          ) : null}
+        </Group>
+        <div style={{ marginRight: "1rem" }}>
+          {post.store.cost?.isFree ? (
+            <Text align="right" size={"lg"}>
+              FREE
+            </Text>
+          ) : post.store.cost?.isSale ? (
+            <Group style={{ paddingLeft: "124px" }}>
+              <Text style={{ backgroundColor: "#F1A2A2" }}>-{post.store.cost.salePercentage}%</Text>
+              <Text size={"lg"}>\{post.store?.cost?.saledPrice}</Text>
+            </Group>
+          ) : (
+            <Text align="right" size={"lg"}>
+              \{post.store?.cost?.defaultPrice}
+            </Text>
+          )}
+        </div>
+        <div style={containerStyle}>
+          <img src={post.shortImgUrl} height={"400rem"} />
+          {/* hover 시에 반투명 창과 텍스트를 떠오르게 표시합니다. */}
+          {isHovered && (
+            <div>
+              <div style={overlayStyle}></div>
+              <div style={overlayStyle2}>
+                <p>{post.shortContent}</p>
+                {/* 추가적인 텍스트 또는 아이콘 등을 넣을 수 있습니다. */}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </CardContainer>
+          )}
+        </div>
+      </CardContainer>
+    </Link>
   );
 }

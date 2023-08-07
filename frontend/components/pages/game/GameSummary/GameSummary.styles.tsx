@@ -135,7 +135,8 @@ export const useGameSummaryStyles = createStyles((theme) => ({
   },
 
   sellButton: {
-    width: "17rem",
+    // width: "17rem",
+    width: "8rem",
     height: "4.7rem",
     flexGrow: 1,
   },

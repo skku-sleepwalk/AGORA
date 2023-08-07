@@ -15,13 +15,20 @@ import { IconBookmark, IconHeart, IconMessages, IconShare } from "@tabler/icons-
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 import { GameBoardDetailViewer } from "../GameBoardDetailViewer/GameBoardDetailViewer";
+import { GameBoard } from "../../../../../types/api/game/gameBoard";
+import { extractImageSrc } from "../../../../../utils/api/ViewPhotos";
 
-export function GameBoard() {
+export interface GameBoardProps {
+  post: GameBoard;
+}
+
+export function GameBoard({ post }: GameBoardProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardStyles({ smallScreen });
   const theme = useMantineTheme();
 
-  const isImage = true;
+  const thumbnailUrl = extractImageSrc(post.content)[0];
+  const isImage = thumbnailUrl != "";
 
   return (
     <UnstyledButton onClick={() => {}}>
@@ -35,7 +42,7 @@ export function GameBoard() {
               size={smallScreen ? 20 : 30}
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
-            <Text fz={smallScreen ? 12 : 14}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
+            <Text fz={smallScreen ? 12 : 14}>{post.author.name}</Text>
           </Group>
           <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
             15일 전
@@ -46,25 +53,25 @@ export function GameBoard() {
           <Stack className={classes.boardStack} spacing={"xs"}>
             <Group spacing={"xs"}>
               <Text fz={smallScreen ? 14 : 18} fw={"bold"}>
-                내가 세계에서 제일 귀엽고 이쁨 ^^
+                {post.title}
               </Text>
             </Group>
             <TypographyStylesProvider className={classes.newsTypo}>
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
-                  __html: MOCKUP_CONTENT,
+                  __html: post.content,
                 }}
               />
             </TypographyStylesProvider>
             <Group className={classes.footerGroup} spacing={"sm"}>
               <Group spacing={"0.3rem"}>
                 <IconMessages stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                <Text fz={14}>1</Text>
+                <Text fz={14}>{post.childCount}</Text>
               </Group>
               <Group spacing={"0.3rem"}>
                 <IconHeart stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                <Text fz={14}>2</Text>
+                <Text fz={14}>{post.likeCount}</Text>
               </Group>
               <InvisibleButton>
                 <IconShare stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
@@ -80,7 +87,7 @@ export function GameBoard() {
               radius={"lg"}
               width={smallScreen ? "6rem" : "8rem"}
               height={smallScreen ? "6rem" : "8rem"}
-              src={"https://cdn.class101.net/images/171f6948-4553-4cd4-9fcd-98f9dd61c547/1200x630"}
+              src={thumbnailUrl}
             />
           )}
         </Group>

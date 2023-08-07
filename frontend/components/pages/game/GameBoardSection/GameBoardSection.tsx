@@ -17,8 +17,17 @@ import { CustomNativeSelect } from "../../../common/CustomNativeSelect/CustomNat
 import { GameBoard } from "./GameBoard/GameBoard";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { GameBoardWriter } from "./GameBoardWriter/GameBoardWriter";
+import useGameBoardList from "../../../../hooks/useGameBoardList";
+import { GameBoardCategory } from "../../../../constants/category";
+import { useRouter } from "next/router";
 
-export function GameBoardSection() {
+export interface GameBoardSectionProps {
+  gameName: string;
+  developerName: string;
+  gameId: string;
+}
+
+export function GameBoardSection({ gameName, developerName, gameId }: GameBoardSectionProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardSectionStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -27,6 +36,20 @@ export function GameBoardSection() {
   const [lineUpValue, setLineUpValue] = useState("최신순");
 
   const [opened, { open, close }] = useDisclosure(false);
+  const [search, setSearch] = useState("");
+  const {
+    data: postData,
+    isLoading: isPostLoading,
+    setSize: setPostSize,
+    mutate: mutatePost,
+    isEmpty,
+  } = useGameBoardList(sectionValue === "전체 보기" ? GameBoardCategory : [sectionValue], gameId, {
+    search: search,
+    boardType: "parent",
+  });
+
+  const router = useRouter();
+  const board = router.query.board?.toString();
 
   return (
     <>
@@ -53,7 +76,7 @@ export function GameBoardSection() {
           </Group>
         }
       >
-        <GameBoardWriter opened close={close} />
+        <GameBoardWriter opened close={close} gameId={gameId} />
       </Modal>
       <Stack spacing={"xl"} className={classes.all}>
         <Text fz={smallScreen ? 28 : 32}>게시판</Text>
@@ -62,15 +85,15 @@ export function GameBoardSection() {
           <Stack className={classes.stack}>
             {/* 게임 타이틀 */}
             <Stack spacing={"0.3rem"}>
-              <Title order={smallScreen ? 2 : 1}>Stardew Valley</Title>
+              <Title order={smallScreen ? 2 : 1}>{gameName}</Title>
               <Text fz={smallScreen ? 14 : 18} fw={"bold"} color={theme.colors.gray[5]}>
-                Concerned Ape
+                {developerName}
               </Text>
             </Stack>
             {/* 정렬 설정 */}
             <Group className={classes.selectGroup} position="apart">
               <CustomNativeSelect
-                data={["전체 보기", "공지사항", "업데이트", "개발일지", "리뷰", "공략", "뻘글"]}
+                data={["전체 보기", ...GameBoardCategory]}
                 defaultValue={sectionValue}
                 onChange={(value) => {
                   setSectionValue(value);
@@ -95,6 +118,10 @@ export function GameBoardSection() {
                   </InvisibleButton>
                 }
                 placeholder="원하는 글을 검색해보세요."
+                value={search}
+                onChange={(event) => {
+                  setSearch(event.currentTarget.value);
+                }}
               />
               <InvisibleButton className={classes.writeButton} onClick={open}>
                 <Group spacing={"0.2rem"}>
@@ -106,9 +133,15 @@ export function GameBoardSection() {
               </InvisibleButton>
             </Group>
             {/* 게시글 파트 */}
-            <GameBoard />
-            <GameBoard />
-            <GameBoard />
+            {isEmpty ? (
+              <Text color={theme.colors.gray[4]}>작성된 게시글이 없습니다.</Text>
+            ) : (
+              postData?.map((data) => {
+                return data.data.data.map((post) => {
+                  return <GameBoard key={post.id} post={post} />;
+                });
+              })
+            )}
           </Stack>
         </CardContainer>
       </Stack>

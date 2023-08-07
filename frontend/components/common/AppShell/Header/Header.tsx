@@ -37,10 +37,7 @@ export function Header({ links }: HeaderProps) {
           </Group>
         </Group>
         <Group>
-          <UserMenu
-            image="https://avatars.githubusercontent.com/u/52057157?v=4"
-            name="개발자자님"
-          />
+          <UserMenu image="https://avatars.githubusercontent.com/u/52057157?v=4" name="루카스" />
         </Group>
       </Group>
     </MantineHeader>

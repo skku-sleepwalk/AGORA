@@ -6,6 +6,7 @@ export interface StoreData {
   distributor: string;
   developer: string;
   snsUrls: SNSUrls | undefined;
+  imgUrls: Array<string>;
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

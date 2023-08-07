@@ -14,7 +14,7 @@ export const StoreContext = createContext({
 export default function Main() {
   const router = useRouter();
 
-  const name = "FPS";
+  const name = "퍼즐";
   // router.query.name
   const {
     data: postData,

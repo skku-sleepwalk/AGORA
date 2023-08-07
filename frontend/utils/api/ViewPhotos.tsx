@@ -27,8 +27,8 @@ export function extractImageSrc(html: string) {
 }
 
 // thumbnailUrl를 추출하는 함수
-export function extractThumbnailUrl ( post : Board) {
-  if (extractImageSrc(post.content)[0] != '') {
+export function extractThumbnailUrl(post: Board) {
+  if (extractImageSrc(post.content)[0] != "") {
     return extractImageSrc(post.content)[0];
   }
   return undefined;
@@ -37,5 +37,5 @@ export function extractThumbnailUrl ( post : Board) {
 // html 문자열에서 img 태그를 제거하는 함수
 export function removeImgTags(html: string): string {
   const imgRegex = /<img\b[^>]*>/gi;
-  return html.replace(imgRegex, '');
+  return html.replace(imgRegex, "");
 }

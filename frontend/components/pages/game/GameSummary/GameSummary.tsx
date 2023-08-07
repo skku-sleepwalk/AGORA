@@ -19,6 +19,7 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
 import { GameStore } from "../../../../types/api/store";
+import useAuth from "../../../../hooks/useAuth";
 interface GameDataProps {
   postData: GameStore | undefined;
   loading?: boolean;
@@ -32,6 +33,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   const [opened, { open, close }] = useDisclosure(false);
   const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const { token } = useAuth();
 
   const createstring = postData?.data.createdAt;
   console.log("데이터:", typeof postData?.data.createdAt);
@@ -81,6 +83,15 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
     setIsOverflowed(checkOverflow());
   }, []);
   // console.log({ storeData });
+
+  const onDownloadClick = () => {
+    window.open(`agoragame://install?id=${postData?.data.id}&token=${token}`, "_blank");
+  };
+
+  const onPlayClick = () => {
+    window.open(`agoragame://execute?id=${postData?.data.id}&token=${token}`, "_blank");
+  };
+
   return (
     <>
       <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
@@ -238,18 +249,27 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
           </Group>
         )}
         {true && (
-          <Button className={cx(classes.marginLeft, classes.sellButton)} w={"100%"}>
-            <Stack spacing={"sm"}>
-              <Center>
-                <Text fz={28}>게임 시작</Text>
-              </Center>
-              <Center>
-                <Text fz={12} fw={"normal"}>
-                  마지막 플레이 2분 전
-                </Text>
-              </Center>
-            </Stack>
-          </Button>
+          <Group className={classes.marginLeft} position="apart">
+            <Button className={cx(classes.sellButton)} onClick={onDownloadClick}>
+              <Stack spacing={"sm"}>
+                <Center>
+                  <Text fz={28}>게임 다운로드</Text>
+                </Center>
+              </Stack>
+            </Button>
+            <Button className={cx(classes.sellButton)} onClick={onPlayClick}>
+              <Stack spacing={"sm"}>
+                <Center>
+                  <Text fz={28}>게임 시작</Text>
+                </Center>
+                <Center>
+                  <Text fz={12} fw={"normal"}>
+                    마지막 플레이 2분 전
+                  </Text>
+                </Center>
+              </Stack>
+            </Button>
+          </Group>
         )}
       </Stack>
     </>

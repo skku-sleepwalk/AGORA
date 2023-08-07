@@ -75,7 +75,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   href={postData?.data.store.snsUrls?.twitter}
                   c={theme.colors.gray[6]}
                 >
-                  파랑새
+                  Twitter
                 </Text>
               </Stack>
             )}
@@ -88,7 +88,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   href={postData?.data.store.snsUrls?.instagram}
                   c={theme.colors.gray[6]}
                 >
-                  인별
+                  Instagram
                 </Text>
               </Stack>
             )}
@@ -101,7 +101,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   href={postData?.data.store.snsUrls?.facebook}
                   c={theme.colors.gray[6]}
                 >
-                  얼굴책
+                  Facebook
                 </Text>
               </Stack>
             )}
@@ -114,7 +114,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   href={postData?.data.store.snsUrls?.youtube}
                   c={theme.colors.gray[6]}
                 >
-                  유*브
+                  Youtube
                 </Text>
               </Stack>
             )}
@@ -127,7 +127,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   href={postData?.data.store.snsUrls?.twitch}
                   c={theme.colors.gray[6]}
                 >
-                  트*치
+                  Twitch
                 </Text>
               </Stack>
             )}

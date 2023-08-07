@@ -36,9 +36,10 @@ function processString(input: string): string {
 interface MainCarouselProps {
   isMain?: boolean;
   isInfo?: boolean;
+  imgUrls?: string[];
 }
 
-export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
+export function MainCarousel({ isMain, isInfo, imgUrls }: MainCarouselProps) {
   // 배경 이미지 내부, 태그들의 크기/위치 자동 조절 용
   const widthRef = useRef<HTMLAnchorElement>(null);
   const [width, setWidth] = useState<number>(1440);
@@ -56,7 +57,7 @@ export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
 
   const autoplay = useRef(emblaCarouselAutoplay({ delay: 4000 }));
 
-  const [values] = useListState(GameSrcValues);
+  const [values] = useListState(imgUrls?.map((url) => ({ src: url })) || GameSrcValues);
 
   const GameCarouselSlides = values.map((value) => (
     <Carousel.Slide>
