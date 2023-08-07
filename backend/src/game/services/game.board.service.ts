@@ -284,6 +284,7 @@ export class GameBoardService {
       userEmail,
       await this.gameBoardRepository.findOne({
         where: { id: boardId, game: { id: gameId } },
+        relations: ['author', 'categories', 'parent'],
       }),
     );
     if (!board) {
