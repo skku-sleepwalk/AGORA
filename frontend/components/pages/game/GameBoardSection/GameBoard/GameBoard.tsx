@@ -17,21 +17,31 @@ import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton"
 import { GameBoardDetailViewer } from "../GameBoardDetailViewer/GameBoardDetailViewer";
 import { GameBoard } from "../../../../../types/api/game/gameBoard";
 import { extractImageSrc } from "../../../../../utils/api/ViewPhotos";
+import { useRouter } from "next/router";
+import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 
 export interface GameBoardProps {
   post: GameBoard;
+  gameId: string;
 }
 
-export function GameBoard({ post }: GameBoardProps) {
+export function GameBoard({ post, gameId }: GameBoardProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardStyles({ smallScreen });
   const theme = useMantineTheme();
+  const router = useRouter();
 
   const thumbnailUrl = extractImageSrc(post.content)[0];
   const isImage = thumbnailUrl != "";
 
   return (
-    <UnstyledButton onClick={() => {}}>
+    <UnstyledButton
+      onClick={() => {
+        router.push(`/game/${gameId}?board=${post.id}`, undefined, {
+          scroll: false,
+        });
+      }}
+    >
       <Divider />
       <Stack className={classes.stack} spacing={0}>
         {/* 글쓴이 소개 */}
@@ -45,7 +55,7 @@ export function GameBoard({ post }: GameBoardProps) {
             <Text fz={smallScreen ? 12 : 14}>{post.author.name}</Text>
           </Group>
           <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-            15일 전
+            {getRelativeTime(post.createdAt)}
           </Text>
         </Group>
         {/* 게시글 내용 */}

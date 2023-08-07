@@ -10,7 +10,7 @@ function UserInfo({ user }: UserInfoProps) {
 
   return (
     <Group spacing={14}>
-      <Avatar src="https://avatars.githubusercontent.com/u/55127132?v=4" radius="xl" size={46} />
+      <Avatar src="https://avatars.githubusercontent.com/u/52057157?v=4" radius="xl" size={46} />
       <Stack spacing={5}>
         <Text size="md">{user.name}</Text>
         <Text size="xs" color={theme.colors.gray[5]}>

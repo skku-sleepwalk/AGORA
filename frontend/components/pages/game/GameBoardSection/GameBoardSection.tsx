@@ -18,8 +18,11 @@ import { GameBoard } from "./GameBoard/GameBoard";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { GameBoardWriter } from "./GameBoardWriter/GameBoardWriter";
 import useGameBoardList from "../../../../hooks/useGameBoardList";
-import { GameBoardCategory } from "../../../../constants/category";
+import { GAME_BOARD_CATEGORIES } from "../../../../constants/category";
 import { useRouter } from "next/router";
+import { GameBoardDetailViewer } from "./GameBoardDetailViewer/GameBoardDetailViewer";
+import Link from "next/link";
+import useAuth from "../../../../hooks/useAuth";
 
 export interface GameBoardSectionProps {
   gameName: string;
@@ -43,13 +46,18 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
     setSize: setPostSize,
     mutate: mutatePost,
     isEmpty,
-  } = useGameBoardList(sectionValue === "전체 보기" ? GameBoardCategory : [sectionValue], gameId, {
-    search: search,
-    boardType: "parent",
-  });
+  } = useGameBoardList(
+    sectionValue === "전체 보기" ? GAME_BOARD_CATEGORIES : [sectionValue],
+    gameId,
+    {
+      search: search,
+      boardType: "parent",
+    }
+  );
 
   const router = useRouter();
-  const board = router.query.board?.toString();
+  const boardId = router.query.board?.toString();
+  const { user } = useAuth();
 
   return (
     <>
@@ -68,9 +76,9 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
               src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
             />
             <Stack spacing={"0.4rem"}>
-              <Text fz={smallScreen ? 14 : 18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
+              <Text fz={smallScreen ? 14 : 18}>{user?.name}</Text>
               <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[5]}>
-                What's your ETA?
+                {user?.description}
               </Text>
             </Stack>
           </Group>
@@ -78,73 +86,77 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
       >
         <GameBoardWriter opened close={close} gameId={gameId} />
       </Modal>
-      <Stack spacing={"xl"} className={classes.all}>
-        <Text fz={smallScreen ? 28 : 32}>게시판</Text>
-        {/* 게시판 컨테이너 */}
-        <CardContainer className={classes.boardSection} bg={"white"}>
-          <Stack className={classes.stack}>
-            {/* 게임 타이틀 */}
-            <Stack spacing={"0.3rem"}>
-              <Title order={smallScreen ? 2 : 1}>{gameName}</Title>
-              <Text fz={smallScreen ? 14 : 18} fw={"bold"} color={theme.colors.gray[5]}>
-                {developerName}
-              </Text>
+      {!boardId ? (
+        <Stack spacing={"xl"} className={classes.all}>
+          <Text fz={smallScreen ? 28 : 32}>게시판</Text>
+          {/* 게시판 컨테이너 */}
+          <CardContainer className={classes.boardSection} bg={"white"}>
+            <Stack className={classes.stack}>
+              {/* 게임 타이틀 */}
+              <Stack spacing={"0.3rem"}>
+                <Title order={smallScreen ? 2 : 1}>{gameName}</Title>
+                <Text fz={smallScreen ? 14 : 18} fw={"bold"} color={theme.colors.gray[5]}>
+                  {developerName}
+                </Text>
+              </Stack>
+              {/* 정렬 설정 */}
+              <Group className={classes.selectGroup} position="apart">
+                <CustomNativeSelect
+                  data={["전체 보기", ...GAME_BOARD_CATEGORIES]}
+                  defaultValue={sectionValue}
+                  onChange={(value) => {
+                    setSectionValue(value);
+                  }}
+                />
+                <CustomNativeSelect
+                  data={["최신순", "조회순", "인기순", "댓글순"]}
+                  defaultValue={lineUpValue}
+                  onChange={(value) => {
+                    setLineUpValue(value);
+                  }}
+                />
+              </Group>
+              {/* 검색 및 글쓰기 버튼 파트 */}
+              <Group>
+                <TextInput
+                  className={classes.Search}
+                  icon={<IconSearch size="1rem" color="black" />}
+                  rightSection={
+                    <InvisibleButton>
+                      <IconX onClick={() => {}} size={"1rem"} stroke={"0.15rem"} color="#bdc3cd" />
+                    </InvisibleButton>
+                  }
+                  placeholder="원하는 글을 검색해보세요."
+                  value={search}
+                  onChange={(event) => {
+                    setSearch(event.currentTarget.value);
+                  }}
+                />
+                <InvisibleButton className={classes.writeButton} onClick={open}>
+                  <Group spacing={"0.2rem"}>
+                    <IconPencil size={smallScreen ? "1rem" : "1.4rem"} stroke={1.5} color="white" />
+                    <Text fz={smallScreen ? 12 : 14} fw={"normal"} color="white">
+                      글쓰기
+                    </Text>
+                  </Group>
+                </InvisibleButton>
+              </Group>
+              {/* 게시글 파트 */}
+              {isEmpty ? (
+                <Text color={theme.colors.gray[4]}>작성된 게시글이 없습니다.</Text>
+              ) : (
+                postData?.map((data) => {
+                  return data.data.data.map((post) => {
+                    return <GameBoard key={post.id} post={post} gameId={gameId} />;
+                  });
+                })
+              )}
             </Stack>
-            {/* 정렬 설정 */}
-            <Group className={classes.selectGroup} position="apart">
-              <CustomNativeSelect
-                data={["전체 보기", ...GameBoardCategory]}
-                defaultValue={sectionValue}
-                onChange={(value) => {
-                  setSectionValue(value);
-                }}
-              />
-              <CustomNativeSelect
-                data={["최신순", "조회순", "인기순", "댓글순"]}
-                defaultValue={lineUpValue}
-                onChange={(value) => {
-                  setLineUpValue(value);
-                }}
-              />
-            </Group>
-            {/* 검색 및 글쓰기 버튼 파트 */}
-            <Group>
-              <TextInput
-                className={classes.Search}
-                icon={<IconSearch size="1rem" color="black" />}
-                rightSection={
-                  <InvisibleButton>
-                    <IconX onClick={() => {}} size={"1rem"} stroke={"0.15rem"} color="#bdc3cd" />
-                  </InvisibleButton>
-                }
-                placeholder="원하는 글을 검색해보세요."
-                value={search}
-                onChange={(event) => {
-                  setSearch(event.currentTarget.value);
-                }}
-              />
-              <InvisibleButton className={classes.writeButton} onClick={open}>
-                <Group spacing={"0.2rem"}>
-                  <IconPencil size={smallScreen ? "1rem" : "1.4rem"} stroke={1.5} color="white" />
-                  <Text fz={smallScreen ? 12 : 14} fw={"normal"} color="white">
-                    글쓰기
-                  </Text>
-                </Group>
-              </InvisibleButton>
-            </Group>
-            {/* 게시글 파트 */}
-            {isEmpty ? (
-              <Text color={theme.colors.gray[4]}>작성된 게시글이 없습니다.</Text>
-            ) : (
-              postData?.map((data) => {
-                return data.data.data.map((post) => {
-                  return <GameBoard key={post.id} post={post} />;
-                });
-              })
-            )}
-          </Stack>
-        </CardContainer>
-      </Stack>
+          </CardContainer>
+        </Stack>
+      ) : (
+        <GameBoardDetailViewer boardId={boardId} gameId={gameId} />
+      )}
     </>
   );
 }

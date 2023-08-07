@@ -1,20 +1,20 @@
 import { useRouter } from "next/router";
-import { MainCarousel } from "../../../components/pages/game/MainCarousel/MainCarousel";
-import GameLayout from "../../../components/pages/game/GameLayout/GameLayout";
-import { GameSummary } from "../../../components/pages/game/GameSummary/GameSummary";
-import { GameTab } from "../../../components/pages/game/GameTab/GameTab";
-import { GameRightSide } from "../../../components/pages/game/GameRightSide/GameRightSide";
-import { GameReviewSection } from "../../../components/pages/game/GameReviewSection/GameReviewSection";
+import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
+import GameLayout from "../../components/pages/game/GameLayout/GameLayout";
+import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary";
+import { GameTab } from "../../components/pages/game/GameTab/GameTab";
+import { GameRightSide } from "../../components/pages/game/GameRightSide/GameRightSide";
+import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
 import { createContext, useRef, useState } from "react";
-import { GameNewsSection } from "../../../components/pages/game/GameNewsSection/GameNewsSection";
-import { GameInfo } from "../../../components/pages/game/GameInfo/GameInfo";
-import { GameBoardSection } from "../../../components/pages/game/GameBoardSection/GameBoardSection";
+import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
+import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
+import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
 
-import useDetailGame from "../../../hooks/useDetailGame";
+import useDetailGame from "../../hooks/useDetailGame";
 
-import { GameBoardDetailViewer } from "../../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
+import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
 
-export const TabClicklContext = createContext({
+export const GameTabClicklContext = createContext({
   ontabClick: () => {},
   ontabClickFast: () => {},
 });
@@ -22,7 +22,7 @@ export const TabClicklContext = createContext({
 function Game() {
   const router = useRouter();
   const id = router.query.id ? router.query.id.toString() : undefined;
-  console.log("id", id);
+  const board = router.query.board?.toString();
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
   // tab 클릭 시 페이지 상단으로 이동 관련
   const tabRef = useRef<HTMLDivElement>(null);
@@ -46,7 +46,7 @@ function Game() {
     // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
     //   <SmallPosts></SmallPosts>
     // </MainLayout>
-    <TabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
+    <GameTabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
       {postData && (
         <GameLayout
           photoSection={<MainCarousel isInfo={true} imgUrls={postData.data.store.imgUrls} />}
@@ -62,10 +62,10 @@ function Game() {
           {activeTab === "gameInfo" && (
             <GameInfo postData={postData} loading={isPostLoading} mutate={mutatePost} />
           )}
-          {activeTab === "gameNews" && <GameNewsSection />}
-          {activeTab === "review" && <GameReviewSection gameId={id} />}
+          {activeTab === "gameNews" && id && <GameNewsSection gameId={id} />}
+          {activeTab === "review" && id && <GameReviewSection gameId={id} />}
           {/* {activeTab === "board" && <GameBoardDetailViewer />} */}
-          {activeTab === "board" && (
+          {activeTab === "board" && postData && (
             <GameBoardSection
               gameName={postData.data.store.title}
               developerName={postData.data.author.name}
@@ -74,7 +74,7 @@ function Game() {
           )}
         </GameLayout>
       )}
-    </TabClicklContext.Provider>
+    </GameTabClicklContext.Provider>
   );
 }
 export default Game;

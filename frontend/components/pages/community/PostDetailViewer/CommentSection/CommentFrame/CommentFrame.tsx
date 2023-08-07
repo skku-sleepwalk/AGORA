@@ -2,7 +2,6 @@ import { Avatar, Container, Group, Stack, Title, Text } from "@mantine/core";
 import { useCommentFrameStyles } from "./CommentFrame.styles";
 import { User } from "../../../../../../types/api/user";
 import { getRelativeTime } from "../../../../../../utils/getRelativeTime";
-import useAuth from "../../../../../../hooks/useAuth";
 
 export interface CommentFrameProps {
   children: React.ReactNode;
@@ -18,7 +17,7 @@ function CommentFrame({ children, user, date, withoutLeftBorder = false }: Comme
     <Group spacing={7} className={classes.commentFrame}>
       {user ? (
         <Avatar
-          src={"https://avatars.githubusercontent.com/u/55127132?v=4"}
+          src={"https://avatars.githubusercontent.com/u/52057157?v=4"}
           radius="xl"
           size={35}
           className={classes.avatar}

@@ -6,14 +6,22 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconPlus } from "@tabler/icons-react";
 import { GameTabClicklContext } from "../../../../pages/game/[id]";
 import { useContext } from "react";
+import useGameBoardList from "../../../../hooks/useGameBoardList";
 
-export function GameNewsSection() {
+export interface GameNewsSectionProps {
+  gameId: string;
+}
+
+export function GameNewsSection({ gameId }: GameNewsSectionProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameNewsSectionStyles();
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({ notice: false, update: false, develop: false });
   const handleScroll = useContext(GameTabClicklContext);
+  const { data: noticeData } = useGameBoardList(["공지사항"], gameId);
+  const { data: updateData } = useGameBoardList(["업데이트"], gameId);
+  const { data: developData } = useGameBoardList(["개발일지"], gameId);
 
   return (
     <Stack spacing={"xl"} className={classes.all}>
@@ -31,12 +39,15 @@ export function GameNewsSection() {
             <IconPlus className={cx(classes.Icon, state.notice && classes.rotate)} />
           </InvisibleButton>
         </Group>
-        <GameNews />
-        <GameNews />
+        {noticeData?.map((data) => {
+          return data.data.data.map((item) => {
+            return <GameNews post={item} />;
+          });
+        })}
         <Collapse in={state.notice}>
           <Stack spacing={"xl"}>
-            <GameNews />
-            <GameNews />
+            {/* <GameNews />
+            <GameNews /> */}
           </Stack>
         </Collapse>
       </Stack>
@@ -60,12 +71,15 @@ export function GameNewsSection() {
             <IconPlus className={cx(classes.Icon, state.update && classes.rotate)} />
           </InvisibleButton>
         </Group>
-        <GameNews />
-        <GameNews />
+        {updateData?.map((data) => {
+          return data.data.data.map((item) => {
+            return <GameNews post={item} />;
+          });
+        })}
         <Collapse in={state.update}>
           <Stack spacing={"xl"}>
-            <GameNews />
-            <GameNews />
+            {/* <GameNews />
+            <GameNews /> */}
           </Stack>
         </Collapse>
       </Stack>
@@ -89,13 +103,15 @@ export function GameNewsSection() {
             <IconPlus className={cx(classes.Icon, state.develop && classes.rotate)} />
           </InvisibleButton>
         </Group>
-        <GameNews />
-        <GameNews />
-        <GameNews />
+        {developData?.map((data) => {
+          return data.data.data.map((item) => {
+            return <GameNews post={item} />;
+          });
+        })}
         <Collapse in={state.develop}>
           <Stack spacing={"xl"}>
-            <GameNews />
-            <GameNews />
+            {/* <GameNews />
+            <GameNews /> */}
           </Stack>
         </Collapse>
       </Stack>

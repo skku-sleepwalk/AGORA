@@ -1,5 +1,10 @@
 import { User } from "../user";
 
+export interface GameBoardCategory {
+  id: string;
+  name: string;
+}
+
 export interface GameBoard {
   id: string;
   title: string;
@@ -9,7 +14,7 @@ export interface GameBoard {
   deletedAt: string;
   author: User;
   parent?: string;
-  categories: string[];
+  categories: GameBoardCategory[];
   childCount: number;
   likeCount: number;
   like: string[];
@@ -30,4 +35,8 @@ export interface GetGameBoardListResponse {
       afterCursor: "string";
     };
   };
+}
+
+export interface GetGameBoardResponse {
+  data: GameBoard;
 }

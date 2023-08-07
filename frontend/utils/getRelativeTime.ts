@@ -1,7 +1,7 @@
 export function getRelativeTime(date: Date | string) {
   const currentDate = new Date();
 
-  const diff = currentDate.getTime() - new Date(date).getTime();
+  const diff = currentDate.getTime() - new Date(date).getTime() - 9 * 60 * 60 * 1000;
 
   const seconds = Math.floor(diff / 1000);
   const minutes = Math.floor(seconds / 60);

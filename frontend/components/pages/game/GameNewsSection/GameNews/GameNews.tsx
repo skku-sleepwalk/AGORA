@@ -19,13 +19,21 @@ import {
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import { useMediaQuery } from "@mantine/hooks";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import { GameBoard } from "../../../../../types/api/game/gameBoard";
+import { getRelativeTime } from "../../../../../utils/getRelativeTime";
+import { extractImageSrc } from "../../../../../utils/api/ViewPhotos";
 
-export function GameNews() {
+export interface GameNewsProps {
+  post: GameBoard;
+}
+
+export function GameNews({ post }: GameNewsProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameNewsStyles({ smallScreen });
   const theme = useMantineTheme();
 
-  const isImage = true;
+  const thumbnailUrl = extractImageSrc(post.content)[0];
+  const isImage = thumbnailUrl != "";
 
   return (
     <CardContainer className={classes.gameNewsSection} bg={"white"}>
@@ -36,7 +44,7 @@ export function GameNews() {
             radius={"lg"}
             width={smallScreen ? "6rem" : "8rem"}
             height={smallScreen ? "6rem" : "8rem"}
-            src={"https://cdn.class101.net/images/171f6948-4553-4cd4-9fcd-98f9dd61c547/1200x630"}
+            src={thumbnailUrl}
           />
         )}
         {!isImage && (
@@ -47,17 +55,17 @@ export function GameNews() {
         <Stack className={classes.stack} spacing={"xs"}>
           <Group position="apart" align="flex-start" spacing={"xs"}>
             <Text fz={smallScreen ? 14 : 18} fw={"bold"}>
-              내가 세계에서 제일 귀엽고 이쁨 ^^
+              {post.title}
             </Text>
             <Text fz={smallScreen ? 12 : 14} c={theme.colors.gray[4]}>
-              23/7/27
+              {getRelativeTime(post.createdAt)}
             </Text>
           </Group>
           <TypographyStylesProvider className={classes.newsTypo}>
             <div
               className={classes.content}
               dangerouslySetInnerHTML={{
-                __html: MOCKUP_CONTENT,
+                __html: post.content,
               }}
             />
           </TypographyStylesProvider>

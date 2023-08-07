@@ -66,4 +66,4 @@ let a = Category.length;
 let b = Values.length;
 export const CategoryNum = a == b ? a : a > b ? b : a;
 
-export const GameBoardCategory = ["공지사항", "업데이트", "개발일지", "리뷰", "공략", "뻘글"];
+export const GAME_BOARD_CATEGORIES = ["공지사항", "업데이트", "개발일지", "리뷰", "공략", "뻘글"];

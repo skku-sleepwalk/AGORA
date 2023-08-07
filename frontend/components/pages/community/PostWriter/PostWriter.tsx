@@ -41,6 +41,7 @@ function PostWriter() {
   const { token } = useAuth();
   const [isKeepMounted, setIsKeepMounted] = useState(true);
   const [categorychanged, setcategorychange] = useState(false);
+  const { user } = useAuth();
   return (
     <>
       <CardContainer className={classes.container}>
@@ -108,7 +109,7 @@ function PostWriter() {
         >
           <FocusTrap active={opened}>
             <Stack className={classes.editorContainer} spacing={17}>
-              <UserInfo user={MOCKUP_USER} />
+              <UserInfo user={user!} />
               <TextInput
                 placeholder="멋진 제목을 입력해주세요."
                 data-autofocus

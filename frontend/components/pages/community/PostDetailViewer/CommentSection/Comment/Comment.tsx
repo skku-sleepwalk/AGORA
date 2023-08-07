@@ -270,20 +270,22 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
           }
         />
         <Collapse in={editorOpen}>
-          <CommentEditor
-            user={MOCKUP_USER}
-            placeholder={"답글을 작성해주세요."}
-            onSubmit={async (content) => {
-              return onSubmitComment?.(content, post.id).then(() => {
-                mutateCommentList();
-                if (content !== "<p></p>") {
-                  showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
-                  toggleEditor();
-                }
-                commentOpen ? null : toggleComment();
-              });
-            }}
-          />
+          {user && (
+            <CommentEditor
+              user={user}
+              placeholder={"답글을 작성해주세요."}
+              onSubmit={async (content) => {
+                return onSubmitComment?.(content, post.id).then(() => {
+                  mutateCommentList();
+                  if (content !== "<p></p>") {
+                    showNotification("답글 등록 완료", "답글이 성공적으로 등록되었습니다.");
+                    toggleEditor();
+                  }
+                  commentOpen ? null : toggleComment();
+                });
+              }}
+            />
+          )}
         </Collapse>
       </Stack>
       <Collapse in={commentOpen}>

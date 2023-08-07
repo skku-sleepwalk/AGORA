@@ -6,7 +6,7 @@ import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
 
 export function SmallPosts({ information }: any) {
-  const [Title, setTitle] = useState("납량의 날 특집");
+  const [Title, setTitle] = useState("전략 / 퍼즐 게임 특집");
 
   const {
     data: postData,

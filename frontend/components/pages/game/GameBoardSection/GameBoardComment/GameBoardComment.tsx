@@ -17,6 +17,7 @@ import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
   IconBell,
   IconDotsVertical,
+  IconHeart,
   IconPencil,
   IconThumbDown,
   IconThumbDownFilled,
@@ -26,28 +27,25 @@ import {
 } from "@tabler/icons-react";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
+import { GameBoard } from "../../../../../types/api/game/gameBoard";
+import { getRelativeTime } from "../../../../../utils/getRelativeTime";
+import {
+  createGameBoardLike,
+  deleteGameBoardLike,
+} from "../../../../../utils/api/game/gameBoard/gameBoardLike";
+import useAuth from "../../../../../hooks/useAuth";
 
-export function GameBoardComment() {
+export interface GameBoardCommentProps {
+  post: GameBoard;
+  gameId: string;
+  mutatePost: () => void;
+}
+
+export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardCommentStyles({ smallScreen });
   const theme = useMantineTheme();
-
-  // 자세히 보기 관련 로직
-
-  // 후기 좋아요 싫어요 관련 로직
-  const [goodBadstate, setGoodBadState] = useSetState({ good: false, bad: false });
-  const handleGoodState = () => {
-    setGoodBadState({ good: !goodBadstate.good });
-    if (!goodBadstate.good && goodBadstate.bad) {
-      setGoodBadState({ bad: !goodBadstate.bad });
-    }
-  };
-  const handleBadState = () => {
-    setGoodBadState({ bad: !goodBadstate.bad });
-    if (goodBadstate.good && !goodBadstate.bad) {
-      setGoodBadState({ good: !goodBadstate.good });
-    }
-  };
+  const { token } = useAuth();
 
   // 답글 관련
   const canEdit = true;
@@ -65,13 +63,13 @@ export function GameBoardComment() {
           />
           <Stack className={classes.userStack} spacing={"0.4rem"}>
             <Group position="apart">
-              <Text fz={smallScreen ? 14 : 18}>내가 세상에서 제일 귀엽고 이뻐!!</Text>
+              <Text fz={smallScreen ? 14 : 18}>{post.author.name}</Text>
               <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[4]}>
-                15일 전
+                {getRelativeTime(post.createdAt)}
               </Text>
             </Group>
             <Text fz={smallScreen ? 12 : 14} color={theme.colors.gray[5]}>
-              What's your ETA?
+              {post.author.description}
             </Text>
           </Stack>
         </Group>
@@ -87,7 +85,7 @@ export function GameBoardComment() {
               <div
                 className={classes.content}
                 dangerouslySetInnerHTML={{
-                  __html: MOCKUP_CONTENT,
+                  __html: post.content,
                 }}
               />
             </Spoiler>
@@ -95,27 +93,27 @@ export function GameBoardComment() {
         </Stack>
         {/* 후기 하단 버튿들 */}
         <Group className={classes.marginLeft} position="apart">
-          <Group>
-            <InvisibleButton onClick={handleGoodState}>
-              <Group spacing={"0.3rem"}>
-                {goodBadstate.good ? (
-                  <IconThumbUpFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                ) : (
-                  <IconThumbUp stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                )}
-                <Text fz={14}>2</Text>
-              </Group>
+          <Group spacing="0.3rem">
+            <InvisibleButton
+              onClick={() => {
+                if (post.like) {
+                  deleteGameBoardLike(gameId, post.id, token).then(() => {
+                    mutatePost();
+                  });
+                } else {
+                  createGameBoardLike(gameId, post.id, token).then(() => {
+                    mutatePost();
+                  });
+                }
+              }}
+            >
+              <IconHeart
+                stroke={1.5}
+                size={smallScreen ? "1rem" : "1.5rem"}
+                fill={post.like ? theme.colors.red[6] : "white"}
+              />
             </InvisibleButton>
-            <InvisibleButton onClick={handleBadState}>
-              <Group spacing={"0.3rem"}>
-                {goodBadstate.bad ? (
-                  <IconThumbDownFilled stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                ) : (
-                  <IconThumbDown stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
-                )}
-                <Text fz={14}>1</Text>
-              </Group>
-            </InvisibleButton>
+            <Text fz={14}>{post.likeCount}</Text>
           </Group>
           <Menu shadow="md" width={120} position="bottom-end" offset={1}>
             <Menu.Target>

@@ -91,7 +91,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
           {post.store.title}
         </Text>
 
-        <Group spacing="9rem" align="flex-start" style={margins}>
+        <Group position="apart" style={margins}>
           <UserInfoSmall user={post.author} />
           <Group spacing={0}>
             <Group spacing={5} style={{ marginRight: "1rem" }}>

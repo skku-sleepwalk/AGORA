@@ -153,7 +153,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
                     <Avatar
                       size={24}
                       radius={"lg"}
-                      src="https://avatars.githubusercontent.com/u/55127132?v=4"
+                      src="https://avatars.githubusercontent.com/u/52057157?v=4"
                     />
                   }
                 >
