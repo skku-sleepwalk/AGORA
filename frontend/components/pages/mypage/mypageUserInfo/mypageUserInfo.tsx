@@ -1,0 +1,36 @@
+import { Avatar, BackgroundImage, Box, Group, Stack, Text } from "@mantine/core";
+import { useMypageUserInfoStyles } from "./mypageUserInfo.styles";
+import useAuth from "../../../../hooks/useAuth";
+
+export function MypageUserInfo() {
+  const { classes, cx } = useMypageUserInfoStyles();
+  const { user, token } = useAuth();
+
+  return (
+    <Box className={classes.box}>
+      <BackgroundImage
+        className={classes.backgroundImage}
+        h={"100%"}
+        radius={0}
+        src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2FbQro8K%2FbtqDvh5lVQm%2FO765YYrxZwDO8mtY59Zo80%2Fimg.jpg"
+      >
+        <Group className={classes.group} spacing={"xl"}>
+          <Avatar
+            src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1Tg4y%2FbtqDurHhxax%2FrFjK7yUIuO0fwMsZsvubU0%2Fimg.jpg"
+            w={"9rem"}
+            h={"9rem"}
+            radius="50%"
+          />
+          <Stack>
+            <Text color="white" fz={"2.5rem"}>
+              {user?.name}
+            </Text>
+            <Text color="white" fz={"1.4rem"}>
+              팔로워 7명
+            </Text>
+          </Stack>
+        </Group>
+      </BackgroundImage>
+    </Box>
+  );
+}
