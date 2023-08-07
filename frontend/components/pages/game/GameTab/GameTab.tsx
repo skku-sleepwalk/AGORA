@@ -2,7 +2,7 @@ import { Tabs } from "@mantine/core";
 import { useGameTabStyles } from "./GameTab.styles";
 import { Dispatch, SetStateAction, useContext } from "react";
 import { useMediaQuery } from "@mantine/hooks";
-import { TabClicklContext } from "../../../../pages/game/[id]";
+import { GameTabClicklContext } from "../../../../pages/game/[id]";
 
 interface GameTabProps {
   activeTab: string | null;
@@ -13,7 +13,7 @@ export function GameTab({ activeTab, setActiveTab }: GameTabProps) {
   const { classes, cx } = useGameTabStyles();
 
   const smallScreen = useMediaQuery("(max-width: 780px)");
-  const handleScroll = useContext(TabClicklContext);
+  const handleScroll = useContext(GameTabClicklContext);
 
   return (
     <Tabs value={activeTab} onTabChange={setActiveTab}>

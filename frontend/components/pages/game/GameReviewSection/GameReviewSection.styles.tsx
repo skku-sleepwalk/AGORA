@@ -43,5 +43,12 @@ export const useGameReviewSectionStyles = createStyles(
         },
       },
     },
+
+    loader: {
+      display: "flex",
+      width: "100%",
+
+      justifyContent: "center",
+    },
   })
 );

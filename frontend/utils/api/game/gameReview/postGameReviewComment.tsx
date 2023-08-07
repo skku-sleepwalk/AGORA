@@ -7,12 +7,12 @@ export interface gameReviewCommentData {
 
 export async function PostGameReviewComment(
   postData: gameReviewCommentData,
-  GameId: string,
-  commentId: string,
+  gameId: string,
+  reviewId: string,
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.post<gameReviewCommentData, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${GameId}/review/${commentId}/comment`,
+    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment`,
     postData,
     {
       headers: {

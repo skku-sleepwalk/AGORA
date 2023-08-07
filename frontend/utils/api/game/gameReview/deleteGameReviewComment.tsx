@@ -1,8 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 
-export default async function deleteGameReview(
+export default async function deleteGameReviewComment(
   gameId: string,
   reviewId: string,
+  commentId: string,
   token?: string
 ): Promise<void> {
   try {
@@ -11,7 +12,7 @@ export default async function deleteGameReview(
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/game/${gameId}/review/${reviewId}`,
+      `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}`,
       {
         headers,
       }

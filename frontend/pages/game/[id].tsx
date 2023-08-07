@@ -14,7 +14,7 @@ import useDetailGame from "../../hooks/useDetailGame";
 
 import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
 
-export const TabClicklContext = createContext({
+export const GameTabClicklContext = createContext({
   ontabClick: () => {},
   ontabClickFast: () => {},
 });
@@ -23,6 +23,7 @@ function Game() {
   const router = useRouter();
   const id = router.query.id ? router.query.id.toString() : undefined;
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
+
   // tab 클릭 시 페이지 상단으로 이동 관련
   const tabRef = useRef<HTMLDivElement>(null);
   const ontabClick = () => {
@@ -31,6 +32,7 @@ function Game() {
   const ontabClickFast = () => {
     tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   };
+
   // const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
   // 추후 수정
   // router.query.name
@@ -44,7 +46,7 @@ function Game() {
     // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
     //   <SmallPosts></SmallPosts>
     // </MainLayout>
-    <TabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
+    <GameTabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
       <GameLayout
         photoSection={<MainCarousel isInfo={true} />}
         summarySection={
@@ -64,7 +66,7 @@ function Game() {
         {/* {activeTab === "board" && <GameBoardDetailViewer />} */}
         {activeTab === "board" && <GameBoardSection />}
       </GameLayout>
-    </TabClicklContext.Provider>
+    </GameTabClicklContext.Provider>
   );
 }
 export default Game;

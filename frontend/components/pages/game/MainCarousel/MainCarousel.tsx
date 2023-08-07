@@ -10,7 +10,7 @@ import {
   Center,
   Container,
 } from "@mantine/core";
-import { useListState } from "@mantine/hooks";
+import { useListState, useMediaQuery } from "@mantine/hooks";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
 import { GameSrcValues } from "./MainCarousel.constants";
@@ -39,40 +39,32 @@ interface MainCarouselProps {
 }
 
 export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
-  // 배경 이미지 내부, 태그들의 크기/위치 자동 조절 용
-  const widthRef = useRef<HTMLAnchorElement>(null);
-  const [width, setWidth] = useState<number>(1440);
-  useEffect(() => {
-    if (widthRef.current) {
-      setWidth(widthRef.current.clientWidth);
-    }
-  }, []);
-
-  const { classes, cx } = useMainCarouselStyles({ width });
+  const { classes, cx } = useMainCarouselStyles();
 
   const TRANSITION_DURATION = 200;
   const [embla, setEmbla] = useState<Embla | null>(null);
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
-
   const autoplay = useRef(emblaCarouselAutoplay({ delay: 4000 }));
 
   const [values] = useListState(GameSrcValues);
+
+  const lgScreen = useMediaQuery("(max-width: 820px)");
+  const smScreen = useMediaQuery("(max-width: 540px)");
 
   const GameCarouselSlides = values.map((value) => (
     <Carousel.Slide>
       {isMain && (
         <BackgroundImage
           className={classes.backgroundImage}
-          ref={widthRef}
           component="a"
           href={value.href}
           src={value.src}
           h={"100%"}
         >
-          <Stack className={classes.gameIntro} spacing={`${(2 * width) / 1440}rem`}>
+          <Stack className={classes.gameIntro}>
             <Group>
-              <Avatar radius={"md"} size={`${(2.4 * width) / 1440}rem`} src={value.src} />
-              <Text color="#fff" size={`${(1.8 * width) / 1440}rem`}>
+              <Avatar className={classes.gameAvatar} radius={"20%"} src={value.src} />
+              <Text className={classes.gameName} color="#fff">
                 {value.gameName}
               </Text>
             </Group>
@@ -104,10 +96,16 @@ export function MainCarousel({ isMain, isInfo }: MainCarouselProps) {
       draggable={false}
       withIndicators
       previousControlIcon={
-        <IconChevronLeft color="white" size={`${(3 * width) / 1440}rem`}></IconChevronLeft>
+        <IconChevronLeft
+          color="white"
+          size={smScreen ? "1rem" : lgScreen ? "2rem" : "3rem"}
+        ></IconChevronLeft>
       }
       nextControlIcon={
-        <IconChevronRight color="white" size={`${(3 * width) / 1440}rem`}></IconChevronRight>
+        <IconChevronRight
+          color="white"
+          size={smScreen ? "1rem" : lgScreen ? "2rem" : "3rem"}
+        ></IconChevronRight>
       }
       getEmblaApi={setEmbla}
       plugins={[autoplay.current]}
