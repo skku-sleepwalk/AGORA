@@ -18,9 +18,15 @@ export const useGameBoardCommentStyles = createStyles(
       lineHeight: 1.2,
     },
 
-    limitHeight: {
-      maxHeight: smallScreen ? "4.1rem" : "5.9rem",
-      overflow: "hidden",
+    spoiler: {
+      ".mantine-Spoiler-control": {
+        marginTop: "0.5rem",
+        color: theme.colors.gray[4],
+
+        "&:hover": {
+          textDecoration: "none",
+        },
+      },
     },
 
     content: {

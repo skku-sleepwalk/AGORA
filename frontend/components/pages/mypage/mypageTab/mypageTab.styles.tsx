@@ -9,7 +9,7 @@ export const useMypageTabStyles = createStyles((theme) => ({
     borderBottom: "0.2rem solid #fcfcfe",
     paddingLeft: "2.3rem",
 
-    backgroundColor: "#fcfcfe",
+    backgroundColor: "white",
     boxShadow: `0px 6px 7px rgba(0, 0, 0, 0.2)`,
   },
 

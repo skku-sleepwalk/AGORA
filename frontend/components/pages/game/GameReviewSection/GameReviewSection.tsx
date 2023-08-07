@@ -18,10 +18,16 @@ export interface GameReviewSectionProps {
 
 // 리뷰 작성자의 플레이 타임 확인 관련
 export function authorPlaytime(playtime: number): string {
-  if (playtime < 60) {
-    return `${playtime}분 플레이`;
+  const hours = Math.floor(playtime / 60);
+  const minutes = playtime % 60;
+
+  if (hours === 0) {
+    return `${minutes}분 플레이`;
+  } else if (minutes === 0) {
+    return `${hours}시간 플레이`;
+  } else {
+    return `${hours}시간 ${minutes}분 플레이`;
   }
-  return `${playtime / 60}시간 플레이`;
 }
 
 // 유저의 플레이 타임 확인 관련
@@ -101,7 +107,9 @@ export function GameReviewSection({ gameId: id }: GameReviewSectionProps) {
             </Group>
             {/* 다른 사람이 작성한 후기 보여지는 파트 */}
             {gameReviewData?.map((data) => {
-              return data.data.data?.map((data) => <GameReview gameId={id} data={data} />);
+              return data.data.data?.map((data) =>
+                data.author.email !== token ? <GameReview gameId={id} data={data} /> : null
+              );
             })}
             {isGameReviewLoading && (
               <Box className={classes.loader}>

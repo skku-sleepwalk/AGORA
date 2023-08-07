@@ -42,8 +42,11 @@ export const useMypageLayoutStyles = createStyles((theme) => ({
   },
 
   mainContainer: {
+    display: "flex",
     flexGrow: 1,
     width: 700,
     margin: 0,
+
+    justifyContent: "center",
   },
 }));
