@@ -14,6 +14,7 @@ import {
 } from "@mantine/core";
 import { useGameReviewReplyStyles } from "./GameReviewReply.styles";
 import {
+  IconBell,
   IconDotsVertical,
   IconPencil,
   IconThumbDown,
@@ -201,31 +202,46 @@ export function GameReviewReply({ gameId, reviewId, data, isInReviewMine }: Game
                   </UnstyledButton>
                 </Menu.Target>
                 <Menu.Dropdown>
-                  <Menu.Item
-                    icon={<IconPencil size={18} stroke={2} />}
-                    className={classes.menuItem}
-                    onClick={() => {
-                      setIsEditing(true);
-                    }}
-                  >
-                    수정하기
-                  </Menu.Item>
-                  <Menu.Divider />
-                  <Menu.Item
-                    onClick={() => {
-                      deleteGameReviewComment(gameId, reviewId, data.id, token).then(() => {
-                        mutategameReviewComment();
-                        if (data.author.email === token) {
-                          mutategameReviewMineComment();
-                        }
-                        showNotification("댓글 삭제 완료!", "댓글이 정상적으로 삭제되었습니다.");
-                      });
-                    }}
-                    icon={<IconTrash size={18} stroke={2} />}
-                    className={classes.menuItem}
-                  >
-                    삭제하기
-                  </Menu.Item>
+                  {data.author.email === token && (
+                    <>
+                      <Menu.Item
+                        icon={<IconPencil size={18} stroke={2} />}
+                        className={classes.menuItem}
+                        onClick={() => {
+                          setIsEditing(true);
+                        }}
+                      >
+                        수정하기
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        onClick={() => {
+                          deleteGameReviewComment(gameId, reviewId, data.id, token).then(() => {
+                            mutategameReviewComment();
+                            if (data.author.email === token) {
+                              mutategameReviewMineComment();
+                            }
+                            showNotification(
+                              "댓글 삭제 완료!",
+                              "댓글이 정상적으로 삭제되었습니다."
+                            );
+                          });
+                        }}
+                        icon={<IconTrash size={18} stroke={2} />}
+                        className={classes.menuItem}
+                      >
+                        삭제하기
+                      </Menu.Item>
+                    </>
+                  )}
+                  {data.author.email !== token && (
+                    <Menu.Item
+                      icon={<IconBell size={18} stroke={2} />}
+                      className={classes.menuItem}
+                    >
+                      신고하기
+                    </Menu.Item>
+                  )}
                 </Menu.Dropdown>
               </Menu>
             </Group>
