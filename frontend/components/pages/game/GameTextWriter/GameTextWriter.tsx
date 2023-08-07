@@ -4,60 +4,100 @@ import { showNotification } from "../../../../utils/notifications";
 import { IconSend } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { useMediaQuery } from "@mantine/hooks";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import useAuth from "../../../../hooks/useAuth";
 import { patchGameReview } from "../../../../utils/api/game/gameReview/patchGameReview";
 import { GameReviewSectionContext } from "../GameReviewSection/GameReviewSection";
 import { PostGameReview } from "../../../../utils/api/game/gameReview/postGameReview";
 import { PostGameReviewComment } from "../../../../utils/api/game/gameReview/postGameReviewComment";
-
-export function HandleText(text: string): string {
-  // 정규식을 사용하여 줄바꿈 문자를 <br> 태그로 바꿉니다.
-  const handledText = text.replace(/(\n|\r\n)/g, "<br>");
-
-  return handledText;
-}
+import { GameReviewContext } from "../GameReviewSection/GameReview/GameReview";
+import { GameReviewMineContext } from "../GameReviewSection/GameReviewMine/GameReviewMine";
+import { RichTextEditor } from "@mantine/tiptap";
+import { useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Placeholder from "@tiptap/extension-placeholder";
+import { patchGameReviewComment } from "../../../../utils/api/game/gameReview/patchGameReviewComment";
 
 export interface GameTextWriterProps {
+  completePatch?: () => void; // PATCH 용
   placeholder: string;
   gameId: string;
-  commentId?: string | undefined;
-  content?: string;
+  reviewId?: string; // 후기 댓글 POST/PATCH 용
+  commentId?: string | undefined; // 후기 댓글 PATCH 용
+  content?: string; // 후기 (댓글) PATCH 용
+  isInReviewMine?: boolean; // 후기 댓글 (PATCH) 용
 }
 
-export function GameTextWriter({ placeholder, gameId, commentId, content }: GameTextWriterProps) {
+export function GameTextWriter({
+  completePatch,
+  placeholder,
+  gameId,
+  reviewId,
+  commentId,
+  content,
+  isInReviewMine,
+}: GameTextWriterProps) {
   const theme = useMantineTheme();
-
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes } = useGameTextWriterStyles({ smallScreen });
 
+  const editor = useEditor({
+    extensions: [StarterKit, Placeholder.configure({ placeholder: placeholder })],
+    content: content ? content : "",
+  });
+
   const { token } = useAuth();
   const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+  const { mutategameReviewComment } = useContext(GameReviewContext);
+  const { mutategameReviewMineComment } = useContext(GameReviewMineContext);
 
-  const [textAreaValue, setTextAreaValue] = useState(content ? content : "");
+  const [textAreaValue, setTextAreaValue] = useState("");
 
-  const handleSubmit = (event: any) => {
-    event.preventDefault();
-    // 여기에서 폼이 제출되었을 때 처리할 작업을 수행합니다.
-    if (content) {
-      // 게임 리뷰 PATCH
+  const handleSubmit = (e: any) => {
+    e.preventDefault(); // 새로고침을 막음
+    // 폼이 제출되었을 때 처리할 작업
+    if (commentId && reviewId) {
+      // 게임 후기 댓글 PATCH
+      patchGameReviewComment({
+        gameId: gameId,
+        reviewId: reviewId,
+        commentId: commentId,
+        data: { content: textAreaValue, rating: 0 },
+        token: token,
+      }).then(() => {
+        setTextAreaValue("");
+        completePatch !== undefined ? completePatch() : null;
+        mutateGameReview();
+        if (isInReviewMine) {
+          mutateGameReviewMine();
+        }
+        showNotification("댓글 수정 완료!", "댓글이 정상적으로 수정되었습니다.");
+      });
+    } else if (content) {
+      // 게임 후기 PATCH
       patchGameReview({
         gameId: gameId,
         data: { content: textAreaValue, rating: 0 },
         token: token,
       }).then(() => {
         setTextAreaValue("");
+        completePatch !== undefined ? completePatch() : null;
+        mutateGameReview();
         mutateGameReviewMine();
         showNotification("후기 수정 완료!", "후기가 정상적으로 수정되었습니다.");
       });
-    } else if (commentId) {
-      // 게임 리뷰 댓글 POST
-      PostGameReviewComment({ content: textAreaValue }, gameId, commentId, token).then(() => {
+    } else if (reviewId) {
+      // 게임 후기 댓글 POST
+      PostGameReviewComment({ content: textAreaValue }, gameId, reviewId, token).then(() => {
         setTextAreaValue("");
+        mutategameReviewComment();
+        if (isInReviewMine) {
+          mutategameReviewMineComment();
+        }
         showNotification("댓글 등록 완료!", "댓글이 정상적으로 수정되었습니다.");
       });
     } else {
-      // 게임 리뷰 POST
+      // 게임 후기 POST
       PostGameReview({ content: textAreaValue, rating: 5 }, gameId, token).then(() => {
         setTextAreaValue("");
         mutateGameReview();
@@ -70,26 +110,18 @@ export function GameTextWriter({ placeholder, gameId, commentId, content }: Game
   return (
     <form onSubmit={handleSubmit}>
       <Group className={classes.group}>
-        <Textarea
-          id="Textarea"
-          className={classes.textarea}
-          size={smallScreen ? "xs" : "sm"}
-          value={textAreaValue}
-          onChange={(event) => setTextAreaValue(event.target.value)}
-          placeholder={placeholder}
-          autosize
-          minRows={1}
-        />
+        <RichTextEditor className={classes.editor} editor={editor}>
+          <RichTextEditor.Content />
+        </RichTextEditor>
         <InvisibleButton
           type="submit"
-          onClick={() => {
-            const Textarea = document.getElementById("Textarea") as HTMLTextAreaElement;
-            const inputText: string = Textarea.value;
-            if (inputText === "") {
+          onClick={(e) => {
+            if (editor!.getHTML() === "<p></p>") {
               showNotification(null, "내용을 입력해 주세요.");
+              e.preventDefault();
             } else {
-              // 꼭 HandleText 함수 실행 후에 서버에 저장할 것!
-              setTextAreaValue(HandleText(inputText));
+              setTextAreaValue(editor!.getHTML());
+              editor!.commands.setContent("");
             }
           }}
         >

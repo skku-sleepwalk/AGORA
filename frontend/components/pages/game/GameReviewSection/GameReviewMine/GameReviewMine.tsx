@@ -5,6 +5,7 @@ import {
   Collapse,
   Divider,
   Group,
+  Loader,
   Menu,
   Spoiler,
   Stack,
@@ -32,8 +33,8 @@ import { GameReview } from "../../../../../types/api/game/gameReview";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 import deleteGameReview from "../../../../../utils/api/game/gameReview/deleteGameReview";
 import useAuth from "../../../../../hooks/useAuth";
-import { useContext, useState } from "react";
-import { GameReviewSectionContext } from "../GameReviewSection";
+import { createContext, useContext, useState } from "react";
+import { GameReviewSectionContext, hasPlaytime } from "../GameReviewSection";
 import { showNotification } from "../../../../../utils/notifications";
 import {
   DelGameReviewDislike,
@@ -41,11 +42,18 @@ import {
   PostGameReviewDislike,
   PostGameReviewLike,
 } from "../../../../../utils/api/game/gameReview/GameReviewLike";
+import { useGameReviewList } from "../../../../../hooks/useGameReview";
+import { useUserPlaytimes } from "../../../../../hooks/useUserPlaytimes";
 
 export interface GameReviewMineProps {
   gameId: string;
   data: GameReview;
 }
+
+// mutate 관련 context
+export const GameReviewMineContext = createContext({
+  mutategameReviewMineComment: () => {},
+});
 
 export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -54,10 +62,14 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
 
   const { user, token } = useAuth();
 
-  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
+  const {
+    data: gameReviewMineCommentData,
+    setSize: setgameReviewMineCommentSize,
+    isLoading: isgameReviewMineCommentLoading,
+    mutate: mutategameReviewMineComment,
+  } = useGameReviewList({ gameId: gameId, reviewId: data.id });
 
-  // 수정 관련 로직
-  const [isEditing, setIsEditing] = useState(false);
+  const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
 
   // 후기 좋아요 싫어요 관련 로직
   const handleLike = () => {
@@ -104,12 +116,17 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
     }
   };
 
+  // 수정 관련 로직
+  const [isEditing, setIsEditing] = useState(false);
+
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
-  const canReview = true;
+
+  const { data: me } = useUserPlaytimes();
+  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, gameId) : false;
 
   return (
-    <>
+    <GameReviewMineContext.Provider value={{ mutategameReviewMineComment }}>
       {!isEditing && (
         <Stack className={classes.stack} spacing={"lg"}>
           {/* 작성 날짜 */}
@@ -125,6 +142,7 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
           <Stack spacing={0}>
             <TypographyStylesProvider className={classes.reviewTypo}>
               <Spoiler
+                className={classes.spoiler}
                 maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
                 showLabel="자세히 보기"
                 hideLabel="숨기기"
@@ -206,6 +224,7 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
                     onClick={() => {
                       deleteGameReview(gameId, data.id, token).then(() => {
                         mutateGameReviewMine();
+                        mutateGameReview();
                         showNotification("후기 삭제 완료!", "후기가 정상적으로 삭제되었습니다.");
                       });
                     }}
@@ -230,9 +249,10 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
                 {/* 후기 답글 작성 에디터 파트 */}
                 {canReview && (
                   <GameTextWriter
-                    gameId={gameId}
-                    commentId={data.id}
                     placeholder={"후기에 답글을 달아보세요."}
+                    gameId={gameId}
+                    reviewId={data.id}
+                    isInReviewMine={true}
                   />
                 )}
                 {!canReview && (
@@ -244,19 +264,32 @@ export function GameReviewMine({ gameId, data }: GameReviewMineProps) {
                 )}
               </Box>
             </Group>
-            {/* <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} />
-          <GameReviewReply opened={opened} /> */}
+            {gameReviewMineCommentData?.map((comment) => {
+              return comment.data.data.map((comment) => (
+                <GameReviewReply
+                  gameId={gameId}
+                  reviewId={data.id}
+                  data={comment}
+                  isInReviewMine={true}
+                />
+              ));
+            })}
+            {isgameReviewMineCommentLoading && (
+              <Box className={classes.loader}>
+                <Loader variant="dots" />
+              </Box>
+            )}
           </Collapse>
         </Stack>
       )}
       {isEditing && (
         <GameTextWriter
+          completePatch={() => setIsEditing(false)}
           placeholder={"도움이 되는 착한 후기를 남겨보세요."}
           gameId={gameId}
           content={data.content}
         />
       )}
-    </>
+    </GameReviewMineContext.Provider>
   );
 }
