@@ -9,8 +9,8 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { CreateUsersDto } from './dto/create.users.dto';
-import { UserService } from './user.service';
+import { CreateUsersDto } from '../dto/create.users.dto';
+import { UserService } from '../services/user.service';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UserDto } from 'src/common/dto/user.dto';
 import { Users } from 'src/common/decorators/user.decorator';

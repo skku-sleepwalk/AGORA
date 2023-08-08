@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from 'src/entites/game/game.entity';
 import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
+import { UserSubscribe } from 'src/entites/user.subscribe.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -12,6 +13,8 @@ export class GamePlaytimeService {
     private readonly playtimeRepository: Repository<PlayTime>,
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(UserSubscribe)
+    private readonly userSubUserSubscribeRepository: Repository<UserSubscribe>,
   ) {}
 
   async updatePlaytime(
@@ -34,6 +37,17 @@ export class GamePlaytimeService {
     if (!game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
+
+    const userSubscribe = await this.userSubUserSubscribeRepository.findOne({
+      where: { user: { id: user.id } },
+    });
+    if (!userSubscribe) {
+      throw new NotFoundException('구독 정보를 찾을 수 없습니다.');
+    }
+    await this.userSubUserSubscribeRepository.save({
+      remainPlayTime: userSubscribe.remainPlayTime - additionalPlaytime,
+      ...userSubscribe,
+    });
 
     const playtime = await this.playtimeRepository.findOne({
       where: { game: { id: gameId }, user: { id: user.id } },

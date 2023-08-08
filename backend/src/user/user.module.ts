@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UserService } from './user.service';
-import { UsersController } from './user.controller';
+import { UserService } from './services/user.service';
+import { UsersController } from './controllers/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entites/user.entity';
 import { PlayTime } from 'src/entites/game/game.playtime.entity';
