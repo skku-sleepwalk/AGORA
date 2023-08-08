@@ -19,6 +19,7 @@ import {
 import { GameDto } from '../dto/game.dto';
 import { GameReview } from 'src/entites/game/game.review.entity';
 import { GameInformation } from 'src/entites/game/game.information.entity';
+import { UserSubscribe } from 'src/entites/user.subscribe.entity';
 // NestJS에서 사용되는 각종 데코레이터 및 필요한 모듈들을 import합니다.
 // Injectable 데코레이터를 통해 이 서비스가 주입 가능한 클래스임을 선언합니다.
 // @InjectRepository를 통해 TypeORM에서 사용할 Repository를 주입합니다.
@@ -39,6 +40,8 @@ export class GameService {
     private readonly gameTagRelationRepository: Repository<GameTagRelation>,
     @InjectRepository(GameReview)
     private readonly gameReviewRepository: Repository<GameReview>,
+    @InjectRepository(UserSubscribe)
+    private readonly userSubscribeRepository: Repository<UserSubscribe>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly dataSource: DataSource,
   ) {}
@@ -113,6 +116,13 @@ export class GameService {
       const relation = relations.find((r) => r.tag.name === tagName);
       return relation.tag;
     });
+
+    const isPlayable =
+      (await this.userSubscribeRepository
+        .createQueryBuilder('userSubscribe')
+        .leftJoinAndSelect('userSubscribe.user', 'user')
+        .where('user.email = :userEmail', { userEmail })
+        .getCount()) > 0;
 
     // game 데이터에 like 속성과 관련된 정보들을 추가하여 반환합니다.
     return {

@@ -49,6 +49,7 @@ import { AssetReviewDislike } from './entites/asset/asset.review.dislike.entity'
 import { AssetReviewCommentLike } from './entites/asset/asset.review.comment.like.entity';
 import { AssetReviewCommentDislike } from './entites/asset/asset.review.comment.dislike.entity';
 import { AssetCost } from './entites/asset/asset.cost.entity';
+import { UserSubscribe } from './entites/user.subscribe.entity';
 
 dotenv.config();
 
@@ -64,6 +65,7 @@ dotenv.config();
       database: process.env.DB_DATABASE,
       entities: [
         User,
+        UserSubscribe,
         CommunityBoard,
         CommunityCategory,
         CommunityBoardLike,
@@ -104,6 +106,7 @@ dotenv.config();
     }),
     TypeOrmModule.forFeature([
       User,
+      UserSubscribe,
       CommunityBoard,
       CommunityCategory,
       CommunityBoardLike,

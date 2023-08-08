@@ -28,6 +28,7 @@ import { GameLike } from './game/game.like.entity';
 import { Asset } from './asset/asset.entity';
 import { AssetReview } from './asset/asset.review.entity';
 import { AssetReviewComment } from './asset/asset.review.comment.entity';
+import { UserSubscribe } from './user.subscribe.entity';
 
 @Entity('User')
 export class User {
@@ -79,6 +80,9 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date | null;
+
+  @OneToMany(() => UserSubscribe, (relation) => relation.user)
+  subscribe: Array<UserSubscribe>;
 
   @OneToMany(() => CommunityBoard, (board) => board.author)
   communityBoards: CommunityBoard[];
