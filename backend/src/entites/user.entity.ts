@@ -48,15 +48,15 @@ export class User {
   @Column({ unique: true, nullable: false })
   readonly email: string;
 
-  // @IsString()
-  // @IsNotEmpty()
-  // @ApiProperty({
-  //   example: '12345678',
-  //   description: '비밀번호',
-  //   required: true,
-  // })
-  // @Column({ nullable: false })
-  // password: string;
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({
+    example: '12345678',
+    description: '비밀번호',
+    required: true,
+  })
+  @Column({ nullable: false })
+  password: string;
 
   @IsString()
   @IsOptional()

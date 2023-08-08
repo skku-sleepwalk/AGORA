@@ -4,7 +4,7 @@ import { UserDto } from 'src/common/dto/user.dto';
 import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
-// import bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -15,10 +15,22 @@ export class UserService {
     private readonly playtimeRepository: Repository<PlayTime>,
   ) {}
 
+  async login(email: string, password: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) {
+      throw new ForbiddenException('존재하지 않는 사용자입니다.');
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      throw new ForbiddenException('비밀번호가 일치하지 않습니다.');
+    }
+    return user;
+  }
+
   async postUsers(
     email: string,
     name: string,
-    // password: string,
+    password: string,
     description: string,
   ) {
     const user = await this.userRepository.findOne({ where: { email } });
@@ -27,11 +39,11 @@ export class UserService {
       throw new ForbiddenException('이미 존재하는 사용자입니다.');
     }
 
-    // const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, 12);
     return this.userRepository.save({
       email,
       name,
-      // password: hashedPassword,
+      password: hashedPassword,
       description,
     });
   }

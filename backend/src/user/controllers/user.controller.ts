@@ -16,6 +16,7 @@ import { UserDto } from 'src/common/dto/user.dto';
 import { Users } from 'src/common/decorators/user.decorator';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { LoginUserDto } from '../dto/login.user.dto';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
@@ -30,7 +31,7 @@ export class UsersController {
     return this.userService.postUsers(
       data.email,
       data.name,
-      // data.password,
+      data.password,
       data.description,
     );
   }
@@ -50,14 +51,14 @@ export class UsersController {
     return this.userService.getUser(id);
   }
 
-  // @ApiResponse({ status: 200, description: '성공', type: UserDto })
-  // @ApiResponse({ status: 500, description: '서버에러' })
-  // @ApiOperation({ summary: '로그인' })
+  @ApiResponse({ status: 200, description: '성공', type: UserDto })
+  @ApiResponse({ status: 500, description: '서버에러' })
+  @ApiOperation({ summary: '로그인' })
   // @UseGuards(LocalAuthGuard)
-  // @Post('login')
-  // logIn(@Users() user) {
-  //   return user;
-  // }
+  @Post('login')
+  logIn(@Body() data: LoginUserDto) {
+    return this.userService.login(data.email, data.password);
+  }
 
   // @ApiResponse({ status: 200, description: '성공', type: UserDto })
   // @ApiResponse({ status: 500, description: '서버에러' })
