@@ -25,6 +25,6 @@ export class UserSubscribe {
   @CreateDateColumn()
   startAt: Date;
 
-  @Column({ type: Timestamp })
+  @Column({ type: 'timestamp' })
   endAt: Date;
 }
