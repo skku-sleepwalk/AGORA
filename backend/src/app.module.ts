@@ -38,6 +38,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadModule } from './upload/upload.module';
 import { AssetModule } from './asset/asset.module';
+import { UserSubscribe } from './entites/user.subscribe.entity';
 
 dotenv.config();
 
