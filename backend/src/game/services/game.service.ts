@@ -121,7 +121,10 @@ export class GameService {
       (await this.userSubscribeRepository
         .createQueryBuilder('userSubscribe')
         .leftJoinAndSelect('userSubscribe.user', 'user')
-        .where('user.email = :userEmail', { userEmail })
+        .where(
+          'user.email = :userEmail AND userSubscribe.startAt<=:currentAt AND userSubscribe.endAt>=:currentAt AND userSubscribe.remainPlayTime>0',
+          { userEmail, currentAt: new Date() },
+        )
         .getCount()) > 0;
 
     // game 데이터에 like 속성과 관련된 정보들을 추가하여 반환합니다.
@@ -131,6 +134,7 @@ export class GameService {
       likeCount,
       rating,
       popularTags,
+      isPlayable,
     };
   }
 

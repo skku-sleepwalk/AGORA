@@ -5,6 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Timestamp,
   UpdateDateColumn,
 } from 'typeorm';
 import { User } from './user.entity';
@@ -24,6 +25,6 @@ export class UserSubscribe {
   @CreateDateColumn()
   startAt: Date;
 
-  //   @Column('',{ type: Date })
-  //   endAt: Date;
+  @Column({ type: Timestamp })
+  endAt: Date;
 }
