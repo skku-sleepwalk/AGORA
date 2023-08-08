@@ -52,6 +52,7 @@ import { GamePlaytimeController } from './controllers/game.playtime.controller';
 import { GameInformation } from 'src/entites/game/game.information.entity';
 import { GameTagRelationService } from './services/game.tag.relation.service';
 import { GameTagRelationController } from './controllers/game.tag.relation.controller';
+import { UserSubscribe } from 'src/entites/user.subscribe.entity';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { GameTagRelationController } from './controllers/game.tag.relation.contr
       GameBoardLike,
       GameShoppingCartItem,
       User,
+      UserSubscribe,
     ]),
   ],
   providers: [

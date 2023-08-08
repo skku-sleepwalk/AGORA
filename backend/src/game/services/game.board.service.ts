@@ -381,6 +381,7 @@ export class GameBoardService {
       where: { id: boardId, game: { id: gameId } },
       relations: ['author', 'parent'],
     });
+    console.log(board);
     if (!board) {
       throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
@@ -399,8 +400,13 @@ export class GameBoardService {
       await this.gameBoardRepository.delete(board.id);
     }
 
+    console.log(board);
     // 부모의 부모로 재귀적으로 호출하여 부모의 삭제 상태 업데이트
-    await this.updateAncestorDeletedStatus(board.parent.id);
+    if (board.parent) {
+      await this.updateAncestorDeletedStatus(board.parent.id);
+    }
+
+    console.log('삭제 완료');
     return true;
   }
 
@@ -410,7 +416,6 @@ export class GameBoardService {
       where: { id: boardId },
       relations: ['parent'],
     });
-
     // 자식 개수 조회
     const childCount = await this.getChildCount(board.id);
 

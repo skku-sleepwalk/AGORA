@@ -29,6 +29,11 @@ export class GameDto extends PickType(Game, [
   @IsNumber()
   likeCount?: number;
 
+  @ApiProperty({ description: '플레이 가능 여부' })
+  @IsNotEmpty()
+  @IsBoolean()
+  isPlayable?: boolean;
+
   @ApiProperty({ description: '좋아요 여부' })
   @IsNotEmpty()
   @IsBoolean()
