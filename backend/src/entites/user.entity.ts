@@ -55,7 +55,7 @@ export class User {
     description: '비밀번호',
     required: true,
   })
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   password: string;
 
   @IsString()
@@ -81,63 +81,91 @@ export class User {
   @DeleteDateColumn()
   deletedAt: Date | null;
 
-  @OneToMany(() => UserSubscribe, (relation) => relation.user)
+  @OneToMany(() => UserSubscribe, (relation) => relation.user, {
+    cascade: true,
+  })
   subscribe: Array<UserSubscribe>;
 
-  @OneToMany(() => CommunityBoard, (board) => board.author)
+  @OneToMany(() => CommunityBoard, (board) => board.author, { cascade: true })
   communityBoards: CommunityBoard[];
 
-  @OneToMany(() => CommunityBoardLike, (relation) => relation.user)
+  @OneToMany(() => CommunityBoardLike, (relation) => relation.user, {
+    cascade: true,
+  })
   communityBoardLikes: Array<CommunityBoardLike>;
 
-  @OneToMany(() => Game, (game) => game.author)
+  @OneToMany(() => Game, (game) => game.author, { cascade: true })
   games: Array<Game>;
 
-  @OneToMany(() => GameStore, (board) => board.author)
+  @OneToMany(() => GameStore, (board) => board.author, { cascade: true })
   gameStores: Array<GameStore>;
 
-  @OneToMany(() => PlayTime, (relation) => relation.user)
+  @OneToMany(() => PlayTime, (relation) => relation.user, { cascade: true })
   playtimes: Array<PlayTime>;
 
-  @OneToMany(() => GameTagRelation, (relation) => relation.user)
+  @OneToMany(() => GameTagRelation, (relation) => relation.user, {
+    cascade: true,
+  })
   gameTagRelations: Array<GameTagRelation>;
 
-  @OneToMany(() => GameShoppingCartItem, (item) => item.user)
+  @OneToMany(() => GameShoppingCartItem, (item) => item.user, { cascade: true })
   gameShoppingCartItems: GameShoppingCartItem[];
 
-  @OneToMany(() => GameReview, (review) => review.author)
+  @OneToMany(() => GameReview, (review) => review.author, { cascade: true })
   gameReviews: Array<GameReview>;
 
-  @OneToMany(() => GameReviewLike, (relation) => relation.user)
+  @OneToMany(() => GameReviewLike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameReviewLikes: Array<GameReviewLike>;
 
-  @OneToMany(() => GameReviewDislike, (relation) => relation.user)
+  @OneToMany(() => GameReviewDislike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameReviewDislikes: Array<GameReviewDislike>;
 
-  @OneToMany(() => GameReviewComment, (comment) => comment.author)
+  @OneToMany(() => GameReviewComment, (comment) => comment.author, {
+    cascade: true,
+  })
   gameReviewComments: Array<GameReviewComment>;
 
-  @OneToMany(() => GameReviewCommentLike, (relation) => relation.user)
+  @OneToMany(() => GameReviewCommentLike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameReviewCommentLikes: Array<GameReviewCommentLike>;
 
-  @OneToMany(() => GameReviewCommentDislike, (relation) => relation.user)
+  @OneToMany(() => GameReviewCommentDislike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameReviewCommentDislikes: Array<GameReviewCommentDislike>;
 
-  @OneToMany(() => GameBoard, (board) => board.author)
+  @OneToMany(() => GameBoard, (board) => board.author, {
+    cascade: true,
+  })
   gameBoards: Array<GameBoard>;
 
-  @OneToMany(() => GameBoardLike, (relation) => relation.user)
+  @OneToMany(() => GameBoardLike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameBoardLikes: Array<GameBoardLike>;
 
-  @OneToMany(() => GameLike, (relation) => relation.user)
+  @OneToMany(() => GameLike, (relation) => relation.user, {
+    cascade: true,
+  })
   gameLikes: Array<GameLike>;
 
-  @OneToMany(() => Asset, (asset) => asset.author)
+  @OneToMany(() => Asset, (asset) => asset.author, {
+    cascade: true,
+  })
   assets: Array<Asset>;
 
-  @OneToMany(() => AssetReview, (review) => review.author)
+  @OneToMany(() => AssetReview, (review) => review.author, {
+    cascade: true,
+  })
   assetReviews: Array<AssetReview>;
 
-  @OneToMany(() => AssetReviewComment, (comment) => comment.author)
+  @OneToMany(() => AssetReviewComment, (comment) => comment.author, {
+    cascade: true,
+  })
   assetReviewComments: Array<AssetReviewComment>;
 }
