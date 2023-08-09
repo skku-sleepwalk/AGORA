@@ -1,6 +1,8 @@
 import {
+  Alert,
   Avatar,
   Box,
+  Button,
   Group,
   Menu,
   Stack,
@@ -15,6 +17,7 @@ import { useGameBoardDetailViewerStyles } from "./GameBoardDetailViewer.styles";
 import { useMediaQuery } from "@mantine/hooks";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
+  IconAlertCircle,
   IconBell,
   IconBookmark,
   IconChevronLeft,
@@ -33,12 +36,15 @@ import useGameBoard from "../../../../../hooks/useGameBoard";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 import useGameBoardList from "../../../../../hooks/useGameBoardList";
 import { GAME_BOARD_CATEGORIES } from "../../../../../constants/category";
-import { createContext } from "react";
+import { createContext, useState } from "react";
 import {
   createGameBoardLike,
   deleteGameBoardLike,
 } from "../../../../../utils/api/game/gameBoard/gameBoardLike";
 import useAuth from "../../../../../hooks/useAuth";
+import { deleteGameBoard } from "../../../../../utils/api/game/gameBoard/deleteGameBoard";
+import { showNotification } from "../../../../../utils/notifications";
+import { GameBoardWriter } from "../GameBoardWriter/GameBoardWriter";
 
 export interface GameBoardDetailViewerProps {
   gameId: string;
@@ -62,8 +68,11 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
       parentId: boardId,
     }
   );
-  const canEdit = true;
+  const { user } = useAuth();
+  const canEdit = postData?.data.author.id === user?.id;
   const { token } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     postData && (
@@ -96,18 +105,66 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
             </Stack>
           </Group>
           {/* 게시글 내용 */}
-          <Stack className={classes.marginLeft} spacing={"xs"}>
-            <Title order={3}>{postData.data.title}</Title>
-            <TypographyStylesProvider>
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: postData.data.content,
-                }}
-              />
-            </TypographyStylesProvider>
-          </Stack>
+          {isEditing ? (
+            <GameBoardWriter
+              opened
+              gameId={gameId}
+              close={() => {
+                setIsEditing(false);
+                mutatePost();
+              }}
+              fullWidth
+              editProps={{
+                boardId: boardId,
+                title: postData.data.title,
+                content: postData.data.content,
+                category: postData.data.categories.map((category) => category.name),
+              }}
+            />
+          ) : (
+            <Stack className={classes.marginLeft} spacing={"xs"}>
+              <Title order={3}>{postData.data.title}</Title>
+              <TypographyStylesProvider>
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{
+                    __html: postData.data.content,
+                  }}
+                />
+              </TypographyStylesProvider>
+            </Stack>
+          )}
           {/* 게시글 푸터 */}
+          {isDeleting && (
+            <Alert
+              icon={<IconAlertCircle size="1rem" />}
+              title="게시글을 삭제하시겠습니까?"
+              color="red"
+              withCloseButton
+              onClose={() => {
+                setIsDeleting(false);
+              }}
+            >
+              <Stack spacing={"xs"}>
+                게시글을 삭제하면 되돌릴 수 없습니다.
+                <Group position="right">
+                  <Button
+                    variant="outline"
+                    color="red"
+                    onClick={() => {
+                      deleteGameBoard(gameId, boardId, token).then(() => {
+                        mutatePost();
+                        showNotification("게시글 삭제 완료", "게시글이 삭제되었습니다.");
+                        setIsDeleting(false);
+                      });
+                    }}
+                  >
+                    삭제
+                  </Button>
+                </Group>
+              </Stack>
+            </Alert>
+          )}
           <Group className={classes.footerGroup} position="apart">
             <Group spacing={"sm"}>
               <Group spacing={"0.3rem"}>
@@ -143,39 +200,48 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
                 <IconBookmark stroke={1.5} size={smallScreen ? "1rem" : "1.5rem"} />
               </InvisibleButton>
             </Group>
-            <Menu shadow="md" width={120} position="bottom-end" offset={1}>
-              <Menu.Target>
-                <UnstyledButton className={classes.dotButton}>
-                  <IconDotsVertical />
-                </UnstyledButton>
-              </Menu.Target>
-              <Menu.Dropdown>
-                {!canEdit && (
-                  <Menu.Item icon={<IconBell size={18} stroke={2} />} className={classes.menuItem}>
-                    신고하기
-                  </Menu.Item>
-                )}
-                {canEdit && (
-                  <>
+            {!isDeleting && !isEditing && (
+              <Menu shadow="md" width={120} position="bottom-end" offset={1}>
+                <Menu.Target>
+                  <UnstyledButton className={classes.dotButton}>
+                    <IconDotsVertical />
+                  </UnstyledButton>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  {!canEdit && (
                     <Menu.Item
-                      onClick={() => {}}
-                      icon={<IconPencil size={18} stroke={2} />}
+                      icon={<IconBell size={18} stroke={2} />}
                       className={classes.menuItem}
                     >
-                      수정하기
+                      신고하기
                     </Menu.Item>
-                    <Menu.Divider />
-                    <Menu.Item
-                      onClick={() => {}}
-                      icon={<IconTrash size={18} stroke={2} />}
-                      className={classes.menuItem}
-                    >
-                      삭제하기
-                    </Menu.Item>
-                  </>
-                )}
-              </Menu.Dropdown>
-            </Menu>
+                  )}
+                  {canEdit && (
+                    <>
+                      <Menu.Item
+                        onClick={() => {
+                          setIsEditing(true);
+                        }}
+                        icon={<IconPencil size={18} stroke={2} />}
+                        className={classes.menuItem}
+                      >
+                        수정하기
+                      </Menu.Item>
+                      <Menu.Divider />
+                      <Menu.Item
+                        onClick={() => {
+                          setIsDeleting(true);
+                        }}
+                        icon={<IconTrash size={18} stroke={2} />}
+                        className={classes.menuItem}
+                      >
+                        삭제하기
+                      </Menu.Item>
+                    </>
+                  )}
+                </Menu.Dropdown>
+              </Menu>
+            )}
           </Group>
           {/* 게시글 댓글 파트 */}
           <Box className={classes.marginLeft}>

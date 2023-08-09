@@ -4,6 +4,7 @@ import { useState } from "react";
 import { UserMenu } from "./UserMenu/UserMenu";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import useAuth from "../../../../hooks/useAuth";
 
 export interface HeaderProps {
   links: { label: string; link: string }[];
@@ -13,6 +14,7 @@ export function Header({ links }: HeaderProps) {
   const { classes, cx } = useHeaderStyles();
   const router = useRouter();
   const [active, setActive] = useState(router.pathname);
+  const { user } = useAuth();
 
   return (
     <MantineHeader height={69} className={classes.header}>
@@ -37,7 +39,12 @@ export function Header({ links }: HeaderProps) {
           </Group>
         </Group>
         <Group>
-          <UserMenu image="https://avatars.githubusercontent.com/u/52057157?v=4" name="루카스" />
+          {user && (
+            <UserMenu
+              image="https://avatars.githubusercontent.com/u/52057157?v=4"
+              name={user.name}
+            />
+          )}
         </Group>
       </Group>
     </MantineHeader>

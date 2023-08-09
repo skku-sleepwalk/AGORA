@@ -1,4 +1,5 @@
 import {
+  Alert,
   Avatar,
   Box,
   Button,
@@ -8,6 +9,7 @@ import {
   Spoiler,
   Stack,
   Text,
+  TextInput,
   TypographyStylesProvider,
   UnstyledButton,
   useMantineTheme,
@@ -15,6 +17,7 @@ import {
 import { useGameBoardCommentStyles } from "./GameBoardComment.styles";
 import { MOCKUP_CONTENT } from "../../../../../mockups/post";
 import {
+  IconAlertCircle,
   IconBell,
   IconDotsVertical,
   IconHeart,
@@ -34,6 +37,10 @@ import {
   deleteGameBoardLike,
 } from "../../../../../utils/api/game/gameBoard/gameBoardLike";
 import useAuth from "../../../../../hooks/useAuth";
+import { deleteGameBoard } from "../../../../../utils/api/game/gameBoard/deleteGameBoard";
+import { showNotification } from "../../../../../utils/notifications";
+import { useState } from "react";
+import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
 
 export interface GameBoardCommentProps {
   post: GameBoard;
@@ -46,6 +53,8 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
   const { classes, cx } = useGameBoardCommentStyles({ smallScreen });
   const theme = useMantineTheme();
   const { token } = useAuth();
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   // 답글 관련
   const canEdit = true;
@@ -75,23 +84,66 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
         </Group>
         {/* 후기 내용 */}
         <Stack className={classes.marginLeft} spacing={0}>
-          <TypographyStylesProvider className={classes.commentTypo}>
-            <Spoiler
-              className={classes.spoiler}
-              maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
-              showLabel="자세히 보기"
-              hideLabel="숨기기"
-            >
-              <div
-                className={classes.content}
-                dangerouslySetInnerHTML={{
-                  __html: post.content,
-                }}
-              />
-            </Spoiler>
-          </TypographyStylesProvider>
+          {!isEditing ? (
+            <TypographyStylesProvider className={classes.commentTypo}>
+              <Spoiler
+                className={classes.spoiler}
+                maxHeight={smallScreen ? 4.1 * 16 : 5.9 * 16}
+                showLabel="자세히 보기"
+                hideLabel="숨기기"
+              >
+                <div
+                  className={classes.content}
+                  dangerouslySetInnerHTML={{
+                    __html: post.content,
+                  }}
+                />
+              </Spoiler>
+            </TypographyStylesProvider>
+          ) : (
+            <GameTextWriter
+              gameId={gameId}
+              boardId={post.id}
+              content={post.content}
+              placeholder={"댓글을 입력하세요."}
+              parentBoardCategoryNames={post.categories.map((category) => category.name)}
+              completePatch={() => {
+                setIsEditing(false);
+                mutatePost();
+              }}
+            />
+          )}
         </Stack>
-        {/* 후기 하단 버튿들 */}
+        {isDeleting && (
+          <Alert
+            icon={<IconAlertCircle size="1rem" />}
+            title="댓글을 삭제하시겠습니까?"
+            color="red"
+            withCloseButton
+            onClose={() => {
+              setIsDeleting(false);
+            }}
+          >
+            <Stack spacing={"xs"}>
+              댓글을 삭제하면 되돌릴 수 없습니다.
+              <Group position="right">
+                <Button
+                  variant="outline"
+                  color="red"
+                  onClick={() => {
+                    deleteGameBoard(gameId, post.id, token).then(() => {
+                      mutatePost();
+                      showNotification("댓글 삭제 완료", "게시글이 삭제되었습니다.");
+                      setIsDeleting(false);
+                    });
+                  }}
+                >
+                  삭제
+                </Button>
+              </Group>
+            </Stack>
+          </Alert>
+        )}
         <Group className={classes.marginLeft} position="apart">
           <Group spacing="0.3rem">
             <InvisibleButton
@@ -130,7 +182,9 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
               {canEdit && (
                 <>
                   <Menu.Item
-                    onClick={() => {}}
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
                     icon={<IconPencil size={18} stroke={2} />}
                     className={classes.menuItem}
                   >
@@ -138,9 +192,11 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
                   </Menu.Item>
                   <Menu.Divider />
                   <Menu.Item
-                    onClick={() => {}}
                     icon={<IconTrash size={18} stroke={2} />}
                     className={classes.menuItem}
+                    onClick={() => {
+                      setIsDeleting(true);
+                    }}
                   >
                     삭제하기
                   </Menu.Item>

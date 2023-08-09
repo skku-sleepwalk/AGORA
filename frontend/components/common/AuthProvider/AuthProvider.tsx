@@ -20,8 +20,8 @@ function AuthProvider({ children }: AuthProviderProps) {
   return (
     <AuthContext.Provider
       value={{
-        user: data?.data[0],
-        token: data?.data[0]?.email,
+        user: data?.data[1],
+        token: data?.data[1]?.email,
       }}
     >
       {children}
