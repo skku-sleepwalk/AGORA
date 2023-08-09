@@ -6,4 +6,9 @@ export class CreateUserSubscribeDto {
   @IsNotEmpty()
   @IsNumber()
   remainPlayTime: number;
+
+  @ApiProperty({ description: '구독 기간(날짜)', example: 30 })
+  @IsNotEmpty()
+  @IsNumber()
+  duration: number;
 }

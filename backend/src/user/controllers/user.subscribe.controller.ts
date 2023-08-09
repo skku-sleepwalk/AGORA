@@ -14,6 +14,10 @@ export class UserSubscribeController {
     @Param('userId') userId: string,
     @Body() data: CreateUserSubscribeDto,
   ) {
-    return this.userSubscribeService.subscribe(userId, data.remainPlayTime);
+    return this.userSubscribeService.subscribe(
+      userId,
+      data.remainPlayTime,
+      data.duration,
+    );
   }
 }

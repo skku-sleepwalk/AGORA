@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -20,9 +19,9 @@ export class UserSubscribe {
   @Column()
   remainPlayTime: number;
 
-  @CreateDateColumn()
+  @Column({ type: 'timestamp', nullable: false })
   startAt: Date;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', nullable: false })
   endAt: Date;
 }

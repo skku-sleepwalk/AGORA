@@ -116,15 +116,16 @@ export class GameService {
       const relation = relations.find((r) => r.tag.name === tagName);
       return relation.tag;
     });
+    const currentAt = new Date();
 
     const isPlayable =
       (await this.userSubscribeRepository
-        .createQueryBuilder('userSubscribe')
-        .leftJoinAndSelect('userSubscribe.user', 'user')
-        .where(
-          'user.email = :userEmail AND userSubscribe.startAt<=:currentAt AND userSubscribe.endAt>=:currentAt AND userSubscribe.remainPlayTime>0',
-          { userEmail, currentAt: new Date() },
-        )
+        .createQueryBuilder('subscribe')
+        .leftJoinAndSelect('subscribe.user', 'user')
+        .where('user.email = :userEmail', { userEmail })
+        .andWhere('subscribe.startAt < :currentAt', { currentAt })
+        .andWhere('subscribe.endAt > :currentAt', { currentAt })
+        .andWhere('subscribe.remainPlayTime > 0')
         .getCount()) > 0;
 
     // game 데이터에 like 속성과 관련된 정보들을 추가하여 반환합니다.

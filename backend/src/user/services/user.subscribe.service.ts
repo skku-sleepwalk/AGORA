@@ -13,13 +13,21 @@ export class UserSubscribeService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async subscribe(userEmail: string, remainPlayTime: number) {
+  async subscribe(userEmail: string, remainPlayTime: number, duration: number) {
     const user = await this.userRepository.findOne({
       where: { email: userEmail },
     });
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
-    return this.userSubscribeRepository.save({ user, remainPlayTime });
+
+    const startAt = new Date();
+    const endAt = startAt.setDate(startAt.getDate() + duration);
+    return this.userSubscribeRepository.save({
+      user,
+      remainPlayTime,
+      startAt,
+      endAt,
+    });
   }
 }
