@@ -3,9 +3,12 @@ import { useMainTabStyles } from "./MainTab.styles";
 import { useState } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 
-export function MainTab() {
+export interface MainTabProps {
+  active: string;
+}
+export function MainTab({ active }: MainTabProps) {
   const { classes, cx } = useMainTabStyles();
-  const [activeTab, setActiveTab] = useState<string | null>("main");
+  const [activeTab, setActiveTab] = useState<string | null>(active);
 
   const smallScreen = useMediaQuery("(max-width: 780px)");
 
