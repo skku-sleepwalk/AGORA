@@ -13,9 +13,9 @@ export class UserSubscribeService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  async subscribe(userEmail: string, remainPlayTime: number, duration: number) {
+  async subscribe(userId: string, remainPlayTime: number, duration: number) {
     const user = await this.userRepository.findOne({
-      where: { email: userEmail },
+      where: { email: userId },
     });
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
