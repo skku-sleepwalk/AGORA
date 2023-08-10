@@ -1,15 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Avatar,
-  BackgroundImage,
-  Image,
-  Box,
-  Group,
-  Stack,
-  Text,
-  Center,
-  Container,
-} from "@mantine/core";
+import { useRef, useState } from "react";
+import { Avatar, BackgroundImage, Image, Box, Group, Stack, Text, Container } from "@mantine/core";
 import { useListState, useMediaQuery } from "@mantine/hooks";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
@@ -36,20 +26,11 @@ function processString(input: string): string {
 interface MainCarouselProps {
   isMain?: boolean;
   isInfo?: boolean;
-  imgUrls?: string[];
+  imgUrls?: string[] | undefined;
 }
 
 export function MainCarousel({ isMain, isInfo, imgUrls }: MainCarouselProps) {
-  // 배경 이미지 내부, 태그들의 크기/위치 자동 조절 용
-  const widthRef = useRef<HTMLAnchorElement>(null);
-  const [width, setWidth] = useState<number>(1440);
-  useEffect(() => {
-    if (widthRef.current) {
-      setWidth(widthRef.current.clientWidth);
-    }
-  }, []);
-
-  const { classes, cx } = useMainCarouselStyles({ width });
+  const { classes, cx } = useMainCarouselStyles();
 
   const TRANSITION_DURATION = 200;
   const [embla, setEmbla] = useState<Embla | null>(null);

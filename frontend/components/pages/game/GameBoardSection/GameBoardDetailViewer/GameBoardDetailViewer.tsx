@@ -29,9 +29,9 @@ import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton"
 import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
 import { GameBoardComment } from "../GameBoardComment/GameBoardComment";
 import { useRouter } from "next/router";
-import useGameBoard from "../../../../../hooks/useGameBoard";
+import useGameBoard from "../../../../../hooks/game/useGameBoard";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
-import useGameBoardList from "../../../../../hooks/useGameBoardList";
+import useGameBoardList from "../../../../../hooks/game/useGameBoardList";
 import { GAME_BOARD_CATEGORIES } from "../../../../../constants/category";
 import { createContext } from "react";
 import {

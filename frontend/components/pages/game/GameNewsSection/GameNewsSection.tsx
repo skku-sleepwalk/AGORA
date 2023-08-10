@@ -4,9 +4,9 @@ import { GameNews } from "./GameNews/GameNews";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconPlus } from "@tabler/icons-react";
-import { GameTabClicklContext } from "../../../../pages/game/[id]";
+import { GameTabClickContext } from "../../../../pages/game/[id]";
 import { useContext } from "react";
-import useGameBoardList from "../../../../hooks/useGameBoardList";
+import useGameBoardList from "../../../../hooks/game/useGameBoardList";
 
 export interface GameNewsSectionProps {
   gameId: string;
@@ -18,7 +18,7 @@ export function GameNewsSection({ gameId }: GameNewsSectionProps) {
   const theme = useMantineTheme();
 
   const [state, setState] = useSetState({ notice: false, update: false, develop: false });
-  const handleScroll = useContext(GameTabClicklContext);
+  const handleScroll = useContext(GameTabClickContext);
   const { data: noticeData } = useGameBoardList(["공지사항"], gameId);
   const { data: updateData } = useGameBoardList(["업데이트"], gameId);
   const { data: developData } = useGameBoardList(["개발일지"], gameId);

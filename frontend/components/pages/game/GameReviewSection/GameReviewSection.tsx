@@ -5,12 +5,12 @@ import { useGameReviewSectionStyles } from "./GameReviewSection.styles";
 import { GameTextWriter } from "../GameTextWriter/GameTextWriter";
 import { GameReview } from "./GameReview/GameReview";
 import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
-import { useGameReviewList } from "../../../../hooks/useGameReview";
+import { useGameReviewList } from "../../../../hooks/game/useGameReview";
 import useAuth from "../../../../hooks/useAuth";
-import { useMyGameReview } from "../../../../hooks/useMyGameReview";
+import { useMyGameReview } from "../../../../hooks/game/useMyGameReview";
 import { createContext } from "react";
 import { PlaytimesInUser } from "../../../../types/api/user";
-import { useUserPlaytimes } from "../../../../hooks/useUserPlaytimes";
+import { useUserPlaytimes } from "../../../../hooks/game/useUserPlaytimes";
 
 export interface GameReviewSectionProps {
   gameId: string;
