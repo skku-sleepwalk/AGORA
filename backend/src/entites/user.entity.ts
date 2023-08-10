@@ -29,6 +29,7 @@ import { Asset } from './asset/asset.entity';
 import { AssetReview } from './asset/asset.review.entity';
 import { AssetReviewComment } from './asset/asset.review.comment.entity';
 import { UserSubscribe } from './user.subscribe.entity';
+import { AssetSearch } from './asset/asset.search.entity';
 
 @Entity('User')
 export class User {
@@ -158,6 +159,11 @@ export class User {
     cascade: true,
   })
   assets: Array<Asset>;
+
+  @OneToMany(() => AssetSearch, (search) => search.user, {
+    cascade: true,
+  })
+  assetSearches: Array<AssetSearch>;
 
   @OneToMany(() => AssetReview, (review) => review.author, {
     cascade: true,

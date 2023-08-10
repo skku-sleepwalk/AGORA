@@ -4,8 +4,14 @@ import { AssetCost } from 'src/entites/asset/asset.cost.entity';
 import { Asset } from 'src/entites/asset/asset.entity';
 import { AssetLike } from 'src/entites/asset/asset.like.entity';
 import { User } from 'src/entites/user.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 import { AssetDto } from '../dto/asset.dto';
+import {
+  Cursor,
+  PaginationOptions,
+  buildPaginator,
+} from 'typeorm-cursor-pagination';
+import { CursoredAssetDto } from 'src/common/dto/cursoredData.dto';
 
 @Injectable()
 export class AssetService {
@@ -32,6 +38,37 @@ export class AssetService {
         : false;
     asset.likeCount = likeCount;
     return asset;
+  }
+
+  async dataModifying(userEmail: string, data: Asset[]): Promise<AssetDto[]> {
+    return await Promise.all(
+      data.map(async (asset) => {
+        return this.assetModifying(userEmail, asset);
+      }),
+    );
+  }
+
+  async paginating(
+    userEmail: string,
+    _cursor: Cursor,
+    queryBuilder: SelectQueryBuilder<Asset>,
+  ): Promise<CursoredAssetDto> {
+    const paginationOption: PaginationOptions<Asset> = {
+      entity: Asset,
+      paginationKeys: ['createdAt'],
+      query: {
+        afterCursor: _cursor.afterCursor || null,
+        beforeCursor: _cursor.beforeCursor || null,
+        limit: 6,
+        order: 'DESC',
+      },
+    };
+    const paginator = buildPaginator(paginationOption);
+    paginator.setAlias('asset');
+
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+    const assets = await this.dataModifying(userEmail, data);
+    return { data: assets, cursor };
   }
 
   async createAsset(
@@ -78,5 +115,12 @@ export class AssetService {
       where: { id: assetId },
     });
     return this.assetModifying(userEmail, asset);
+  }
+
+  async searchAsset(userEmail: string, search: string) {
+    const queryBuilder = this.assetRepository
+      .createQueryBuilder('asset')
+      .where('asset.title like :search', { search: `%${search}%` })
+      .getMany();
   }
 }

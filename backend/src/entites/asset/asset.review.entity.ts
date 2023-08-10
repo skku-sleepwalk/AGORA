@@ -10,6 +10,7 @@ import {
 import { Asset } from './asset.entity';
 import { User } from '../user.entity';
 import { AssetReviewComment } from './asset.review.comment.entity';
+import { AssetReviewLike } from './asset.review.like.entity';
 
 @Entity('AssetReview')
 export class AssetReview {
@@ -41,4 +42,7 @@ export class AssetReview {
     cascade: true,
   })
   comments: AssetReviewComment[];
+
+  @OneToMany(() => AssetReviewLike, (like) => like.review, { cascade: true })
+  likes: AssetReviewLike[];
 }
