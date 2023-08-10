@@ -6,6 +6,7 @@ import { Image } from "@mantine/core";
 import { Text } from "@mantine/core";
 import Story from "./story";
 export default function Stories() {
+  //특정 게임에 대한 개발일지를 다룹니다.
   const { user } = useAuth();
   return (
     <CardContainer style={{ width: "90%", maxWidth: "100%" }}>

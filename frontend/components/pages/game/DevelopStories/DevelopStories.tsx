@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { Children, useState } from "react";
 
 import { Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
 import Stories from "./Stories";
-
-export function DevelopStories() {
+export interface DevelopStoriesProps {
+  children: React.ReactNode;
+}
+export function DevelopStories({ children }: DevelopStoriesProps) {
   const [Title, setTitle] = useState("개발일지 몰아보기");
 
   return (
@@ -25,7 +27,7 @@ export function DevelopStories() {
           width: "100%",
         }}
       >
-        <Stories></Stories>
+        {children}
       </div>
     </div>
   );
