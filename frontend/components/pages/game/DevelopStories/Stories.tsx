@@ -4,17 +4,18 @@ import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import useAuth from "../../../../hooks/useAuth";
 import { Image } from "@mantine/core";
 import { Text } from "@mantine/core";
+import Story from "./story";
 export default function Stories() {
   const { user } = useAuth();
   return (
     <CardContainer style={{ width: "90%", maxWidth: "100%" }}>
-      <div style={{ display: "flex", flexDirection: "row", paddingTop: "10px" }}>
+      <div style={{ display: "flex", flexDirection: "row", padding: "10px", maxWidth: "100%" }}>
         <div
           style={{
             display: "flex",
             flexDirection: "column",
-            paddingTop: "10px",
-            width: "20%",
+
+            width: "25%",
             height: "100%",
           }}
         >
@@ -55,25 +56,68 @@ export default function Stories() {
           </Text>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "row", marginLeft: "3rem" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            marginLeft: "2rem",
+            width: "100%",
+            maxWidth: "100%",
+            borderLeft: "0.5px solid gray ",
+          }}
+        >
+          {/* 여기는 우측 */}
           <Carousel
-            slideSize="20%"
-            align="start"
-            slidesToScroll={5}
-            slideGap="lg"
-            height="25rem"
-            withIndicators
-            controlSize={30}
-            maw={1400}
-            includeGapInSize={true}
-            previousControlIcon={<IconChevronLeft color="black" size={"3rem"}></IconChevronLeft>}
-            nextControlIcon={<IconChevronRight color="black" size={"3rem"}></IconChevronRight>}
+            style={{ width: "100%", display: "flex", paddingLeft: "55px" }}
+            slidesToScroll={3}
+            slideSize="33%"
+            slideGap={"20px"}
           >
-            {/* <Carousel.Slide>
-      <div style={{ marginTop: "20px" }}>
-        <Text>1</Text>
-      </div>
-    </Carousel.Slide> */}
+            <Carousel.Slide>
+              <div
+                style={{
+                  marginTop: "20px",
+                  width: "100%",
+                  height: "100%",
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                }}
+              >
+                {/* 
+                여기에 애들 들어가야함 */}
+                <Story></Story>
+              </div>
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <div
+                style={{
+                  marginTop: "20px",
+                  width: "100%",
+                  height: "100%",
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                }}
+              >
+                {/* 
+                여기에 애들 들어가야함 */}
+                <Story></Story>
+              </div>
+            </Carousel.Slide>
+            <Carousel.Slide>
+              <div
+                style={{
+                  marginTop: "20px",
+                  width: "100%",
+                  height: "100%",
+                  paddingLeft: "10px",
+                  paddingRight: "10px",
+                }}
+              >
+                {/* 
+                여기에 애들 들어가야함 */}
+                <Story></Story>
+              </div>
+            </Carousel.Slide>
           </Carousel>
         </div>
       </div>
