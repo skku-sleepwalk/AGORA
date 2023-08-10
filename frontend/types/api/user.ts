@@ -24,6 +24,13 @@ export interface PostUserBody {
   name: string;
   email: string;
   description: string;
+  password: string;
 }
 
-export type PostUserResponse = User;
+export interface PostUserResponse {
+  data: User;
+}
+
+export interface LoginResponse {
+  data: User;
+}
