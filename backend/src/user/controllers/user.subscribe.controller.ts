@@ -4,7 +4,7 @@ import { UserSubscribeService } from '../services/user.subscribe.service';
 import { CreateUserSubscribeDto } from '../dto/create.user.subscribe.dto';
 
 @ApiTags('User')
-@Controller('users/{userId}/subscribe')
+@Controller('users/:userId/subscribe')
 export class UserSubscribeController {
   constructor(private readonly userSubscribeService: UserSubscribeService) {}
 
