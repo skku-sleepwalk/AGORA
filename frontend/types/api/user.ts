@@ -1,10 +1,3 @@
-import { gameInUser } from "./game/game";
-
-export interface PlaytimesInUser {
-  game: gameInUser;
-  playtime: number;
-}
-
 export interface User {
   id: string;
   name: string;
@@ -15,6 +8,24 @@ export interface User {
   totalPlaytime: number;
   playtime: number;
   playtimes: PlaytimesInUser[];
+}
+
+export interface PlaytimesInUser {
+  game: gameInUser;
+  playtime: number;
+}
+
+export interface gameInUser {
+  id: string;
+  title: string;
+  downloadUrl: string;
+  executablePath: string;
+  shortImgUrl: string;
+  shortContent: string;
+  iconUrl: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt: string;
 }
 
 export interface GetUserResponse {

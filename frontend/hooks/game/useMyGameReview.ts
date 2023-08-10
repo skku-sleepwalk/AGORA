@@ -1,7 +1,7 @@
 import useSWR from "swr";
-import { MyGameReviewResponse } from "../types/api/game/gameReview";
-import useAuth from "./useAuth";
-import { fetcher } from "../utils/fetcher";
+import { MyGameReviewResponse } from "../../types/api/game/gameReview";
+import useAuth from "../useAuth";
+import { fetcher } from "../../utils/fetcher";
 
 export function useMyGameReview(gameId: string) {
   const { token } = useAuth();

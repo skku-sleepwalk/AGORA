@@ -11,46 +11,52 @@ import {
   Box,
   Modal,
 } from "@mantine/core";
-import { KeyedMutator } from "swr";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
 import { IconHeart } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { GameTagModal } from "../GameTagModal/GameTagModal";
-import { GameStore } from "../../../../types/api/game/gameStore";
+import { Game } from "../../../../types/api/game/game";
 import useAuth from "../../../../hooks/useAuth";
-interface GameDataProps {
-  postData: GameStore | undefined;
-  loading?: boolean;
-  mutate?: KeyedMutator<GameStore>;
-}
-export function GameSummary({ postData, loading, mutate }: GameDataProps) {
-  // '{ postData: { data: GameStore | undefined; isLoading: boolean; mutate: KeyedMutator<GameStore>; }; }' 형식은 'IntrinsicAttributes & GameStore' 형식에 할당할 수 없습니다.
-  // 'IntrinsicAttributes & GameStore' 형식에 'postData' 속성이 없습니다.
+import { DelGameLike, PostGameLike } from "../../../../utils/api/game/game/gameLike";
+import { GameContext } from "../../../../pages/game/[id]";
 
+interface GameDataProps {
+  postData: Game;
+}
+
+export function GameSummary({ postData }: GameDataProps) {
   const { classes, cx } = useGameSummaryStyles();
-  const [opened, { open, close }] = useDisclosure(false);
-  const [isLiking, setIsLiking] = useState<boolean>(postData ? postData.data.like : false);
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
   const { token } = useAuth();
 
-  const createstring = postData?.data.createdAt;
-  console.log("데이터:", typeof postData?.data.createdAt);
-  // // const year = createstring?.getFullYear();
-  // // const month = String(createstring?.getMonth() + 1).padStart(2, "0");
-  // // const day = String(createstring?.getDate()).padStart(2, "0");
-  let [year, month, day] = createstring?.split("-") || [null, null, null];
-  day = day?.slice(0, 2) || null;
-  console.log("데이터:", year);
-  const formattedString = `${year}년 ${month}월 ${day}일`;
-  // const formattedString = 1;
+  const [opened, { open, close }] = useDisclosure(false);
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+
+  const { mutatePost } = useContext(GameContext);
+
+  // 좋아요 관련
   const handleIsLiking = () => {
-    setIsLiking((prev) => !prev);
+    if (postData.like) {
+      DelGameLike(postData.id, token).then(() => {
+        mutatePost();
+      });
+    } else {
+      PostGameLike(postData.id, token).then(() => {
+        mutatePost();
+      });
+    }
   };
+
+  // 팔로우 관련
   const handleIsFollowing = () => {
     setIsFollowing((prev) => !prev);
   };
+
+  // 출시일 관련
+  const createstring = postData.createdAt;
+  let [year, month, day] = createstring?.split("-") || [null, null, null];
+  const formattedString = `${year}년 ${month}월 ${day?.slice(0, 2)}일`;
 
   // 태그
   const data = [
@@ -71,6 +77,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   ];
   const endIndex = 11;
   const tags = data.slice(0, endIndex).map((item) => <Box className={classes.tag}>{item}</Box>);
+
   const overflowRef = useRef<HTMLDivElement>(null);
   const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
   const checkOverflow = () => {
@@ -82,20 +89,19 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
   useEffect(() => {
     setIsOverflowed(checkOverflow());
   }, []);
-  // console.log({ storeData });
 
+  // 게임 다운로드/플레이 관련
   const onDownloadClick = () => {
-    window.open(`agoragame://install?id=${postData?.data.id}&token=${token}`, "_blank");
+    window.open(`agoragame://install?id=${postData.id}&token=${token}`, "_blank");
   };
-
   const onPlayClick = () => {
-    window.open(`agoragame://execute?id=${postData?.data.id}&token=${token}`, "_blank");
+    window.open(`agoragame://execute?id=${postData.id}&token=${token}`, "_blank");
   };
 
   return (
     <>
       <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
-        <GameTagModal onClose={close} />
+        <GameTagModal onClose={close} gameId={postData.id} />
       </Modal>
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
@@ -108,12 +114,12 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
               }
             />
             <Text fw={"bold"} fz={20}>
-              {postData ? postData.data.store.title : null}
+              {postData.store?.title}
             </Text>
           </Group>
           <Group spacing={"xs"}>
             <InvisibleButton onClick={handleIsLiking}>
-              {isLiking ? (
+              {postData.like ? (
                 <Image
                   className={classes.heartFilled}
                   width={"1.6rem"}
@@ -124,7 +130,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
                 <IconHeart size={"2rem"} stroke={1} />
               )}
             </InvisibleButton>
-            <Text fz={16}>({postData?.data.likeCount})</Text>
+            <Text fz={16}>({postData.likeCount})</Text>
           </Group>
         </Group>
         <Group className={cx(classes.alignTop, classes.marginBottom)}>
@@ -140,7 +146,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
                   component="a"
                   href="https://mantine.dev"
                 >
-                  {postData?.data.store.developer}
+                  {postData.store?.developer}
                 </Text>
               </Group>
               <InvisibleButton onClick={handleIsFollowing}>
@@ -171,7 +177,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
                 component="a"
                 href="https://mantine.dev"
               >
-                {postData?.data.store.distributor}
+                {postData.store?.distributor}
               </Text>
             </Group>
           </Stack>
@@ -182,7 +188,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
             장르
           </Text>
           <Group spacing={"0.5rem"} className={classes.blueText}>
-            {postData?.data?.genres?.map((data) => {
+            {postData.genres?.map((data) => {
               return (
                 <Text fw={"bold"} component="a" href="https://mantine.dev">
                   {data.name}
@@ -217,12 +223,12 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
             </Button>
           </Box>
         </Box>
-        {false && (
+        {!postData.isPlayable && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>
               <Stack spacing={"xs"}>
                 <Group position="center" spacing={"xs"} className={classes.alignBottom}>
-                  {true && (
+                  {postData.store.cost?.isSale && (
                     <Text fz={12} fw={"normal"} td="line-through">
                       ￦ 16,000
                     </Text>
@@ -248,7 +254,7 @@ export function GameSummary({ postData, loading, mutate }: GameDataProps) {
             </Button>
           </Group>
         )}
-        {true && (
+        {postData.isPlayable && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={cx(classes.sellButton)} onClick={onDownloadClick}>
               <Stack spacing={"sm"}>

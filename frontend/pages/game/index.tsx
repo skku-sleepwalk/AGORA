@@ -2,7 +2,7 @@ import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
 import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
-import useGameStoreList from "../../hooks/useGameStoreList";
+import useGameList from "../../hooks/game/useGameList";
 import { useRouter } from "next/router";
 import { createContext } from "react";
 import { useEffect } from "react";
@@ -14,16 +14,16 @@ export const StoreContext = createContext({
 export default function Main() {
   const router = useRouter();
 
-  const name = "퍼즐";
-  // router.query.name
+  const genreName = "퍼즐";
+
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
     isEmpty,
-  } = useGameStoreList({
-    name: name ? name : undefined,
+  } = useGameList({
+    genreName: genreName ? genreName : undefined,
     // name.toString()
     //여기 tostring 에러 가능성 있음
   });
@@ -51,9 +51,3 @@ export default function Main() {
     </MainLayout>
   );
 }
-// let data = new Array();
-// {postData?.map((data) => {
-//   return data.data.map((data) => (
-//     <PostViewer key={data.id} post={data} thumbnailUrl={extractThumbnailUrl(data)} />
-//   ));
-// })}

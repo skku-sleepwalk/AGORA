@@ -1,8 +1,8 @@
 import useSWRInfinite from "swr/infinite";
 import { stringify } from "querystring";
-import { fetcher } from "../utils/fetcher";
-import useAuth from "./useAuth";
-import { GetGameBoardListResponse } from "../types/api/game/gameBoard";
+import { fetcher } from "../../utils/fetcher";
+import useAuth from "../useAuth";
+import { GetGameBoardListResponse } from "../../types/api/game/gameBoard";
 
 export interface useGameBoardListSettings {
   search?: string;

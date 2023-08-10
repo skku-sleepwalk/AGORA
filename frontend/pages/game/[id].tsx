@@ -9,20 +9,23 @@ import { createContext, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
+import useGame from "../../hooks/game/useGame";
 
-import useDetailGame from "../../hooks/useDetailGame";
+// mutate 관련 context
+export const GameContext = createContext({
+  mutatePost: () => {},
+});
 
-import { GameBoardDetailViewer } from "../../components/pages/game/GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
-
-export const GameTabClicklContext = createContext({
+export const GameTabClickContext = createContext({
   ontabClick: () => {},
   ontabClickFast: () => {},
 });
 
 function Game() {
   const router = useRouter();
-  const id = router.query.id ? router.query.id.toString() : undefined;
+  const gameId = router.query.id ? router.query.id.toString() : undefined;
   const board = router.query.board?.toString();
+
   const [activeTab, setActiveTab] = useState<string | null>("gameInfo");
   // tab 클릭 시 페이지 상단으로 이동 관련
   const tabRef = useRef<HTMLDivElement>(null);
@@ -32,49 +35,35 @@ function Game() {
   const ontabClickFast = () => {
     tabRef.current?.scrollIntoView({ behavior: "instant", block: "nearest" });
   };
-  // const id = "6a05a155-147b-4112-a95f-88e53edec2aa";
-  // 추후 수정
-  // router.query.name
-  const {
-    data: postData,
-    isLoading: isPostLoading,
 
-    mutate: mutatePost,
-  } = useDetailGame(id);
+  const { data: postData, mutate: mutatePost } = useGame(gameId);
 
   return (
-    // <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
-    //   <SmallPosts></SmallPosts>
-    // </MainLayout>
-    <GameTabClicklContext.Provider value={{ ontabClick, ontabClickFast }}>
-      {postData && (
-        <GameLayout
-          photoSection={<MainCarousel isInfo={true} imgUrls={postData.data.store.imgUrls} />}
-          summarySection={
-            <GameSummary postData={postData} loading={isPostLoading} mutate={mutatePost} />
-          }
-          anchorSection={<div ref={tabRef}></div>}
-          tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
-          rightSection={
-            <GameRightSide postData={postData} loading={isPostLoading} mutate={mutatePost} />
-          }
-        >
-          {activeTab === "gameInfo" && (
-            <GameInfo postData={postData} loading={isPostLoading} mutate={mutatePost} />
-          )}
-          {activeTab === "gameNews" && id && <GameNewsSection gameId={id} />}
-          {activeTab === "review" && id && <GameReviewSection gameId={id} />}
-          {/* {activeTab === "board" && <GameBoardDetailViewer />} */}
-          {activeTab === "board" && postData && (
-            <GameBoardSection
-              gameName={postData.data.store.title}
-              developerName={postData.data.author.name}
-              gameId={postData.data.id}
-            />
-          )}
-        </GameLayout>
-      )}
-    </GameTabClicklContext.Provider>
+    <GameContext.Provider value={{ mutatePost }}>
+      <GameTabClickContext.Provider value={{ ontabClick, ontabClickFast }}>
+        {postData && (
+          <GameLayout
+            photoSection={<MainCarousel isInfo={true} imgUrls={postData.data.store?.imgUrls} />}
+            summarySection={<GameSummary postData={postData.data} />}
+            anchorSection={<div ref={tabRef}></div>}
+            tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}
+            rightSection={<GameRightSide postData={postData.data} />}
+          >
+            {activeTab === "gameInfo" && <GameInfo postData={postData.data} />}
+            {activeTab === "gameNews" && gameId && <GameNewsSection gameId={gameId} />}
+            {activeTab === "review" && gameId && <GameReviewSection gameId={gameId} />}
+            {/* {activeTab === "board" && <GameBoardDetailViewer />} */}
+            {activeTab === "board" && postData && (
+              <GameBoardSection
+                gameName={postData.data.store.title}
+                developerName={postData.data.author.name}
+                gameId={postData.data.id}
+              />
+            )}
+          </GameLayout>
+        )}
+      </GameTabClickContext.Provider>
+    </GameContext.Provider>
   );
 }
 export default Game;
