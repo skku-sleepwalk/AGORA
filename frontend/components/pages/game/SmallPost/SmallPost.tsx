@@ -8,10 +8,10 @@ import { Rating } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";
-import { GameStore } from "../../../../types/api/game/gameStore";
+import { Game } from "../../../../types/api/game/game";
 import Link from "next/link";
 export interface PostViewerProps {
-  post: GameStore;
+  post: Game;
   thumbnailUrl?: string;
 }
 export default function ({ post, thumbnailUrl }: PostViewerProps) {

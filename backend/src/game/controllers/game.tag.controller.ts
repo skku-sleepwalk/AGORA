@@ -29,6 +29,6 @@ export class GameTagController {
   @ApiQuery({ name: 'q', description: '검색 내용' })
   @Get('search')
   searchGameTag(@Query('q') search: string) {
-    this.gameTagService.searchGameTag(search);
+    return this.gameTagService.searchGameTag(search);
   }
 }

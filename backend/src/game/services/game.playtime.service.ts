@@ -44,6 +44,7 @@ export class GamePlaytimeService {
     if (!userSubscribe) {
       throw new NotFoundException('구독 정보를 찾을 수 없습니다.');
     }
+
     await this.userSubUserSubscribeRepository.save({
       remainPlayTime: userSubscribe.remainPlayTime - additionalPlaytime,
       ...userSubscribe,

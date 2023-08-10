@@ -13,6 +13,7 @@ import { AssetTag } from 'src/entites/asset/asset.tag.entity';
 import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { AssetCost } from 'src/entites/asset/asset.cost.entity';
+import { AssetSearch } from 'src/entites/asset/asset.search.entity';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AssetCost } from 'src/entites/asset/asset.cost.entity';
       AssetLike,
       AssetTag,
       AssetTagRelation,
+      AssetSearch,
       AssetReview,
       AssetReviewComment,
       AssetReviewLike,

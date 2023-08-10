@@ -2,7 +2,7 @@ import { Box, RingProgress, Stack, Text, useMantineTheme } from "@mantine/core";
 import useAuth from "../../../../hooks/useAuth";
 import CardContainer from "../../../common/CardContainer/CardContainer";
 import { useMypagePlaytimesSectionStyles } from "./mypagePlaytimesSection.styles";
-import { useUserPlaytimes } from "../../../../hooks/useUserPlaytimes";
+import { useUserPlaytimes } from "../../../../hooks/game/useUserPlaytimes";
 import { MypagePlaytimeBar } from "./mypagePlaytimeBar/mypagePlaytimeBar";
 
 export function SwitchPlaytime(playtime: number): string {

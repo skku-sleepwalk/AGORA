@@ -17,7 +17,7 @@ export class GameTagService {
   async searchGameTag(search: string) {
     return await this.gameTagRepository
       .createQueryBuilder('tag')
-      .where('tag.name LIKE :search', { search })
+      .where('tag.name LIKE :search', { search: `%${search}%` })
       .getMany();
   }
 }

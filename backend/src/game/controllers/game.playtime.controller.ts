@@ -24,7 +24,7 @@ export class GamePlaytimeController {
     @Param('gameId') gameId: string,
     @Body() data: UpdateGamePlaytimeDto,
   ) {
-    this.gamePlaytimeService.updatePlaytime(
+    return this.gamePlaytimeService.updatePlaytime(
       userEmail,
       gameId,
       data.additionalPlaytime,

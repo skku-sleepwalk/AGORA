@@ -2,16 +2,13 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 import { Box, Button, Center, Group, Image, Stack, Text, useMantineTheme } from "@mantine/core";
 import { useGameRightSideStyles } from "./GameRightSide.styles";
 import { useSetState } from "@mantine/hooks";
+import { Game } from "../../../../types/api/game/game";
 
-import { useRef } from "react";
-import { GameStore } from "../../../../types/api/game/gameStore";
-import { KeyedMutator } from "swr";
 interface GameDataProps {
-  postData: GameStore | undefined;
+  postData: Game | undefined;
   loading?: boolean;
-  mutate?: KeyedMutator<GameStore>;
 }
-export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
+export function GameRightSide({ postData, loading }: GameDataProps) {
   const { classes, cx } = useGameRightSideStyles();
 
   const theme = useMantineTheme();
@@ -25,6 +22,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
     twitch: true,
     Homepi: true,
   });
+
   const trueCount = Object.values(SNSstate).filter((value) => value === true).length;
   const emptyBox = [];
   for (let i = 0; i < trueCount; i++) {
@@ -48,7 +46,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
           <Stack spacing={"1.8rem"}>
             <Group spacing={0}>
               <Text fw={"bold"} c={theme.colors.gray[6]}>
-                {postData?.data.likeCount}
+                {postData?.likeCount}
               </Text>
               <Text c={theme.colors.gray[6]}>명의 사람들이 이 게임을 찜했습니다.</Text>
             </Group>
@@ -72,7 +70,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Text
                   className={classes.text}
                   component="a"
-                  href={postData?.data.store.snsUrls?.twitter}
+                  href={postData?.store?.snsUrls?.twitter}
                   c={theme.colors.gray[6]}
                 >
                   Twitter
@@ -85,7 +83,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Image width={"4rem"} src={"/images/Instagram.png"} />
                 <Text
                   component="a"
-                  href={postData?.data.store.snsUrls?.instagram}
+                  href={postData?.store?.snsUrls?.instagram}
                   c={theme.colors.gray[6]}
                 >
                   Instagram
@@ -98,7 +96,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Image width={"4rem"} src={"/images/Facebook.svg"} />
                 <Text
                   component="a"
-                  href={postData?.data.store.snsUrls?.facebook}
+                  href={postData?.store.snsUrls?.facebook}
                   c={theme.colors.gray[6]}
                 >
                   Facebook
@@ -111,7 +109,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Image width={"4rem"} src={"/images/YouTube.png"} />
                 <Text
                   component="a"
-                  href={postData?.data.store.snsUrls?.youtube}
+                  href={postData?.store?.snsUrls?.youtube}
                   c={theme.colors.gray[6]}
                 >
                   Youtube
@@ -124,7 +122,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Image width={"4rem"} src={"/images/Twitch.svg"} />
                 <Text
                   component="a"
-                  href={postData?.data.store.snsUrls?.twitch}
+                  href={postData?.store?.snsUrls?.twitch}
                   c={theme.colors.gray[6]}
                 >
                   Twitch
@@ -137,7 +135,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                 <Image width={"4rem"} src={"/images/Homepage.svg"} />
                 <Text
                   component="a"
-                  href={postData?.data.store.snsUrls?.customPage}
+                  href={postData?.store?.snsUrls?.customPage}
                   c={theme.colors.gray[6]}
                 >
                   홈페이지
@@ -150,23 +148,23 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
         </Stack>
       </CardContainer>
       {/* 세 번째 컨테이너 */}
-      {true && (
+      {!postData?.isPlayable && (
         <CardContainer className={classes.container} h={"12rem"}>
           <Stack spacing={"sm"} className={classes.containerPadding}>
             <Text fw={"bold"}>구매</Text>
             <Text fz={22} fw={"bold"}>
-              {postData?.data.store.title}
+              {postData?.store?.title}
             </Text>
             <Group className={classes.marginTop} spacing={"xs"} position="right">
               {true && (
                 <Box className={classes.percent}>
                   <Text fz={16} fw={"bold"}>
-                    -{postData?.data.store.cost?.salePercentage}%
+                    -{postData?.store?.cost?.salePercentage}%
                   </Text>
                 </Box>
               )}
               <Text fz={26} fw={"bold"}>
-                ￦ {postData?.data.store.cost?.saledPrice}
+                ￦ {postData?.store?.cost?.saledPrice}
               </Text>
               {true && (
                 <Text
@@ -175,7 +173,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
                   td="line-through"
                   c={theme.colors.gray[6]}
                 >
-                  ￦ {postData?.data.store.cost?.defaultPrice}
+                  ￦ {postData?.store?.cost?.defaultPrice}
                 </Text>
               )}
             </Group>
@@ -199,7 +197,7 @@ export function GameRightSide({ postData, loading, mutate }: GameDataProps) {
           </Stack>
         </CardContainer>
       )}
-      {false && (
+      {postData?.isPlayable && (
         <Box className={classes.container} h={"12rem"}>
           <Button className={classes.sellButton} w={"100%"} h={"3.7rem"} radius={"lg"}>
             <Stack spacing={"xs"}>

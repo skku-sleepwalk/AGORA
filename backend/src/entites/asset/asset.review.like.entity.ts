@@ -7,7 +7,10 @@ export class AssetReviewLike {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => AssetReview, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => AssetReview, (review) => review.likes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn([{ name: 'reviewId', referencedColumnName: 'id' }])
   review: AssetReview;
 

@@ -24,19 +24,19 @@ import {
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import { GameReviewReply } from "../GameReviewReply/GameReviewReply";
 import { GameTextWriter } from "../../GameTextWriter/GameTextWriter";
-import { useGameReviewList } from "../../../../../hooks/useGameReview";
+import { useGameReviewList } from "../../../../../hooks/game/useGameReview";
 import useAuth from "../../../../../hooks/useAuth";
 import {
   DelGameReviewDislike,
   DelGameReviewLike,
   PostGameReviewDislike,
   PostGameReviewLike,
-} from "../../../../../utils/api/game/gameReview/GameReviewLike";
+} from "../../../../../utils/api/game/gameReview/gameReviewLike";
 import { GameReview } from "../../../../../types/api/game/gameReview";
 import { createContext, useContext } from "react";
 import { GameReviewSectionContext, authorPlaytime, hasPlaytime } from "../GameReviewSection";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
-import { useUserPlaytimes } from "../../../../../hooks/useUserPlaytimes";
+import { useUserPlaytimes } from "../../../../../hooks/game/useUserPlaytimes";
 
 export interface GameReviewProps {
   gameId: string;
