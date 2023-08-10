@@ -22,7 +22,7 @@ export class UserSubscribeService {
     }
 
     const startAt = new Date();
-    const endAt = startAt.setDate(startAt.getDate() + duration);
+    const endAt = new Date(startAt.setDate(startAt.getDate() + duration));
     return this.userSubscribeRepository.save({
       user,
       remainPlayTime,
