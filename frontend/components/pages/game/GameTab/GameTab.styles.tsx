@@ -10,7 +10,7 @@ export const useGameTabStyles = createStyles((theme) => ({
     paddingLeft: "2.3rem",
 
     backgroundColor: "#fcfcfe",
-    boxShadow: `0px 6px 7px rgba(0, 0, 0, 0.2)`,
+    boxShadow: `0px 6px 7px rgba(0, 0, 0, 0.1)`,
   },
 
   tabItem_B: {
