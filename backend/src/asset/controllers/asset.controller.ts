@@ -16,6 +16,7 @@ export class AssetController {
       data.description,
       data.downloadUrl,
       data.cost,
+      data.category,
     );
   }
 
