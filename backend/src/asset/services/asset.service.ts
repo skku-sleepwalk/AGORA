@@ -48,6 +48,14 @@ export class AssetService {
     );
   }
 
+  createQueryBuilder(): SelectQueryBuilder<Asset> {
+    return this.assetRepository
+      .createQueryBuilder('asset')
+      .leftJoinAndSelect('asset.author', 'author')
+      .leftJoinAndSelect('asset.cost', 'cost')
+      .leftJoinAndSelect('asset.category', 'category');
+  }
+
   async paginating(
     userEmail: string,
     _cursor: Cursor,
@@ -117,10 +125,21 @@ export class AssetService {
     return this.assetModifying(userEmail, asset);
   }
 
-  async searchAsset(userEmail: string, search: string) {
-    const queryBuilder = this.assetRepository
-      .createQueryBuilder('asset')
-      .where('asset.title like :search', { search: `%${search}%` })
-      .getMany();
+  async searchAsset(
+    userEmail: string,
+    keyword: string,
+    _cursor: Cursor,
+    category: string,
+  ) {
+    const queryBuilder = this.createQueryBuilder()
+      .where('asset.category.name = :category', { category })
+      .andWhere(
+        'asset.title LIKE :keyword OR asset.description LIKE :keyword',
+        {
+          keyword: `%${keyword}%`,
+        },
+      );
+
+    return await this.paginating(userEmail, _cursor, queryBuilder);
   }
 }

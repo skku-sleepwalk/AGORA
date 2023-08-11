@@ -245,6 +245,8 @@ export class GameService {
       relations: ['information', 'genres', 'author', 'store', 'store.cost'],
       where: { id: gameId },
     });
+
+    console.log(_game);
     if (!_game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }

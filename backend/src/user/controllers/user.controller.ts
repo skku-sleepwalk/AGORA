@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Headers,
   Param,
   Post,
   Req,
@@ -49,6 +50,13 @@ export class UsersController {
   @Get(':id')
   getUsers(@Param('id') id: string) {
     return this.userService.getUser(id);
+  }
+
+  @ApiResponse({ type: UserDto })
+  @ApiOperation({ summary: '내 정보 조회' })
+  @Get('me')
+  getUsersMe(@Headers('Authorization') userEmail: string) {
+    return this.userService.getMe(userEmail);
   }
 
   @ApiResponse({ status: 200, description: '성공', type: UserDto })
