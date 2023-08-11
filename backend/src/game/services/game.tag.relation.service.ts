@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Game } from 'src/entites/game/game.entity';
+import { GameTag } from 'src/entites/game/game.tag.entity';
 import { GameTagRelation } from 'src/entites/game/game.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
@@ -10,6 +11,8 @@ export class GameTagRelationService {
   constructor(
     @InjectRepository(GameTagRelation)
     private readonly gameTagRelationRepository: Repository<GameTagRelation>,
+    @InjectRepository(GameTag)
+    private readonly gameTagRepository: Repository<GameTag>,
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
@@ -39,7 +42,16 @@ export class GameTagRelationService {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
 
-    this.gameTagRelationRepository.save({ user, game, name: tagName });
+    // 3. 게임 태그 엔티티 가져오기
+    const tag = await this.gameTagRepository.findOne({
+      where: { name: tagName },
+    });
+    // 4. 게임 태그 관계 엔티티 생성
+    const tagRelation = await this.gameTagRelationRepository.save({
+      user,
+      game,
+      tag,
+    });
     return true;
   }
 
