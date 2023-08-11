@@ -49,7 +49,7 @@ export class GameTagRelationController {
 
   @ApiOperation({ summary: '게임 태그 관계 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete('search')
+  @Delete(':realationId')
   DeleteGameTagRelation(
     @Headers('Authorization') userEmail: string,
     @Param('gameId') gameId: string,
