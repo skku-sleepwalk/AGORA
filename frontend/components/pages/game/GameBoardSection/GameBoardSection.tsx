@@ -17,7 +17,7 @@ import { CustomNativeSelect } from "../../../common/CustomNativeSelect/CustomNat
 import { GameBoard } from "./GameBoard/GameBoard";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { GameBoardWriter } from "./GameBoardWriter/GameBoardWriter";
-import useGameBoardList from "../../../../hooks/useGameBoardList";
+import useGameBoardList from "../../../../hooks/game/useGameBoardList";
 import { GAME_BOARD_CATEGORIES } from "../../../../constants/category";
 import { useRouter } from "next/router";
 import { GameBoardDetailViewer } from "./GameBoardDetailViewer/GameBoardDetailViewer";

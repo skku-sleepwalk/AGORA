@@ -1,8 +1,8 @@
-import { GetGameReviewListResponse } from "../types/api/game/gameReview";
+import { GetGameReviewListResponse } from "../../types/api/game/gameReview";
 import useSWRInfinite from "swr/infinite";
 import { stringify } from "querystring";
-import { fetcher } from "../utils/fetcher";
-import useAuth from "./useAuth";
+import { fetcher } from "../../utils/fetcher";
+import useAuth from "../useAuth";
 
 //이거 infinite로 해야함
 const getKey = (

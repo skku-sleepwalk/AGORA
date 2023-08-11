@@ -5,9 +5,11 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { cleanNotification, showError } from "../../../../utils/notifications";
+import { useMyGameTag } from "../../../../hooks/game/useMyGameTag";
 
 interface GameTagModalProps {
   onClose?: () => void;
+  gameId: string;
 }
 
 function isContain(substring: string, str: string): boolean {
@@ -16,9 +18,16 @@ function isContain(substring: string, str: string): boolean {
   return lowerCaseStr.includes(lowerCaseSubstring);
 }
 
-export function GameTagModal({ onClose }: GameTagModalProps) {
+export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
   const { classes, cx } = useGameTagModalStyles();
   const theme = useMantineTheme();
+
+  const { data: myPrevTagData } = useMyGameTag(gameId); // 유저가 이전에 추가해 놓은 태그
+  const myPrevTagList = myPrevTagData?.data.map((item) => {
+    item.name;
+  });
+
+  const [myTagData, setMyTagData] = useState(myPrevTagList); // 현재 유저가 태그해 놓은 태그
 
   // 태그 관련
   const data = [

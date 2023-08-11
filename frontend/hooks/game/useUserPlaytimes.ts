@@ -1,7 +1,7 @@
 import useSWR from "swr";
-import { fetcher } from "../utils/fetcher";
-import { User } from "../types/api/user";
-import useAuth from "./useAuth";
+import { fetcher } from "../../utils/fetcher";
+import { User } from "../../types/api/user";
+import useAuth from "../useAuth";
 
 export interface UserPlaytimesResponse {
   data: User;

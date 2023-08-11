@@ -1,7 +1,7 @@
 import { Avatar, Box, Group, List, Text, useMantineTheme } from "@mantine/core";
 import { useMypagePlaytimeBarStyles } from "./mypagePlaytimeBar.styles";
 import { PlaytimeColor, SwitchPlaytime } from "../mypagePlaytimesSection";
-import { useUserPlaytimes } from "../../../../../hooks/useUserPlaytimes";
+import { useUserPlaytimes } from "../../../../../hooks/game/useUserPlaytimes";
 
 export function MypagePlaytimeBar() {
   const { classes, cx } = useMypagePlaytimeBarStyles();
