@@ -1,16 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Asset } from './asset.entity';
 import { User } from '../user.entity';
 import { AssetReviewComment } from './asset.review.comment.entity';
 import { AssetReviewLike } from './asset.review.like.entity';
+import { AssetReviewDislike } from './asset.review.dislike.entity';
 
 @Entity('AssetReview')
 export class AssetReview {
@@ -43,6 +47,25 @@ export class AssetReview {
   })
   comments: AssetReviewComment[];
 
-  @OneToMany(() => AssetReviewLike, (like) => like.review, { cascade: true })
+  @OneToMany(() => AssetReviewLike, (relation) => relation.review, {
+    cascade: true,
+  })
   likes: AssetReviewLike[];
+
+  @OneToMany(() => AssetReviewDislike, (relation) => relation.review, {
+    cascade: true,
+  })
+  dislikes: AssetReviewDislike[];
+
+  @ApiProperty({ description: '생성일', example: '2021-01-01T00:00:00.000Z' })
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ApiProperty({ description: '수정일', example: '2021-01-01T00:00:00.000Z' })
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @ApiProperty({ description: '삭제일', example: '2021-01-01T00:00:00.000Z' })
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

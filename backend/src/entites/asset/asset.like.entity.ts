@@ -7,11 +7,17 @@ export class AssetLike {
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
-  @ManyToOne(() => Asset, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'assetId', referencedColumnName: 'id' }])
+  @ManyToOne(() => Asset, (asset) => asset.likes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'assetId', referencedColumnName: 'id' })
   asset: Asset;
 
-  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
+  @ManyToOne(() => User, (user) => user.assetLikes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
   user: User;
 }

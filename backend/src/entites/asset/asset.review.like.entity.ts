@@ -14,7 +14,10 @@ export class AssetReviewLike {
   @JoinColumn([{ name: 'reviewId', referencedColumnName: 'id' }])
   review: AssetReview;
 
-  @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.assetLikes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn([{ name: 'userId', referencedColumnName: 'id' }])
   user: User;
 }

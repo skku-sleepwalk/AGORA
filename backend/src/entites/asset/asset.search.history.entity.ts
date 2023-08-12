@@ -1,6 +1,7 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -8,11 +9,11 @@ import {
 import { User } from '../user.entity';
 
 @Entity('AssetSearch')
-export class AssetSearch {
+export class AssetSearchHistory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.assetSearches)
+  @ManyToOne(() => User, (user) => user.assetSearchHistories)
   user: User;
 
   @Column()
@@ -20,4 +21,7 @@ export class AssetSearch {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }
