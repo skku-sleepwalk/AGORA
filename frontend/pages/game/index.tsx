@@ -32,7 +32,7 @@ export default function Main() {
   }, []);
 
   return (
-    <MainLayout tapSection={<MainTab />} upSection={<MainCarousel isMain={true} />}>
+    <MainLayout tapSection={<MainTab active="main" />} upSection={<MainCarousel isMain={true} />}>
       <StoreContext.Provider
         value={{
           mutatePost,

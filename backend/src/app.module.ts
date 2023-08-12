@@ -51,6 +51,7 @@ import { AssetReviewDislike } from './entites/asset/asset.review.dislike.entity'
 import { AssetReviewCommentLike } from './entites/asset/asset.review.comment.like.entity';
 import { AssetReviewCommentDislike } from './entites/asset/asset.review.comment.dislike.entity';
 import { AssetSearch } from './entites/asset/asset.search.entity';
+import { AssetCategory } from './entites/asset/asset.category.entity';
 
 dotenv.config();
 
@@ -91,6 +92,7 @@ dotenv.config();
         GameTagRelation,
         Asset,
         AssetCost,
+        AssetCategory,
         AssetLike,
         AssetTag,
         AssetTagRelation,
@@ -133,6 +135,7 @@ dotenv.config();
       GameTagRelation,
       Asset,
       AssetCost,
+      AssetCategory,
       AssetLike,
       AssetTag,
       AssetTagRelation,
@@ -148,10 +151,10 @@ dotenv.config();
     UsersModule,
     CommunityModule,
     GameStoreModule,
+    AssetModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'static'),
     }),
-    AssetModule,
   ],
   controllers: [AppController],
   providers: [AppService],

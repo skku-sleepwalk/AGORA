@@ -14,6 +14,8 @@ import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { AssetCost } from 'src/entites/asset/asset.cost.entity';
 import { AssetSearch } from 'src/entites/asset/asset.search.entity';
+import { AssetController } from './controllers/asset.controller';
+import { AssetCategory } from 'src/entites/asset/asset.category.entity';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { AssetSearch } from 'src/entites/asset/asset.search.entity';
       User,
       Asset,
       AssetCost,
+      AssetCategory,
       AssetLike,
       AssetTag,
       AssetTagRelation,
@@ -33,7 +36,7 @@ import { AssetSearch } from 'src/entites/asset/asset.search.entity';
       AssetReviewCommentDislike,
     ]),
   ],
-  controllers: [],
+  controllers: [AssetController],
   providers: [AssetService],
 })
 export class AssetModule {}

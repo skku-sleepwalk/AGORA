@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +16,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../user.entity';
 import { AssetCost } from './asset.cost.entity';
 import { AssetTagRelation } from './asset.tag.relation.entity';
+import { AssetCategory } from './asset.category.entity';
 
 @Entity('Asset')
 export class Asset {
@@ -58,6 +60,10 @@ export class Asset {
   @ApiProperty({ description: '다운로드 링크', example: 'https://portal.com' })
   @Column()
   downloadUrl: string;
+
+  @ManyToOne(() => AssetCategory, (category) => category.assets, {})
+  @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
+  category: AssetCategory;
 
   @OneToMany(() => AssetTagRelation, (relation) => relation.asset, {
     cascade: true,

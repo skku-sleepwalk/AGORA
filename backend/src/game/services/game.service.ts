@@ -97,6 +97,7 @@ export class GameService {
       }),
     );
 
+    console.log('---------------------------------------------');
     // 게임과 관련된 태그들의 인기도를 계산하여 상위 5개 태그를 가져옵니다.
     const relations = await this.gameTagRelationRepository.find({
       where: { game: { id: game.id } },
@@ -245,6 +246,8 @@ export class GameService {
       relations: ['information', 'genres', 'author', 'store', 'store.cost'],
       where: { id: gameId },
     });
+
+    console.log(_game);
     if (!_game) {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
@@ -306,7 +309,41 @@ export class GameService {
       query: {
         afterCursor: _cursor.afterCursor || null,
         beforeCursor: _cursor.beforeCursor || null,
-        limit: 5,
+        limit: 16,
+        order: 'DESC',
+      },
+    };
+
+    // 페이징 처리를 위한 Paginator를 생성합니다.
+    const paginator = buildPaginator(paginationOption);
+
+    // 페이징을 적용하여 데이터 조회합니다.
+    const { data, cursor } = await paginator.paginate(queryBuilder);
+
+    // 조회된 데이터를 가공하여 수정된 데이터와 cursor를 반환합니다.
+    const dataModified = await this.dataModifying(userEmail, data);
+    return { data: dataModified, cursor };
+  }
+
+  async getGameGenres(
+    userEmail: string,
+    _cursor: Cursor,
+    genreNames: Array<string>,
+  ) {
+    // 게임 레포지토리에서 genreName에 해당하는 게임을 조회하는 쿼리 빌더를 생성합니다.
+    const queryBuilder = this.getQueryBuilder().where(
+      '(genres.name IN (:...genreNames)) ',
+      { genreNames },
+    );
+
+    // 페이징 옵션 설정
+    const paginationOption: PaginationOptions<Game> = {
+      entity: Game,
+      paginationKeys: ['createdAt'],
+      query: {
+        afterCursor: _cursor.afterCursor || null,
+        beforeCursor: _cursor.beforeCursor || null,
+        limit: 16,
         order: 'DESC',
       },
     };

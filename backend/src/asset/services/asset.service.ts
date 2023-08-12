@@ -12,6 +12,8 @@ import {
   buildPaginator,
 } from 'typeorm-cursor-pagination';
 import { CursoredAssetDto } from 'src/common/dto/cursoredData.dto';
+import { AssetSearch } from 'src/entites/asset/asset.search.entity';
+import { AssetCategory } from 'src/entites/asset/asset.category.entity';
 
 @Injectable()
 export class AssetService {
@@ -19,10 +21,14 @@ export class AssetService {
     private readonly dataSource: DataSource,
     @InjectRepository(Asset)
     private readonly assetRepository: Repository<Asset>,
+    @InjectRepository(AssetCategory)
+    private readonly assetCategoryRepository: Repository<AssetCategory>,
     @InjectRepository(AssetCost)
     private readonly assetCostRepository: Repository<AssetCost>,
     @InjectRepository(AssetLike)
     private readonly assetLikeRepository: Repository<AssetLike>,
+    @InjectRepository(AssetSearch)
+    private readonly assetSearchRepository: Repository<AssetSearch>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -46,6 +52,14 @@ export class AssetService {
         return this.assetModifying(userEmail, asset);
       }),
     );
+  }
+
+  createQueryBuilder(): SelectQueryBuilder<Asset> {
+    return this.assetRepository
+      .createQueryBuilder('asset')
+      .leftJoinAndSelect('asset.author', 'author')
+      .leftJoinAndSelect('asset.cost', 'cost')
+      .leftJoinAndSelect('asset.category', 'category');
   }
 
   async paginating(
@@ -77,6 +91,7 @@ export class AssetService {
     description: string,
     downloadUrl: string,
     cost: AssetCost,
+    categoryName: string,
   ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -93,6 +108,7 @@ export class AssetService {
       }
 
       const newCost = await this.dataSource.manager.save(AssetCost, cost);
+      // const category = await this.assetCategoryRepository.findOne({
       const newAsset = this.assetRepository.create({
         title,
         description,
@@ -117,10 +133,71 @@ export class AssetService {
     return this.assetModifying(userEmail, asset);
   }
 
-  async searchAsset(userEmail: string, search: string) {
-    const queryBuilder = this.assetRepository
-      .createQueryBuilder('asset')
-      .where('asset.title like :search', { search: `%${search}%` })
-      .getMany();
+  async searchAsset(
+    userEmail: string,
+    keyword: string,
+    _cursor: Cursor,
+    category: string,
+  ) {
+    const user = await this.userRepository.findOne({
+      where: { email: userEmail },
+    });
+    const queryBuilder = this.createQueryBuilder()
+      .where('category.name = :category', { category })
+      .andWhere(
+        'asset.title LIKE :keyword OR asset.description LIKE :keyword',
+        {
+          keyword: `%${keyword}%`,
+        },
+      );
+    if (user) {
+      await this.assetSearchRepository.save({ keyword, user }); // 검색어 저장
+    }
+    return await this.paginating(userEmail, _cursor, queryBuilder);
+  }
+
+  async getAssetSearch(userEmail: string) {
+    const searchList = await this.assetSearchRepository.find({
+      where: { user: { email: userEmail } },
+    });
+    searchList
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      .slice(0, 5);
+    return searchList.map((search) => search.keyword);
+  }
+
+  async updateAsset(
+    assetId: string,
+    userEmail: string,
+    title: string,
+    description: string,
+    downloadUrl: string,
+    cost: AssetCost,
+  ) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      const user = await this.userRepository.findOne({
+        where: { email: userEmail },
+      });
+      if (!user) {
+        throw new NotFoundException('사용자를 찾을 수 없습니다.');
+      }
+
+      const asset = await this.assetRepository.findOne({
+        where: { id: assetId },
+      });
+      if (!asset) {
+        throw new NotFoundException('자산을 찾을 수 없습니다.');
+      }
+
+      const newCost = await this.dataSource.manager.save(AssetCost, cost);
+      const newAsset = this.assetRepository.create({
+        title,
+        description,
+        downloadUrl,
+        cost: newCost,
   }
 }
