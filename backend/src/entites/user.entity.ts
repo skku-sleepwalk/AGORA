@@ -29,7 +29,13 @@ import { Asset } from './asset/asset.entity';
 import { AssetReview } from './asset/asset.review.entity';
 import { AssetReviewComment } from './asset/asset.review.comment.entity';
 import { UserSubscribe } from './user.subscribe.entity';
-import { AssetSearch } from './asset/asset.search.entity';
+import { AssetSearchHistory } from './asset/asset.search.history.entity';
+import { AssetTagRelation } from './asset/asset.tag.relation.entity';
+import { AssetLike } from './asset/asset.like.entity';
+import { AssetReviewLike } from './asset/asset.review.like.entity';
+import { AssetReviewDislike } from './asset/asset.review.dislike.entity';
+import { AssetReviewCommentLike } from './asset/asset.review.comment.like.entity';
+import { AssetReviewCommentDislike } from './asset/asset.review.comment.dislike.entity';
 
 @Entity('User')
 export class User {
@@ -160,18 +166,46 @@ export class User {
   })
   assets: Array<Asset>;
 
-  @OneToMany(() => AssetSearch, (search) => search.user, {
+  @OneToMany(() => AssetLike, (relation) => relation.user, {
     cascade: true,
   })
-  assetSearches: Array<AssetSearch>;
+  assetLikes: Array<AssetLike>;
+
+  @OneToMany(() => AssetTagRelation, (relation) => relation.user, {})
+  assetTagRelations: Array<AssetTagRelation>;
+
+  @OneToMany(() => AssetSearchHistory, (search) => search.user, {
+    cascade: true,
+  })
+  assetSearchHistories: Array<AssetSearchHistory>;
 
   @OneToMany(() => AssetReview, (review) => review.author, {
     cascade: true,
   })
   assetReviews: Array<AssetReview>;
 
+  @OneToMany(() => AssetReviewLike, (relation) => relation.user, {
+    cascade: true,
+  })
+  assetReviewLikes: Array<AssetReviewLike>;
+
+  @OneToMany(() => AssetReviewDislike, (relation) => relation.user, {
+    cascade: true,
+  })
+  assetReviewDislikes: Array<AssetReviewDislike>;
+
   @OneToMany(() => AssetReviewComment, (comment) => comment.author, {
     cascade: true,
   })
   assetReviewComments: Array<AssetReviewComment>;
+
+  @OneToMany(() => AssetReviewCommentLike, (relation) => relation.user, {
+    cascade: true,
+  })
+  assetReviewCommentLikes: Array<AssetReviewCommentLike>;
+
+  @OneToMany(() => AssetReviewCommentDislike, (relation) => relation.user, {
+    cascade: true,
+  })
+  assetReviewCommentDislikes: Array<AssetReviewCommentDislike>;
 }

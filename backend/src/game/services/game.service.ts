@@ -97,7 +97,6 @@ export class GameService {
       }),
     );
 
-    console.log('---------------------------------------------');
     // 게임과 관련된 태그들의 인기도를 계산하여 상위 5개 태그를 가져옵니다.
     const relations = await this.gameTagRelationRepository.find({
       where: { game: { id: game.id } },
@@ -172,19 +171,19 @@ export class GameService {
 
     try {
       // 1. User 엔티티를 userEmail로 찾아옵니다.
-      const user = userEmail
-        ? await this.userRepository.findOne({
-            where: { email: userEmail },
-          })
-        : null;
+      const user = await this.userRepository
+        .createQueryBuilder('user')
+        .where('email = :email', { email: userEmail })
+        .getOne();
       if (!user) {
         throw new NotFoundException('사용자를 찾을 수 없습니다.');
       }
 
       // 2. 중복된 title인 게임이 있는지 확인합니다.
-      const existingGame = await this.gameRepository.findOne({
-        where: { title },
-      });
+      const existingGame = await this.gameRepository
+        .createQueryBuilder('game')
+        .where('title = :title', { title })
+        .getOne();
       if (existingGame) {
         throw new ConflictException('이미 존재하는 게임 이름입니다.');
       }
@@ -325,7 +324,7 @@ export class GameService {
     return { data: dataModified, cursor };
   }
 
-  async getGameGenres(
+  async getGameByGenres(
     userEmail: string,
     _cursor: Cursor,
     genreNames: Array<string>,

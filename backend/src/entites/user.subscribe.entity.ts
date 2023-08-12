@@ -9,7 +9,7 @@ import { User } from './user.entity';
 
 @Entity('UserSubscribe')
 export class UserSubscribe {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn('uuid')
   id: number;
 
   @ManyToOne(() => User, (user) => user.subscribe, { onDelete: 'CASCADE' })

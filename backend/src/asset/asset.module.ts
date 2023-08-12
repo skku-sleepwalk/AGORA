@@ -13,9 +13,25 @@ import { AssetTag } from 'src/entites/asset/asset.tag.entity';
 import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
 import { User } from 'src/entites/user.entity';
 import { AssetCost } from 'src/entites/asset/asset.cost.entity';
-import { AssetSearch } from 'src/entites/asset/asset.search.entity';
+import { AssetSearchHistory } from 'src/entites/asset/asset.search.history.entity';
 import { AssetController } from './controllers/asset.controller';
 import { AssetCategory } from 'src/entites/asset/asset.category.entity';
+import { AssetCategoryController } from './controllers/asset.category.controller';
+import { AssetCategoryService } from './services/asset.category.service';
+import { AssetLikeController } from './controllers/asset.like.controller';
+import { AssetLikeService } from './services/asset.like.service';
+import { AssetTagController } from './controllers/asset.tag.controller';
+import { AssetTagService } from './services/asset.tag.service';
+import { AssetTagRelationController } from './controllers/asset.tag.relation.controller';
+import { AssetTagRelationService } from './services/asset.tag.relation.service';
+import { AssetReviewController } from './controllers/asset.review.controller';
+import { AssetReviewService } from './services/asset.review.service';
+import { AssetReviewLikeController } from './controllers/asset.review.like.controller';
+import { AssetReviewLikeService } from './services/asset.review.like.service';
+import { AssetReviewDisikeController } from './controllers/asset.review.dislike.controller';
+import { AssetReviewDislikeService } from './services/asset.review.dislike.service';
+import { AssetReviewCommentController } from './controllers/asset.review.comment.controller';
+import { AssetReviewCommentService } from './services/asset.review.comment.service';
 
 @Module({
   imports: [
@@ -27,7 +43,7 @@ import { AssetCategory } from 'src/entites/asset/asset.category.entity';
       AssetLike,
       AssetTag,
       AssetTagRelation,
-      AssetSearch,
+      AssetSearchHistory,
       AssetReview,
       AssetReviewComment,
       AssetReviewLike,
@@ -36,7 +52,27 @@ import { AssetCategory } from 'src/entites/asset/asset.category.entity';
       AssetReviewCommentDislike,
     ]),
   ],
-  controllers: [AssetController],
-  providers: [AssetService],
+  controllers: [
+    AssetController,
+    AssetCategoryController,
+    AssetLikeController,
+    AssetTagController,
+    AssetTagRelationController,
+    AssetReviewController,
+    AssetReviewLikeController,
+    AssetReviewDisikeController,
+    AssetReviewCommentController,
+  ],
+  providers: [
+    AssetService,
+    AssetCategoryService,
+    AssetLikeService,
+    AssetTagService,
+    AssetTagRelationService,
+    AssetReviewService,
+    AssetReviewLikeService,
+    AssetReviewDislikeService,
+    AssetReviewCommentService,
+  ],
 })
 export class AssetModule {}

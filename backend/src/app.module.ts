@@ -50,7 +50,7 @@ import { AssetReviewLike } from './entites/asset/asset.review.like.entity';
 import { AssetReviewDislike } from './entites/asset/asset.review.dislike.entity';
 import { AssetReviewCommentLike } from './entites/asset/asset.review.comment.like.entity';
 import { AssetReviewCommentDislike } from './entites/asset/asset.review.comment.dislike.entity';
-import { AssetSearch } from './entites/asset/asset.search.entity';
+import { AssetSearchHistory } from './entites/asset/asset.search.history.entity';
 import { AssetCategory } from './entites/asset/asset.category.entity';
 
 dotenv.config();
@@ -96,7 +96,7 @@ dotenv.config();
         AssetLike,
         AssetTag,
         AssetTagRelation,
-        AssetSearch,
+        AssetSearchHistory,
         AssetReview,
         AssetReviewComment,
         AssetReviewLike,
@@ -139,7 +139,7 @@ dotenv.config();
       AssetLike,
       AssetTag,
       AssetTagRelation,
-      AssetSearch,
+      AssetSearchHistory,
       AssetReview,
       AssetReviewComment,
       AssetReviewLike,

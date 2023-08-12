@@ -27,6 +27,12 @@ export interface PostGameBoardBody {
   parentId?: string;
 }
 
+export interface PatchGameBoardBody {
+  title: string;
+  content: string;
+  categoryNames: string[];
+}
+
 export interface GetGameBoardListResponse {
   data: {
     data: GameBoard[];

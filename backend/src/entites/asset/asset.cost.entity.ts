@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Asset } from './asset.entity';
+import { IsBoolean, IsNotEmpty } from 'class-validator';
 
 @Entity('AssetCost')
 export class AssetCost {
@@ -14,6 +15,8 @@ export class AssetCost {
   id: string;
 
   @ApiProperty({ description: '무료 여부', example: false })
+  @IsNotEmpty()
+  @IsBoolean()
   @Column('bool', { nullable: false })
   isFree: boolean;
 
