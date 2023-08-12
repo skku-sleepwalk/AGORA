@@ -24,6 +24,8 @@ import { CreateGameDto } from '../dto/create.game.dto';
 import { GameDto } from '../dto/game.dto';
 import { UpdateGameDto } from '../dto/update.game.dto';
 import { CursoredGameDto } from 'src/common/dto/cursoredData.dto';
+import { UserEmail } from 'src/common/decorators/userEmail.dacorator';
+import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Game')
@@ -33,8 +35,10 @@ export class GameContorller {
   @ApiOperation({ summary: '게임 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Post()
+  // @UsePipes(new HeaderValidationPipe())
   PostGame(
-    @Headers('Authorization') userEmail: string,
+    // @Headers() userEmail: string,
+    @UserEmail() userEmail: string,
     @Body() data: CreateGameDto,
   ) {
     return this.gameService.postGame(
@@ -71,7 +75,8 @@ export class GameContorller {
   })
   @Get('search')
   SearchGame(
-    @Headers('Authorization') userEmail: string,
+    // @Headers() userEmail: string,
+    @UserEmail() userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query('q') search: string,
@@ -89,9 +94,9 @@ export class GameContorller {
   @ApiOperation({ summary: '게임 불러오기' })
   @ApiResponse({ type: GameDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Get(':id')
+  @Get(':gameId')
   GetOneGame(
-    @Param('id') gameId: string,
+    @UuidParam('gameId') gameId: string,
     @Headers('Authorization') userEmail: string,
   ) {
     return this.gameService.getOneGame(userEmail, gameId);
@@ -115,7 +120,8 @@ export class GameContorller {
   })
   @Get()
   GetGameStoreByGenre(
-    @Headers('Authorization') userEmail: string,
+    // @Headers('Authorization') userEmail: string,
+    @UserEmail() userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
     @Query('genreName')
@@ -130,10 +136,12 @@ export class GameContorller {
 
   @ApiOperation({ summary: '게임 업데이트' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Patch(':id')
+  @Patch(':gameId')
   UpdateGame(
-    @Headers('Authorization') userEmail: string,
-    @Param('id') gameId: string,
+    // @Headers('Authorization') userEmail: string,
+    @UserEmail() userEmail: string,
+    // @Param('id') gameId: string,
+    @UuidParam('gameId') gameId: string,
     @Body() data: UpdateGameDto,
   ) {
     return this.gameService.updateGame(
@@ -150,10 +158,11 @@ export class GameContorller {
 
   @ApiOperation({ summary: '게임 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':id')
+  @Delete(':gameId')
   DeleteGame(
     @Headers('Authorization') userEmail: string,
-    @Param('id') gameId: string,
+    @UuidParam('gameId') gameId: string,
+    // @Param('id') gameId: string,
   ) {
     return this.gameService.deleteGame(userEmail, gameId);
   }

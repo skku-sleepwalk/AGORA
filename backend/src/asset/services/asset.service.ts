@@ -199,5 +199,12 @@ export class AssetService {
         description,
         downloadUrl,
         cost: newCost,
+      });
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 }
