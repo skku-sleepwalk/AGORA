@@ -31,6 +31,11 @@ export interface gameInUser {
 export interface GetUserResponse {
   data: User[];
 }
+
+export interface GetMeResponse {
+  data: User;
+}
+
 export interface PostUserBody {
   name: string;
   email: string;
