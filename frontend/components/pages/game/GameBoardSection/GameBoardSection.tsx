@@ -84,7 +84,14 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
           </Group>
         }
       >
-        <GameBoardWriter opened close={close} gameId={gameId} />
+        <GameBoardWriter
+          opened
+          close={() => {
+            close();
+            mutatePost();
+          }}
+          gameId={gameId}
+        />
       </Modal>
       {!boardId ? (
         <Stack spacing={"xl"} className={classes.all}>

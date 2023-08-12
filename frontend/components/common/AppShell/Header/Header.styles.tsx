@@ -47,4 +47,20 @@ export const useHeaderStyles = createStyles((theme) => ({
       backgroundColor: theme.colors.teal[6],
     },
   },
+
+  loginButton: {
+    height: 46,
+    width: 112,
+    backgroundColor: "transparent",
+    color: "white",
+    fontSize: 18,
+    fontWeight: 500,
+    border: "1px solid white",
+    borderRadius: 15,
+    textAlign: "center",
+    padding: "0 10px",
+    "&:hover": {
+      backgroundColor: "rgba(0, 0, 0, 0.03)",
+    },
+  },
 }));
