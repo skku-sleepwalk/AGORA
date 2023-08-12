@@ -324,7 +324,7 @@ export class GameService {
     return { data: dataModified, cursor };
   }
 
-  async getGameGenres(
+  async getGameByGenres(
     userEmail: string,
     _cursor: Cursor,
     genreNames: Array<string>,

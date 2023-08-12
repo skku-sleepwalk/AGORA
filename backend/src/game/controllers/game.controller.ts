@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Headers,
-  Param,
   ParseArrayPipe,
   Patch,
   Post,
@@ -55,7 +54,7 @@ export class GameContorller {
     );
   }
 
-  @ApiOperation({ summary: '게시글 검색' })
+  @ApiOperation({ summary: '게임 검색' })
   @ApiResponse({ type: CursoredGameDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
@@ -91,15 +90,38 @@ export class GameContorller {
     );
   }
 
-  @ApiOperation({ summary: '게임 불러오기' })
-  @ApiResponse({ type: GameDto })
+  @ApiOperation({ summary: '게임 장르(다수)별로 불러오기' })
+  @ApiResponse({ type: CursoredGameDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Get(':gameId')
-  GetOneGame(
-    @UuidParam('gameId') gameId: string,
-    @Headers('Authorization') userEmail: string,
+  @ApiQuery({
+    name: 'beforeCursor',
+    description: '이전 페이지 커서(페이지네이션 옵션)',
+    required: false,
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    description: '다음 페이지 커서(페이지네이션 옵션)',
+    required: false,
+  })
+  @ApiQuery({ name: 'q', description: '검색 내용' })
+  @ApiQuery({
+    name: 'genreNames',
+    description: '장르 이름들',
+  })
+  @Get('genres')
+  getGameByGenres(
+    // @Headers() userEmail: string,
+    @UserEmail() userEmail: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
+    genreNames: Array<string>,
   ) {
-    return this.gameService.getOneGame(userEmail, gameId);
+    return this.gameService.getGameByGenres(
+      userEmail,
+      { beforeCursor, afterCursor },
+      genreNames,
+    );
   }
 
   @ApiOperation({ summary: '게임스토어 장르별로 가져오기' })
@@ -119,7 +141,7 @@ export class GameContorller {
     required: true,
   })
   @Get()
-  GetGameStoreByGenre(
+  GetGameByGenre(
     // @Headers('Authorization') userEmail: string,
     @UserEmail() userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
@@ -132,6 +154,17 @@ export class GameContorller {
       { beforeCursor, afterCursor },
       genreName,
     );
+  }
+
+  @ApiOperation({ summary: '게임 불러오기' })
+  @ApiResponse({ type: GameDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @Get(':gameId')
+  GetOneGame(
+    @UuidParam('gameId') gameId: string,
+    @Headers('Authorization') userEmail: string,
+  ) {
+    return this.gameService.getOneGame(userEmail, gameId);
   }
 
   @ApiOperation({ summary: '게임 업데이트' })
