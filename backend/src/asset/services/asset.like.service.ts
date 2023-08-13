@@ -30,6 +30,7 @@ export class AssetLikeService {
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
+
     const asset = await this.assetRepository
       .createQueryBuilder('asset')
       .where('asset.id = :id', { id: assetId })
@@ -37,6 +38,7 @@ export class AssetLikeService {
     if (!asset) {
       throw new NotFoundException('에셋을 찾을 수 없습니다.');
     }
+
     const existingAssetLike = await this.assetLikeRepository
       .createQueryBuilder('like')
       .where('like.userId = :userId', { userId: user.id })
@@ -58,6 +60,7 @@ export class AssetLikeService {
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
+
     const asset = await this.assetRepository
       .createQueryBuilder('asset')
       .where('asset.id = :id', { id: assetId })
@@ -65,13 +68,14 @@ export class AssetLikeService {
     if (!asset) {
       throw new NotFoundException('에셋을 찾을 수 없습니다.');
     }
+
     const existingAssetLike = await this.assetLikeRepository
       .createQueryBuilder('like')
       .where('like.userId = :userId', { userId: user.id })
       .andWhere('like.assetId = :assetId', { assetId: asset.id })
       .getOne();
     if (!existingAssetLike) {
-      throw new NotFoundException('좋아요를 누르지 않은 에셋입니다.');
+      throw new ConflictException('좋아요를 누르지 않은 에셋입니다.');
     }
     await this.assetLikeRepository.delete(existingAssetLike.id);
   }

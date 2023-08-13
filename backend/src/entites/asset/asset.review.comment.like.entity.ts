@@ -8,7 +8,7 @@ export class AssetReviewCommentLike {
   readonly id: string;
 
   @ManyToOne(() => AssetReviewComment, { nullable: false, onDelete: 'CASCADE' })
-  @JoinColumn([{ name: 'assetId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'commentId', referencedColumnName: 'id' }])
   comment: AssetReviewComment;
 
   @ManyToOne(() => User, { nullable: false, onDelete: 'CASCADE' })

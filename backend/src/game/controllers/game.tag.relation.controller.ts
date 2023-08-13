@@ -65,7 +65,7 @@ export class GameTagRelationController {
 
   @ApiOperation({ summary: '게임 태그 관계 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete(':realationId')
+  @Delete(':relationId')
   DeleteGameTagRelation(
     // @Headers('Authorization') userEmail: string,
     // @Param('gameId') gameId: string,
@@ -74,6 +74,7 @@ export class GameTagRelationController {
     @UuidParam('gameId') gameId: string,
     @UuidParam('relationId') relationId: string,
   ) {
+    console.log(userEmail, gameId, relationId);
     return this.gameTagRelationService.deleteGameTagRelation(
       userEmail,
       gameId,

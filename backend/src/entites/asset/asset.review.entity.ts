@@ -15,6 +15,7 @@ import { User } from '../user.entity';
 import { AssetReviewComment } from './asset.review.comment.entity';
 import { AssetReviewLike } from './asset.review.like.entity';
 import { AssetReviewDislike } from './asset.review.dislike.entity';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @Entity('AssetReview')
 export class AssetReview {
@@ -30,11 +31,15 @@ export class AssetReview {
   asset: Asset;
 
   @ApiProperty({ description: '내용', example: '좋아요' })
+  @IsNotEmpty()
+  @IsString()
   @Column()
   content: string;
 
   @ApiProperty({ description: '평점', example: 5 })
   @Column()
+  @IsNotEmpty()
+  @IsNumber()
   rating: number;
 
   @ApiProperty({ description: '작성자', type: () => User })

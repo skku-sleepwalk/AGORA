@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AssetReview } from 'src/entites/asset/asset.review.entity';
 import { AssetReviewLike } from 'src/entites/asset/asset.review.like.entity';
@@ -35,14 +39,15 @@ export class AssetReviewLikeService {
 
     const like = await this.assetReviewLikeRepository
       .createQueryBuilder('relation')
-      .leftJoinAndSelect('relation.user', 'user')
       .where('relation.reviewId =:reviewId', {
-        userEmail,
         reviewId: review.id,
+      })
+      .andWhere('relation.userId =:userId', {
+        userId: user.id,
       })
       .getOne();
     if (like) {
-      throw new NotFoundException('이미 좋아요를 누른 리뷰입니다.');
+      throw new ConflictException('이미 좋아요를 누른 리뷰입니다.');
     }
 
     const newLike = this.assetReviewLikeRepository.create({
@@ -76,14 +81,15 @@ export class AssetReviewLikeService {
 
     const like = await this.assetReviewLikeRepository
       .createQueryBuilder('relation')
-      .leftJoinAndSelect('relation.user', 'user')
       .where('relation.reviewId =:reviewId', {
-        userEmail,
         reviewId: review.id,
+      })
+      .andWhere('relation.userId =:userId', {
+        userId: user.id,
       })
       .getOne();
     if (!like) {
-      throw new NotFoundException('좋아요를 누르지 않은 리뷰입니다.');
+      throw new ConflictException('좋아요를 누르지 않은 리뷰입니다.');
     }
 
     await this.assetReviewLikeRepository.delete(like.id);

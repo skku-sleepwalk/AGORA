@@ -214,12 +214,14 @@ export class GameService {
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
       for (const genreName of genreNames) {
-        const existingGenre = await this.gameGenreRepository.findOne({
-          where: { name: genreName },
-        });
-        if (existingGenre) {
-          uniqueGenres.push(existingGenre);
+        const existingGenre = await this.gameGenreRepository
+          .createQueryBuilder('genre')
+          .where('name = :name', { name: genreName })
+          .getOne();
+        if (!existingGenre) {
+          throw new NotFoundException('존재하지 않는 장르입니다.');
         }
+        uniqueGenres.push(existingGenre);
       }
 
       // 5. Game과 Genre의 관계 설정
@@ -296,11 +298,14 @@ export class GameService {
     search: string,
   ) {
     // 게임 레포지토리에서 genreName에 해당하는 게임을 조회하는 쿼리 빌더를 생성합니다.
-    const queryBuilder = this.getQueryBuilder().where(
-      '(genres.name IN (:...genreNames)) AND (game.title LIKE :search OR game.shortContent LIKE :search OR store.title LIKE :search OR description.content LIKE :search)',
-      { genreNames, search: `%${search}%` },
-    );
-
+    const queryBuilder = this.getQueryBuilder()
+      .where('genres.name IN (:...genreNames)', {
+        genreNames,
+      })
+      .andWhere(
+        'game.title LIKE :search OR game.shortContent LIKE :search OR store.title LIKE :search',
+        { search: `%${search}%` },
+      );
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
       entity: Game,
@@ -334,7 +339,7 @@ export class GameService {
       '(genres.name IN (:...genreNames)) ',
       { genreNames },
     );
-
+    console.log(await queryBuilder.getMany());
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
       entity: Game,

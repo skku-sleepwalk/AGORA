@@ -44,7 +44,6 @@ export class AssetReviewService {
       .createQueryBuilder('relation')
       .leftJoinAndSelect('relation.user', 'user')
       .where('relation.reviewId =:reviewId', {
-        userEmail,
         reviewId: review.id,
       })
       .getManyAndCount();
@@ -53,7 +52,6 @@ export class AssetReviewService {
       .createQueryBuilder('relation')
       .leftJoinAndSelect('relation.user', 'user')
       .where('relation.reviewId =:reviewId', {
-        userEmail,
         reviewId: review.id,
       })
       .getManyAndCount();
@@ -115,7 +113,7 @@ export class AssetReviewService {
 
     const existingAssetReview = await this.assetReviewRepository
       .createQueryBuilder('review')
-      .where('review.userId = :userId', { userId: user.id })
+      .where('review.authorId = :userId', { userId: user.id })
       .andWhere('review.assetId = :assetId', { assetId: assetId })
       .getOne();
     if (existingAssetReview) {
@@ -136,6 +134,7 @@ export class AssetReviewService {
   async getAssetReviews(userEmail: string, assetId: string, _cursor: Cursor) {
     const queryBuilder = this.assetReviewRepository
       .createQueryBuilder('review')
+      .leftJoinAndSelect('review.author', 'author')
       .where('review.assetId = :assetId', { assetId: assetId });
 
     const paginationOption: PaginationOptions<AssetReview> = {
