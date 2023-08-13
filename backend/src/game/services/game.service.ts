@@ -214,12 +214,14 @@ export class GameService {
       // 4. Genre 엔티티 생성 및 저장 (중복 방지)
       const uniqueGenres: GameGenre[] = [];
       for (const genreName of genreNames) {
-        const existingGenre = await this.gameGenreRepository.findOne({
-          where: { name: genreName },
-        });
-        if (existingGenre) {
-          uniqueGenres.push(existingGenre);
+        const existingGenre = await this.gameGenreRepository
+          .createQueryBuilder('genre')
+          .where('name = :name', { name: genreName })
+          .getOne();
+        if (!existingGenre) {
+          throw new NotFoundException('존재하지 않는 장르입니다.');
         }
+        uniqueGenres.push(existingGenre);
       }
 
       // 5. Game과 Genre의 관계 설정
@@ -334,7 +336,7 @@ export class GameService {
       '(genres.name IN (:...genreNames)) ',
       { genreNames },
     );
-
+    console.log(await queryBuilder.getMany());
     // 페이징 옵션 설정
     const paginationOption: PaginationOptions<Game> = {
       entity: Game,
