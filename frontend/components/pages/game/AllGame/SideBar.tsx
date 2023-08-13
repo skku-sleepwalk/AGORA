@@ -13,7 +13,7 @@ export interface SideBarProps {
 }
 export default function SideBar({ genreList, setGenre }: SideBarProps) {
   return (
-    <CardContainer style={{ height: "100%", width: "100%" }}>
+    <CardContainer style={{ height: "100%", width: "100%", paddingBottom: "2rem" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ marginTop: "2rem" }}>
           <Text fz="xl" fw={700}>

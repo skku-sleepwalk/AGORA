@@ -8,7 +8,7 @@ export default function allGame() {
   //// 임시용 추후 수정 필
   const genreName = "FPS";
   const [genreList, setGenre] = useState([
-    { id: "A", checked: true },
+    { id: "FPS", checked: true },
     { id: "B", checked: true },
     { id: "C", checked: true },
   ]);
