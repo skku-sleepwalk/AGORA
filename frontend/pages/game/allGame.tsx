@@ -2,8 +2,12 @@ import SearchBar from "../../components/pages/game/AllGame/SearchBar";
 import SideBar from "../../components/pages/game/AllGame/SideBar";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import SmallPost from "../../components/pages/game/SmallPost/SmallPost";
-import useGameList from "../../hooks/game/useGameList";
+import useAllGame from "../../hooks/game/useAllGame";
 import { useState } from "react";
+interface DataItem {
+  id: string;
+  checked: boolean;
+}
 export default function allGame() {
   //// 임시용 추후 수정 필
   const genreName = "FPS";
@@ -12,17 +16,28 @@ export default function allGame() {
     { id: "B", checked: true },
     { id: "C", checked: true },
   ]);
+  function filterCheckedIds(data: DataItem[]): string[] {
+    const checkedIds: string[] = [];
+    for (const item of data) {
+      if (item.checked) {
+        checkedIds.push(item.id);
+      }
+    }
+    return checkedIds;
+  }
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
     isEmpty,
-  } = useGameList({
-    genreName: genreName ? genreName : undefined,
-    // name.toString()
-    //여기 tostring 에러 가능성 있음
+  } = useAllGame({
+    genreNames: filterCheckedIds(genreList),
+    search: "",
   });
+  console.log(filterCheckedIds(genreList));
+  console.log("");
+
   const toggleCheck = (id: string) => {
     setGenre((prevItems) =>
       prevItems.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item))
@@ -80,10 +95,10 @@ export default function allGame() {
                   flexDirection: "row",
                 }}
               >
-                {postData != undefined && (
+                {postData?.[0]?.data?.data[0]?.id != undefined && (
                   <div style={{ width: "85%", height: "85%" }}>
                     <SmallPost
-                      key={postData[0].data.data[0].id || ""}
+                      key={postData[0].data.data[0]?.id || ""}
                       post={postData[0].data.data[0] || null}
                     ></SmallPost>
                   </div>
