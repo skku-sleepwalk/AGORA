@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +16,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from '../user.entity';
 import { AssetCost } from './asset.cost.entity';
 import { AssetTagRelation } from './asset.tag.relation.entity';
+import { AssetCategory } from './asset.category.entity';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsString,
+  IsUrl,
+  ValidateNested,
+} from 'class-validator';
 
 @Entity('Asset')
 export class Asset {
@@ -26,6 +35,7 @@ export class Asset {
   reviews: AssetReview[];
 
   @ApiProperty({ description: '가격', type: () => AssetCost })
+  @ValidateNested()
   @OneToOne(() => AssetCost, (cost) => cost.asset, { cascade: true })
   cost: AssetCost;
 
@@ -33,14 +43,20 @@ export class Asset {
   likes: AssetLike[];
 
   @ApiProperty({ description: '썸네일', example: 'https://portal.com' })
+  @IsNotEmpty()
+  @IsUrl()
   @Column()
   thumbnail: string;
 
   @ApiProperty({ description: '제목', example: '포탈' })
+  @IsNotEmpty()
+  @IsString()
   @Column()
   title: string;
 
   @ApiProperty({ description: '설명', example: '포탈 설명' })
+  @IsNotEmpty()
+  @IsString()
   @Column()
   description: string;
 
@@ -48,6 +64,8 @@ export class Asset {
     description: '민감한 주제의 표현을 포함하는지 여부',
     example: false,
   })
+  @IsNotEmpty()
+  @IsBoolean()
   @Column({ default: false })
   isSensitive: boolean;
 
@@ -56,8 +74,14 @@ export class Asset {
   author: User;
 
   @ApiProperty({ description: '다운로드 링크', example: 'https://portal.com' })
+  @IsNotEmpty()
+  @IsUrl()
   @Column()
   downloadUrl: string;
+
+  @ManyToOne(() => AssetCategory, (category) => category.assets, {})
+  @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
+  category: AssetCategory;
 
   @OneToMany(() => AssetTagRelation, (relation) => relation.asset, {
     cascade: true,

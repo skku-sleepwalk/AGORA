@@ -227,26 +227,25 @@ export class GameReviewService {
   async updateGameReview(
     userEmail: string,
     gameId: string,
+    reviewId: string,
     content: string,
     rating: number,
   ) {
     // 1. User 엔티티를 userEmail로 찾기
-    const user = userEmail
-      ? await this.userRepository.findOne({
-          where: { email: userEmail },
-        })
-      : null;
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: userEmail })
+      .getOne();
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. GameReview 엔티티를 gameId로 찾기
-    const review = gameId
-      ? await this.gameReviewRepository.findOne({
-          where: { game: { id: gameId } },
-          relations: ['author'],
-        })
-      : null;
+    const review = await this.gameReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.author', 'author')
+      .where('review.id = :reviewId', { reviewId })
+      .getOne();
     if (!review) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }
@@ -267,22 +266,20 @@ export class GameReviewService {
   // 게임 리뷰를 삭제하는 메서드
   async deleteGameReview(userEmail: string, gameId: string, reviewId: string) {
     // 1. 현재 유저 가져오기
-    const user = userEmail
-      ? await this.userRepository.findOne({
-          where: { email: userEmail },
-        })
-      : null;
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: userEmail })
+      .getOne();
     if (!user) {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
     // 2. 게임 리뷰 엔티티 가져오기
-    const review = reviewId
-      ? await this.gameReviewRepository.findOne({
-          where: { id: reviewId, game: { id: gameId } },
-          relations: ['author'],
-        })
-      : null;
+    const review = await this.gameReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.author', 'author')
+      .where('review.id = :reviewId', { reviewId })
+      .getOne();
     if (!review) {
       throw new NotFoundException('리뷰를 찾을 수 없습니다.');
     }

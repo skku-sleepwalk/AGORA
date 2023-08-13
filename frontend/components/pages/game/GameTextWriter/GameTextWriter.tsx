@@ -19,6 +19,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { patchGameReviewComment } from "../../../../utils/api/game/gameReview/patchGameReviewComment";
 import { uploadGameBoard } from "../../../../utils/api/game/gameBoard/uploadGameBoard";
 import { GameBoardDetailViewerContext } from "../GameBoardSection/GameBoardDetailViewer/GameBoardDetailViewer";
+import { editGameBoard } from "../../../../utils/api/game/gameBoard/editGameBoard";
 
 export interface GameTextWriterProps {
   completePatch?: () => void; // PATCH 용
@@ -30,6 +31,7 @@ export interface GameTextWriterProps {
   isInReviewMine?: boolean; // 후기 댓글 (PATCH) 용
   parentBoardId?: string; // 게시판 댓글 POST 용
   parentBoardCategoryNames?: string[]; // 게시판 댓글 POST 용
+  boardId?: string; // 게시판 PATCH 용
 }
 
 export function GameTextWriter({
@@ -42,6 +44,7 @@ export function GameTextWriter({
   isInReviewMine,
   parentBoardId,
   parentBoardCategoryNames,
+  boardId,
 }: GameTextWriterProps) {
   if (parentBoardId && !parentBoardCategoryNames)
     throw new Error("게시판 댓글을 등록하려면 카테고리 이름을 지정해야 합니다.");
@@ -65,7 +68,7 @@ export function GameTextWriter({
   const handleSubmit = (e: any) => {
     e.preventDefault(); // 새로고침을 막음
     // 폼이 제출되었을 때 처리할 작업
-    if (parentBoardId) {
+    if (parentBoardId && !boardId) {
       uploadGameBoard(
         {
           content: textAreaValue,
@@ -80,9 +83,22 @@ export function GameTextWriter({
         showNotification("댓글 등록 완료!", "댓글이 정상적으로 등록되었습니다.");
         mutateGameBoardComment();
       });
-      return;
-    }
-    if (commentId && reviewId) {
+    } else if (boardId) {
+      editGameBoard(
+        {
+          content: textAreaValue,
+          title: "",
+          categoryNames: parentBoardCategoryNames!,
+        },
+        gameId,
+        boardId,
+        token
+      ).then(() => {
+        setTextAreaValue("");
+        showNotification("댓글 수정 완료!", "댓글이 정상적으로 수정되었습니다.");
+        completePatch?.();
+      });
+    } else if (commentId && reviewId) {
       // 게임 후기 댓글 PATCH
       patchGameReviewComment({
         gameId: gameId,

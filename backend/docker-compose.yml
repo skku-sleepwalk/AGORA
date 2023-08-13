@@ -1,0 +1,15 @@
+version: '3'
+services:
+  postgres:
+    container_name: postgres-agora
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: AGORA
+      PG_DATA_PATH: /var/lib/postgresql/AGORA
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/postgres:/var/lib/postgresql/AGORA
+      - ./db/postgres/init:/docker-entrypoint-initdb.d

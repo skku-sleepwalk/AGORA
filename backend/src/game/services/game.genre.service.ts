@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameGenre } from 'src/entites/game/game.genre.entity';
 import { Repository } from 'typeorm';
@@ -10,7 +10,14 @@ export class GameGenreService {
     private readonly gameGenreRepository: Repository<GameGenre>,
   ) {}
 
-  postGameGenre(name: string) {
+  async postGameGenre(name: string) {
+    const existGenre = await this.gameGenreRepository
+      .createQueryBuilder('genre')
+      .where('genre.name = :name', { name })
+      .getOne();
+    if (existGenre) {
+      throw new ConflictException('이미 존재하는 장르입니다.');
+    }
     this.gameGenreRepository.save({ name });
     return true;
   }

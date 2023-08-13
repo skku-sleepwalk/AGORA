@@ -28,6 +28,7 @@ export class AssetReviewComment {
   @Column()
   content: string;
 
+  @ApiProperty({ description: '작성자', type: () => User })
   @ManyToOne(() => User, (user) => user.assetReviewComments, {
     onDelete: 'CASCADE',
   })

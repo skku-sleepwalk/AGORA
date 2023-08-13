@@ -13,7 +13,7 @@ export class GameTagRelation {
   @ManyToOne(() => Game, (game) => game.tagRelations, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn([{ name: 'gameStoreId', referencedColumnName: 'id' }])
+  @JoinColumn([{ name: 'gameId', referencedColumnName: 'id' }])
   game: Game;
 
   @ApiProperty({ description: '태그' })

@@ -9,15 +9,29 @@ import { uploadGameBoard } from "../../../../../utils/api/game/gameBoard/uploadG
 import useAuth from "../../../../../hooks/useAuth";
 import { useForm } from "@mantine/form";
 import { showNotification } from "../../../../../utils/notifications";
+import { editGameBoard } from "../../../../../utils/api/game/gameBoard/editGameBoard";
 
 export interface GameBoardWriterProps {
   opened: boolean;
   gameId: string;
   close: () => void;
+  fullWidth?: boolean;
+  editProps?: {
+    title: string;
+    content: string;
+    category: string[];
+    boardId: string;
+  };
 }
 
-export function GameBoardWriter({ opened, gameId, close }: GameBoardWriterProps) {
-  const { classes, cx } = useGameBoardWriterStyles();
+export function GameBoardWriter({
+  opened,
+  gameId,
+  close,
+  fullWidth,
+  editProps,
+}: GameBoardWriterProps) {
+  const { classes, cx } = useGameBoardWriterStyles({ fullWidth });
   const { token } = useAuth();
   // 카테고리 관련
   const isDeveloper = true;
@@ -26,8 +40,8 @@ export function GameBoardWriter({ opened, gameId, close }: GameBoardWriterProps)
   const [sectionValue, setSectionValue] = useState(isDeveloper ? developerData[0] : userData[0]);
   const form = useForm({
     initialValues: {
-      title: "",
-      category: [] as string[],
+      title: editProps ? editProps.title : "",
+      category: editProps ? editProps.category : ([] as string[]),
     },
   });
 
@@ -44,10 +58,17 @@ export function GameBoardWriter({ opened, gameId, close }: GameBoardWriterProps)
             categoryNames: [sectionValue],
           };
           console.log("postData", postData);
-          uploadGameBoard(postData, gameId, token).then(() => {
-            showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
-            close();
-          });
+          if (editProps) {
+            editGameBoard(postData, gameId, editProps.boardId, token).then(() => {
+              showNotification("수정 완료", "게시물이 성공적으로 수정되었습니다.");
+              close();
+            });
+          } else {
+            uploadGameBoard(postData, gameId, token).then(() => {
+              showNotification("업로드 완료", "게시물이 성공적으로 게시되었습니다.");
+              close();
+            });
+          }
         })}
       >
         <Stack className={classes.editorContainer} spacing={17}>
@@ -67,9 +88,13 @@ export function GameBoardWriter({ opened, gameId, close }: GameBoardWriterProps)
               }}
             />
           </Group>
-          <RichEditor content={""} ref={editorRef} />
+          <RichEditor content={editProps ? editProps.content : ""} ref={editorRef} />
           <Group position="right">
-            <ButtonProgress CloseModal={close} text="게시글 작성" type="submit" />
+            <ButtonProgress
+              CloseModal={close}
+              text={editProps ? "게시글 수정" : "게시글 작성"}
+              type="submit"
+            />
           </Group>
         </Stack>
       </form>

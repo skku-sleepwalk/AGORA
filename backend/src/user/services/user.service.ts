@@ -62,6 +62,26 @@ export class UserService {
     return users;
   }
 
+  async getMe(userEmail: string) {
+    const user: UserDto = await this.userRepository.findOne({
+      where: { email: userEmail },
+    });
+
+    const playtimes = await this.playtimeRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['game'],
+    });
+    const totalPlaytime = playtimes
+      .map((playtime) => playtime.playtime)
+      .reduce((acc, current) => acc + current, 0);
+    user.totalPlaytime = totalPlaytime;
+    user.playtimes = playtimes.map((playtime) => ({
+      game: playtime.game,
+      playtime: playtime.playtime,
+    }));
+    return user;
+  }
+
   async getUser(id: string) {
     const user: UserDto = await this.userRepository.findOne({ where: { id } });
 
