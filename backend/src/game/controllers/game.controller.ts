@@ -82,8 +82,7 @@ export class GameContorller {
     @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
     genreNames: Array<string>,
   ) {
-    console.log(keyword.length);
-    if (keyword.length > 0) {
+    if (keyword) {
       return this.gameService.searchGame(
         userEmail,
         { beforeCursor, afterCursor },
