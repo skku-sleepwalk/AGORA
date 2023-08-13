@@ -78,51 +78,61 @@ export class GameContorller {
     @UserEmail() userEmail: string,
     @Query('beforeCursor') beforeCursor: string,
     @Query('afterCursor') afterCursor: string,
-    @Query('q') search: string,
+    @Query('q') keyword: string,
     @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
     genreNames: Array<string>,
   ) {
-    return this.gameService.searchGame(
-      userEmail,
-      { beforeCursor, afterCursor },
-      genreNames,
-      search,
-    );
+    console.log(keyword.length);
+    if (keyword.length > 0) {
+      return this.gameService.searchGame(
+        userEmail,
+        { beforeCursor, afterCursor },
+        genreNames,
+        keyword,
+      );
+    } else {
+      console.log('검색어 없음');
+      return this.gameService.getGameByGenres(
+        userEmail,
+        { beforeCursor, afterCursor },
+        genreNames,
+      );
+    }
   }
 
-  @ApiOperation({ summary: '게임 장르(다수)별로 불러오기' })
-  @ApiResponse({ type: CursoredGameDto })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiQuery({
-    name: 'beforeCursor',
-    description: '이전 페이지 커서(페이지네이션 옵션)',
-    required: false,
-  })
-  @ApiQuery({
-    name: 'afterCursor',
-    description: '다음 페이지 커서(페이지네이션 옵션)',
-    required: false,
-  })
-  @ApiQuery({ name: 'q', description: '검색 내용' })
-  @ApiQuery({
-    name: 'genreNames',
-    description: '장르 이름들',
-  })
-  @Get('genres')
-  getGameByGenres(
-    // @Headers() userEmail: string,
-    @UserEmail() userEmail: string,
-    @Query('beforeCursor') beforeCursor: string,
-    @Query('afterCursor') afterCursor: string,
-    @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
-    genreNames: Array<string>,
-  ) {
-    return this.gameService.getGameByGenres(
-      userEmail,
-      { beforeCursor, afterCursor },
-      genreNames,
-    );
-  }
+  // @ApiOperation({ summary: '게임 장르(다수)별로 불러오기' })
+  // @ApiResponse({ type: CursoredGameDto })
+  // @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  // @ApiQuery({
+  //   name: 'beforeCursor',
+  //   description: '이전 페이지 커서(페이지네이션 옵션)',
+  //   required: false,
+  // })
+  // @ApiQuery({
+  //   name: 'afterCursor',
+  //   description: '다음 페이지 커서(페이지네이션 옵션)',
+  //   required: false,
+  // })
+  // @ApiQuery({ name: 'q', description: '검색 내용' })
+  // @ApiQuery({
+  //   name: 'genreNames',
+  //   description: '장르 이름들',
+  // })
+  // @Get('genres')
+  // getGameByGenres(
+  //   // @Headers() userEmail: string,
+  //   @UserEmail() userEmail: string,
+  //   @Query('beforeCursor') beforeCursor: string,
+  //   @Query('afterCursor') afterCursor: string,
+  //   @Query('genreNames', new ParseArrayPipe({ items: String, separator: ',' }))
+  //   genreNames: Array<string>,
+  // ) {
+  //   return this.gameService.getGameByGenres(
+  //     userEmail,
+  //     { beforeCursor, afterCursor },
+  //     genreNames,
+  //   );
+  // }
 
   @ApiOperation({ summary: '게임스토어 장르별로 가져오기' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
