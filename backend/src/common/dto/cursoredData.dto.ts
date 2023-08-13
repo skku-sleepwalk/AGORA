@@ -1,6 +1,7 @@
 import { ApiProperty, getSchemaPath } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, ValidateNested } from 'class-validator';
 import { AssetDto } from 'src/asset/dto/asset.dto';
+import { AssetReviewCommentDto } from 'src/asset/dto/asset.review.comment.dto';
 import { AssetReviewDto } from 'src/asset/dto/asset.review.dto';
 import { CommunityBoardDto } from 'src/community/dto/community.board.dto';
 import { GameBoardDto } from 'src/game/dto/game.board.dto';
@@ -127,6 +128,21 @@ export class CursoredAssetReviewDto {
   @IsNotEmpty()
   @IsArray()
   data: Array<AssetReviewDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredAssetReviewCommentDto {
+  @ApiProperty({
+    isArray: true,
+    type: AssetReviewCommentDto,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<AssetReviewCommentDto>;
 
   @ApiProperty({ type: Cursor })
   @IsNotEmpty()

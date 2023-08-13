@@ -32,6 +32,10 @@ import { AssetReviewDisikeController } from './controllers/asset.review.dislike.
 import { AssetReviewDislikeService } from './services/asset.review.dislike.service';
 import { AssetReviewCommentController } from './controllers/asset.review.comment.controller';
 import { AssetReviewCommentService } from './services/asset.review.comment.service';
+import { AssetReviewCommentLikeController } from './controllers/asset.review.comment.like.controller';
+import { AssetReviewCommentDislikeController } from './controllers/asset.review.comment.dislike.controller';
+import { AssetReviewCommentLikeService } from './services/asset.review.comment.like.service';
+import { AssetReviewCommentDislikeService } from './services/asset.review.comment.dislike.service';
 
 @Module({
   imports: [
@@ -62,6 +66,8 @@ import { AssetReviewCommentService } from './services/asset.review.comment.servi
     AssetReviewLikeController,
     AssetReviewDisikeController,
     AssetReviewCommentController,
+    AssetReviewCommentLikeController,
+    AssetReviewCommentDislikeController,
   ],
   providers: [
     AssetService,
@@ -73,6 +79,8 @@ import { AssetReviewCommentService } from './services/asset.review.comment.servi
     AssetReviewLikeService,
     AssetReviewDislikeService,
     AssetReviewCommentService,
+    AssetReviewCommentLikeService,
+    AssetReviewCommentDislikeService,
   ],
 })
 export class AssetModule {}

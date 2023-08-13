@@ -64,7 +64,7 @@ export class GameReviewCommentService {
         ? true
         : false;
 
-    // 사용자의 플레이타임 정보를 가져와서 리뷰 정보에 추가
+    // 사용자의 플레이타임 정보를 가져와서 리뷰 댓글 정보에 추가
     const playtime = (
       await this.playTimeRepository.findOne({
         where: {
