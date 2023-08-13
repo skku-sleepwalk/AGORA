@@ -16,6 +16,7 @@ export default function allGame() {
     { id: "B", checked: true },
     { id: "C", checked: true },
   ]);
+  const [search, setsearch] = useState("");
   function filterCheckedIds(data: DataItem[]): string[] {
     const checkedIds: string[] = [];
     for (const item of data) {
@@ -33,10 +34,8 @@ export default function allGame() {
     isEmpty,
   } = useAllGame({
     genreNames: filterCheckedIds(genreList),
-    search: "",
+    search: search,
   });
-  console.log(filterCheckedIds(genreList));
-  console.log("");
 
   const toggleCheck = (id: string) => {
     setGenre((prevItems) =>
@@ -71,7 +70,7 @@ export default function allGame() {
             }}
           >
             {/* 검색창 */}
-            <SearchBar></SearchBar>
+            <SearchBar setsearch={setsearch}></SearchBar>
           </div>
           <div
             style={{

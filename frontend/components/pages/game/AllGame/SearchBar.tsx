@@ -1,12 +1,17 @@
 import { TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-
-export default function SearchBar() {
+import { useState } from "react";
+interface SearchBarProps {
+  setsearch: Function;
+}
+export default function SearchBar({ setsearch }: SearchBarProps) {
+  const [value, setvalue] = useState("");
   return (
     <div style={{ width: "80%" }}>
       <TextInput
         radius="xl"
+        onChange={(event) => setvalue(event.currentTarget.value)}
         rightSection={
           <div
             style={{
@@ -21,7 +26,11 @@ export default function SearchBar() {
               borderBottomRightRadius: "20px",
             }}
           >
-            <InvisibleButton>
+            <InvisibleButton
+              onClick={(e) => {
+                setsearch(value);
+              }}
+            >
               <IconSearch style={{ marginRight: "15px" }}></IconSearch>
             </InvisibleButton>
           </div>
