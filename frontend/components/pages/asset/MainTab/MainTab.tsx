@@ -35,7 +35,18 @@ export function MainTab({ MovingUp, scrollY }: MainTabProps) {
 
   return (
     <Box className={cx(classes.wrapper, scrollY > 4 * 16 && classes.shadow)}>
-      <Group className={classes.group}>{sections}</Group>
+      <Group className={classes.group} position="apart">
+        <Group spacing={"sm"}>{sections}</Group>
+        <Button
+          className={classes.buttonOn}
+          variant="default"
+          color="teal"
+          radius="xl"
+          fw={"normal"}
+        >
+          에셋 업로드
+        </Button>
+      </Group>
     </Box>
   );
 }
