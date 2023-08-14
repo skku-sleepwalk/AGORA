@@ -3,7 +3,7 @@ import { useGameTagModalStyles } from "./GameTagModal.styles";
 import { useFocusTrap } from "@mantine/hooks";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconSearch, IconX } from "@tabler/icons-react";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { cleanNotification, showError } from "../../../../utils/notifications";
 import { useMyGameTag } from "../../../../hooks/game/useMyGameTag";
 import { useGameTagList } from "../../../../hooks/game/useGameTagList";
@@ -32,6 +32,9 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
     : [];
 
   const [myTagData, setMyTagData] = useState<string[]>([...myPrevTagList]); // 현재 유저가 태그해 놓은 태그 (name만 있음)
+  useEffect(() => {
+    setMyTagData([...myPrevTagList]);
+  }, [...myPrevTagList]);
 
   // 태그 (검색) 관련
   const searchRef = useRef<HTMLInputElement>(null);
