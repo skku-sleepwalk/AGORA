@@ -9,10 +9,10 @@ export default function DevelopStory() {
         <MainTab active="develop"></MainTab>
       </div>
 
-      <DevelopStories>
+      <DevelopStories TitleProp="개발일지 몰아보기">
         <Stories></Stories>
       </DevelopStories>
-      <DevelopStories>
+      <DevelopStories TitleProp="Best of Develop Stories">
         <BestStories></BestStories>
       </DevelopStories>
     </div>
