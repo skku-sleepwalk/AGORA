@@ -259,6 +259,24 @@ export class GameBoardService {
     return { data, cursor };
   }
 
+  async getBestBoards(userEmail: string, _cursor: Cursor) {
+    const developerCategoryNames = ['개발일지'];
+
+    const queryBuilder = this.createQueryBuilder()
+      .where('board.parentId IS NULL')
+      .andWhere('categories.name IN (:...developerCategoryNames)', {
+        developerCategoryNames,
+      });
+
+    const { data, cursor } = await this.paginating(
+      userEmail,
+      _cursor,
+      queryBuilder,
+    );
+    data.sort((a, b) => b.likeCount - a.likeCount);
+    return { data, cursor };
+  }
+
   // 게시물의 자식들을 페이징하여 데이터와 커서를 반환하는 메서드
   async getChild(
     userEmail: string,

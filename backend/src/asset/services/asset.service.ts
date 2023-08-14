@@ -156,6 +156,15 @@ export class AssetService {
     return await this.assetModifying(userEmail, asset);
   }
 
+  async getAssets(userEmail: string, _cursor: Cursor, categoryNames: string[]) {
+    const queryBuilder = this.createQueryBuilder()
+      .leftJoinAndSelect('asset.author', 'author')
+      .leftJoinAndSelect('asset.cost', 'cost')
+      .leftJoinAndSelect('asset.category', 'category')
+      .where('category.name IN (:...categoryNames)', { categoryNames });
+    return await this.paginating(userEmail, _cursor, queryBuilder);
+  }
+
   async searchAsset(
     userEmail: string,
     keyword: string,
@@ -180,6 +189,7 @@ export class AssetService {
     }
     return await this.paginating(userEmail, _cursor, queryBuilder);
   }
+
   async getAssetSearchHistory(userEmail: string) {
     const searchList = await this.assetSearchRepository.find({
       where: { user: { email: userEmail } },

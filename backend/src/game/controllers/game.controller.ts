@@ -22,15 +22,22 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoN
 import { CreateGameDto } from '../dto/create.game.dto';
 import { GameDto } from '../dto/game.dto';
 import { UpdateGameDto } from '../dto/update.game.dto';
-import { CursoredGameDto } from 'src/common/dto/cursoredData.dto';
+import {
+  CursoredGameBoardDto,
+  CursoredGameDto,
+} from 'src/common/dto/cursoredData.dto';
 import { UserEmail } from 'src/common/decorators/userEmail.dacorator';
 import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
+import { GameBoardService } from '../services/game.board.service';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('Game')
 @Controller('game')
 export class GameContorller {
-  constructor(private gameService: GameService) {}
+  constructor(
+    private gameService: GameService,
+    private gameBoardService: GameBoardService,
+  ) {}
   @ApiOperation({ summary: '게임 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @Post()
@@ -163,6 +170,29 @@ export class GameContorller {
       { beforeCursor, afterCursor },
       genreName,
     );
+  }
+
+  @ApiOperation({ summary: '인기 보드 조회' })
+  @ApiResponse({ type: CursoredGameBoardDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiQuery({
+    name: 'beforeCursor',
+    description: '이전 페이지 커서(페이지네이션 옵션)',
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    description: '다음 페이지 커서(페이지네이션 옵션)',
+  })
+  @Get('best-board')
+  GetBestBoard(
+    @UserEmail() userEmail: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query('afterCursor') afterCursor: string,
+  ) {
+    return this.gameBoardService.getBestBoards(userEmail, {
+      beforeCursor,
+      afterCursor,
+    });
   }
 
   @ApiOperation({ summary: '게임 불러오기' })

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseArrayPipe,
   Patch,
   Post,
   Query,
@@ -23,6 +24,7 @@ import { AssetDto } from '../dto/asset.dto';
 import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
 import { AssetSearchDto } from '../dto/asset.search.dto';
 import { UpdateAssetDto } from '../dto/update.asset.dto';
+import { CursoredAssetDto } from 'src/common/dto/cursoredData.dto';
 
 @ApiTags('Asset')
 @Controller('asset')
@@ -48,8 +50,33 @@ export class AssetController {
     );
   }
 
+  @ApiOperation({ summary: 'Asset 카테고리별 조회' })
+  @ApiResponse({ type: CursoredAssetDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiQuery({ name: 'afterCursor', description: '이후 커서' })
+  @ApiQuery({ name: 'beforeCursor', description: '이전 커서' })
+  @ApiQuery({ name: 'categoryNames', description: '카테고리 이름들' })
+  @Get()
+  GetAssetByCategory(
+    @UserEmail() userEmail: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
+  ) {
+    return this.assetService.getAssets(
+      userEmail,
+      { afterCursor, beforeCursor },
+      categoryNames,
+    );
+  }
+
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiOperation({ summary: 'Asset 검색' })
-  @ApiResponse({ type: AssetDto, isArray: true })
+  @ApiResponse({ type: CursoredAssetDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({ name: 'q', description: '검색 키워드' })
   @ApiQuery({ name: 'afterCursor', description: '이후 커서' })
