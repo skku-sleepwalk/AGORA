@@ -15,6 +15,8 @@ export const useGameTextWriterStyles = createStyles(
 
     editor: {
       flexGrow: 1,
+      cursor: "text",
+
       ".mantine-RichTextEditor-content": {
         fontSize: smallScreen ? theme.fontSizes.xs : theme.fontSizes.sm,
       },

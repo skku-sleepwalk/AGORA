@@ -21,6 +21,8 @@ import { Game } from "../../../../types/api/game/game";
 import useAuth from "../../../../hooks/useAuth";
 import { DelGameLike, PostGameLike } from "../../../../utils/api/game/game/gameLike";
 import { GameContext } from "../../../../pages/game/[id]";
+import { useUserPlaytimes } from "../../../../hooks/game/useUserPlaytimes";
+import { hasPlaytime } from "../GameReviewSection/GameReviewSection";
 
 interface GameDataProps {
   postData: Game;
@@ -59,24 +61,9 @@ export function GameSummary({ postData }: GameDataProps) {
   const formattedString = `${year}년 ${month}월 ${day?.slice(0, 2)}일`;
 
   // 태그
-  const data = [
-    "농장 시뮬레이션",
-    "생활 시뮬레이션",
-    "픽셀 그래픽",
-    "힐링",
-    "끊을 줄 모르는",
-    "최고인",
-    "잊을 수 없는",
-    "농장 시뮬레이션",
-    "생활 시뮬레이션",
-    "픽셀 그래픽",
-    "힐링",
-    "끊을 줄 모르는",
-    "최고인",
-    "잊을 수 없는",
-  ];
-  const endIndex = 11;
-  const tags = data.slice(0, endIndex).map((item) => <Box className={classes.tag}>{item}</Box>);
+  const { data: me } = useUserPlaytimes();
+  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, postData.id) : false;
+  const tags = postData.popularTags.map((item) => <Box className={classes.tag}>{item.name}</Box>);
 
   const overflowRef = useRef<HTMLDivElement>(null);
   const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
@@ -215,12 +202,14 @@ export function GameSummary({ postData }: GameDataProps) {
         <Box className={classes.tagGroup}>
           <Box className={classes.tagBox} ref={overflowRef}>
             {tags}
-            <Button
-              className={cx(classes.addButton, isOverflowed ? classes.addButton_A : null)}
-              onClick={open}
-            >
-              +
-            </Button>
+            {canReview && (
+              <Button
+                className={cx(classes.addButton, isOverflowed ? classes.addButton_A : null)}
+                onClick={open}
+              >
+                +
+              </Button>
+            )}
           </Box>
         </Box>
         {!postData.isPlayable && (

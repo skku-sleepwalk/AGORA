@@ -30,13 +30,12 @@ export const useMainLayoutStyles = createStyles((theme) => ({
 
     width: "100%",
     height: "2.5rem",
+    zIndex: 50,
   },
 
   mainContainer: {
     width: "100%",
-    height: "100%",
-    padding: 40,
-    paddingTop: 10,
+    padding: "2rem 0rem",
   },
 
   movingUpButtonContainer: {
