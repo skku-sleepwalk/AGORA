@@ -7,10 +7,11 @@ import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
 import Stories from "./Stories";
 export interface DevelopStoriesProps {
   children: React.ReactNode;
+  TitleProp: string;
 }
-export function DevelopStories({ children }: DevelopStoriesProps) {
-  const [Title, setTitle] = useState("개발일지 몰아보기");
-
+export function DevelopStories({ children, TitleProp }: DevelopStoriesProps) {
+  const [Title, setTitle] = useState(TitleProp);
+  console.log(TitleProp);
   return (
     <div style={{ marginTop: "5rem" }}>
       <Text

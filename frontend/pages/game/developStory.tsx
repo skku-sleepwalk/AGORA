@@ -9,10 +9,10 @@ export default function DevelopStory() {
         <MainTab active="develop"></MainTab>
       </div>
 
-      <DevelopStories>
-        <Stories></Stories>
+      <DevelopStories TitleProp="임시용 개발일지 몰아보기">
+        <Stories gameID={"6a05a155-147b-4112-a95f-88e53edec2aa"}></Stories>
       </DevelopStories>
-      <DevelopStories>
+      <DevelopStories TitleProp="Best of Develop Stories">
         <BestStories></BestStories>
       </DevelopStories>
     </div>
