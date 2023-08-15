@@ -35,6 +35,7 @@ export const useMainLayoutStyles = createStyles((theme) => ({
 
   mainContainer: {
     width: "100%",
+    minHeight: "calc(100vh - 14.813rem)",
     padding: "2rem 0rem",
   },
 

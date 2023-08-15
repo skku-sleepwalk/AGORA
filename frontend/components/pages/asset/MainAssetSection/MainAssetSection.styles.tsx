@@ -7,7 +7,7 @@ export const useMainAssetSectionStyles = createStyles((theme) => ({
     width: "100%",
 
     alignItems: "center",
-    gap: "1.5rem",
+    gap: "0.5rem",
   },
 
   text: {
@@ -20,11 +20,15 @@ export const useMainAssetSectionStyles = createStyles((theme) => ({
   },
 
   wrapper: {
-    display: "flex",
-    flexWrap: "wrap",
     width: "80%",
+  },
 
-    justifyContent: "space-between",
-    gap: "1rem",
+  carousel: {
+    ".mantine-Carousel-viewport": {
+      paddingLeft: "0.5rem",
+    },
+    ".mantine-Carousel-container": {
+      alignItems: "center",
+    },
   },
 }));

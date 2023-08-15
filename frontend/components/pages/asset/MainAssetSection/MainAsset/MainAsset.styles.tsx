@@ -4,7 +4,6 @@ export const useMainAssetStyles = createStyles((theme) => ({
   wrapper: {
     width: "10rem",
     height: "16.9rem",
-    marginBottom: "1rem",
     padding: "0.5rem",
   },
 
