@@ -53,7 +53,7 @@ export function GameReview({ gameId, data }: GameReviewProps) {
   const { classes, cx } = useGameReviewStyles({ smallScreen });
   const theme = useMantineTheme();
 
-  const { token } = useAuth();
+  const { token, user, openSignInModal } = useAuth();
   const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
 
   const {
@@ -65,6 +65,10 @@ export function GameReview({ gameId, data }: GameReviewProps) {
 
   // 후기 좋아요 싫어요 관련 로직
   const handleLike = () => {
+    if (!user) {
+      openSignInModal();
+      return;
+    }
     if (data.like) {
       DelGameReviewLike(gameId, data.id, token).then(() => {
         mutateGameReview();
@@ -93,6 +97,11 @@ export function GameReview({ gameId, data }: GameReviewProps) {
   };
 
   const handleDislike = () => {
+    if (!user) {
+      openSignInModal();
+      return;
+    }
+
     if (data.dislike) {
       DelGameReviewDislike(gameId, data.id, token).then(() => {
         mutateGameReview();
