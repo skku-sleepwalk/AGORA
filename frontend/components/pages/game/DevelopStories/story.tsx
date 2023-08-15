@@ -2,8 +2,13 @@ import { removeImgTags } from "../../../../utils/api/ViewPhotos";
 import { Image } from "@mantine/core";
 import { Text } from "@mantine/core";
 import { IconMessage, IconHeart, Icon123, IconShare, IconBookmark } from "@tabler/icons-react";
-export default function Story() {
-  const removeImgTag = removeImgTags("여기에 본문이 들어가면 돼");
+import { GameBoard } from "../../../../types/api/game/gameBoard";
+export interface StoryProps {
+  story: GameBoard;
+}
+export default function Story({ story }: StoryProps) {
+  let removeImgTag = removeImgTags(story.content);
+  removeImgTag = removeImgTag.replace(/<\/?p[^>]*>/g, "");
   return (
     <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -18,7 +23,7 @@ export default function Story() {
       </div>
       <div>
         <Text style={{ marginTop: "20px" }} fw={700} fz="ml">
-          대충 제목
+          {story.title}
         </Text>
       </div>
       <div>
@@ -36,11 +41,11 @@ export default function Story() {
       >
         <div style={{ display: "flex", flexDirection: "row" }}>
           <IconHeart></IconHeart>
-          <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{1100}</div>
+          <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{story.likeCount}</div>
         </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           <IconMessage></IconMessage>
-          <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{1100}</div>
+          <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{story.childCount}</div>
         </div>
 
         <IconShare></IconShare>
