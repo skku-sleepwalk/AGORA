@@ -51,7 +51,7 @@ export interface CommentProps {
 function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
   const theme = useMantineTheme();
   const { classes } = useCommentStyles();
-  const { token, user } = useAuth();
+  const { token, user, openSignInModal } = useAuth();
 
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(false);
   const [commentOpen, { toggle: toggleComment }] = useDisclosure(false);
@@ -163,6 +163,10 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
             <Group spacing={5}>
               <InvisibleButton
                 onClick={() => {
+                  if (!user) {
+                    openSignInModal();
+                    return;
+                  }
                   onLikeClick({ data: { boardId: post.id, token } }, isliking)
                     .then(() => {
                       mutateReply !== undefined ? mutateReply() : null;
@@ -192,6 +196,10 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
               <>
                 <InvisibleButton
                   onClick={() => {
+                    if (!user) {
+                      openSignInModal();
+                      return;
+                    }
                     toggleEditor();
                     !editorOpen && !commentOpen ? toggleComment() : null;
                   }}

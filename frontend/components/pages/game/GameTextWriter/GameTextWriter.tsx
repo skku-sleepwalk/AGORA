@@ -51,13 +51,13 @@ export function GameTextWriter({
   const theme = useMantineTheme();
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes } = useGameTextWriterStyles({ smallScreen });
+  const { token, openSignInModal, user } = useAuth();
 
   const editor = useEditor({
     extensions: [StarterKit, Placeholder.configure({ placeholder: placeholder })],
     content: content ? content : "",
   });
 
-  const { token } = useAuth();
   const { mutateGameReview, mutateGameReviewMine } = useContext(GameReviewSectionContext);
   const { mutategameReviewComment } = useContext(GameReviewContext);
   const { mutategameReviewMineComment } = useContext(GameReviewMineContext);
@@ -152,12 +152,27 @@ export function GameTextWriter({
   return (
     <form onSubmit={handleSubmit}>
       <Group className={classes.group}>
-        <RichTextEditor className={classes.editor} editor={editor}>
+        <RichTextEditor
+          className={classes.editor}
+          editor={editor}
+          onFocus={(e) => {
+            if (!user) {
+              openSignInModal();
+              (e.currentTarget.querySelector("div[contenteditable='true']") as HTMLElement).blur();
+            }
+          }}
+        >
           <RichTextEditor.Content />
         </RichTextEditor>
         <InvisibleButton
           type="submit"
           onClick={(e) => {
+            if (!user) {
+              openSignInModal();
+              e.preventDefault();
+              return;
+            }
+
             if (editor!.getHTML() === "<p></p>") {
               showNotification(null, "내용을 입력해 주세요.");
               e.preventDefault();

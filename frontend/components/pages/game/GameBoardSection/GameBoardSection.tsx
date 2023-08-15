@@ -57,7 +57,7 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
 
   const router = useRouter();
   const boardId = router.query.board?.toString();
-  const { user } = useAuth();
+  const { user, openSignInModal } = useAuth();
 
   return (
     <>
@@ -139,7 +139,10 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
                     setSearch(event.currentTarget.value);
                   }}
                 />
-                <InvisibleButton className={classes.writeButton} onClick={open}>
+                <InvisibleButton
+                  className={classes.writeButton}
+                  onClick={user ? open : openSignInModal}
+                >
                   <Group spacing={"0.2rem"}>
                     <IconPencil size={smallScreen ? "1rem" : "1.4rem"} stroke={1.5} color="white" />
                     <Text fz={smallScreen ? 12 : 14} fw={"normal"} color="white">
