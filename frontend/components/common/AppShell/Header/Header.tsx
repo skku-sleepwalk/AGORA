@@ -27,9 +27,7 @@ export function Header({ links }: HeaderProps) {
   const { classes, cx } = useHeaderStyles();
   const router = useRouter();
   const [active, setActive] = useState(router.pathname);
-  const { user } = useAuth();
-  const [signInModalOpened, setSignInModalOpened] = useState(false);
-  const [signUpModalOpened, setSignUpModalOpened] = useState(false);
+  const { user, openSignInModal } = useAuth();
 
   return (
     <>
@@ -61,53 +59,13 @@ export function Header({ links }: HeaderProps) {
                 name={user.name}
               />
             ) : (
-              <UnstyledButton
-                className={classes.loginButton}
-                onClick={() => setSignInModalOpened(true)}
-              >
+              <UnstyledButton className={classes.loginButton} onClick={() => openSignInModal()}>
                 로그인
               </UnstyledButton>
             )}
           </Group>
         </Group>
       </MantineHeader>
-      <Modal
-        opened={signInModalOpened}
-        withCloseButton={false}
-        sx={resetModalStyles}
-        centered
-        size="auto"
-        scrollAreaComponent={ScrollArea.Autosize}
-        onClose={() => setSignInModalOpened(false)}
-      >
-        <SignInForm
-          onSignUpClick={() => {
-            setSignUpModalOpened(true);
-            setSignInModalOpened(false);
-          }}
-          onCompleted={() => {
-            setSignInModalOpened(false);
-          }}
-        />
-      </Modal>
-      <Modal
-        opened={signUpModalOpened}
-        withCloseButton={false}
-        sx={resetModalStyles}
-        centered
-        size="auto"
-        scrollAreaComponent={ScrollArea.Autosize}
-        onClose={() => {
-          setSignInModalOpened(true);
-          setSignUpModalOpened(false);
-        }}
-      >
-        <SignUpForm
-          onCompleted={() => {
-            setSignUpModalOpened(false);
-          }}
-        />
-      </Modal>
     </>
   );
 }

@@ -41,7 +41,7 @@ function PostWriter() {
   const { token } = useAuth();
   const [isKeepMounted, setIsKeepMounted] = useState(true);
   const [categorychanged, setcategorychange] = useState(false);
-  const { user } = useAuth();
+  const { user, openSignInModal } = useAuth();
   return (
     <>
       <CardContainer className={classes.container}>
@@ -58,7 +58,7 @@ function PostWriter() {
           onFocus={(e) => {
             e.currentTarget.blur();
             setIsKeepMounted(true);
-            open();
+            user ? open() : openSignInModal();
           }}
           className={classes.TextInput}
           value={form.values.title}

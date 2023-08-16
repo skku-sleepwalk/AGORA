@@ -2,6 +2,7 @@ import { removeImgTags } from "../../../../utils/api/ViewPhotos";
 import { Image } from "@mantine/core";
 import { Text } from "@mantine/core";
 import CardContainer from "../../../common/CardContainer/CardContainer";
+import { extractImageSrc } from "../../../../utils/api/ViewPhotos";
 import {
   IconMessage,
   IconHeart,
@@ -10,8 +11,15 @@ import {
   IconBookmark,
   IconChevronLeft,
 } from "@tabler/icons-react";
-export default function BestStory() {
-  const removeImgTag = removeImgTags("여기에 본문이 들어가면 돼");
+import { GameBoard } from "../../../../types/api/game/gameBoard";
+export interface BestStoryProps {
+  story: GameBoard;
+}
+export default function BestStory({ story }: BestStoryProps) {
+  const thumbnailUrl = extractImageSrc(story.content)[0];
+  let removeImgTag = removeImgTags(story.content);
+  removeImgTag = removeImgTag.replace(/<\/?p[^>]*>/g, "");
+  console.log(story);
   return (
     <CardContainer style={{ paddingTop: "15px", paddingLeft: "0", paddingRight: "0" }}>
       <div style={{ height: "100%", width: "100%", display: "flex", flexDirection: "column" }}>
@@ -31,12 +39,15 @@ export default function BestStory() {
             Stardew Valley
           </Text>
         </div>
-        <div style={{ width: "100%", height: "40%", paddingTop: "12px" }}>
+        <div style={{ width: "100%", height: "40%", paddingTop: "12px", minHeight: "225px" }}>
+          {/* max도 걸어야 할 것 같지만 일단 넘어가자 */}
           <Image
             width={"100%"}
             height={"100%"}
             src={
-              "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzA3MTNfMTAz%2FMDAxNjg5MjUzNjY3NDQz.c6VImpgJ0qy1bRZGHiZVxfkRlqoW6UG1KY6MySFz8Acg.ZOb1WGfiq3B4pdgr8Gj272XBX_pe3BKODGBPRGMzGUUg.JPEG.wltndk97%2Foutput_4028971259.jpg&type=sc960_832"
+              thumbnailUrl == ""
+                ? "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzA3MTNfMTAz%2FMDAxNjg5MjUzNjY3NDQz.c6VImpgJ0qy1bRZGHiZVxfkRlqoW6UG1KY6MySFz8Acg.ZOb1WGfiq3B4pdgr8Gj272XBX_pe3BKODGBPRGMzGUUg.JPEG.wltndk97%2Foutput_4028971259.jpg&type=sc960_832"
+                : thumbnailUrl
             }
           ></Image>
         </div>
@@ -66,13 +77,13 @@ export default function BestStory() {
             </div>
             <div style={{ width: "150px", height: "100%", display: "flex", alignItems: "center" }}>
               <Text fw={700} fz="ml">
-                꼬꼬댁
+                {story.author.name}
               </Text>
             </div>
           </div>
           <div>
             <Text style={{ marginTop: "10px" }} fw={700} fz="ml">
-              대충 제목
+              {story.title}
             </Text>
           </div>
           <div>
@@ -91,11 +102,11 @@ export default function BestStory() {
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
               <IconHeart></IconHeart>
-              <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{1100}</div>
+              <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{story.likeCount}</div>
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <IconMessage></IconMessage>
-              <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{1100}</div>
+              <div style={{ paddingTop: "5px", paddingLeft: "5px" }}>{story.childCount}</div>
             </div>
 
             <IconShare></IconShare>

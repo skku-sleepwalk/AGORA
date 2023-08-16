@@ -52,7 +52,7 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardCommentStyles({ smallScreen });
   const theme = useMantineTheme();
-  const { token } = useAuth();
+  const { token, user, openSignInModal } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -148,6 +148,10 @@ export function GameBoardComment({ post, gameId, mutatePost }: GameBoardCommentP
           <Group spacing="0.3rem">
             <InvisibleButton
               onClick={() => {
+                if (!user) {
+                  openSignInModal();
+                  return;
+                }
                 if (post.like) {
                   deleteGameBoardLike(gameId, post.id, token).then(() => {
                     mutatePost();
