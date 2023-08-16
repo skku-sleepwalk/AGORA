@@ -5,12 +5,15 @@ import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { User } from 'src/entites/user.entity';
 import { Repository } from 'typeorm';
 import bcrypt from 'bcrypt';
+import { UserSubscribe } from 'src/entites/user.subscribe.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(UserSubscribe)
+    private readonly userSubscribeRepository: Repository<UserSubscribe>,
     @InjectRepository(PlayTime)
     private readonly playtimeRepository: Repository<PlayTime>,
   ) {}
@@ -97,6 +100,21 @@ export class UserService {
       game: playtime.game,
       playtime: playtime.playtime,
     }));
+
+    const currentAt = new Date();
+    const remainPlayTime = (
+      await this.userSubscribeRepository
+        .createQueryBuilder('subscribe')
+        .leftJoinAndSelect('subscribe.user', 'user')
+        .where('user.email = :userEmail', { userEmail: user.email })
+        .andWhere('subscribe.startAt < :currentAt', { currentAt })
+        .andWhere('subscribe.endAt > :currentAt', { currentAt })
+        .andWhere('subscribe.remainPlayTime > 0')
+        .orderBy('subscribe.createdAt', 'DESC')
+        .getOne()
+    ).remainPlayTime;
+
+    user.remainPlaytime = remainPlayTime;
     return user;
   }
 }

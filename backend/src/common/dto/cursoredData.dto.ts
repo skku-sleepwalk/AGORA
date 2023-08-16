@@ -4,6 +4,7 @@ import { AssetDto } from 'src/asset/dto/asset.dto';
 import { AssetReviewCommentDto } from 'src/asset/dto/asset.review.comment.dto';
 import { AssetReviewDto } from 'src/asset/dto/asset.review.dto';
 import { CommunityBoardDto } from 'src/community/dto/community.board.dto';
+import { BestBoardDto } from 'src/game/dto/best-board.dto';
 import { GameBoardDto } from 'src/game/dto/game.board.dto';
 import { GameDto } from 'src/game/dto/game.dto';
 import { GameReviewCommentDto } from 'src/game/dto/game.review.comment.dto';
@@ -75,6 +76,21 @@ export class CursoredGameBoardDto {
     items: {
       $ref: getSchemaPath(GameBoardDto),
     },
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<GameBoardDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredBestGameBoardDto {
+  @ApiProperty({
+    type: BestBoardDto,
+    isArray: true,
   })
   @IsNotEmpty()
   @IsArray()

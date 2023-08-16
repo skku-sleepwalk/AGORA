@@ -22,6 +22,7 @@ export class GamePlaytimeService {
     gameId: string,
     additionalPlaytime: number,
   ) {
+    // 유저 검증
     const user = userEmail
       ? await this.userRepository.findOne({
           where: { email: userEmail },
@@ -31,6 +32,7 @@ export class GamePlaytimeService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
 
+    // 게임 검증
     const game = gameId
       ? await this.gameRepository.findOne({ where: { id: gameId } })
       : null;
@@ -38,6 +40,7 @@ export class GamePlaytimeService {
       throw new NotFoundException('게임을 찾을 수 없습니다.');
     }
 
+    // 구독 검증
     const userSubscribe = await this.userSubUserSubscribeRepository.findOne({
       where: { user: { id: user.id } },
     });
@@ -45,11 +48,13 @@ export class GamePlaytimeService {
       throw new NotFoundException('구독 정보를 찾을 수 없습니다.');
     }
 
+    // 진여 시간 업데이트
     await this.userSubUserSubscribeRepository.save({
       remainPlayTime: userSubscribe.remainPlayTime - additionalPlaytime,
       ...userSubscribe,
     });
 
+    // 플레이 시간 업데이트
     const playtime = await this.playtimeRepository.findOne({
       where: { game: { id: gameId }, user: { id: user.id } },
     });

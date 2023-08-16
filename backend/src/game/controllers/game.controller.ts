@@ -23,6 +23,7 @@ import { CreateGameDto } from '../dto/create.game.dto';
 import { GameDto } from '../dto/game.dto';
 import { UpdateGameDto } from '../dto/update.game.dto';
 import {
+  CursoredBestGameBoardDto,
   CursoredGameBoardDto,
   CursoredGameDto,
 } from 'src/common/dto/cursoredData.dto';
@@ -173,7 +174,7 @@ export class GameContorller {
   }
 
   @ApiOperation({ summary: '인기 보드 조회' })
-  @ApiResponse({ type: CursoredGameBoardDto })
+  @ApiResponse({ type: CursoredBestGameBoardDto })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiQuery({
     name: 'beforeCursor',

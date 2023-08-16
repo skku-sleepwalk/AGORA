@@ -263,6 +263,9 @@ export class GameBoardService {
     const developerCategoryNames = ['개발일지'];
 
     const queryBuilder = this.createQueryBuilder()
+      .leftJoinAndSelect('board.game', 'game')
+      .leftJoinAndSelect('game.author', 'gameAuthor')
+      .leftJoinAndSelect('game.store', 'store')
       .where('board.parentId IS NULL')
       .andWhere('categories.name IN (:...developerCategoryNames)', {
         developerCategoryNames,
