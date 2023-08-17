@@ -9,6 +9,7 @@ import { GameBoardDto } from 'src/game/dto/game.board.dto';
 import { GameDto } from 'src/game/dto/game.dto';
 import { GameReviewCommentDto } from 'src/game/dto/game.review.comment.dto';
 import { GameReviewDto } from 'src/game/dto/game.review.dto';
+import { UserProfileGameDto } from 'src/user/dto/user.profile.game.dto';
 
 class Cursor {
   @ApiProperty({ description: '이전 페이지 커서' })
@@ -29,6 +30,21 @@ export class CursoredGameDto {
   @IsNotEmpty()
   @IsArray()
   data: Array<GameDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredUserProfileGameDto {
+  @ApiProperty({
+    type: UserProfileGameDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<UserProfileGameDto>;
 
   @ApiProperty({ type: Cursor })
   @IsNotEmpty()

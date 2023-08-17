@@ -52,6 +52,8 @@ import { AssetReviewCommentLike } from './entites/asset/asset.review.comment.lik
 import { AssetReviewCommentDislike } from './entites/asset/asset.review.comment.dislike.entity';
 import { AssetSearchHistory } from './entites/asset/asset.search.history.entity';
 import { AssetCategory } from './entites/asset/asset.category.entity';
+import { AssetBuyHistory } from './entites/asset/asset.buy.history.entity';
+import { AssetDownloadHistory } from './entites/asset/asset.download.history.entity';
 
 dotenv.config();
 
@@ -103,6 +105,8 @@ dotenv.config();
         AssetReviewDislike,
         AssetReviewCommentLike,
         AssetReviewCommentDislike,
+        AssetBuyHistory,
+        AssetDownloadHistory,
       ],
       synchronize: true,
       logging: true,
@@ -146,6 +150,8 @@ dotenv.config();
       AssetReviewDislike,
       AssetReviewCommentLike,
       AssetReviewCommentDislike,
+      AssetBuyHistory,
+      AssetDownloadHistory,
     ]),
     UploadModule,
     UsersModule,

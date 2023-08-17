@@ -36,6 +36,8 @@ import { AssetReviewCommentLikeController } from './controllers/asset.review.com
 import { AssetReviewCommentDislikeController } from './controllers/asset.review.comment.dislike.controller';
 import { AssetReviewCommentLikeService } from './services/asset.review.comment.like.service';
 import { AssetReviewCommentDislikeService } from './services/asset.review.comment.dislike.service';
+import { AssetBuyHistory } from 'src/entites/asset/asset.buy.history.entity';
+import { AssetDownloadHistory } from 'src/entites/asset/asset.download.history.entity';
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import { AssetReviewCommentDislikeService } from './services/asset.review.commen
       AssetReviewDislike,
       AssetReviewCommentLike,
       AssetReviewCommentDislike,
+      AssetBuyHistory,
+      AssetDownloadHistory,
     ]),
   ],
   controllers: [

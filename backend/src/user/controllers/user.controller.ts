@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -12,12 +13,22 @@ import {
 } from '@nestjs/common';
 import { CreateUsersDto } from '../dto/create.users.dto';
 import { UserService } from '../services/user.service';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserDto } from 'src/common/dto/user.dto';
 import { Users } from 'src/common/decorators/user.decorator';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoginUserDto } from '../dto/login.user.dto';
+import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
+import { GameService } from 'src/game/services/game.service';
+import { CursoredUserProfileGameDto } from 'src/common/dto/cursoredData.dto';
+import { AssetService } from 'src/asset/services/asset.service';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
@@ -44,13 +55,13 @@ export class UsersController {
     return this.userService.get();
   }
 
-  @Get(':id')
   @ApiOperation({ summary: '유저 정보 조회' })
   @ApiParam({
     name: 'id | me',
     required: true,
     description: '유저 아이디 | me',
   })
+  @Get(':id')
   getUsers(
     @Param('id') id: string,
     @Headers('Authorization') userEmail?: string,
@@ -59,6 +70,61 @@ export class UsersController {
       return this.userService.getMe(userEmail);
     }
     return this.userService.getUser(id);
+  }
+
+  @ApiOperation({ summary: '업로드한 게임 조회' })
+  @ApiResponse({
+    status: 200,
+    description: '성공',
+    type: CursoredUserProfileGameDto,
+  })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: '유저 아이디',
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    required: false,
+    description: '다음 페이지 커서',
+  })
+  @ApiQuery({
+    name: 'beforeCursor',
+    required: false,
+    description: '이전 페이지 커서',
+  })
+  @Get(':id/games')
+  getGames(
+    @UuidParam('id') id: string,
+    @Query('afterCursor') afterCursor?: string,
+    @Query('beforeCursor') beforeCursor?: string,
+  ) {
+    return this.userService.getGameByUser(id, { afterCursor, beforeCursor });
+  }
+
+  @ApiOperation({ summary: '업로드한 에셋 조회' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: '유저 아이디',
+  })
+  @ApiQuery({
+    name: 'afterCursor',
+    required: false,
+    description: '다음 페이지 커서',
+  })
+  @ApiQuery({
+    name: 'beforeCursor',
+    required: false,
+    description: '이전 페이지 커서',
+  })
+  @Get(':id/assets')
+  getAssets(
+    @UuidParam('id') id: string,
+    @Query('afterCursor') afterCursor?: string,
+    @Query('beforeCursor') beforeCursor?: string,
+  ) {
+    return this.userService.getAssetByUser(id, { afterCursor, beforeCursor });
   }
 
   @ApiResponse({ status: 200, description: '성공', type: UserDto })

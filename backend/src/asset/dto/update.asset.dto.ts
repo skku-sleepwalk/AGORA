@@ -5,7 +5,7 @@ import { Asset } from 'src/entites/asset/asset.entity';
 export class UpdateAssetDto extends PickType(Asset, [
   'title',
   'description',
-  'downloadUrl',
+  'fileUrl',
   'cost',
   'thumbnail',
   'isSensitive',

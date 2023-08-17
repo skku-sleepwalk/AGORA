@@ -20,6 +20,7 @@ import { GameDto } from '../dto/game.dto';
 import { GameReview } from 'src/entites/game/game.review.entity';
 import { GameInformation } from 'src/entites/game/game.information.entity';
 import { UserSubscribe } from 'src/entites/user.subscribe.entity';
+import { PlayTime } from 'src/entites/game/game.playtime.entity';
 // NestJS에서 사용되는 각종 데코레이터 및 필요한 모듈들을 import합니다.
 // Injectable 데코레이터를 통해 이 서비스가 주입 가능한 클래스임을 선언합니다.
 // @InjectRepository를 통해 TypeORM에서 사용할 Repository를 주입합니다.
@@ -30,6 +31,8 @@ export class GameService {
   // 각 Repository와 DataSource를 주입받습니다.
   constructor(
     @InjectRepository(Game) private readonly gameRepository: Repository<Game>,
+    @InjectRepository(PlayTime)
+    private readonly playtimeRepository: Repository<PlayTime>,
     @InjectRepository(GameInformation)
     private readonly gameInformationRepository: Repository<GameInformation>,
     @InjectRepository(GameLike)

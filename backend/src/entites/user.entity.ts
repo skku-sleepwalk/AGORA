@@ -36,6 +36,8 @@ import { AssetReviewLike } from './asset/asset.review.like.entity';
 import { AssetReviewDislike } from './asset/asset.review.dislike.entity';
 import { AssetReviewCommentLike } from './asset/asset.review.comment.like.entity';
 import { AssetReviewCommentDislike } from './asset/asset.review.comment.dislike.entity';
+import { AssetDownloadHistory } from './asset/asset.download.history.entity';
+import { AssetBuyHistory } from './asset/asset.buy.history.entity';
 
 @Entity('User')
 export class User {
@@ -208,4 +210,14 @@ export class User {
     cascade: true,
   })
   assetReviewCommentDislikes: Array<AssetReviewCommentDislike>;
+
+  @OneToMany(() => AssetDownloadHistory, (history) => history.user, {
+    cascade: true,
+  })
+  assetDownloadHistories: Array<AssetDownloadHistory>;
+
+  @OneToMany(() => AssetBuyHistory, (history) => history.user, {
+    cascade: true,
+  })
+  assetBuyHistories: Array<AssetBuyHistory>;
 }
