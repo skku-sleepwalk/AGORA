@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AssetDownloadHistory } from 'src/entites/asset/asset.download.history.entity';
 import { Asset } from 'src/entites/asset/asset.entity';
@@ -10,7 +10,7 @@ import { GameBoardLike } from 'src/entites/game/game.board.like.entity';
 import { GameBoardView } from 'src/entites/game/game.board.view.entity';
 import { Game } from 'src/entites/game/game.entity';
 import { GameLike } from 'src/entites/game/game.like.entity';
-import { DataSource, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import {
   Cursor,
   PaginationOptions,
@@ -20,11 +20,13 @@ import { PlayTime } from 'src/entites/game/game.playtime.entity';
 import { UserProfileUploadedGameDto } from '../dto/user.profile.uploaded-game.dto';
 import { UserProfileWrittenGameBoardDto } from '../dto/user.profile.written-game-board.dto';
 import { UserProfileWrittenCommunityBoardDto } from '../dto/user.profile.written-community-board.dto';
+import { User } from 'src/entites/user.entity';
 
 @Injectable()
 export class UserProfileService {
   constructor(
-    private readonly dataSource: DataSource,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
 
     @InjectRepository(CommunityBoard)
     private readonly communityBoardRepository: Repository<CommunityBoard>,
@@ -52,6 +54,42 @@ export class UserProfileService {
     @InjectRepository(AssetDownloadHistory)
     private readonly assetDownloadHistoryRepository: Repository<AssetDownloadHistory>,
   ) {}
+  async userValidation(userId: string) {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new NotFoundException('존재하지 않는 사용자입니다.');
+    }
+    return user;
+  }
+
+  async getChildCount(isGame: boolean, parentId: string): Promise<number> {
+    if (!parentId) {
+      return 0; // parentId가 제공되지 않으면 0을 반환하여 자식이 없음을 표시합니다.
+    }
+
+    let children: any[]; // 하위 게시물들을 담을 배열입니다.
+    let count: number; // 하위 게시물들의 개수를 담을 변수입니다.
+    // parentId를 가진 하위 게시물들을 조회하고 개수를 세어 반환합니다.
+    if (isGame) {
+      [children, count] = await this.gameBoardRepository.findAndCount({
+        where: { parent: { id: parentId } },
+      });
+    } else {
+      [children, count] = await this.communityBoardRepository.findAndCount({
+        where: { parent: { id: parentId } },
+      });
+    }
+
+    let totalCount = count; // 즉시 하위 항목들의 개수로 totalCount를 초기화합니다.
+
+    // 각 하위 게시물들에 대해 getChildCount를 재귀적으로 호출하여 하위 항목들의 개수를 얻고, 총 개수에 더합니다.
+    for (const child of children) {
+      const childCount = await this.getChildCount(isGame, child.id);
+      totalCount += childCount;
+    }
+
+    return totalCount;
+  }
 
   async getGameByUser(userId: string, _cursor: Cursor) {
     const queryBuilder = this.gameRepository
@@ -112,10 +150,12 @@ export class UserProfileService {
   }
 
   async getAssetByUser(userId: string, _cursor: Cursor) {
+    const user = await this.userValidation(userId);
+
     const queryBuilder = this.assetRepository
       .createQueryBuilder('asset')
       .leftJoinAndSelect('asset.cost', 'cost')
-      .where('asset.authorId = :userId', { userId });
+      .where('asset.authorId = :userId', { userId: user.id });
 
     const paginationOption: PaginationOptions<Asset> = {
       entity: Asset,
@@ -153,9 +193,11 @@ export class UserProfileService {
   }
 
   async getCommunityBoardByUser(userId: string, _cursor: Cursor) {
+    const user = await this.userValidation(userId);
+
     const queryBuilder = this.communityBoardRepository
       .createQueryBuilder('board')
-      .where('board.authorId = :userId', { userId })
+      .where('board.authorId = :userId', { userId: user.id })
       .orderBy('board.createdAt', 'DESC');
     const paginationOption: PaginationOptions<CommunityBoard> = {
       entity: CommunityBoard,
@@ -201,9 +243,11 @@ export class UserProfileService {
   }
 
   async getGameBoardByUser(userId: string, _cursor: Cursor) {
+    const user = await this.userValidation(userId);
+
     const queryBuilder = this.gameBoardRepository
       .createQueryBuilder('board')
-      .where('board.authorId = :userId', { userId })
+      .where('board.authorId = :userId', { userId: user.id })
       .orderBy('board.createdAt', 'DESC');
     const paginationOption: PaginationOptions<GameBoard> = {
       entity: GameBoard,
@@ -247,32 +291,33 @@ export class UserProfileService {
     return { data: dataModified, cursor };
   }
 
-  async getChildCount(isGame: boolean, parentId: string): Promise<number> {
-    if (!parentId) {
-      return 0; // parentId가 제공되지 않으면 0을 반환하여 자식이 없음을 표시합니다.
-    }
+  async getDownloadedAsset(userId: string) {
+    const user = await this.userValidation(userId);
+    const downloadHistory = await this.assetDownloadHistoryRepository
+      .createQueryBuilder('downloadHistory')
+      .where('downloadHistory.userId = :userId', { userId: user.id })
+      .select('"assetId"')
+      .addSelect('COUNT(*)', 'downloadCount')
+      .groupBy('"assetId"')
+      .orderBy('"downloadCount"', 'DESC')
+      .getRawMany();
 
-    let children: any[]; // 하위 게시물들을 담을 배열입니다.
-    let count: number; // 하위 게시물들의 개수를 담을 변수입니다.
-    // parentId를 가진 하위 게시물들을 조회하고 개수를 세어 반환합니다.
-    if (isGame) {
-      [children, count] = await this.gameBoardRepository.findAndCount({
-        where: { parent: { id: parentId } },
-      });
-    } else {
-      [children, count] = await this.communityBoardRepository.findAndCount({
-        where: { parent: { id: parentId } },
-      });
-    }
+    const assetIds = downloadHistory.map((history) => history.assetId);
+    const assets = await this.assetRepository
+      .createQueryBuilder('asset')
+      .leftJoin('asset.downloadHistories', 'downloadHistory')
+      .where('asset.id IN (:...assetIds)', { assetIds })
+      .getMany();
 
-    let totalCount = count; // 즉시 하위 항목들의 개수로 totalCount를 초기화합니다.
-
-    // 각 하위 게시물들에 대해 getChildCount를 재귀적으로 호출하여 하위 항목들의 개수를 얻고, 총 개수에 더합니다.
-    for (const child of children) {
-      const childCount = await this.getChildCount(isGame, child.id);
-      totalCount += childCount;
-    }
-
-    return totalCount;
+    const dataModified = downloadHistory.map((history) => {
+      const { fileUrl, ...rest } = assets.find(
+        (asset) => asset.id === history.assetId,
+      );
+      return {
+        asset: rest,
+        downloadCount: history.downloadCount,
+      };
+    });
+    return dataModified;
   }
 }

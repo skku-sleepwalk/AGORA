@@ -17,6 +17,8 @@ import { GameBoardView } from 'src/entites/game/game.board.view.entity';
 import { CommunityBoard } from 'src/entites/community/community.board.entity';
 import { CommunityBoardLike } from 'src/entites/community/community.board.like.entity';
 import { CommunityBoardView } from 'src/entites/community/community.board.view.entity';
+import { UserProfileService } from './services/user.profile.service';
+import { UserProfileController } from './controllers/user.profile.controller';
 
 @Module({
   imports: [
@@ -36,7 +38,11 @@ import { CommunityBoardView } from 'src/entites/community/community.board.view.e
       AssetDownloadHistory,
     ]),
   ],
-  providers: [UserService, UserSubscribeService],
-  controllers: [UsersController, UserSubscribeController],
+  providers: [UserService, UserSubscribeService, UserProfileService],
+  controllers: [
+    UsersController,
+    UserSubscribeController,
+    UserProfileController,
+  ],
 })
 export class UsersModule {}

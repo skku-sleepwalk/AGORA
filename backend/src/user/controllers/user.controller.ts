@@ -26,9 +26,6 @@ import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoN
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoginUserDto } from '../dto/login.user.dto';
 import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
-import { GameService } from 'src/game/services/game.service';
-import { CursoredUserProfileGameDto } from 'src/common/dto/cursoredData.dto';
-import { AssetService } from 'src/asset/services/asset.service';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
@@ -70,62 +67,6 @@ export class UsersController {
       return this.userService.getMe(userEmail);
     }
     return this.userService.getUser(id);
-  }
-
-  @ApiOperation({ summary: '업로드한 게임 조회' })
-  @ApiResponse({
-    status: 200,
-    description: '성공',
-    type: CursoredUserProfileGameDto,
-  })
-  @ApiParam({
-    name: 'id',
-    required: true,
-    description: '유저 아이디',
-  })
-  @ApiQuery({
-    name: 'afterCursor',
-    required: false,
-    description: '다음 페이지 커서',
-  })
-  @ApiQuery({
-    name: 'beforeCursor',
-    required: false,
-    description: '이전 페이지 커서',
-  })
-  @Get(':id/games')
-  getGames(
-    @UuidParam('id') id: string,
-    @Query('afterCursor') afterCursor?: string,
-    @Query('beforeCursor') beforeCursor?: string,
-  ) {
-    return this.userService.getGameByUser(id, { afterCursor, beforeCursor });
-  }
-
-  @ApiOperation({ summary: '업로드한 에셋 조회' })
-  // @ApiResponse({ 작성해야함
-  @ApiParam({
-    name: 'id',
-    required: true,
-    description: '유저 아이디',
-  })
-  @ApiQuery({
-    name: 'afterCursor',
-    required: false,
-    description: '다음 페이지 커서',
-  })
-  @ApiQuery({
-    name: 'beforeCursor',
-    required: false,
-    description: '이전 페이지 커서',
-  })
-  @Get(':id/assets')
-  getAssets(
-    @UuidParam('id') id: string,
-    @Query('afterCursor') afterCursor?: string,
-    @Query('beforeCursor') beforeCursor?: string,
-  ) {
-    return this.userService.getAssetByUser(id, { afterCursor, beforeCursor });
   }
 
   @ApiResponse({ status: 200, description: '성공', type: UserDto })

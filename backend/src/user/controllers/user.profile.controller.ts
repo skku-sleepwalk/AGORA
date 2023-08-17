@@ -16,8 +16,8 @@ import {
 } from 'src/common/dto/cursoredData.dto';
 
 @ApiTags('UserProfile')
-@Controller('user/:userId/profile')
-export class UserController {
+@Controller('users/:userId/profile')
+export class UserProfileController {
   constructor(private readonly userProfileService: UserProfileService) {}
 
   @ApiOperation({ summary: '업로드한 게임 조회' })
@@ -86,5 +86,12 @@ export class UserController {
       afterCursor,
       beforeCursor,
     });
+  }
+
+  @ApiOperation({ summary: '다운로드 한 에셋 조회' })
+  @ApiParam({ name: 'userId', description: '유저 아이디' })
+  @Get('downloaded-asset')
+  GetDownloadedAsset(@UuidParam('userId') userId: string) {
+    return this.userProfileService.getDownloadedAsset(userId);
   }
 }

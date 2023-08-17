@@ -235,7 +235,6 @@ export class AssetService {
       throw new NotFoundException('사용자를 찾을 수 없습니다.');
     }
     const asset = await this.assetRepository
-
       .createQueryBuilder('asset')
       .leftJoinAndSelect('asset.cost', 'cost')
       .where('asset.id = :assetId', { assetId })
@@ -251,6 +250,15 @@ export class AssetService {
         : asset.cost.saledPrice) > user.token
     ) {
       throw new ForbiddenException('토큰이 부족합니다.');
+    }
+
+    const existingHistory = await this.assetBuyHistoryRepository
+      .createQueryBuilder('buyHistory')
+      .where('buyHistory.assetId = :assetId', { assetId })
+      .andWhere('buyHistory.userId = :userId', { userId: user.id })
+      .getOne();
+    if (existingHistory) {
+      throw new ForbiddenException('이미 구매한 에셋입니다.');
     }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
