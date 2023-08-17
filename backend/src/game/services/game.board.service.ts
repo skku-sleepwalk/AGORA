@@ -343,7 +343,6 @@ export class GameBoardService {
       }
     }
     const boardModified = this.boardModifying(userEmail, board);
-
     return boardModified;
   }
 
