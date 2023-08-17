@@ -16,6 +16,7 @@ import { GameBoardLike } from './game.board.like.entity';
 import { User } from '../user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Game } from './game.entity';
+import { GameBoardView } from 'src/entites/game/game.board.view.entity';
 
 @Entity('GameBoard')
 export class GameBoard {
@@ -51,6 +52,11 @@ export class GameBoard {
     cascade: true,
   })
   likes: Array<GameBoardLike>;
+
+  @OneToMany(() => GameBoardView, (view) => view.board, {
+    cascade: true,
+  })
+  views: Array<GameBoardView>;
 
   @ManyToOne(() => Game, (game) => game.boards, {
     onDelete: 'CASCADE',

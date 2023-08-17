@@ -64,6 +64,11 @@ export class CommunityBoard {
   })
   likes: Array<CommunityBoardLike>;
 
+  @OneToMany(() => CommunityBoardLike, (relation) => relation.board, {
+    cascade: true,
+  })
+  views: Array<CommunityBoardLike>;
+
   @ManyToMany(() => CommunityCategory)
   @JoinTable({
     name: 'categoryIds',

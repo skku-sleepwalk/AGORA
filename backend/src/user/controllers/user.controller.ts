@@ -103,6 +103,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '업로드한 에셋 조회' })
+  // @ApiResponse({ 작성해야함
   @ApiParam({
     name: 'id',
     required: true,

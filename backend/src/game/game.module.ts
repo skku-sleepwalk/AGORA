@@ -53,6 +53,7 @@ import { GameInformation } from 'src/entites/game/game.information.entity';
 import { GameTagRelationService } from './services/game.tag.relation.service';
 import { GameTagRelationController } from './controllers/game.tag.relation.controller';
 import { UserSubscribe } from 'src/entites/user.subscribe.entity';
+import { GameBoardView } from 'src/entites/game/game.board.view.entity';
 
 @Module({
   imports: [
@@ -75,6 +76,7 @@ import { UserSubscribe } from 'src/entites/user.subscribe.entity';
       GameBoard,
       GameBoardCategory,
       GameBoardLike,
+      GameBoardView,
       GameShoppingCartItem,
       User,
       UserSubscribe,

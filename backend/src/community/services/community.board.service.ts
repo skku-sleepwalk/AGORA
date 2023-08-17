@@ -15,6 +15,7 @@ import {
   PaginationOptions,
   buildPaginator,
 } from 'typeorm-cursor-pagination';
+import { CommunityBoardView } from 'src/entites/community/community.board.view.entity';
 
 @Injectable()
 export class CommunityBoardService {
@@ -23,6 +24,8 @@ export class CommunityBoardService {
     private readonly communityBoardRepository: Repository<CommunityBoard>,
     @InjectRepository(CommunityBoardLike)
     private readonly communityBoardLikeRepository: Repository<CommunityBoardLike>,
+    @InjectRepository(CommunityBoardView)
+    private readonly communityBoardViewRepository: Repository<CommunityBoardView>,
     @InjectRepository(CommunityCategory)
     private readonly communityCategoryRepository: Repository<CommunityCategory>,
     @InjectRepository(User)
@@ -87,6 +90,12 @@ export class CommunityBoardService {
 
     // 자식 게시물 개수를 조회합니다.
     const childCount = await this.getChildCount(board.id);
+
+    // 조회수를 조회합니다.
+    const viewCount = await this.communityBoardViewRepository
+      .createQueryBuilder('boardView')
+      .where('boardView.boardId = :boardId', { boardId: board.id })
+      .getCount();
 
     // 게시물 데이터에 like 속성과 childCount 속성을 추가하여 반환합니다.
     return {
@@ -209,6 +218,36 @@ export class CommunityBoardService {
       where: { id },
       relations: ['author', 'categories', 'parent'],
     });
+
+    // 게시물 조회수를 증가시킵니다.
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: userEmail })
+      .getOne();
+    if (user) {
+      const currentDateTime = new Date();
+      const oneHourAgo = new Date(currentDateTime);
+      oneHourAgo.setHours(currentDateTime.getHours() - 1);
+
+      const existingViewCount = await this.communityBoardViewRepository
+        .createQueryBuilder('boardView')
+        .where('boardView.userId = :userId', { userId: user.id })
+        .andWhere('boardView.boardId = :boardId', { boardId: board.id })
+        .andWhere('boardView.createdAt >= :oneHourAgo', { oneHourAgo }) // 현재 시간으로부터 1시간 이내
+        .andWhere('boardView.createdAt <= :currentDateTime', {
+          currentDateTime,
+        })
+        .getCount();
+
+      if (existingViewCount === 0) {
+        const newBoardView = this.communityBoardViewRepository.create({
+          user,
+          board,
+        });
+        await this.communityBoardViewRepository.save(newBoardView);
+      }
+    }
+
     const boardModified = this.boardModifying(userEmail, board);
     return boardModified;
   }

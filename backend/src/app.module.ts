@@ -54,6 +54,8 @@ import { AssetSearchHistory } from './entites/asset/asset.search.history.entity'
 import { AssetCategory } from './entites/asset/asset.category.entity';
 import { AssetBuyHistory } from './entites/asset/asset.buy.history.entity';
 import { AssetDownloadHistory } from './entites/asset/asset.download.history.entity';
+import { GameBoardView } from './entites/game/game.board.view.entity';
+import { CommunityBoardView } from './entites/community/community.board.view.entity';
 
 dotenv.config();
 
@@ -73,11 +75,13 @@ dotenv.config();
         CommunityBoard,
         CommunityCategory,
         CommunityBoardLike,
+        CommunityBoardView,
         Game,
         GameInformation,
         GameBoardCategory,
         GameBoard,
         GameBoardLike,
+        GameBoardView,
         GameCost,
         GameGenre,
         PlayTime,
@@ -118,11 +122,13 @@ dotenv.config();
       CommunityBoard,
       CommunityCategory,
       CommunityBoardLike,
+      CommunityBoardView,
       Game,
       GameInformation,
       GameBoardCategory,
       GameBoard,
       GameBoardLike,
+      GameBoardView,
       GameCost,
       GameGenre,
       PlayTime,
