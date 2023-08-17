@@ -75,7 +75,7 @@ export class GameService {
   }
 
   // 사용자가 좋아요를 누른 게임인지 확인하고, 별점과 인기 태그를 계산하여 게임 데이터에 추가하는 메서드입니다.
-  async gameModifying(userEmail: string, game: GameDto): Promise<GameDto> {
+  async gameModifying(userEmail: string, game: Game): Promise<GameDto> {
     // 게임에 대한 좋아요 정보를 가져옵니다.
     const [likeRelations, likeCount] =
       await this.gameLikeRepository.findAndCount({
@@ -131,9 +131,10 @@ export class GameService {
         .andWhere('subscribe.remainPlayTime > 0')
         .getCount()) > 0;
 
+    const { fileUrl, ...rest } = game;
     // game 데이터에 like 속성과 관련된 정보들을 추가하여 반환합니다.
     return {
-      ...game,
+      ...rest,
       like,
       likeCount,
       rating,
@@ -145,7 +146,7 @@ export class GameService {
   // 게임 데이터 배열을 받아 각 게임에 대해 좋아요 여부와 평균 별점 등의 정보를 계산하여 수정된 배열로 반환하는 메서드입니다.
   async dataModifying(
     userEmail: string,
-    data: Array<GameDto>,
+    data: Array<Game>,
   ): Promise<Array<GameDto>> {
     return await Promise.all(
       data.map(async (game) => {
@@ -159,6 +160,7 @@ export class GameService {
     userEmail: string,
     title: string,
     downloadUrl: string,
+    fileUrl: string,
     executablePath: string,
     shortContent: string,
     shortImgUrl: string,
@@ -195,6 +197,7 @@ export class GameService {
       const newGame = this.gameRepository.create({
         title,
         downloadUrl,
+        fileUrl,
         executablePath,
         author: user,
         shortContent,
@@ -246,7 +249,7 @@ export class GameService {
   // 특정 게임의 상세 정보를 조회하는 메서드입니다.
   async getOneGame(userEmail: string, gameId: string) {
     // gameId에 해당하는 게임 데이터를 조회
-    const _game: GameDto = await this.gameRepository.findOne({
+    const _game: Game = await this.gameRepository.findOne({
       relations: ['information', 'genres', 'author', 'store', 'store.cost'],
       where: { id: gameId },
     });
@@ -259,6 +262,41 @@ export class GameService {
     // 게임 데이터를 수정하여 반환합니다.
     const game = this.gameModifying(userEmail, _game);
 
+    return game;
+  }
+
+  async downloadGame(userEmail: string, gameId: string) {
+    // gameId에 해당하는 게임 데이터를 조회
+    const game = await this.gameRepository
+      .createQueryBuilder('game')
+      .where('game.id = :id', { id: gameId })
+      .getOne();
+    if (!game) {
+      throw new NotFoundException('게임을 찾을 수 없습니다.');
+    }
+
+    // userEmail에 해당하는 유저 데이터를 조회
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: userEmail })
+      .getOne();
+    if (!user) {
+      throw new NotFoundException('사용자를 찾을 수 없습니다.');
+    }
+
+    const currentAt = new Date();
+    const isPlayable =
+      (await this.userSubscribeRepository
+        .createQueryBuilder('subscribe')
+        .leftJoinAndSelect('subscribe.user', 'user')
+        .where('user.email = :userEmail', { userEmail })
+        .andWhere('subscribe.startAt < :currentAt', { currentAt })
+        .andWhere('subscribe.endAt > :currentAt', { currentAt })
+        .andWhere('subscribe.remainPlayTime > 0')
+        .getCount()) > 0;
+    if (!isPlayable) {
+      throw new ForbiddenException('이용 가능한 구독이 없습니다.');
+    }
     return game;
   }
 

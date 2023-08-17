@@ -136,11 +136,10 @@ export class AssetController {
   @ApiParam({ name: 'assetId', description: 'Asset 아이디' })
   @Get(':assetId/download')
   async DownloadAsset(
-    // @UserEmail() userEmail: string,
+    @UserEmail() userEmail: string,
     @UuidParam('assetId') assetId: string,
     @Res() res,
   ) {
-    const userEmail = 'a@gmail.com';
     const asset = await this.assetService.downloadAsset(userEmail, assetId);
     try {
       const response = await axios.get(asset.fileUrl, {

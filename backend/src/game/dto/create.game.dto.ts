@@ -5,6 +5,7 @@ import { Game } from 'src/entites/game/game.entity';
 export class CreateGameDto extends PickType(Game, [
   'title',
   'downloadUrl',
+  // 'fileUrl',  추후에 변경
   'executablePath',
   'shortContent',
   'shortImgUrl',
