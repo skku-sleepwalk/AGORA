@@ -9,7 +9,10 @@ import { GameBoardDto } from 'src/game/dto/game.board.dto';
 import { GameDto } from 'src/game/dto/game.dto';
 import { GameReviewCommentDto } from 'src/game/dto/game.review.comment.dto';
 import { GameReviewDto } from 'src/game/dto/game.review.dto';
-import { UserProfileGameDto } from 'src/user/dto/user.profile.game.dto';
+import { UserProfileUploadedAssetDto } from 'src/user/dto/user.profile.uploaded-asset.dto';
+import { UserProfileUploadedGameDto } from 'src/user/dto/user.profile.uploaded-game.dto';
+import { UserProfileWrittenCommunityBoardDto } from 'src/user/dto/user.profile.written-community-board.dto';
+import { UserProfileWrittenGameBoardDto } from 'src/user/dto/user.profile.written-game-board.dto';
 
 class Cursor {
   @ApiProperty({ description: '이전 페이지 커서' })
@@ -30,21 +33,6 @@ export class CursoredGameDto {
   @IsNotEmpty()
   @IsArray()
   data: Array<GameDto>;
-
-  @ApiProperty({ type: Cursor })
-  @IsNotEmpty()
-  @ValidateNested()
-  cursor: Cursor;
-}
-
-export class CursoredUserProfileGameDto {
-  @ApiProperty({
-    type: UserProfileGameDto,
-    isArray: true,
-  })
-  @IsNotEmpty()
-  @IsArray()
-  data: Array<UserProfileGameDto>;
 
   @ApiProperty({ type: Cursor })
   @IsNotEmpty()
@@ -175,6 +163,66 @@ export class CursoredAssetReviewCommentDto {
   @IsNotEmpty()
   @IsArray()
   data: Array<AssetReviewCommentDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredUserProfileUploadedGameDto {
+  @ApiProperty({
+    type: UserProfileUploadedGameDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<UserProfileUploadedGameDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredUserProfileUploadedAsssetDto {
+  @ApiProperty({
+    type: UserProfileUploadedAssetDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<UserProfileUploadedAssetDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredUserProfileWrittenGameBoardDto {
+  @ApiProperty({
+    type: UserProfileWrittenGameBoardDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<UserProfileWrittenGameBoardDto>;
+
+  @ApiProperty({ type: Cursor })
+  @IsNotEmpty()
+  @ValidateNested()
+  cursor: Cursor;
+}
+
+export class CursoredUserProfileWrittenCommunityBoardDto {
+  @ApiProperty({
+    type: UserProfileWrittenCommunityBoardDto,
+    isArray: true,
+  })
+  @IsNotEmpty()
+  @IsArray()
+  data: Array<UserProfileWrittenCommunityBoardDto>;
 
   @ApiProperty({ type: Cursor })
   @IsNotEmpty()

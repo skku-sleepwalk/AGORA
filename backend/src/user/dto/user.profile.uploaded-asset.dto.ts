@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { Asset } from 'src/entites/asset/asset.entity';
 
-export class UserProfileAssetDto extends PickType(Asset, [
+export class UserProfileUploadedAssetDto extends PickType(Asset, [
   'id',
   'thumbnail',
   'title',

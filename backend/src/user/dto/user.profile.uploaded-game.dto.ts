@@ -3,7 +3,10 @@ import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
 import { Game } from 'src/entites/game/game.entity';
 import { GameStoreDto } from 'src/game/dto/game.store.dto';
 
-export class UserProfileGameDto extends PickType(Game, ['id', 'shortImgUrl']) {
+export class UserProfileUploadedGameDto extends PickType(Game, [
+  'id',
+  'shortImgUrl',
+]) {
   @ApiProperty({ description: '평균 플레이시간' })
   @IsNotEmpty()
   @IsNumber()

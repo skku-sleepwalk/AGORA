@@ -1,5 +1,5 @@
 import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, In, Repository, SelectQueryBuilder } from 'typeorm';
 import {
   ForbiddenException,
   Injectable,
@@ -20,6 +20,7 @@ import { CommunityBoardView } from 'src/entites/community/community.board.view.e
 @Injectable()
 export class CommunityBoardService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(CommunityBoard)
     private readonly communityBoardRepository: Repository<CommunityBoard>,
     @InjectRepository(CommunityBoardLike)
