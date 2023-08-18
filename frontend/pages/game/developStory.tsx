@@ -12,7 +12,7 @@ export default function DevelopStory() {
       </div>
 
       <DevelopStories TitleProp="임시용 개발일지 몰아보기">
-        <Link
+        {/* <Link
           href={GameID}
           style={{
             textDecoration: "none",
@@ -20,9 +20,9 @@ export default function DevelopStory() {
             display: "flex",
             justifyContent: "center",
           }}
-        >
-          <Stories gameID={GameID}></Stories>
-        </Link>
+        > */}
+        <Stories gameID={GameID}></Stories>
+        {/* </Link> */}
       </DevelopStories>
       <DevelopStories TitleProp="Best of Develop Stories">
         <BestStories></BestStories>
