@@ -16,6 +16,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { GameBoardDto } from '../dto/game.board.dto';
 import { GameBoardLike } from 'src/entites/game/game.board.like.entity';
+import { GameBoardView } from 'src/entites/game/game.board.view.entity';
 // NestJS 데코레이터와 함께 사용하는 GameBoardService 클래스
 @Injectable()
 export class GameBoardService {
@@ -28,6 +29,8 @@ export class GameBoardService {
     private readonly gameBoardCategoryRepository: Repository<GameBoardCategory>,
     @InjectRepository(GameBoardLike)
     private readonly gameBoardLikeRepository: Repository<GameBoardLike>,
+    @InjectRepository(GameBoardView)
+    private readonly gameBoardViewRepository: Repository<GameBoardView>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
@@ -68,7 +71,7 @@ export class GameBoardService {
   // 게시물을 받아와서 좋아요 여부, 좋아요 개수, 자식 개수를 추가한 DTO를 반환하는 메서드
   async boardModifying(
     userEmail: string,
-    board: GameBoardDto | null,
+    board: GameBoard | null,
   ): Promise<GameBoardDto> {
     if (!board) {
       return null;
@@ -103,7 +106,7 @@ export class GameBoardService {
   // 게시물들의 배열을 받아서 각 게시물에 대해 boardModifying을 호출하여 수정된 데이터를 반환하는 메서드
   async dataModifying(
     userEmail: string,
-    data: Array<GameBoardDto>,
+    data: Array<GameBoard>,
   ): Promise<Array<GameBoardDto>> {
     return await Promise.all(
       data.map(async (board) => {
@@ -263,6 +266,9 @@ export class GameBoardService {
     const developerCategoryNames = ['개발일지'];
 
     const queryBuilder = this.createQueryBuilder()
+      .leftJoinAndSelect('board.game', 'game')
+      .leftJoinAndSelect('game.author', 'gameAuthor')
+      .leftJoinAndSelect('game.store', 'store')
       .where('board.parentId IS NULL')
       .andWhere('categories.name IN (:...developerCategoryNames)', {
         developerCategoryNames,
@@ -298,17 +304,46 @@ export class GameBoardService {
 
   // 게시물의 상세 정보를 조회하여 반환하는 메서드
   async getOneGameBoard(userEmail: string, gameId: string, boardId: string) {
-    const board = this.boardModifying(
-      userEmail,
-      await this.gameBoardRepository.findOne({
-        where: { id: boardId, game: { id: gameId } },
-        relations: ['author', 'categories', 'parent'],
-      }),
-    );
+    const board = await this.gameBoardRepository
+      .createQueryBuilder('board')
+      .leftJoinAndSelect('board.author', 'author')
+      .leftJoinAndSelect('board.parent', 'parent')
+      .leftJoinAndSelect('board.categories', 'categories')
+      .where('board.id = :boardId AND board.gameId = :gameId', {
+        boardId,
+        gameId,
+      })
+      .getOne();
     if (!board) {
       throw new NotFoundException('게시물을 찾을 수 없습니다.');
     }
-    return board;
+
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :userEmail', { userEmail })
+      .getOne();
+    if (user) {
+      const currentDateTime = new Date();
+      const oneHourAgo = new Date(currentDateTime);
+      oneHourAgo.setHours(currentDateTime.getHours() - 1);
+
+      const existingViewCount = await this.gameBoardViewRepository
+        .createQueryBuilder('view')
+        .where(
+          'view.boardId = :boardId AND view.userId = :userId AND view.createdAt > :oneHourAgo',
+          { boardId, userId: user.id, oneHourAgo },
+        )
+        .getCount();
+      if (existingViewCount === 0) {
+        const newBoardView = this.gameBoardViewRepository.create({
+          board,
+          user,
+        });
+        await this.gameBoardViewRepository.save(newBoardView);
+      }
+    }
+    const boardModified = this.boardModifying(userEmail, board);
+    return boardModified;
   }
 
   // 게시물을 수정하는 메서드

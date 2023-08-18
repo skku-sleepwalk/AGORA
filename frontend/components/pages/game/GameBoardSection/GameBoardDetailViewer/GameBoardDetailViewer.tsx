@@ -68,9 +68,8 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
       parentId: boardId,
     }
   );
-  const { user } = useAuth();
+  const { user, token, openSignInModal } = useAuth();
   const canEdit = postData?.data.author.id === user?.id;
-  const { token } = useAuth();
   const [isDeleting, setIsDeleting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -174,6 +173,10 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
               <Group spacing={"0.3rem"}>
                 <InvisibleButton
                   onClick={() => {
+                    if (!user) {
+                      openSignInModal();
+                      return;
+                    }
                     if (postData.data.like) {
                       deleteGameBoardLike(gameId, boardId, token).then(() => {
                         mutatePost();

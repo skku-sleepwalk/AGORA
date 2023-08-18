@@ -36,4 +36,8 @@ export class UserDto extends PickType(User, [
     isArray: true,
   })
   playtimes?: PlaytimesDto[];
+
+  @ApiProperty({ description: '잔여 플레이 시간' })
+  @IsNumber()
+  remainPlaytime?: number;
 }

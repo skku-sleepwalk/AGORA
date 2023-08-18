@@ -24,6 +24,8 @@ import {
   IsUrl,
   ValidateNested,
 } from 'class-validator';
+import { AssetDownloadHistory } from './asset.download.history.entity';
+import { AssetBuyHistory } from './asset.buy.history.entity';
 
 @Entity('Asset')
 export class Asset {
@@ -44,7 +46,7 @@ export class Asset {
 
   @ApiProperty({ description: '썸네일', example: 'https://portal.com' })
   @IsNotEmpty()
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   @Column()
   thumbnail: string;
 
@@ -73,15 +75,23 @@ export class Asset {
   @ManyToOne(() => User, (user) => user.assets, { onDelete: 'CASCADE' })
   author: User;
 
-  @ApiProperty({ description: '다운로드 링크', example: 'https://portal.com' })
+  @ApiProperty({ description: '파일 URL', example: 'https://portal.com' })
   @IsNotEmpty()
-  @IsUrl()
+  @IsUrl({ require_tld: false })
   @Column()
-  downloadUrl: string;
+  fileUrl: string;
 
   @ManyToOne(() => AssetCategory, (category) => category.assets, {})
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
   category: AssetCategory;
+
+  @ManyToOne(() => AssetBuyHistory, (history) => history.asset, {})
+  buyHistories: AssetBuyHistory[];
+
+  @ManyToOne(() => AssetDownloadHistory, (history) => history.asset, {
+    cascade: true,
+  })
+  downloadHistories: AssetDownloadHistory[];
 
   @OneToMany(() => AssetTagRelation, (relation) => relation.asset, {
     cascade: true,

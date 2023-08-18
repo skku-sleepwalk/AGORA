@@ -70,7 +70,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
 
   const [opening, handlers] = useDisclosure(false); // modal of PhotoViewer
   const router = useRouter();
-  const { user, token } = useAuth();
+  const { user, token, openSignInModal } = useAuth();
   const [state, setState] = useSetState({ modalClickOutside: true });
 
   const imageSrcArray = extractImageSrc(post.content);
@@ -187,6 +187,10 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                   <InvisibleButton
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (!user) {
+                        openSignInModal();
+                        return;
+                      }
                       onLikeClick({ data: { boardId: post.id, token } }, isliking)
                         .then(() => {
                           mutatePost();

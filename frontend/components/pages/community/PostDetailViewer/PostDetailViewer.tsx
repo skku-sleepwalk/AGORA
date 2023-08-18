@@ -45,7 +45,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
   const { classes } = usePostDetailViewerStyles();
   const theme = useMantineTheme();
 
-  const { token, user } = useAuth();
+  const { token, user, openSignInModal } = useAuth();
   const router = useRouter();
   const [editorOpen, { toggle: toggleEditor }] = useDisclosure(true);
 
@@ -240,6 +240,10 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
               toggleEditor();
             }}
             onLikeClick={() => {
+              if (!user) {
+                openSignInModal();
+                return;
+              }
               onLikeClick(
                 {
                   data: {

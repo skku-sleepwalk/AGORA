@@ -34,7 +34,7 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
   const [myTagData, setMyTagData] = useState<string[]>([...myPrevTagList]); // 현재 유저가 태그해 놓은 태그 (name만 있음)
   useEffect(() => {
     setMyTagData([...myPrevTagList]);
-  }, [...myPrevTagList]);
+  }, [myPrevTagData]);
 
   // 태그 (검색) 관련
   const searchRef = useRef<HTMLInputElement>(null);
@@ -147,6 +147,7 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
                   if (!myTagData.includes(value.tag.name)) {
                     // delete 요청 진행
                     deleteGameTag(gameId, value.id, token);
+                    console.log(`delete ${value.tag.name}`);
                   }
                 })
               : null;
@@ -155,6 +156,7 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
               if (!myPrevTagList.includes(value)) {
                 // Post 요청 진행
                 PostGameTag(gameId, { tagName: value }, token);
+                console.log(`post ${value}`);
               }
             });
             // 모든 요청이 완료된 이후

@@ -11,6 +11,7 @@ import { CommunityBoardService } from './services/community.board.service';
 import { CommunityBoardLike } from 'src/entites/community/community.board.like.entity';
 import { CommunityBoardLikeService } from './services/community.board.like.service';
 import { CommunityBoardLikeController } from './controllers/community.board.like.controller';
+import { CommunityBoardView } from 'src/entites/community/community.board.view.entity';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { CommunityBoardLikeController } from './controllers/community.board.like
       CommunityBoard,
       CommunityCategory,
       CommunityBoardLike,
+      CommunityBoardView,
       User,
     ]),
   ],

@@ -5,6 +5,7 @@ import {
   Headers,
   Param,
   Post,
+  Query,
   Req,
   Res,
   UseGuards,
@@ -12,12 +13,19 @@ import {
 } from '@nestjs/common';
 import { CreateUsersDto } from '../dto/create.users.dto';
 import { UserService } from '../services/user.service';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserDto } from 'src/common/dto/user.dto';
 import { Users } from 'src/common/decorators/user.decorator';
 import { UndefinedToNullInterceptor } from 'src/common/interceptors/undefinedtoNull.interceptor';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { LoginUserDto } from '../dto/login.user.dto';
+import { UuidParam } from 'src/common/decorators/uuid-param.dacorator';
 
 @UseInterceptors(UndefinedToNullInterceptor)
 @ApiTags('User')
@@ -44,13 +52,13 @@ export class UsersController {
     return this.userService.get();
   }
 
-  @Get(':id')
   @ApiOperation({ summary: '유저 정보 조회' })
   @ApiParam({
     name: 'id | me',
     required: true,
     description: '유저 아이디 | me',
   })
+  @Get(':id')
   getUsers(
     @Param('id') id: string,
     @Headers('Authorization') userEmail?: string,

@@ -50,6 +50,12 @@ export class Game {
   @Column({ nullable: false })
   downloadUrl: string;
 
+  @ApiProperty({ description: '파일 url' })
+  @IsNotEmpty()
+  @IsString()
+  @Column({ nullable: true }) //추후에 변경
+  fileUrl: string;
+
   @ApiProperty({ description: '실행 경로' })
   @IsNotEmpty()
   @IsString()
