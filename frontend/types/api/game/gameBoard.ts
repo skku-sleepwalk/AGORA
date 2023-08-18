@@ -1,4 +1,5 @@
 import { User } from "../user";
+import { Game } from "./game";
 
 export interface GameBoardCategory {
   id: string;
@@ -18,6 +19,7 @@ export interface GameBoard {
   childCount: number;
   likeCount: number;
   like: string[];
+  game: Game;
 }
 
 export interface PostGameBoardBody {
