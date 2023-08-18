@@ -39,8 +39,18 @@ export default function BestStory({ story }: BestStoryProps) {
             Stardew Valley
           </Text>
         </div>
-        <div style={{ width: "100%", height: "40%", paddingTop: "12px", minHeight: "225px" }}>
+        <div
+          style={{
+            width: "100%",
+            height: "40%",
+            paddingTop: "12px",
+            minHeight: "18rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           {/* max도 걸어야 할 것 같지만 일단 넘어가자 */}
+
           <Image
             width={"100%"}
             height={"100%"}
