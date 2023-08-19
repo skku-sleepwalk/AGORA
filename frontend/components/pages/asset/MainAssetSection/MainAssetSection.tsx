@@ -1,23 +1,14 @@
 import { Box, Text } from "@mantine/core";
 import { useMainAssetSectionStyles } from "./MainAssetSection.styles";
-import { MainAsset } from "./MainAsset/MainAsset";
 import { Carousel } from "@mantine/carousel";
 
 export interface MainAssetSectionProps {
   title: string;
+  children: React.ReactNode;
 }
 
-export function MainAssetSection({ title }: MainAssetSectionProps) {
+export function MainAssetSection({ title, children }: MainAssetSectionProps) {
   const { classes, cx } = useMainAssetSectionStyles();
-
-  const data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  const slides = data.map(() => {
-    return (
-      <Carousel.Slide>
-        <MainAsset />
-      </Carousel.Slide>
-    );
-  });
 
   return (
     <Box className={classes.container}>
@@ -35,7 +26,7 @@ export function MainAssetSection({ title }: MainAssetSectionProps) {
           slidesToScroll={3}
           controlsOffset="xs"
         >
-          {slides}
+          {children}
         </Carousel>
       </Box>
     </Box>

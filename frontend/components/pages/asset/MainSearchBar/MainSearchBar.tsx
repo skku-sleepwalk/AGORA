@@ -3,13 +3,13 @@ import { useMainSearchBarStyles } from "./MainSearchBar.styles";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
-import { showError } from "../../../../utils/notifications";
 
 export interface MainSearchBarProps {
+  onSubmit: (text: string) => void;
   MovingUp: () => void;
 }
 
-export function MainSearchBar({ MovingUp }: MainSearchBarProps) {
+export function MainSearchBar({ onSubmit, MovingUp }: MainSearchBarProps) {
   const { classes, cx } = useMainSearchBarStyles();
   const theme = useMantineTheme();
 
@@ -24,12 +24,8 @@ export function MainSearchBar({ MovingUp }: MainSearchBarProps) {
     <form
       className={classes.wrapper}
       onSubmit={form.onSubmit((value) => {
-        if (value.searchKeyword.trim() === "") {
-          showError("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
-        } else {
-          console.log(value);
-          MovingUp();
-        }
+        onSubmit(value.searchKeyword);
+        MovingUp();
       })}
       onReset={form.onReset}
     >
