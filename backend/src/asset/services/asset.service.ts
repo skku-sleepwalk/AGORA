@@ -91,6 +91,7 @@ export class AssetService {
         ? true
         : false;
     const { fileUrl, ...data } = asset;
+
     return { ...data, like, likeCount };
   }
 
@@ -129,6 +130,7 @@ export class AssetService {
     paginator.setAlias('asset');
 
     const { data, cursor } = await paginator.paginate(queryBuilder);
+    console.log('--------------------------------------------------------');
     const assets = await this.dataModifying(userEmail, data);
     return { data: assets, cursor };
   }
@@ -190,13 +192,17 @@ export class AssetService {
   }
 
   async getAssets(userEmail: string, _cursor: Cursor, categoryNames: string[]) {
-    const queryBuilder = this.createQueryBuilder()
-      .leftJoinAndSelect('asset.author', 'author')
-      .leftJoinAndSelect('asset.cost', 'cost')
-      .leftJoinAndSelect('asset.category', 'category')
-      .where('category.name IN (:...categoryNames)', { categoryNames });
+    const queryBuilder = this.createQueryBuilder().where(
+      'category.name IN (:...categoryNames)',
+      { categoryNames },
+    );
 
     await this.checkUserExist(userEmail);
+    console.log(
+      '-----------------------',
+      userEmail,
+      '-----------------------',
+    );
     return await this.paginating(userEmail, _cursor, queryBuilder);
   }
 
