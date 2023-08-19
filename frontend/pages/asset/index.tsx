@@ -1,4 +1,4 @@
-import { Group, Loader, Stack } from "@mantine/core";
+import { Center, Group, Loader, Stack, Text, useMantineTheme } from "@mantine/core";
 import { MainSearchBar } from "../../components/pages/asset/MainSearchBar/MainSearchBar";
 import { MainLayout } from "../../components/pages/asset/MainLayout/MainLayout";
 import { useWindowScroll } from "@mantine/hooks";
@@ -8,18 +8,17 @@ import { MainTab } from "../../components/pages/asset/MainTab/MainTab";
 import { MainAssetSection } from "../../components/pages/asset/MainAssetSection/MainAssetSection";
 import { useRouter } from "next/router";
 import { MainAssetSearchSection } from "../../components/pages/asset/MainAssetSection/MainAssetSearchSection/MainAssetSearchSection";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useAssetList from "../../hooks/useAssetList";
 import { MainAsset } from "../../components/pages/asset/MainAssetSection/MainAsset/MainAsset";
 import { Carousel } from "@mantine/carousel";
 
 function Asset() {
+  const theme = useMantineTheme();
   const router = useRouter();
   const search = router.query.search;
 
   const [category, setCategory] = useState("");
-
-  const [scroll, scrollTo] = useWindowScroll();
 
   const {
     data: assetData,
@@ -30,6 +29,17 @@ function Asset() {
   } = useAssetList(category, {
     search: search ? search.toString() : undefined,
   });
+
+  const [scroll, scrollTo] = useWindowScroll();
+  const [scrollThreshold, setScrollThreshold] = useState(0);
+
+  useEffect(() => {
+    if (scroll.y >= scrollThreshold) {
+      setAssetSize((prev) => prev + 1);
+      setScrollThreshold((prev) => prev + 1000);
+      // console.log("scroll");
+    }
+  }, [scroll.y]);
 
   return (
     <MainLayout
@@ -68,6 +78,11 @@ function Asset() {
               {assetData?.map((data) => {
                 return data.data.data.map((data) => <MainAsset assetData={data} />);
               })}
+              {isEmpty && (
+                <Center w={"100%"} h={"5rem"}>
+                  <Text c={theme.colors.gray[6]}>검색 결과가 없습니다.</Text>
+                </Center>
+              )}
             </>
           </MainAssetSearchSection>
           {isAssetLoading && (
@@ -87,6 +102,11 @@ function Asset() {
                   </Carousel.Slide>
                 ));
               })}
+              {isAssetLoading && (
+                <Center w={"10rem"} h={"16.9rem"}>
+                  <Loader color="teal" variant="dots" />
+                </Center>
+              )}
             </>
           </MainAssetSection>
         </Stack>
