@@ -6,7 +6,7 @@ import { IconSearch, IconX } from "@tabler/icons-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { cleanNotification, showError } from "../../../../utils/notifications";
 import { useMyGameTag } from "../../../../hooks/game/useMyGameTag";
-import { useGameTagList } from "../../../../hooks/game/useGameTagList";
+import { useGameTag } from "../../../../hooks/game/useGameTag";
 import { GameTag } from "../../../../types/api/game/gameTag";
 import deleteGameTag, { PostGameTag } from "../../../../utils/api/game/gameTag/gameTag";
 import useAuth from "../../../../hooks/useAuth";
@@ -46,7 +46,7 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
       setSearch("");
     }
   };
-  const { data: tagData } = useGameTagList(search);
+  const { data: tagData } = useGameTag(search);
 
   // 검색창이 자동 활성화 되도록
   const focusTrapRef = useFocusTrap();
@@ -139,14 +139,16 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
           variant="light"
           color="cyan"
           h={"2.5rem"}
-          onClick={() => {
+          onClick={async () => {
             // 유저가 이전에 추가한 태그와 현재 추가한 태그 비교
+            const promises: any[] = [];
             // 없어진 태그 Delete
             myPrevTagData
               ? myPrevTagData.data.forEach((value) => {
                   if (!myTagData.includes(value.tag.name)) {
                     // delete 요청 진행
-                    deleteGameTag(gameId, value.id, token);
+                    const request = deleteGameTag(gameId, value.id, token);
+                    promises.push(request);
                     console.log(`delete ${value.tag.name}`);
                   }
                 })
@@ -155,13 +157,19 @@ export function GameTagModal({ onClose, gameId }: GameTagModalProps) {
             myTagData.forEach((value) => {
               if (!myPrevTagList.includes(value)) {
                 // Post 요청 진행
-                PostGameTag(gameId, { tagName: value }, token);
+                const request = PostGameTag(gameId, { tagName: value }, token);
+                promises.push(request);
                 console.log(`post ${value}`);
               }
             });
-            // 모든 요청이 완료된 이후
-            mutatePost();
-            onClose ? onClose() : null;
+
+            try {
+              await Promise.all(promises); // 모든 요청이 종료될 때까지 대기
+              mutatePost();
+              onClose ? onClose() : null;
+            } catch (error) {
+              console.error("Error in processing requests:", error);
+            }
           }}
         >
           추가

@@ -35,3 +35,14 @@ export interface GetAssetListResponse {
     };
   };
 }
+
+export interface AssetSearchHistory {
+  id: string;
+  keyword: string;
+  createdAt: string;
+  deletedAt: string | null;
+}
+
+export interface GetAssetSearchHistoryResponse {
+  data: AssetSearchHistory[];
+}
