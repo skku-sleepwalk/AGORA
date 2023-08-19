@@ -25,6 +25,7 @@ export function MainSearchBar({ onSubmit, MovingUp }: MainSearchBarProps) {
       className={classes.wrapper}
       onSubmit={form.onSubmit((value) => {
         onSubmit(value.searchKeyword);
+        form.reset();
         MovingUp();
       })}
       onReset={form.onReset}
