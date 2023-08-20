@@ -1,6 +1,6 @@
 import { createStyles } from "@mantine/core";
 
-export const useMainSearchRecordStyles = createStyles((theme) => ({
+export const useMainSearchHistoryStyles = createStyles((theme) => ({
   wrapper: {
     display: "flex",
     width: "100%",
