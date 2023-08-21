@@ -7,11 +7,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Asset } from 'src/entites/asset/asset.entity';
 import { AssetLike } from 'src/entites/asset/asset.like.entity';
 import { User } from 'src/entites/user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
 export class AssetLikeService {
   constructor(
+    private readonly dataSource: DataSource,
     @InjectRepository(AssetLike)
     private readonly assetLikeRepository: Repository<AssetLike>,
     @InjectRepository(Asset)
@@ -39,17 +40,32 @@ export class AssetLikeService {
       throw new NotFoundException('에셋을 찾을 수 없습니다.');
     }
 
-    const existingAssetLike = await this.assetLikeRepository
-      .createQueryBuilder('like')
-      .where('like.userId = :userId', { userId: user.id })
-      .andWhere('like.assetId = :assetId', { assetId: asset.id })
-      .getOne();
-    if (existingAssetLike) {
-      throw new ConflictException('이미 좋아요를 누른 에셋입니다.');
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const existingAssetLike = await this.assetLikeRepository
+        .createQueryBuilder('like')
+        .where('like.userId = :userId', { userId: user.id })
+        .andWhere('like.assetId = :assetId', { assetId: asset.id })
+        .getOne();
+      if (existingAssetLike) {
+        throw new ConflictException('이미 좋아요가 존재합니다.');
+      }
+      await queryRunner.manager.save(AssetLike, { user, asset });
+      await queryRunner.manager.increment(
+        Asset,
+        { id: assetId },
+        'likeCount',
+        1,
+      );
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
     }
-    const assetLike = this.assetLikeRepository.create({ user, asset });
-    await this.assetLikeRepository.save(assetLike);
-    return true;
   }
 
   async deleteAssetLike(userEmail: string, assetId: string) {
@@ -69,14 +85,23 @@ export class AssetLikeService {
       throw new NotFoundException('에셋을 찾을 수 없습니다.');
     }
 
-    const existingAssetLike = await this.assetLikeRepository
-      .createQueryBuilder('like')
-      .where('like.userId = :userId', { userId: user.id })
-      .andWhere('like.assetId = :assetId', { assetId: asset.id })
-      .getOne();
-    if (!existingAssetLike) {
-      throw new ConflictException('좋아요를 누르지 않은 에셋입니다.');
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.delete(AssetLike, { user, asset });
+      await queryRunner.manager.decrement(
+        Asset,
+        { id: assetId },
+        'likeCount',
+        1,
+      );
+      await queryRunner.commitTransaction();
+    } catch (e) {
+      await queryRunner.rollbackTransaction();
+      throw e;
+    } finally {
+      await queryRunner.release();
     }
-    await this.assetLikeRepository.delete(existingAssetLike.id);
   }
 }

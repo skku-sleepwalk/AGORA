@@ -168,6 +168,38 @@ export class AssetReviewService {
     return reviewModified;
   }
 
+  async getAssetReviewByUser(userEmail: string, assetId: string) {
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', {
+        email: userEmail,
+      })
+      .getOne();
+    if (!user) {
+      return null;
+    }
+
+    const asset = this.assetRepository
+      .createQueryBuilder('asset')
+      .leftJoinAndSelect('asset.author', 'author')
+      .where('asset.id = :assetId', { assetId })
+      .getOne();
+    if (!asset) {
+      throw new NotFoundException('에셋을 찾을 수 없습니다.');
+    }
+
+    const review = await this.assetReviewRepository
+      .createQueryBuilder('review')
+      .leftJoinAndSelect('review.author', 'author')
+      .where('review.authorId = :userId', { userId: user.id })
+      .andWhere('review.assetId = :assetId', { assetId })
+      .getOne();
+    if (!review) {
+      return null;
+    }
+    return this.reviewModifying(userEmail, review);
+  }
+
   async updateAssetReview(
     userEmail: string,
     assetId: string,

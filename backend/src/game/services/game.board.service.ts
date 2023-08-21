@@ -272,14 +272,14 @@ export class GameBoardService {
       .where('board.parentId IS NULL')
       .andWhere('categories.name IN (:...developerCategoryNames)', {
         developerCategoryNames,
-      });
+      })
+      .orderBy('board.likeCount', 'DESC');
 
     const { data, cursor } = await this.paginating(
       userEmail,
       _cursor,
       queryBuilder,
     );
-    data.sort((a, b) => b.likeCount - a.likeCount);
     return { data, cursor };
   }
 
