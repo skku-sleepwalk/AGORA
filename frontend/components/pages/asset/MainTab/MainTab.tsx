@@ -1,30 +1,31 @@
 import { Box, Button, Group } from "@mantine/core";
 import { useMainTabStyles } from "./MainTab.styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface MainTabProps {
+  onTabChange: (section: string) => void;
   MovingUp: () => void;
   scrollY: number;
 }
 
-export function MainTab({ MovingUp, scrollY }: MainTabProps) {
+export function MainTab({ onTabChange, MovingUp, scrollY }: MainTabProps) {
   const { classes, cx } = useMainTabStyles();
-  const [acticeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState("3D");
 
-  const sectionData = ["3D", "2D", "Add-on", "Music"];
+  useEffect(() => {
+    onTabChange(activeTab);
+  }, [activeTab]);
+
+  const sectionData = ["3D", "2D", "Add-on", "Code", "Music"];
   const sections = sectionData.map((item) => {
     return (
       <Button
-        className={cx(acticeTab === item && classes.buttonOn)}
+        className={cx(activeTab === item && classes.buttonOn)}
         variant="default"
         color="teal"
         radius="xl"
         onClick={() => {
-          if (acticeTab === item) {
-            setActiveTab("");
-          } else {
-            setActiveTab(item);
-          }
+          setActiveTab(item);
           MovingUp();
         }}
       >

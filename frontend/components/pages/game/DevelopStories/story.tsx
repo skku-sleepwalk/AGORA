@@ -18,7 +18,7 @@ export default function Story({ story }: StoryProps) {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          minHeight: "140px",
+          minHeight: "12rem",
         }}
       >
         <Image

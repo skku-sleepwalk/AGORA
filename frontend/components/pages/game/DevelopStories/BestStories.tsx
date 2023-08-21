@@ -2,6 +2,7 @@ import { Carousel } from "@mantine/carousel";
 import BestStory from "./BestStory";
 import useBestDevelopStories from "../../../../hooks/game/useBestDevelopStories";
 import { useEffect } from "react";
+import Link from "next/link";
 export default function BestStories() {
   //전체 게임에서 주요 개발일지를 다룹니다.
   const {
@@ -34,19 +35,27 @@ export default function BestStories() {
         {postData?.map((data) => {
           return data.data.data.map((data) => (
             <Carousel.Slide>
-              <div
+              <Link
+                href={data.game.id + "?board=" + data.id}
                 style={{
-                  marginTop: "20px",
-                  width: "100%",
-                  height: "100%",
-                  paddingLeft: "10px",
-                  paddingRight: "10px",
+                  textDecoration: "none",
+                  color: "black",
                 }}
               >
-                {/* 
+                <div
+                  style={{
+                    marginTop: "20px",
+                    width: "100%",
+                    height: "100%",
+                    paddingLeft: "10px",
+                    paddingRight: "10px",
+                  }}
+                >
+                  {/* 
           여기에 애들 들어가야함 */}
-                <BestStory story={data}></BestStory>
-              </div>
+                  <BestStory story={data}></BestStory>
+                </div>
+              </Link>
             </Carousel.Slide>
           ));
         })}
