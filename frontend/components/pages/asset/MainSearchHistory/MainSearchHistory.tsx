@@ -2,7 +2,10 @@ import { Box, Group, Loader, Text, useMantineTheme } from "@mantine/core";
 import { useMainSearchHistoryStyles } from "./MainSearchHistory.styles";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconX } from "@tabler/icons-react";
-import deleteAssetSearchHistory from "../../../../utils/api/asset/deleteAssetSearchHistory";
+import {
+  deleteAllAssetSearchHistory,
+  deleteAssetSearchHistory,
+} from "../../../../utils/api/asset/assetSearchHistory";
 import useAuth from "../../../../hooks/useAuth";
 import { AssetSearchHistory } from "../../../../types/api/asset";
 import { AssetContext } from "../../../../pages/asset";
@@ -48,19 +51,9 @@ export function MainSearchHistory({ data, isLoading }: MainSearchHistoryProps) {
         <InvisibleButton
           className={cx(classes.badge, classes.badgeBg)}
           onClick={async () => {
-            const promises: any[] = [];
-
-            data?.forEach((item) => {
-              const request = deleteAssetSearchHistory(item.keyword, token);
-              promises.push(request);
-            });
-
-            try {
-              await Promise.all(promises); // 모든 요청이 종료될 때까지 대기
+            deleteAllAssetSearchHistory(token).then(() => {
               mutateSearchHistory();
-            } catch (error) {
-              console.error("Error in processing requests:", error);
-            }
+            });
           }}
         >
           <Text>모두 삭제</Text>
