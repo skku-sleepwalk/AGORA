@@ -63,6 +63,7 @@ import { AssetSearchHistoryService } from './services/asset.search.history.servi
     ]),
   ],
   controllers: [
+    AssetSearchHistoryController,
     AssetController,
     AssetCategoryController,
     AssetLikeController,
@@ -74,10 +75,10 @@ import { AssetSearchHistoryService } from './services/asset.search.history.servi
     AssetReviewCommentController,
     AssetReviewCommentLikeController,
     AssetReviewCommentDislikeController,
-    AssetSearchHistoryController,
   ],
   providers: [
     AssetService,
+    AssetSearchHistoryService,
     AssetCategoryService,
     AssetLikeService,
     AssetTagService,
@@ -88,7 +89,6 @@ import { AssetSearchHistoryService } from './services/asset.search.history.servi
     AssetReviewCommentService,
     AssetReviewCommentLikeService,
     AssetReviewCommentDislikeService,
-    AssetSearchHistoryService,
   ],
 })
 export class AssetModule {}

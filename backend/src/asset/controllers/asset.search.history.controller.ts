@@ -4,7 +4,7 @@ import { AssetSearchHistoryService } from '../services/asset.search.history.serv
 import { UserEmail } from 'src/common/decorators/userEmail.dacorator';
 
 @ApiTags('Asset')
-@Controller('asset/search-history')
+@Controller('asset')
 export class AssetSearchHistoryController {
   constructor(
     private readonly assetSearchHistoryService: AssetSearchHistoryService,
@@ -13,7 +13,7 @@ export class AssetSearchHistoryController {
   @ApiOperation({ summary: '검색 기록 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiParam({ name: 'keyword', description: '검색 키워드' })
-  @Post()
+  @Post('searchHistory')
   PostAssetSearchHistory(
     @UserEmail() userEmail: string,
     @Param('keyword') keyword: string,
@@ -24,7 +24,7 @@ export class AssetSearchHistoryController {
   @ApiOperation({ summary: '검색 기록 조회' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiParam({ name: 'keyword', description: '검색 키워드' })
-  @Get()
+  @Get('/searchHistory')
   GetAssetSearchHistory(@UserEmail() userEmail: string) {
     return this.assetSearchHistoryService.getHistory(userEmail);
   }
@@ -32,7 +32,7 @@ export class AssetSearchHistoryController {
   @ApiOperation({ summary: '검색 기록 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiParam({ name: 'keyword', description: '검색 키워드' })
-  @Delete('/:keyword')
+  @Delete('searchHistory/:keyword')
   DeleteAssetSearchHistory(
     @UserEmail() userEmail: string,
     @Param('keyword') keyword: string,
@@ -42,7 +42,7 @@ export class AssetSearchHistoryController {
 
   @ApiOperation({ summary: '검색 기록 전체 삭제' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @Delete()
+  @Delete('searchHistory')
   DeleteAllAssetSearchHistory(@UserEmail() userEmail: string) {
     return this.assetSearchHistoryService.deleteAll(userEmail);
   }

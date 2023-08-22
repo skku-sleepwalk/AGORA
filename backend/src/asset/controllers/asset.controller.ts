@@ -50,30 +50,6 @@ export class AssetController {
     );
   }
 
-  @ApiOperation({ summary: 'Asset 카테고리별 조회' })
-  @ApiResponse({ type: CursoredAssetDto })
-  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiQuery({ name: 'afterCursor', description: '이후 커서' })
-  @ApiQuery({ name: 'beforeCursor', description: '이전 커서' })
-  @ApiQuery({ name: 'categoryNames', description: '카테고리 이름들' })
-  @Get()
-  GetAssetByCategory(
-    @UserEmail() userEmail: string,
-    @Query('afterCursor') afterCursor: string,
-    @Query('beforeCursor') beforeCursor: string,
-    @Query(
-      'categoryNames',
-      new ParseArrayPipe({ items: String, separator: ',' }),
-    )
-    categoryNames: string[],
-  ) {
-    return this.assetService.getAssets(
-      userEmail,
-      { afterCursor, beforeCursor },
-      categoryNames,
-    );
-  }
-
   @ApiOperation({ summary: 'Asset 검색' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
   @ApiResponse({ type: CursoredAssetDto })
@@ -113,6 +89,30 @@ export class AssetController {
     @UuidParam('assetId') assetId: string,
   ) {
     return this.assetService.getAsset(userEmail, assetId);
+  }
+
+  @ApiOperation({ summary: 'Asset 카테고리별 조회' })
+  @ApiResponse({ type: CursoredAssetDto })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiQuery({ name: 'afterCursor', description: '이후 커서' })
+  @ApiQuery({ name: 'beforeCursor', description: '이전 커서' })
+  @ApiQuery({ name: 'categoryNames', description: '카테고리 이름들' })
+  @Get()
+  GetAssetByCategory(
+    @UserEmail() userEmail: string,
+    @Query('afterCursor') afterCursor: string,
+    @Query('beforeCursor') beforeCursor: string,
+    @Query(
+      'categoryNames',
+      new ParseArrayPipe({ items: String, separator: ',' }),
+    )
+    categoryNames: string[],
+  ) {
+    return this.assetService.getAssets(
+      userEmail,
+      { afterCursor, beforeCursor },
+      categoryNames,
+    );
   }
 
   @ApiOperation({ summary: 'Asset 수정' })
