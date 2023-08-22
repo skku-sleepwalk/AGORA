@@ -73,4 +73,10 @@ export class AssetReview {
   @ApiProperty({ description: '삭제일', example: '2021-01-01T00:00:00.000Z' })
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Column({ default: 0 })
+  likeCount: number;
+
+  @Column({ default: 0 })
+  dislikeCount: number;
 }

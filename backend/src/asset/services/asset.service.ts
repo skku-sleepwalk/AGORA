@@ -17,6 +17,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { CursoredAssetDto } from 'src/common/dto/cursoredData.dto';
 import { AssetCategory } from 'src/entites/asset/asset.category.entity';
+import { AssetTag } from 'src/entites/asset/asset.tag.entity';
 
 @Injectable()
 export class AssetService {
@@ -30,6 +31,8 @@ export class AssetService {
     private readonly assetCostRepository: Repository<AssetCost>,
     @InjectRepository(AssetLike)
     private readonly assetLikeRepository: Repository<AssetLike>,
+    @InjectRepository(AssetTag)
+    private readonly assetTagRepository: Repository<AssetTag>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -79,7 +82,15 @@ export class AssetService {
         : false;
     const { fileUrl, ...data } = asset;
 
-    return { ...data, like, likeCount };
+    const popularTags = await this.assetTagRepository
+      .createQueryBuilder('tag')
+      .leftJoinAndSelect('tag.asset', 'asset')
+      .where('asset.id = :assetId', { assetId: asset.id })
+      .orderBy('tag.count', 'DESC')
+      .limit(5)
+      .getMany();
+
+    return { ...data, like, likeCount, popularTags };
   }
 
   async dataModifying(userEmail: string, data: Asset[]): Promise<AssetDto[]> {

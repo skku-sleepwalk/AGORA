@@ -43,6 +43,17 @@ export class AssetReviewController {
       data.rating,
     );
   }
+  @ApiOperation({ summary: '유저에 해당하는 리뷰 가져오기' })
+  @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
+  @ApiParam({ name: 'assetId', description: 'Asset 아이디' })
+  @ApiResponse({ type: AssetReviewDto })
+  @Get('user')
+  GetOneAssetByUser(
+    @UserEmail() userEmail: string,
+    @UuidParam('assetId') assetId: string,
+  ) {
+    return this.assetReviewService.getAssetReviewByUser(userEmail, assetId);
+  }
 
   @ApiOperation({ summary: '에셋 리뷰 단일 조회' })
   @ApiResponse({ type: AssetReviewDto })

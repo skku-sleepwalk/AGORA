@@ -133,4 +133,7 @@ export class Game {
   @ApiProperty({ description: '삭제일자' })
   @DeleteDateColumn()
   deletedAt?: Date | null;
+
+  @Column({ default: 0 })
+  likeCount: number;
 }

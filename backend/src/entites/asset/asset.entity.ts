@@ -109,4 +109,19 @@ export class Asset {
   @ApiProperty({ description: '삭제일' })
   @DeleteDateColumn()
   deletedAt?: Date | null;
+
+  @Column({ default: 0 })
+  likeCount: number;
+
+  @Column({ default: 0 })
+  downloadCount: number;
+
+  @Column({ default: 0 })
+  viewCount: number;
+
+  @Column({ default: 0 })
+  buyCount: number;
+
+  @Column({ default: 0 })
+  reviewCount: number;
 }

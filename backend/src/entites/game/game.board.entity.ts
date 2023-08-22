@@ -84,4 +84,10 @@ export class GameBoard {
     inverseJoinColumn: { name: 'boardId', referencedColumnName: 'id' },
   })
   categories: Array<GameBoardCategory>;
+
+  @Column({ nullable: true, default: 0 })
+  likeCount: number;
+
+  @Column({ nullable: true, default: 0 })
+  viewCount: number;
 }
