@@ -1,8 +1,17 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { ApiHeader, ApiOperation, ApiParam, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiHeader,
+  ApiOperation,
+  ApiParam,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AssetSearchHistoryService } from '../services/asset.search.history.service';
 import { UserEmail } from 'src/common/decorators/userEmail.dacorator';
 
+class AssetSearchHistoryDto {
+  keyword: string;
+}
 @ApiTags('Asset')
 @Controller('asset/searchHistory')
 export class AssetSearchHistoryController {
@@ -12,13 +21,13 @@ export class AssetSearchHistoryController {
 
   @ApiOperation({ summary: '검색 기록 생성' })
   @ApiHeader({ name: 'Authorization', description: '유저 이메일' })
-  @ApiParam({ name: 'keyword', description: '검색 키워드' })
+  @ApiBody({ type: AssetSearchHistoryDto })
   @Post()
   PostAssetSearchHistory(
     @UserEmail() userEmail: string,
-    @Param('keyword') keyword: string,
+    @Body() data: AssetSearchHistoryDto,
   ) {
-    return this.assetSearchHistoryService.create(userEmail, keyword);
+    return this.assetSearchHistoryService.create(userEmail, data.keyword);
   }
 
   @ApiOperation({ summary: '검색 기록 조회' })
