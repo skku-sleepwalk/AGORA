@@ -1,7 +1,7 @@
 import { ApiProperty, PickType } from '@nestjs/swagger';
 import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
 import { Asset } from 'src/entites/asset/asset.entity';
-import { AssetTag } from 'src/entites/asset/asset.tag.entity';
+import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
 
 export class AssetDto extends PickType(Asset, [
   'id',
@@ -23,7 +23,11 @@ export class AssetDto extends PickType(Asset, [
   @IsBoolean()
   like?: boolean;
 
-  @ApiProperty({ description: '인기 태그', type: AssetTag, isArray: true })
+  @ApiProperty({
+    description: '인기 태그',
+    type: AssetTagRelation,
+    isArray: true,
+  })
   @IsNotEmpty()
-  popularTags?: AssetTag[];
+  popularTags?: AssetTagRelation[];
 }
