@@ -17,7 +17,7 @@ import {
 } from 'typeorm-cursor-pagination';
 import { CursoredAssetDto } from 'src/common/dto/cursoredData.dto';
 import { AssetCategory } from 'src/entites/asset/asset.category.entity';
-import { AssetTag } from 'src/entites/asset/asset.tag.entity';
+import { AssetTagRelation } from 'src/entites/asset/asset.tag.relation.entity';
 
 @Injectable()
 export class AssetService {
@@ -31,8 +31,8 @@ export class AssetService {
     private readonly assetCostRepository: Repository<AssetCost>,
     @InjectRepository(AssetLike)
     private readonly assetLikeRepository: Repository<AssetLike>,
-    @InjectRepository(AssetTag)
-    private readonly assetTagRepository: Repository<AssetTag>,
+    @InjectRepository(AssetTagRelation)
+    private readonly assetTagRelationRepository: Repository<AssetTagRelation>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -82,13 +82,15 @@ export class AssetService {
         : false;
     const { fileUrl, ...data } = asset;
 
-    const popularTags = await this.assetTagRepository
-      .createQueryBuilder('tag')
-      .leftJoinAndSelect('tag.asset', 'asset')
-      .where('asset.id = :assetId', { assetId: asset.id })
-      .orderBy('tag.count', 'DESC')
+    console.log('------------------------------');
+    const popularTags = await this.assetTagRelationRepository
+      .createQueryBuilder('relation')
+      .where('relation.assetId = :assetId', { assetId: asset.id })
+      .orderBy('relation.count', 'DESC')
+      .groupBy('relation.id')
       .limit(5)
       .getMany();
+    console.log(popularTags);
 
     return { ...data, like, likeCount, popularTags };
   }
@@ -194,8 +196,13 @@ export class AssetService {
       { categoryNames },
     );
 
-    await this.checkUserExist(userEmail);
-    return await this.paginating(userEmail, _cursor, queryBuilder);
+    const { data, cursor } = await this.paginating(
+      userEmail,
+      _cursor,
+      queryBuilder,
+    );
+    console.log(data);
+    return { data, cursor };
   }
 
   async searchAsset(

@@ -38,6 +38,8 @@ import { AssetReviewCommentLikeService } from './services/asset.review.comment.l
 import { AssetReviewCommentDislikeService } from './services/asset.review.comment.dislike.service';
 import { AssetBuyHistory } from 'src/entites/asset/asset.buy.history.entity';
 import { AssetDownloadHistory } from 'src/entites/asset/asset.download.history.entity';
+import { AssetSearchHistoryController } from './controllers/asset.search.history.controller';
+import { AssetSearchHistoryService } from './services/asset.search.history.service';
 
 @Module({
   imports: [
@@ -61,6 +63,7 @@ import { AssetDownloadHistory } from 'src/entites/asset/asset.download.history.e
     ]),
   ],
   controllers: [
+    AssetSearchHistoryController,
     AssetController,
     AssetCategoryController,
     AssetLikeController,
@@ -75,6 +78,7 @@ import { AssetDownloadHistory } from 'src/entites/asset/asset.download.history.e
   ],
   providers: [
     AssetService,
+    AssetSearchHistoryService,
     AssetCategoryService,
     AssetLikeService,
     AssetTagService,

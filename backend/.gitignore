@@ -1,6 +1,7 @@
-# compiled output
-/dist
-/node_modules
+# Compiled output
+dist
+node_modules
+pakage-lock.json
 
 # Logs
 logs
@@ -15,11 +16,11 @@ lerna-debug.log*
 .DS_Store
 
 # Tests
-/coverage
-/.nyc_output
+coverage
+.nyc_output
 
 # IDEs and editors
-/.idea
+.idea
 .project
 .classpath
 .c9/
@@ -33,3 +34,13 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+
+# AWS EC2 SSH Key
+*.pem
