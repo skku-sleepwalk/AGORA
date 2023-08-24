@@ -4,7 +4,7 @@ export interface Asset {
   id: string;
   title: string;
   description: string;
-  downloadUrl: string;
+  thumbnail: string;
   createdAt: string;
   updatedAt: string;
   deletedAt: string | null;

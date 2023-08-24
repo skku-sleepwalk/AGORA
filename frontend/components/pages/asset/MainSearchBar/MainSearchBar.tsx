@@ -33,11 +33,13 @@ export function MainSearchBar({ onSubmit, MovingUp }: MainSearchBarProps) {
       className={classes.wrapper}
       onSubmit={form.onSubmit((value) => {
         onSubmit(value.searchKeyword);
-        PostAssetSearchHistory({ keyword: value.searchKeyword }, token).then(() => {
-          form.reset();
-          mutateSearchHistory();
-          MovingUp();
-        });
+        if (value.searchKeyword !== "") {
+          PostAssetSearchHistory({ keyword: value.searchKeyword }, token).then(() => {
+            form.reset();
+            mutateSearchHistory();
+            MovingUp();
+          });
+        }
       })}
       onReset={form.onReset}
     >
