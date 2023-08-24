@@ -1,16 +1,14 @@
 import { Avatar, Box, Group, Loader, Stack, Text, TextInput, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import { useAssetReviewSectionStyles } from "./GameReviewSection.styles";
-import { AssetTextWriter } from "../AssetTextWriter/AssetTextWriter";
-import { GameReview } from "./GameReview/GameReview";
-import { GameReviewMine } from "./GameReviewMine/GameReviewMine";
-import { useGameReviewList } from "../../../../hooks/game/useGameReview";
 import useAuth from "../../../../hooks/useAuth";
-import { useMyGameReview } from "../../../../hooks/game/useMyGameReview";
 import { createContext } from "react";
-import { PlaytimesInUser } from "../../../../types/api/user";
-import { useUserPlaytimes } from "../../../../hooks/game/useUserPlaytimes";
+import { useAssetReviewList } from "../../../../hooks/useAssetReview";
+import { useMyAssetReview } from "../../../../hooks/useMyAssetReview";
+import { useAssetReviewSectionStyles } from "./AssetReviewSection.styles";
+import { AssetTextWriter } from "../AssetTextWriter/AssetTextWriter";
+import { AssetReview } from "./AssetReview/AssetReview";
+import { AssetReviewMine } from "./AssetReviewMine/AssetReviewMine";
 
 export interface AssetReviewSectionProps {
   assetId: string;
@@ -26,21 +24,20 @@ export function AssetReviewSection({ assetId: id }: AssetReviewSectionProps) {
   const { classes, cx } = useAssetReviewSectionStyles({ smallScreen });
   const { user, token } = useAuth();
 
-  const { data: me } = useUserPlaytimes();
   const canReview = true;
 
-  // const { data: myReviewData, mutate: mutateGameReviewMine } = useMyGameReview(id);
+  const { data: myReviewData, mutate: mutateAssetReviewMine } = useMyAssetReview(id);
 
   const {
-    data: gameReviewData,
-    setSize: setGameReviewSize,
-    isLoading: isGameReviewLoading,
-    mutate: mutateGameReview,
-  } = useGameReviewList({ gameId: id });
+    data: assetReviewData,
+    setSize: setAssetReviewSize,
+    isLoading: isAssetReviewLoading,
+    mutate: mutateAssetReview,
+  } = useAssetReviewList({ assetId: id });
 
   return (
     <AssetReviewSectionContext.Provider
-      value={{ mutateAssetReview: mutateGameReview, mutateAssetReviewMine: mutateGameReviewMine }}
+      value={{ mutateAssetReview: mutateAssetReview, mutateAssetReviewMine: mutateAssetReviewMine }}
     >
       <Stack spacing={"xl"} className={classes.all}>
         <Text fz={smallScreen ? 28 : 32}>후기</Text>
@@ -70,21 +67,21 @@ export function AssetReviewSection({ assetId: id }: AssetReviewSectionProps) {
                   // 후기 작성 가능 && 작성한 후기 없음
                   <AssetTextWriter
                     placeholder={"도움이 되는 착한 후기를 남겨보세요."}
-                    gameId={id ? id : ""}
+                    assetId={id ? id : ""}
                   />
                 ) : (
                   // 작성한 후기 있음
-                  <GameReviewMine gameId={id} data={myReviewData.data} />
+                  <AssetReviewMine assetId={id} data={myReviewData.data} />
                 )}
               </Box>
             </Group>
             {/* 다른 사람이 작성한 후기 보여지는 파트 */}
-            {gameReviewData?.map((data) => {
+            {assetReviewData?.map((data) => {
               return data.data.data?.map((data) =>
-                data.author.email !== token ? <GameReview gameId={id} data={data} /> : null
+                data.author.email !== token ? <AssetReview assetId={id} data={data} /> : null
               );
             })}
-            {isGameReviewLoading && (
+            {isAssetReviewLoading && (
               <Box className={classes.loader}>
                 <Loader variant="dots" />
               </Box>

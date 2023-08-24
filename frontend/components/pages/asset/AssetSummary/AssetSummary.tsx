@@ -18,9 +18,12 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconHeart, IconInnerShadowBottomRight, IconLicense } from "@tabler/icons-react";
 import { useAssetSummaryStyles } from "./AssetSummary.styles";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AssetTagModal } from "../AssetTagModal/AssetTagModal";
 import useAuth from "../../../../hooks/useAuth";
+import { AssetContext } from "../../../../pages/asset/[id]";
+import { DelAssetLike, PostAssetLike } from "../../../../utils/api/asset/asset/assetLike";
+import { theme } from "../../../../styles/theme";
 
 interface AssetSummaryProps {
   asset: Asset;
@@ -30,9 +33,7 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
   const { classes, cx } = useAssetSummaryStyles();
   const [opened, { open, close }] = useDisclosure(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
-  const tags = [{ name: "액션" }, { name: "스릴있는" }].map((item) => (
-    <Box className={classes.tag}>{item.name}</Box>
-  ));
+  const tags = asset.popularTags.map((item) => <Box className={classes.tag}>{item.name}</Box>);
   const overflowRef = useRef<HTMLDivElement>(null);
   const [isOverflowed, setIsOverflowed] = useState<boolean | null>(null);
   const checkOverflow = () => {
@@ -44,7 +45,21 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
   useEffect(() => {
     setIsOverflowed(checkOverflow());
   }, []);
-  const { user } = useAuth();
+  const { user, token } = useAuth();
+  const { mutateAsset } = useContext(AssetContext);
+  const theme = useMantineTheme();
+
+  const handleIsLiking = () => {
+    if (asset.like) {
+      DelAssetLike(asset.id, token).then(() => {
+        mutateAsset();
+      });
+    } else {
+      PostAssetLike(asset.id, token).then(() => {
+        mutateAsset();
+      });
+    }
+  };
 
   return (
     <>
@@ -56,17 +71,21 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
           <Stack spacing={"0.5rem"} className={classes.stack}>
             <Group position="apart">
               <Text fz={20} c={"gray"}>
-                음악
+                {asset.category.name}
               </Text>
               <Group spacing={7}>
-                <InvisibleButton>
-                  <IconHeart size={24} />
+                <InvisibleButton onClick={handleIsLiking}>
+                  {asset.like ? (
+                    <IconHeart size={"2rem"} stroke={1} fill={theme.colors.red[6]} />
+                  ) : (
+                    <IconHeart size={"2rem"} stroke={1} />
+                  )}
                 </InvisibleButton>
-                (100)
+                {asset.likeCount}
               </Group>
             </Group>
             <Text fw={"bold"} fz={32}>
-              라면이 땡기는 뮤직
+              {asset.title}
             </Text>
           </Stack>
           <Stack spacing={16} w={"100%"} className={classes.stack}>
@@ -76,12 +95,12 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
                 radius="lg"
                 src="https://avatars.githubusercontent.com/u/52057157?v=4"
               />
-              <Text fz={18}>최강상현</Text>
+              <Text fz={18}>{asset.author.name}</Text>
             </Group>
             <Group spacing={6}>
               <Image src="/images/token.svg" width={32} height={32} />
               <Text fz={24} fw={"bold"}>
-                2400
+                {asset.cost.defaultPrice}
               </Text>
             </Group>
           </Stack>
@@ -108,9 +127,11 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
             </Stack>
           </Stack>
           <Button className={classes.downloadButton}>
-            <Center>
-              <Text fz={28}>다운로드</Text>
-            </Center>
+            <a href={asset.downloadUrl} download style={{ textDecoration: "none", color: "white" }}>
+              <Center>
+                <Text fz={28}>다운로드</Text>
+              </Center>
+            </a>
           </Button>
         </Stack>
       </Stack>

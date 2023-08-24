@@ -4,13 +4,13 @@ import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useContext, useEffect, useRef, useState } from "react";
 import { cleanNotification, showError } from "../../../../utils/notifications";
-import { useMyGameTag } from "../../../../hooks/game/useMyGameTag";
-import { useGameTagList } from "../../../../hooks/game/useGameTagList";
-import { GameTag } from "../../../../types/api/game/gameTag";
-import deleteGameTag, { PostGameTag } from "../../../../utils/api/game/gameTag/gameTag";
 import useAuth from "../../../../hooks/useAuth";
-import { GameContext } from "../../../../pages/game/[id]";
 import { useAssetTagModalStyles } from "./AssetTagModal.styles";
+import { useMyAssetTag } from "../../../../hooks/useMyAssetTag";
+import { useAssetTag } from "../../../../hooks/useAssetTag";
+import deleteAssetTag, { PostAssetTag } from "../../../../utils/api/asset/assetTag/assetTag";
+import { AssetTag } from "../../../../types/api/asset";
+import { AssetContext } from "../../../../pages/asset/[id]";
 
 interface AssetTagModalProps {
   onClose?: () => void;
@@ -22,9 +22,9 @@ export function AssetTagModal({ onClose, assetId }: AssetTagModalProps) {
   const theme = useMantineTheme();
   const { token } = useAuth();
 
-  const { mutatePost } = useContext(GameContext); // 게임 postData mutate 관련
+  const { mutateAsset } = useContext(AssetContext); // 게임 postData mutate 관련
 
-  const { data: myPrevTagData } = useMyGameTag(assetId); // 유저가 이전에 추가해 놓은 태그 (id와 name 둘 다 있음)
+  const { data: myPrevTagData } = useMyAssetTag(assetId); // 유저가 이전에 추가해 놓은 태그 (id와 name 둘 다 있음)
   const myPrevTagList: string[] = myPrevTagData
     ? myPrevTagData.data.map((item) => {
         return item.tag.name;
@@ -46,13 +46,13 @@ export function AssetTagModal({ onClose, assetId }: AssetTagModalProps) {
       setSearch("");
     }
   };
-  const { data: tagData } = useGameTagList(search);
+  const { data: tagData } = useAssetTag(search);
 
   // 검색창이 자동 활성화 되도록
   const focusTrapRef = useFocusTrap();
 
   // (검색된) 태그 목록
-  const tags = tagData?.data.map((tag: GameTag) => {
+  const tags = tagData?.data.map((tag: AssetTag) => {
     const checked = myTagData?.includes(tag.name);
     return (
       <Button
@@ -146,7 +146,7 @@ export function AssetTagModal({ onClose, assetId }: AssetTagModalProps) {
               ? myPrevTagData.data.forEach((value) => {
                   if (!myTagData.includes(value.tag.name)) {
                     // delete 요청 진행
-                    deleteGameTag(assetId, value.id, token);
+                    deleteAssetTag(assetId, value.id, token);
                     console.log(`delete ${value.tag.name}`);
                   }
                 })
@@ -155,12 +155,12 @@ export function AssetTagModal({ onClose, assetId }: AssetTagModalProps) {
             myTagData.forEach((value) => {
               if (!myPrevTagList.includes(value)) {
                 // Post 요청 진행
-                PostGameTag(assetId, { tagName: value }, token);
+                PostAssetTag(assetId, { tagName: value }, token);
                 console.log(`post ${value}`);
               }
             });
             // 모든 요청이 완료된 이후
-            mutatePost();
+            mutateAsset();
             onClose ? onClose() : null;
           }}
         >

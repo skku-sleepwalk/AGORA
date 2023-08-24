@@ -23,32 +23,32 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useMediaQuery, useSetState } from "@mantine/hooks";
-import { GameReview } from "../../../../../types/api/game/gameReview";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
 import { useContext, useState } from "react";
-import deleteGameReviewComment from "../../../../../utils/api/game/gameReview/deleteGameReviewComment";
 import useAuth from "../../../../../hooks/useAuth";
 import { showNotification } from "../../../../../utils/notifications";
-import {
-  DelGameReviewCommentDislike,
-  DelGameReviewCommentLike,
-  PostGameReviewCommentDislike,
-  PostGameReviewCommentLike,
-} from "../../../../../utils/api/game/gameReview/gameReviewCommentLike";
 import { AssetReviewContext } from "../AssetReview/AssetReview";
 import { AssetReviewMineContext } from "../AssetReviewMine/AssetReviewMine";
 import { useAssetReviewReplyStyles } from "./AssetReviewReply.styles";
 import { AssetTextWriter } from "../../AssetTextWriter/AssetTextWriter";
+import {
+  DelAssetReviewCommentDislike,
+  DelAssetReviewCommentLike,
+  PostAssetReviewCommentDislike,
+  PostAssetReviewCommentLike,
+} from "../../../../../utils/api/asset/assetReview/assetReviewCommentLike";
+import { AssetReview } from "../../../../../types/api/asset";
+import deleteAssetReviewComment from "../../../../../utils/api/asset/assetReview/deleteAssetReviewComment";
 
 export interface AssetReviewReplyProps {
   assetId: string;
   reviewId: string;
-  data: GameReview;
+  data: AssetReview;
   isInReviewMine?: boolean;
 }
 
 export function AssetReviewReply({
-  assetId: gameId,
+  assetId,
   reviewId,
   data,
   isInReviewMine,
@@ -65,17 +65,17 @@ export function AssetReviewReply({
   // 후기 좋아요 싫어요 관련 로직
   const handleLike = () => {
     if (data.like) {
-      DelGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+      DelAssetReviewCommentLike(assetId, reviewId, data.id, token).then(() => {
         mutateAssetReviewComment();
         if (isInReviewMine) {
           mutateAssetReviewMineComment();
         }
       });
     } else {
-      PostGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+      PostAssetReviewCommentLike(assetId, reviewId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.dislike) {
-          DelGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+          DelAssetReviewCommentDislike(assetId, reviewId, data.id, token).then(() => {
             mutateAssetReviewComment();
             if (isInReviewMine) {
               mutateAssetReviewMineComment();
@@ -93,17 +93,17 @@ export function AssetReviewReply({
 
   const handleDislike = () => {
     if (data.dislike) {
-      DelGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+      DelAssetReviewCommentDislike(assetId, reviewId, data.id, token).then(() => {
         mutateAssetReviewComment();
         if (isInReviewMine) {
           mutateAssetReviewMineComment();
         }
       });
     } else {
-      PostGameReviewCommentDislike(gameId, reviewId, data.id, token).then(() => {
+      PostAssetReviewCommentDislike(assetId, reviewId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.like) {
-          DelGameReviewCommentLike(gameId, reviewId, data.id, token).then(() => {
+          DelAssetReviewCommentLike(assetId, reviewId, data.id, token).then(() => {
             mutateAssetReviewComment();
             if (isInReviewMine) {
               mutateAssetReviewMineComment();
@@ -137,7 +137,7 @@ export function AssetReviewReply({
             <Stack spacing={"0.2rem"}>
               <Text fz={smallScreen ? 14 : 18}>{data.author.name}</Text>
               <Text fz={smallScreen ? 12 : 14} color={theme.colors.blue[4]}>
-                {authorPlaytime(data.author.playtime)}
+                {data.author.description}
               </Text>
             </Stack>
           </Group>
@@ -220,7 +220,7 @@ export function AssetReviewReply({
                       <Menu.Divider />
                       <Menu.Item
                         onClick={() => {
-                          deleteGameReviewComment(gameId, reviewId, data.id, token).then(() => {
+                          deleteAssetReviewComment(assetId, reviewId, data.id, token).then(() => {
                             mutateAssetReviewComment();
                             if (data.author.email === token) {
                               mutateAssetReviewMineComment();
@@ -256,7 +256,7 @@ export function AssetReviewReply({
             <AssetTextWriter
               completePatch={() => setIsEditing(false)}
               placeholder={"도움이 되는 착한 후기를 남겨보세요."}
-              gameId={gameId}
+              assetId={assetId}
               reviewId={reviewId}
               commentId={data.id}
               content={data.content}

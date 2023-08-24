@@ -15,11 +15,14 @@ import { Asset } from "../../../../types/api/asset";
 import { useAssetRightSideStyles } from "./AssetRightSide.styles";
 
 interface AssetRightSideProps {
-  asset: Asset | undefined;
+  asset: Asset;
   loading?: boolean;
 }
 export function AssetRightSide({ asset, loading }: AssetRightSideProps) {
   const { classes, cx } = useAssetRightSideStyles();
+  const createstring = asset.createdAt;
+  let [year, month, day] = createstring?.split("-") || [null, null, null];
+  const formattedString = `${year}년 ${month}월 ${day?.slice(0, 2)}일`;
 
   const theme = useMantineTheme();
 
@@ -56,7 +59,7 @@ export function AssetRightSide({ asset, loading }: AssetRightSideProps) {
             <Text size="md" weight={700}>
               최신 릴리즈 날짜
             </Text>
-            <Text size="md">2023년 5월 17일</Text>
+            <Text size="md">{formattedString}</Text>
           </Group>
         </Stack>
       </CardContainer>

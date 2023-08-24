@@ -26,21 +26,27 @@ import {
   IconTrash,
 } from "@tabler/icons-react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { GameReview } from "../../../../../types/api/game/gameReview";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
-import deleteGameReview from "../../../../../utils/api/game/gameReview/deleteGameReview";
 import useAuth from "../../../../../hooks/useAuth";
 import { createContext, useContext, useState } from "react";
 import { showNotification } from "../../../../../utils/notifications";
-import { useGameReviewList } from "../../../../../hooks/game/useGameReview";
-import { useUserPlaytimes } from "../../../../../hooks/game/useUserPlaytimes";
 import { useAssetReviewMineStyles } from "./AssetReviewMine.styles";
 import { AssetReviewSectionContext } from "../AssetReviewSection";
 import { AssetTextWriter } from "../../AssetTextWriter/AssetTextWriter";
+import { AssetReview } from "../../../../../types/api/asset";
+import {
+  DelAssetReviewDislike,
+  DelAssetReviewLike,
+  PostAssetReviewDislike,
+  PostAssetReviewLike,
+} from "../../../../../utils/api/asset/assetReview/AssetReviewLike";
+import { useAssetReviewList } from "../../../../../hooks/useAssetReview";
+import deleteAssetReview from "../../../../../utils/api/asset/assetReview/deleteAssetReview";
+import { AssetReviewReply } from "../AssetReviewReply/AssetReviewReply";
 
 export interface AssetReviewMineProps {
-  gameId: string;
-  data: GameReview;
+  assetId: string;
+  data: AssetReview;
 }
 
 // mutate 관련 context
@@ -48,7 +54,7 @@ export const AssetReviewMineContext = createContext({
   mutateAssetReviewMineComment: () => {},
 });
 
-export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
+export function AssetReviewMine({ assetId, data }: AssetReviewMineProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useAssetReviewMineStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -56,33 +62,32 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
   const { user, token } = useAuth();
 
   const {
-    data: gameReviewMineCommentData,
-    setSize: setgameReviewMineCommentSize,
-    isLoading: isgameReviewMineCommentLoading,
-    mutate: mutategameReviewMineComment,
-  } = useGameReviewList({ gameId: gameId, reviewId: data.id });
+    data: assetReviewMineCommentData,
+    setSize: setAssetReviewMineCommentSize,
+    isLoading: isAssetReviewMineCommentLoading,
+    mutate: mutateAssetReviewMineComment,
+  } = useAssetReviewList({ assetId: assetId, reviewId: data.id });
 
-  const { mutateAssetReview: mutateGameReview, mutateAssetReviewMine: mutateGameReviewMine } =
-    useContext(AssetReviewSectionContext);
+  const { mutateAssetReview, mutateAssetReviewMine } = useContext(AssetReviewSectionContext);
 
   // 후기 좋아요 싫어요 관련 로직
   const handleLike = () => {
     if (data.like) {
-      DelGameReviewLike(gameId, data.id, token).then(() => {
-        mutateGameReviewMine();
-        mutateGameReview();
+      DelAssetReviewLike(assetId, data.id, token).then(() => {
+        mutateAssetReviewMine();
+        mutateAssetReview();
       });
     } else {
-      PostGameReviewLike(gameId, data.id, token).then(() => {
+      PostAssetReviewLike(assetId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.dislike) {
-          DelGameReviewDislike(gameId, data.id, token).then(() => {
-            mutateGameReviewMine();
-            mutateGameReview();
+          DelAssetReviewDislike(assetId, data.id, token).then(() => {
+            mutateAssetReviewMine();
+            mutateAssetReview();
           });
         } else {
-          mutateGameReviewMine();
-          mutateGameReview();
+          mutateAssetReviewMine();
+          mutateAssetReview();
         }
       });
     }
@@ -90,21 +95,21 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
 
   const handleDislike = () => {
     if (data.dislike) {
-      DelGameReviewDislike(gameId, data.id, token).then(() => {
-        mutateGameReviewMine();
-        mutateGameReview();
+      DelAssetReviewDislike(assetId, data.id, token).then(() => {
+        mutateAssetReviewMine();
+        mutateAssetReview();
       });
     } else {
-      PostGameReviewDislike(gameId, data.id, token).then(() => {
+      PostAssetReviewDislike(assetId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.like) {
-          DelGameReviewLike(gameId, data.id, token).then(() => {
-            mutateGameReviewMine();
-            mutateGameReview();
+          DelAssetReviewLike(assetId, data.id, token).then(() => {
+            mutateAssetReviewMine();
+            mutateAssetReview();
           });
         } else {
-          mutateGameReviewMine();
-          mutateGameReview();
+          mutateAssetReviewMine();
+          mutateAssetReview();
         }
       });
     }
@@ -116,12 +121,11 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
 
-  const { data: me } = useUserPlaytimes();
-  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, gameId) : false;
+  const canReview = !!user;
 
   return (
     <AssetReviewMineContext.Provider
-      value={{ mutateAssetReviewMineComment: mutategameReviewMineComment }}
+      value={{ mutateAssetReviewMineComment: mutateAssetReviewMineComment }}
     >
       {!isEditing && (
         <Stack className={classes.stack} spacing={"lg"}>
@@ -218,9 +222,9 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
                     icon={<IconTrash size={18} stroke={2} />}
                     className={classes.menuItem}
                     onClick={() => {
-                      deleteGameReview(gameId, data.id, token).then(() => {
-                        mutateGameReviewMine();
-                        mutateGameReview();
+                      deleteAssetReview(assetId, data.id, token).then(() => {
+                        mutateAssetReviewMine();
+                        mutateAssetReview();
                         showNotification("후기 삭제 완료!", "후기가 정상적으로 삭제되었습니다.");
                       });
                     }}
@@ -246,7 +250,7 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
                 {canReview && (
                   <AssetTextWriter
                     placeholder={"후기에 답글을 달아보세요."}
-                    gameId={gameId}
+                    assetId={assetId}
                     reviewId={data.id}
                     isInReviewMine={true}
                   />
@@ -254,23 +258,23 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
                 {!canReview && (
                   <TextInput
                     className={classes.reviewNo}
-                    placeholder="게임을 플레이하고 후기에 답글을 달아보세요."
+                    placeholder="로그인 후 답글을 달아보세요."
                     disabled
                   />
                 )}
               </Box>
             </Group>
-            {gameReviewMineCommentData?.map((comment) => {
+            {assetReviewMineCommentData?.map((comment) => {
               return comment.data.data.map((comment) => (
-                <GameReviewReply
-                  gameId={gameId}
+                <AssetReviewReply
+                  assetId={assetId}
                   reviewId={data.id}
                   data={comment}
                   isInReviewMine={true}
                 />
               ));
             })}
-            {isgameReviewMineCommentLoading && (
+            {isAssetReviewMineCommentLoading && (
               <Box className={classes.loader}>
                 <Loader variant="dots" />
               </Box>
@@ -282,7 +286,7 @@ export function GameReviewMine({ gameId, data }: AssetReviewMineProps) {
         <AssetTextWriter
           completePatch={() => setIsEditing(false)}
           placeholder={"도움이 되는 착한 후기를 남겨보세요."}
-          gameId={gameId}
+          assetId={assetId}
           content={data.content}
         />
       )}

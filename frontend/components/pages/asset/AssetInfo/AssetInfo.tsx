@@ -5,7 +5,7 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 import { Asset } from "../../../../types/api/asset";
 
 interface AssetInfoProps {
-  asset: Asset | undefined;
+  asset: Asset;
 }
 export function AssetInfo({ asset }: AssetInfoProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
@@ -19,8 +19,7 @@ export function AssetInfo({ asset }: AssetInfoProps) {
           <div
             className={classes.content}
             dangerouslySetInnerHTML={{
-              // __html: postData?.information?.description || "",
-              __html: "<p>에셋 설명</p>",
+              __html: asset?.description,
             }}
           />
         </TypographyStylesProvider>

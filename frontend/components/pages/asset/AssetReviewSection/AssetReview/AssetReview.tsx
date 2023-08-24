@@ -21,19 +21,25 @@ import {
   IconThumbUpFilled,
 } from "@tabler/icons-react";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
-import { useGameReviewList } from "../../../../../hooks/game/useGameReview";
 import useAuth from "../../../../../hooks/useAuth";
-import { GameReview } from "../../../../../types/api/game/gameReview";
 import { createContext, useContext } from "react";
 import { getRelativeTime } from "../../../../../utils/getRelativeTime";
-import { useUserPlaytimes } from "../../../../../hooks/game/useUserPlaytimes";
 import { useAssetReviewStyles } from "./AssetReview.styles";
 import { AssetReviewSectionContext } from "../AssetReviewSection";
 import { AssetTextWriter } from "../../AssetTextWriter/AssetTextWriter";
+import { AssetReview } from "../../../../../types/api/asset";
+import { useAssetReviewList } from "../../../../../hooks/useAssetReview";
+import {
+  DelAssetReviewDislike,
+  DelAssetReviewLike,
+  PostAssetReviewDislike,
+  PostAssetReviewLike,
+} from "../../../../../utils/api/asset/assetReview/AssetReviewLike";
+import { AssetReviewReply } from "../AssetReviewReply/AssetReviewReply";
 
 export interface AssetReviewProps {
-  gameId: string;
-  data: GameReview;
+  assetId: string;
+  data: AssetReview;
 }
 
 // mutate 관련 context
@@ -41,21 +47,20 @@ export const AssetReviewContext = createContext({
   mutateAssetReviewComment: () => {},
 });
 
-export function AssetReview({ gameId, data }: AssetReviewProps) {
+export function AssetReview({ assetId, data }: AssetReviewProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useAssetReviewStyles({ smallScreen });
   const theme = useMantineTheme();
 
   const { token, user, openSignInModal } = useAuth();
-  const { mutateAssetReview: mutateGameReview, mutateAssetReviewMine: mutateGameReviewMine } =
-    useContext(AssetReviewSectionContext);
+  const { mutateAssetReview, mutateAssetReviewMine } = useContext(AssetReviewSectionContext);
 
   const {
-    data: gameReviewCommentData,
-    setSize: setgameReviewCommentSize,
-    isLoading: isgameReviewCommentLoading,
-    mutate: mutategameReviewComment,
-  } = useGameReviewList({ gameId: gameId, reviewId: data.id });
+    data: assetReviewCommentData,
+    setSize: setAssetReviewCommentSize,
+    isLoading: isAssetReviewCommentLoading,
+    mutate: mutateAssetReviewComment,
+  } = useAssetReviewList({ assetId, reviewId: data.id });
 
   // 후기 좋아요 싫어요 관련 로직
   const handleLike = () => {
@@ -64,26 +69,26 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
       return;
     }
     if (data.like) {
-      DelGameReviewLike(gameId, data.id, token).then(() => {
-        mutateGameReview();
+      DelAssetReviewLike(assetId, data.id, token).then(() => {
+        mutateAssetReview();
         if (data.author.email === token) {
-          mutateGameReviewMine();
+          mutateAssetReviewMine();
         }
       });
     } else {
-      PostGameReviewLike(gameId, data.id, token).then(() => {
+      PostAssetReviewLike(assetId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.dislike) {
-          DelGameReviewDislike(gameId, data.id, token).then(() => {
-            mutateGameReview();
+          DelAssetReviewDislike(assetId, data.id, token).then(() => {
+            mutateAssetReview();
             if (data.author.email === token) {
-              mutateGameReviewMine();
+              mutateAssetReviewMine();
             }
           });
         } else {
-          mutateGameReview();
+          mutateAssetReview();
           if (data.author.email === token) {
-            mutateGameReviewMine();
+            mutateAssetReviewMine();
           }
         }
       });
@@ -97,26 +102,26 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
     }
 
     if (data.dislike) {
-      DelGameReviewDislike(gameId, data.id, token).then(() => {
-        mutateGameReview();
+      DelAssetReviewDislike(assetId, data.id, token).then(() => {
+        mutateAssetReview();
         if (data.author.email === token) {
-          mutateGameReviewMine();
+          mutateAssetReviewMine();
         }
       });
     } else {
-      PostGameReviewDislike(gameId, data.id, token).then(() => {
+      PostAssetReviewDislike(assetId, data.id, token).then(() => {
         // 좋아요 싫어요 동시 선택이 안되도록
         if (data.like) {
-          DelGameReviewLike(gameId, data.id, token).then(() => {
-            mutateGameReview();
+          DelAssetReviewLike(assetId, data.id, token).then(() => {
+            mutateAssetReview();
             if (data.author.email === token) {
-              mutateGameReviewMine();
+              mutateAssetReviewMine();
             }
           });
         } else {
-          mutateGameReview();
+          mutateAssetReview();
           if (data.author.email === token) {
-            mutateGameReviewMine();
+            mutateAssetReviewMine();
           }
         }
       });
@@ -126,11 +131,10 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
   // 답글 관련
   const [opened, { toggle }] = useDisclosure(false);
 
-  const { data: me } = useUserPlaytimes();
-  const canReview = me !== undefined ? hasPlaytime(me.data.playtimes, gameId) : false;
+  const canReview = !!user;
 
   return (
-    <AssetReviewContext.Provider value={{ mutateAssetReviewComment: mutategameReviewComment }}>
+    <AssetReviewContext.Provider value={{ mutateAssetReviewComment: mutateAssetReviewComment }}>
       <Box>
         <Divider />
         <Stack className={classes.stack} spacing={"lg"}>
@@ -145,7 +149,7 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
               <Stack spacing={"0.2rem"}>
                 <Text fz={smallScreen ? 14 : 18}>{data.author.name}</Text>
                 <Text fz={smallScreen ? 12 : 14} color={theme.colors.blue[4]}>
-                  {authorPlaytime(data.author.playtime)}
+                  {data.author.description}
                 </Text>
               </Stack>
             </Group>
@@ -233,7 +237,7 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
                 {canReview && (
                   <AssetTextWriter
                     placeholder={"후기에 답글을 달아보세요."}
-                    gameId={gameId}
+                    assetId={assetId}
                     reviewId={data.id}
                   />
                 )}
@@ -246,12 +250,12 @@ export function AssetReview({ gameId, data }: AssetReviewProps) {
                 )}
               </Box>
             </Group>
-            {gameReviewCommentData?.map((comment) => {
+            {assetReviewCommentData?.map((comment) => {
               return comment.data.data.map((comment) => (
-                <GameReviewReply gameId={gameId} reviewId={data.id} data={comment} />
+                <AssetReviewReply assetId={assetId} reviewId={data.id} data={comment} />
               ));
             })}
-            {isgameReviewCommentLoading && (
+            {isAssetReviewCommentLoading && (
               <Box className={classes.loader}>
                 <Loader variant="dots" />
               </Box>
