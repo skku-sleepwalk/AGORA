@@ -5,6 +5,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 @Entity('AssetCategory')
 export class AssetCategory {
+  @ApiProperty({ description: '아이디' })
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

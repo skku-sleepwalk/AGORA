@@ -13,6 +13,7 @@ export class AssetDto extends PickType(Asset, [
   'createdAt',
   'updatedAt',
   'deletedAt',
+  'category',
 ]) {
   @ApiProperty({ description: '좋아요 수', example: 3 })
   @IsNotEmpty()

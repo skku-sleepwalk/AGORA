@@ -71,7 +71,7 @@ export class Asset {
   @Column({ default: false })
   isSensitive: boolean;
 
-  @ApiProperty({ description: '제작자', example: '발브' })
+  @ApiProperty({ description: '작성자', type: () => User })
   @ManyToOne(() => User, (user) => user.assets, { onDelete: 'CASCADE' })
   author: User;
 
@@ -81,6 +81,7 @@ export class Asset {
   @Column()
   fileUrl: string;
 
+  @ApiProperty({ description: '카테고리', type: () => AssetCategory })
   @ManyToOne(() => AssetCategory, (category) => category.assets, {})
   @JoinColumn({ name: 'categoryId', referencedColumnName: 'id' })
   category: AssetCategory;
