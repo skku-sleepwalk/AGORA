@@ -247,6 +247,7 @@ export class UserProfileService {
 
     const queryBuilder = this.gameBoardRepository
       .createQueryBuilder('board')
+      .leftJoinAndSelect('board.game', 'game')
       .where('board.authorId = :userId', { userId: user.id })
       .orderBy('board.createdAt', 'DESC');
     const paginationOption: PaginationOptions<GameBoard> = {

@@ -8,6 +8,7 @@ export class AssetDto extends PickType(Asset, [
   'author',
   'title',
   'description',
+  'thumbnail',
   'cost',
   'createdAt',
   'updatedAt',
