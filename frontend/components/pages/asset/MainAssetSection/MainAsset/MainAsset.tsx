@@ -30,7 +30,7 @@ export function MainAsset({ assetData }: MainAssetProps) {
       <CardContainer className={classes.wrapper}>
         <Stack spacing={"xs"}>
           <BackgroundImage
-            src={"https://i3.ruliweb.com/img/22/10/01/18393ee297a1734b9.jpeg"}
+            src={assetData.thumbnail ? assetData.thumbnail : "/images/nonImage.svg"}
             h={"10rem"}
             radius={"md"}
           >
