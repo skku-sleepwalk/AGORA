@@ -4,6 +4,8 @@ import { MypageUserInfo } from "../components/pages/mypage/mypageUserInfo/mypage
 import { Box } from "@mantine/core";
 import MypageLayout from "../components/pages/mypage/mypageLayout/mypageLayout";
 import { MypagePlaytimesSection } from "../components/pages/mypage/mypagePlaytimesSecion/mypagePlaytimesSection";
+import CardContainer from "../components/common/CardContainer/CardContainer";
+import { MypageMyPostSection } from "../components/pages/mypage/mypageMyPostSection/mypageMyPostSection";
 
 export const MypageTabClicklContext = createContext({
   ontabClick: () => {},
@@ -30,7 +32,14 @@ function Main() {
         tabSection={<MypageTab activeTab={activeTab} setActiveTab={setActiveTab} />}
       >
         {activeTab === "playtimes" && <MypagePlaytimesSection />}
-        {activeTab === "myPosts" && <Box h={"40rem"}></Box>}
+        {activeTab === "myPosts" && (
+          <Box h={"40rem"}>
+            <MypageMyPostSection></MypageMyPostSection>
+          </Box>
+        )}
+        {activeTab === "purchasedAssets" && <Box h={"40rem"}></Box>}
+        {activeTab === "uploadedGames" && <Box h={"40rem"}></Box>}
+        {activeTab === "uploadedAssets" && <Box h={"40rem"}></Box>}
       </MypageLayout>
     </MypageTabClicklContext.Provider>
   );

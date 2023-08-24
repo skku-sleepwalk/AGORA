@@ -29,6 +29,17 @@ export function MypageTab({ activeTab, setActiveTab }: GameTabProps) {
           플레이한 게임
         </Tabs.Tab>
         <Tabs.Tab
+          value="purchasedAssets"
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "purchasedAssets" && classes.tabItemActive
+          )}
+          onClick={handleScroll.ontabClickFast}
+        >
+          구매한 애셋
+        </Tabs.Tab>
+
+        <Tabs.Tab
           value="myPosts"
           className={cx(
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
@@ -37,6 +48,26 @@ export function MypageTab({ activeTab, setActiveTab }: GameTabProps) {
           onClick={handleScroll.ontabClickFast}
         >
           내가 올린 글
+        </Tabs.Tab>
+        <Tabs.Tab
+          value="uploadedGames"
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "uploadedGames" && classes.tabItemActive
+          )}
+          onClick={handleScroll.ontabClickFast}
+        >
+          업로드한 게임
+        </Tabs.Tab>
+        <Tabs.Tab
+          value="uploadedAssets"
+          className={cx(
+            smallScreen ? classes.tabItem_S : classes.tabItem_B,
+            activeTab === "uploadedAssets" && classes.tabItemActive
+          )}
+          onClick={handleScroll.ontabClickFast}
+        >
+          업로드한 애셋
         </Tabs.Tab>
       </Tabs.List>
     </Tabs>
