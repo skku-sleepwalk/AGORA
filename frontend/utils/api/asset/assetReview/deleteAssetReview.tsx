@@ -1,7 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 
-export default async function deleteAssetSearchHistory(
-  keyword: string,
+export default async function deleteAssetReview(
+  assetId: string,
+  reviewId: string,
   token?: string
 ): Promise<void> {
   try {
@@ -10,7 +11,7 @@ export default async function deleteAssetSearchHistory(
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/asset/search/history/${keyword}`,
+      `http://localhost:8000/asset/${assetId}/review/${reviewId}`,
       {
         headers,
       }

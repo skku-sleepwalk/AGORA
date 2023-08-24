@@ -2,11 +2,15 @@ import { Box, Group, Loader, Text, useMantineTheme } from "@mantine/core";
 import { useMainSearchHistoryStyles } from "./MainSearchHistory.styles";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
 import { IconX } from "@tabler/icons-react";
-import deleteAssetSearchHistory from "../../../../utils/api/asset/deleteAssetSearchHistory";
+import {
+  deleteAllAssetSearchHistory,
+  deleteAssetSearchHistory,
+} from "../../../../utils/api/asset/assetSearchHistory";
 import useAuth from "../../../../hooks/useAuth";
 import { AssetSearchHistory } from "../../../../types/api/asset";
 import { AssetContext } from "../../../../pages/asset";
 import { useContext } from "react";
+import { useRouter } from "next/router";
 
 interface MainSearchHistoryProps {
   data: AssetSearchHistory[] | undefined;
@@ -17,23 +21,27 @@ export function MainSearchHistory({ data, isLoading }: MainSearchHistoryProps) {
   const { classes, cx } = useMainSearchHistoryStyles();
   const theme = useMantineTheme();
   const { token } = useAuth();
+  const router = useRouter();
 
   const { mutateSearchHistory } = useContext(AssetContext);
 
   const histories = data?.map((item) => {
     return (
-      <Group className={classes.badge} spacing={"0.3rem"}>
-        <Text>{item.keyword}</Text>
-        <InvisibleButton
-          onClick={() => {
-            deleteAssetSearchHistory(item.keyword, token).then(() => {
-              mutateSearchHistory();
-            });
-          }}
-        >
-          <IconX size={"0.8rem"} stroke={1.8} color={theme.colors.teal[1]} />
-        </InvisibleButton>
-      </Group>
+      <InvisibleButton onClick={() => router.push(`?search=${item.keyword}`)}>
+        <Group className={classes.badge} spacing={"0.3rem"}>
+          <Text>{item.keyword}</Text>
+          <InvisibleButton
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteAssetSearchHistory(item.keyword, token).then(() => {
+                mutateSearchHistory();
+              });
+            }}
+          >
+            <IconX size={"0.8rem"} stroke={1.8} color={theme.colors.teal[1]} />
+          </InvisibleButton>
+        </Group>
+      </InvisibleButton>
     );
   });
 
@@ -48,19 +56,9 @@ export function MainSearchHistory({ data, isLoading }: MainSearchHistoryProps) {
         <InvisibleButton
           className={cx(classes.badge, classes.badgeBg)}
           onClick={async () => {
-            const promises: any[] = [];
-
-            data?.forEach((item) => {
-              const request = deleteAssetSearchHistory(item.keyword, token);
-              promises.push(request);
-            });
-
-            try {
-              await Promise.all(promises); // 모든 요청이 종료될 때까지 대기
+            deleteAllAssetSearchHistory(token).then(() => {
               mutateSearchHistory();
-            } catch (error) {
-              console.error("Error in processing requests:", error);
-            }
+            });
           }}
         >
           <Text>모두 삭제</Text>

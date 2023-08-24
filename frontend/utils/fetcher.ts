@@ -6,8 +6,7 @@ export async function fetcher(url: string, token?: string, config?: AxiosRequest
     ...config,
     headers: {
       ...config?.headers,
-      Authorization: `${token}`,
-      // Authorization: `a@gmail.com`,
+      Authorization: token ? `${token}` : "",
     },
   });
   return res.data;
