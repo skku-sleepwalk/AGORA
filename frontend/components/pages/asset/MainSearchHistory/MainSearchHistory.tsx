@@ -10,6 +10,7 @@ import useAuth from "../../../../hooks/useAuth";
 import { AssetSearchHistory } from "../../../../types/api/asset";
 import { AssetContext } from "../../../../pages/asset";
 import { useContext } from "react";
+import { useRouter } from "next/router";
 
 interface MainSearchHistoryProps {
   data: AssetSearchHistory[] | undefined;
@@ -20,23 +21,27 @@ export function MainSearchHistory({ data, isLoading }: MainSearchHistoryProps) {
   const { classes, cx } = useMainSearchHistoryStyles();
   const theme = useMantineTheme();
   const { token } = useAuth();
+  const router = useRouter();
 
   const { mutateSearchHistory } = useContext(AssetContext);
 
   const histories = data?.map((item) => {
     return (
-      <Group className={classes.badge} spacing={"0.3rem"}>
-        <Text>{item.keyword}</Text>
-        <InvisibleButton
-          onClick={() => {
-            deleteAssetSearchHistory(item.keyword, token).then(() => {
-              mutateSearchHistory();
-            });
-          }}
-        >
-          <IconX size={"0.8rem"} stroke={1.8} color={theme.colors.teal[1]} />
-        </InvisibleButton>
-      </Group>
+      <InvisibleButton onClick={() => router.push(`?search=${item.keyword}`)}>
+        <Group className={classes.badge} spacing={"0.3rem"}>
+          <Text>{item.keyword}</Text>
+          <InvisibleButton
+            onClick={(e) => {
+              e.stopPropagation();
+              deleteAssetSearchHistory(item.keyword, token).then(() => {
+                mutateSearchHistory();
+              });
+            }}
+          >
+            <IconX size={"0.8rem"} stroke={1.8} color={theme.colors.teal[1]} />
+          </InvisibleButton>
+        </Group>
+      </InvisibleButton>
     );
   });
 
