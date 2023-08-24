@@ -76,6 +76,10 @@ export interface GetAssetSearchHistoryResponse {
   data: AssetSearchHistory[];
 }
 
+export interface PostAssetSearch {
+  keyword: string;
+}
+
 export interface AssetReviewResponse {
   data: null;
 }

@@ -3,6 +3,10 @@ import { useMainSearchBarStyles } from "./MainSearchBar.styles";
 import { IconSearch, IconX } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import InvisibleButton from "../../../common/InvisibleButton/InvisibleButton";
+import { PostAssetSearchHistory } from "../../../../utils/api/asset/assetSearchHistory";
+import useAuth from "../../../../hooks/useAuth";
+import { useContext } from "react";
+import { AssetContext } from "../../../../pages/asset";
 
 export interface MainSearchBarProps {
   onSubmit: (text: string) => void;
@@ -12,6 +16,10 @@ export interface MainSearchBarProps {
 export function MainSearchBar({ onSubmit, MovingUp }: MainSearchBarProps) {
   const { classes, cx } = useMainSearchBarStyles();
   const theme = useMantineTheme();
+
+  const { token } = useAuth();
+
+  const { mutateSearchHistory } = useContext(AssetContext);
 
   // 검색 받아오는 것 관련
   const form = useForm({
@@ -25,8 +33,11 @@ export function MainSearchBar({ onSubmit, MovingUp }: MainSearchBarProps) {
       className={classes.wrapper}
       onSubmit={form.onSubmit((value) => {
         onSubmit(value.searchKeyword);
-        form.reset();
-        MovingUp();
+        PostAssetSearchHistory({ keyword: value.searchKeyword }, token).then(() => {
+          form.reset();
+          mutateSearchHistory();
+          MovingUp();
+        });
       })}
       onReset={form.onReset}
     >
