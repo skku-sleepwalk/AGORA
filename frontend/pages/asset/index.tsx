@@ -29,6 +29,7 @@ function Asset() {
   const {
     data: assetData,
     isLoading: isAssetLoading,
+    size: assetSize,
     setSize: setAssetSize,
     mutate: mutateAsset,
     isEmpty,
@@ -36,23 +37,23 @@ function Asset() {
     search: search ? search.toString() : undefined,
   });
 
+  // 검색 결과 페이지 인피니트 로딩 관련
+  const [scroll, scrollTo] = useWindowScroll();
+  const [scrollThreshold, setScrollThreshold] = useState(0);
+
+  useEffect(() => {
+    if (search && scroll.y >= scrollThreshold) {
+      setAssetSize((prev) => prev + 1);
+      setScrollThreshold((prev) => prev + 1000);
+    }
+  }, [search, scroll.y]);
+
   // 검색 기록을 가져옴
   const {
     data: historyData,
     isLoading: isHistoryLoading,
     mutate: mutateSearchHistory,
   } = useAssetSearchHistory();
-
-  const [scroll, scrollTo] = useWindowScroll();
-  const [scrollThreshold, setScrollThreshold] = useState(0);
-
-  useEffect(() => {
-    if (scroll.y >= scrollThreshold) {
-      setAssetSize((prev) => prev + 1);
-      setScrollThreshold((prev) => prev + 1000);
-      // console.log("scroll");
-    }
-  }, [scroll.y]);
 
   return (
     <AssetContext.Provider value={{ mutateSearchHistory }}>
@@ -77,7 +78,9 @@ function Asset() {
         }
         tabSection={
           <MainTab
-            onTabChange={(category) => setCategory(category)}
+            onTabChange={(category) => {
+              setCategory(category);
+            }}
             MovingUp={() => {
               window.scrollTo(0, 0);
             }}
@@ -110,22 +113,16 @@ function Asset() {
           </Stack>
         ) : (
           <Stack spacing={"4rem"}>
-            <MainAssetSection title="신규 에셋">
-              <>
-                {assetData?.map((data) => {
-                  return data.data.data.map((data) => (
-                    <Carousel.Slide>
-                      <MainAsset assetData={data} />
-                    </Carousel.Slide>
-                  ));
-                })}
-                {isAssetLoading && (
-                  <Center w={"10rem"} h={"16.9rem"}>
-                    <Loader color="teal" variant="dots" />
-                  </Center>
-                )}
-              </>
-            </MainAssetSection>
+            <MainAssetSection
+              onSlideChange={(index) => {
+                if (index > assetSize - 6) {
+                  setAssetSize((prev) => prev + 1);
+                }
+              }}
+              assetData={assetData}
+              isAssetLoading={isAssetLoading}
+              title="신규 에셋"
+            />
           </Stack>
         )}
       </MainLayout>

@@ -36,7 +36,8 @@ function useAssetList(category: string, settings: useAssetListSettings = {}) {
   const { token } = useAuth();
   const response = useSWRInfinite<GetAssetListResponse>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, category, settings),
-    (url) => fetcher(url, token)
+    (url) => fetcher(url, token),
+    { initialSize: 2 }
   );
   const isLast = response.data?.[response.data.length - 1]?.data.cursor?.afterCursor === null;
   const isEmpty = response.data?.[0]?.data.data.length === 0;

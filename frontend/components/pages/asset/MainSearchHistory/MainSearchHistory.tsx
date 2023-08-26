@@ -9,7 +9,7 @@ import {
 import useAuth from "../../../../hooks/useAuth";
 import { AssetSearchHistory } from "../../../../types/api/asset";
 import { AssetContext } from "../../../../pages/asset";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 
 interface MainSearchHistoryProps {
@@ -24,6 +24,11 @@ export function MainSearchHistory({ data, isLoading }: MainSearchHistoryProps) {
   const router = useRouter();
 
   const { mutateSearchHistory } = useContext(AssetContext);
+
+  // 초기에 검색기록이 로딩이 안되는 문제 해결
+  useEffect(() => {
+    mutateSearchHistory();
+  }, [data]);
 
   const histories = data?.map((item) => {
     return (

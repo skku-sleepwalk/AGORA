@@ -30,5 +30,11 @@ export const useMainAssetSectionStyles = createStyles((theme) => ({
     ".mantine-Carousel-container": {
       alignItems: "center",
     },
+    ".mantine-Carousel-control": {
+      "&[data-inactive]": {
+        opacity: 0,
+        cursor: "default",
+      },
+    },
   },
 }));
