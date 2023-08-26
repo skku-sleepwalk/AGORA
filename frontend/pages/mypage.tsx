@@ -33,9 +33,9 @@ function Main() {
       >
         {activeTab === "playtimes" && <MypagePlaytimesSection />}
         {activeTab === "myPosts" && (
-          <Box h={"40rem"}>
-            <MypageMyPostSection></MypageMyPostSection>
-          </Box>
+          //<Box h={"40rem"}>
+          <MypageMyPostSection></MypageMyPostSection>
+          //</Box>
         )}
         {activeTab === "purchasedAssets" && <Box h={"40rem"}></Box>}
         {activeTab === "uploadedGames" && <Box h={"40rem"}></Box>}

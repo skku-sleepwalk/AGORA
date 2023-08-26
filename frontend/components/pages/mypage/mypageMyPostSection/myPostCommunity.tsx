@@ -8,7 +8,7 @@ import CardContainer from "../../../common/CardContainer/CardContainer";
 export interface myPostProps {
   myPost: GameBoard;
 }
-export default function MyPost({ myPost }: myPostProps) {
+export default function MyPostCommunity({ myPost }: myPostProps) {
   const thumbnailUrl = extractImageSrc(myPost.content)[0];
   console.log("hm", myPost.content);
   //   let removeImgTag = removeImgTags(myPost.content);
