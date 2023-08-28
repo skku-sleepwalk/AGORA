@@ -38,7 +38,7 @@ export function MainTab({ onTabChange, MovingUp, scrollY }: MainTabProps) {
     <Box className={cx(classes.wrapper, scrollY > 4 * 16 && classes.shadow)}>
       <Group className={classes.group} position="apart">
         <Group spacing={"sm"}>{sections}</Group>
-        <Button
+        {/* <Button
           className={classes.buttonOn}
           variant="default"
           color="teal"
@@ -46,7 +46,7 @@ export function MainTab({ onTabChange, MovingUp, scrollY }: MainTabProps) {
           fw={"normal"}
         >
           에셋 업로드
-        </Button>
+        </Button> */}
       </Group>
     </Box>
   );
