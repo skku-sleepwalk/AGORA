@@ -11,6 +11,7 @@ export const useMainLayoutStyles = createStyles((theme) => ({
     width: "100%",
     height: "3rem",
     zIndex: 50,
+    // top: 69,
   },
 
   upMainContainer: {

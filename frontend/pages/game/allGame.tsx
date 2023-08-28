@@ -48,9 +48,6 @@ export default function allGame() {
   return (
     <MainLayout tapSection={<MainTab active="allGame" />}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        <div style={{ position: "sticky", top: "70px", zIndex: "1000" }}>
-          <MainTab active="allGame"></MainTab>
-        </div>
         <div style={{ display: "flex", flexDirection: "row" }}>
           {/* 헤더 하단 */}
           <div style={{ width: "20%" }}>
