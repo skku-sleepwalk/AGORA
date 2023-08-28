@@ -54,7 +54,9 @@ export default function Stories({ gameID }: StoriesProps) {
             }}
           >
             {/* 여기는 좌측 */}
-            <div style={{ display: "flex", flexDirection: "row", width: "200px", height: "60px" }}>
+            <div
+              style={{ display: "flex", flexDirection: "row", width: "12.5rem", height: "60px" }}
+            >
               <div style={{ width: "60px", height: "60px" }}>
                 <Image
                   width={"100%"}
@@ -104,10 +106,10 @@ export default function Stories({ gameID }: StoriesProps) {
         >
           {/* 여기는 우측 */}
           <Carousel
-            style={{ width: "100%", display: "flex", paddingLeft: "55px" }}
+            style={{ width: "100%", display: "flex", paddingLeft: "3.43rem" }}
             slidesToScroll={3}
             slideSize="33%"
-            slideGap={"20px"}
+            slideGap={"1.5rem"}
           >
             {postData?.map((data) => {
               console.log("data is ", data);
@@ -125,8 +127,8 @@ export default function Stories({ gameID }: StoriesProps) {
                         marginTop: "20px",
                         width: "100%",
                         height: "100%",
-                        paddingLeft: "10px",
-                        paddingRight: "10px",
+                        // paddingLeft: "10px",
+                        // paddingRight: "10px",
                       }}
                     >
                       {/* 
