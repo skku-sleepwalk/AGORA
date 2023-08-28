@@ -13,7 +13,7 @@ function MainLayout({ children, tapSection, upSection }: CommunityLayoutProps) {
     <div className={classes.container}>
       <div className={classes.tapContainer}>{tapSection}</div>
       <div className={classes.upMainContainer}>
-        <div className={classes.upContainer}>{upSection}</div>
+        {upSection && <div className={classes.upContainer}>{upSection}</div>}
         <div className={classes.mainContainer}>{children}</div>
       </div>
     </div>
