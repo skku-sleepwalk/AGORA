@@ -18,8 +18,9 @@ const getKey = (
     queryString = stringify({
       afterCursor: previousPageData?.data.cursor.afterCursor,
     });
-  } else
-    return `http://localhost:8000/users/${userId}/profile/written-community-board${queryString}`; //작동X해야함
+  }
+  // return `NEXT_PUBLIC_API_URL/users/${userId}/profile/written-community-board${queryString}`;
+  else return `http://localhost:8000/users/${userId}/profile/written-community-board${queryString}`; //작동X해야함
 };
 
 function useMyCommunityPost() {

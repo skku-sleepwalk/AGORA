@@ -36,9 +36,9 @@ export function MypageMyPostSection() {
             setSwitch("게임");
           }}
           style={{
-            background: "white",
-            color: "black",
-            border: "1px solid black",
+            background: "#9AE3EB",
+            color: "white",
+
             marginRight: "10px",
           }}
         >
@@ -48,7 +48,7 @@ export function MypageMyPostSection() {
           onClick={() => {
             setSwitch("커뮤니티");
           }}
-          style={{ background: "white", color: "black", border: "1px solid black" }}
+          style={{ background: "#9AE3EB", color: "white" }}
         >
           커뮤니티
         </Button>
@@ -72,6 +72,8 @@ export function MypageMyPostSection() {
                 // height: "100%",
                 paddingLeft: "10px",
                 paddingRight: "10px",
+                display: "flex",
+                justifyContent: "center",
               }}
             >
               {/* 
@@ -97,6 +99,8 @@ export function MypageMyPostSection() {
               style={{
                 marginTop: "20px",
                 width: "100%",
+                display: "flex",
+                justifyContent: "center",
                 // height: "100%",
                 paddingLeft: "10px",
                 paddingRight: "10px",
