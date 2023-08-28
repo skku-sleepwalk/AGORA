@@ -19,6 +19,7 @@ export default function Story({ story }: StoryProps) {
           alignItems: "center",
           justifyContent: "center",
           minHeight: "12rem",
+          // overflow: "hidden",
         }}
       >
         <Image
@@ -27,18 +28,18 @@ export default function Story({ story }: StoryProps) {
           height={"50%"}
           src={
             thumbnailUrl == ""
-              ? "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMzA3MTNfMTAz%2FMDAxNjg5MjUzNjY3NDQz.c6VImpgJ0qy1bRZGHiZVxfkRlqoW6UG1KY6MySFz8Acg.ZOb1WGfiq3B4pdgr8Gj272XBX_pe3BKODGBPRGMzGUUg.JPEG.wltndk97%2Foutput_4028971259.jpg&type=sc960_832"
+              ? "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyMTEwMjJfMTM5%2FMDAxNjM0ODY5NDAzMjQ4.i1SXWZ0IN9-_q9dabo6H4YrwhyoWYSzne1NBYAjueDwg.I1dhjPYvame_0hh7OwYwTuT2n_8IivkicMo92vaIwWAg.JPEG.happy_mkt%2F0_%25C0%25CC%25B9%25CC%25C1%25F6%25B0%25CB%25BB%25F6_%25B1%25E2%25B4%25C9_%25C3%25DF%25B0%25A12.jpg&type=sc960_832"
               : thumbnailUrl
           }
         ></Image>
       </div>
       <div>
-        <Text style={{ marginTop: "20px" }} fw={700} fz="ml">
+        <Text style={{ marginTop: "1.25rem" }} fw={700} fz="ml">
           {story.title}
         </Text>
       </div>
       <div>
-        <Text style={{ marginTop: "20px", height: "100px" }} fw={500} fz="sm">
+        <Text style={{ marginTop: "1.25rem", height: "10rem" }} fw={500} fz="sm">
           {removeImgTag}
         </Text>
       </div>
@@ -46,8 +47,8 @@ export default function Story({ story }: StoryProps) {
         style={{
           display: "flex",
           flexDirection: "row",
-          justifyContent: "space-around",
-          paddingRight: "50px",
+          justifyContent: "space-between",
+          paddingRight: "2rem",
         }}
       >
         <div style={{ display: "flex", flexDirection: "row" }}>

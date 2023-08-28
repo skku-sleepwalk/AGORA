@@ -4,6 +4,8 @@ import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import SmallPost from "../../components/pages/game/SmallPost/SmallPost";
 import useAllGame from "../../hooks/game/useAllGame";
 import { useState } from "react";
+import MainLayout from "../../components/pages/game/MainLayout/MainLayout";
+import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
 interface DataItem {
   id: string;
   checked: boolean;
@@ -44,71 +46,73 @@ export default function allGame() {
   };
   ///
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
-      <div style={{ position: "sticky", top: "70px", zIndex: "1000" }}>
-        <MainTab active="allGame"></MainTab>
-      </div>
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        {/* 헤더 하단 */}
-        <div style={{ width: "20%" }}>
-          {/* 좌측 사이드바 */}
-          <SideBar genreList={genreList} setGenre={toggleCheck}></SideBar>
+    <MainLayout tapSection={<MainTab active="allGame" />}>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <div style={{ position: "sticky", top: "70px", zIndex: "1000" }}>
+          <MainTab active="allGame"></MainTab>
         </div>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            width: "80%",
-          }}
-        >
-          {/* 우측 */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              paddingTop: "50px",
-            }}
-          >
-            {/* 검색창 */}
-            <SearchBar setsearch={setsearch}></SearchBar>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          {/* 헤더 하단 */}
+          <div style={{ width: "20%" }}>
+            {/* 좌측 사이드바 */}
+            <SideBar genreList={genreList} setGenre={toggleCheck}></SideBar>
           </div>
           <div
             style={{
               display: "flex",
-              justifyContent: "center",
-              paddingTop: "2rem",
+              flexDirection: "column",
+              width: "80%",
             }}
           >
-            {/* 게임들 */}
+            {/* 우측 */}
             <div
               style={{
                 display: "flex",
-                flexDirection: "column",
                 justifyContent: "center",
-                width: "80%",
+                paddingTop: "50px",
               }}
             >
+              {/* 검색창 */}
+              <SearchBar setsearch={setsearch}></SearchBar>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                paddingTop: "2rem",
+              }}
+            >
+              {/* 게임들 */}
               <div
                 style={{
                   display: "flex",
-                  flexDirection: "row",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  width: "80%",
                 }}
               >
-                {postData?.[0]?.data?.data[0]?.id != undefined && (
-                  <div style={{ width: "85%", height: "85%" }}>
-                    <SmallPost
-                      key={postData[0].data.data[0]?.id || ""}
-                      post={postData[0].data.data[0] || null}
-                    ></SmallPost>
-                  </div>
-                )}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                  }}
+                >
+                  {postData?.[0]?.data?.data[0]?.id != undefined && (
+                    <div style={{ width: "85%", height: "85%" }}>
+                      <SmallPost
+                        key={postData[0].data.data[0]?.id || ""}
+                        post={postData[0].data.data[0] || null}
+                      ></SmallPost>
+                    </div>
+                  )}
 
-                {/* 스토리 4개 */}
+                  {/* 스토리 4개 */}
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </MainLayout>
   );
 }

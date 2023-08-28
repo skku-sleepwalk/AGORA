@@ -5,15 +5,42 @@ import { IconMessage, IconHeart, Icon123, IconShare, IconBookmark } from "@table
 import { GameBoard } from "../../../../types/api/game/gameBoard";
 import { extractImageSrc } from "../../../../utils/api/ViewPhotos";
 import CardContainer from "../../../common/CardContainer/CardContainer";
+import { MOCKUP_CONTENT } from "../../../../mockups/post";
+import Link from "next/link";
 export interface myPostProps {
   myPost: GameBoard;
 }
 export default function MyPost({ myPost }: myPostProps) {
   const thumbnailUrl = extractImageSrc(myPost.content)[0];
+  console.log("hm", myPost.content);
   //   let removeImgTag = removeImgTags(myPost.content);
   //   removeImgTag = removeImgTag.replace(/<\/?p[^>]*>/g, "");
+  let tmpContent = MOCKUP_CONTENT;
+  function truncateText(text: string, maxLength: number): string {
+    if (text.length <= maxLength) {
+      const spacesToAdd = maxLength - text.length;
+      const spaces = "\u00A0".repeat(spacesToAdd);
+      console.log((text + spaces).length);
+      return text + spaces;
+    } else {
+      return text.slice(0, maxLength) + "...";
+    }
+  }
+
+  const maxLength = 120;
+  tmpContent = truncateText(tmpContent, maxLength);
   return (
-    <CardContainer style={{ padding: "0" }}>
+    // <Link
+    //   href={"game/" + myPost.game.id + "?board=" + myPost.id}
+    //   style={{
+    //     textDecoration: "none",
+    //     color: "black",
+    //   }}
+    // >
+    // ***
+    // 현재 백엔드 game 없음
+    // ***
+    <CardContainer style={{ padding: "0", height: "12rem", overflow: "hidden" }}>
       <div style={{ display: "flex", flexDirection: "row", width: "100%", height: "100%" }}>
         <div
           style={{
@@ -36,15 +63,20 @@ export default function MyPost({ myPost }: myPostProps) {
         </div>
         <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
           <div>
-            <Text style={{ marginTop: "5rem" }} fw={700} fz="ml">
+            <Text style={{ marginTop: "2rem" }} fw={700} fz="ml">
               {myPost.title}
             </Text>
           </div>
-          {/* <div>
-        <Text style={{ marginTop: "20px", height: "100px" }} fw={500} fz="sm">
-          {removeImgTag}
-        </Text>
-      </div> */}
+          <div>
+            <Text
+              style={{ marginTop: "20px", height: "4rem", paddingRight: "40px" }}
+              fw={500}
+              fz="sm"
+            >
+              {/* {removeImgTag} */}
+              {tmpContent}
+            </Text>
+          </div>
           <div
             style={{
               display: "flex",
@@ -68,5 +100,6 @@ export default function MyPost({ myPost }: myPostProps) {
         </div>
       </div>
     </CardContainer>
+    // </Link>
   );
 }
