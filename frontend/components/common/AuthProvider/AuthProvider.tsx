@@ -33,7 +33,7 @@ function AuthProvider({ children }: AuthProviderProps) {
   const cookie = new Cookies();
   const [token, setToken] = useState<string | undefined>(undefined);
   const { data: userData, mutate: mutateUser } = useSWR<GetMeResponse>(
-    token ? `http://localhost:8000/users/me` : null,
+    token ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/me` : null,
     (url) => fetcher(url, token || undefined)
   );
   const [user, setUser] = useState<User | null>(userData?.data || null);

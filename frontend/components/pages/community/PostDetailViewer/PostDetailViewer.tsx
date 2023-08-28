@@ -79,7 +79,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
 
   const postData: Board = post;
   const mutatePostDetail = async () => {
-    mutate(`http://localhost:8000/community/board/${post.id}`);
+    mutate(`${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${post.id}`);
     post = postData;
   };
 

@@ -5,7 +5,7 @@ import { fetcher } from "../utils/fetcher";
 
 export function useAssetTag(searchKeyword: string | null) {
   const { token } = useAuth();
-  const url = `http://localhost:8000/game/tag/search?q=${searchKeyword}`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/tag/search?q=${searchKeyword}`;
 
   const response = useSWR<AssetTagResponse>(url, (url) => fetcher(url, token));
 

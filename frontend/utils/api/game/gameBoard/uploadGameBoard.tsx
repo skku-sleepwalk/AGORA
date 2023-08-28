@@ -7,7 +7,7 @@ export async function uploadGameBoard(
   token?: string
 ): Promise<void> {
   await axios.post<PostGameBoardBody, AxiosResponse<void>>(
-    `http://localhost:8000/game/${gameId}/board`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board`,
     post,
     {
       headers: {

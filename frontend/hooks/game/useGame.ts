@@ -5,7 +5,7 @@ import { GetGameResponse } from "../../types/api/game/game";
 
 function useGame(gameId?: string) {
   const { token } = useAuth();
-  const url = `http://localhost:8000/game/${gameId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}`;
 
   const response = useSWR<GetGameResponse>(url, (url) => fetcher(url, token));
 

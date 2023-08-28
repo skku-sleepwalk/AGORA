@@ -27,9 +27,11 @@ const getKey = (
 
   const queryString = stringify(query);
 
-  if (search) return `http://localhost:8000/community/board/search?${queryString}`;
-  if (parentId) return `http://localhost:8000/community/board/getChild/${parentId}?${queryString}`;
-  else return `http://localhost:8000/community/board?${queryString}`;
+  if (search)
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/search?${queryString}`;
+  if (parentId)
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/getChild/${parentId}?${queryString}`;
+  else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board?${queryString}`;
 };
 
 function useBoardList(categories: string[], settings: useBoardListSettings = {}) {

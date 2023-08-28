@@ -9,7 +9,7 @@ export async function PostAssetReviewLike(
   token?: string
 ): Promise<AssetReviewResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<AssetReviewResponse>>(
-    `http://localhost:8000/asset/${assetId}/review/${reviewId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/${reviewId}/like`,
     {},
     {
       headers: {
@@ -26,7 +26,7 @@ export async function DelAssetReviewLike(
   token?: string
 ): Promise<AssetReviewResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<AssetReviewResponse>>(
-    `http://localhost:8000/asset/${assetId}/review/${reviewId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/${reviewId}/like`,
 
     {
       headers: {
@@ -44,7 +44,7 @@ export async function PostAssetReviewDislike(
   token?: string
 ): Promise<AssetReviewResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<AssetReviewResponse>>(
-    `http://localhost:8000/asset/${assetId}/review/${reviewId}/dislike`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/${reviewId}/dislike`,
     {},
     {
       headers: {
@@ -61,7 +61,7 @@ export async function DelAssetReviewDislike(
   token?: string
 ): Promise<AssetReviewResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<AssetReviewResponse>>(
-    `http://localhost:8000/asset/${assetId}/review/${reviewId}/dislike`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/${reviewId}/dislike`,
 
     {
       headers: {

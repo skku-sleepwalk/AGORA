@@ -10,7 +10,7 @@ export async function PostGameReviewCommentLike(
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment/${commentId}/like`,
     {},
     {
       headers: {
@@ -28,7 +28,7 @@ export async function DelGameReviewCommentLike(
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment/${commentId}/like`,
 
     {
       headers: {
@@ -47,7 +47,7 @@ export async function PostGameReviewCommentDislike(
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}/dislike`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment/${commentId}/dislike`,
     {},
     {
       headers: {
@@ -65,7 +65,7 @@ export async function DelGameReviewCommentDislike(
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}/dislike`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment/${commentId}/dislike`,
 
     {
       headers: {

@@ -5,7 +5,7 @@ export interface Likes {}
 
 export async function PostGameLike(gameId: string, token?: string): Promise<GameLikeResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<GameLikeResponse>>(
-    `http://localhost:8000/game/${gameId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/like`,
     {},
     {
       headers: {
@@ -18,7 +18,7 @@ export async function PostGameLike(gameId: string, token?: string): Promise<Game
 }
 export async function DelGameLike(gameId: string, token?: string): Promise<GameLikeResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<GameLikeResponse>>(
-    `http://localhost:8000/game/${gameId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/like`,
 
     {
       headers: {

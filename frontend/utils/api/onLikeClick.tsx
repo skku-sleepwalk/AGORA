@@ -15,7 +15,7 @@ export async function onLikeClick(
   { data: { boardId, token } }: LikeClickResponse,
   currentLike: boolean
 ): Promise<void | undefined> {
-  const url = `http://localhost:8000/community/board/${boardId}/like`; // PATCH 요청을 보낼 엔드포인트 URL
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${boardId}/like`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
     "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
     Authorization: `${token}`,

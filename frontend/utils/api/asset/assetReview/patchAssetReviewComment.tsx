@@ -16,7 +16,7 @@ export async function patchAssetReviewComment({
   data,
   token,
 }: patchAssetReviewCommentResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/asset/${assetId}/review/${reviewId}/comment/${commentId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/${reviewId}/comment/${commentId}`;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `${token}`,

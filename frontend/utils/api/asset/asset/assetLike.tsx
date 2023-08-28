@@ -5,7 +5,7 @@ export interface Likes {}
 
 export async function PostAssetLike(assetId: string, token?: string): Promise<AssetLikeResponse> {
   const { data } = await axios.post<Likes, AxiosResponse<AssetLikeResponse>>(
-    `http://localhost:8000/asset/${assetId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/like`,
     {},
     {
       headers: {
@@ -18,7 +18,7 @@ export async function PostAssetLike(assetId: string, token?: string): Promise<As
 }
 export async function DelAssetLike(assetId: string, token?: string): Promise<AssetLikeResponse> {
   const { data } = await axios.delete<Likes, AxiosResponse<AssetLikeResponse>>(
-    `http://localhost:8000/asset/${assetId}/like`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/like`,
 
     {
       headers: {

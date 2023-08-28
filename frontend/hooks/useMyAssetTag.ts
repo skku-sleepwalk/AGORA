@@ -5,7 +5,7 @@ import { fetcher } from "../utils/fetcher";
 
 export function useMyAssetTag(assetId: string) {
   const { token } = useAuth();
-  const url = `http://localhost:8000/asset/${assetId}/tag`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/tag`;
 
   const response = useSWR<MyAssetTagResponse>(url, (url) => fetcher(url, token));
 

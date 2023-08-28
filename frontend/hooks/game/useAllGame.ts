@@ -41,7 +41,7 @@ const getKey = (
     });
   }
 
-  return `http://localhost:8000/game/search?${queryString}`; //이거 맞는지 모르겠음
+  return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/search?${queryString}`; //이거 맞는지 모르겠음
 };
 
 function useAllGame(settings: useGameListSettings = {}) {

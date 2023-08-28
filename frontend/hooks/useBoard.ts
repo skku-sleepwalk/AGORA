@@ -6,7 +6,7 @@ import { fetcher } from "../utils/fetcher";
 function useBoard(id?: string) {
   const { token } = useAuth();
   const response = useSWR<GetBoardResponse>(
-    id ? `http://localhost:8000/community/board/${id}` : null,
+    id ? `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${id}` : null,
     (url) => fetcher(url, token)
   );
   return response;

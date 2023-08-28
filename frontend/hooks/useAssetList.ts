@@ -28,8 +28,8 @@ const getKey = (
 
   const queryString = stringify(query);
 
-  if (search) return `http://localhost:8000/asset/search?${queryString}`;
-  else return `http://localhost:8000/asset?${queryString}`;
+  if (search) return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/search?${queryString}`;
+  else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset?${queryString}`;
 };
 
 function useAssetList(category: string, settings: useAssetListSettings = {}) {

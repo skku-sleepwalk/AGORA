@@ -7,7 +7,7 @@ export async function PostAssetTag(
   token?: string
 ): Promise<PostAssetTagResponse> {
   const { data } = await axios.post<AssetTagName, AxiosResponse<PostAssetTagResponse>>(
-    `http://localhost:8000/asset/${assetId}/tag`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/tag`,
     tagName,
     {
       headers: {
@@ -30,7 +30,7 @@ export default async function deleteAssetTag(
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/asset/${assetId}/tag/${relationId}`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/tag/${relationId}`,
       {
         headers,
       }
