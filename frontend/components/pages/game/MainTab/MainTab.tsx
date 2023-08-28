@@ -33,13 +33,13 @@ export function MainTab({ active }: MainTabProps) {
         >
           전체 게임
         </Tabs.Tab>
-        <Button
+        {/* <Button
           className={cx(smallScreen ? classes.button_S : classes.button_B)}
           variant="outline"
           radius="lg"
         >
           게임 출시
-        </Button>
+        </Button> */}
       </Tabs.List>
     </Tabs>
   );
