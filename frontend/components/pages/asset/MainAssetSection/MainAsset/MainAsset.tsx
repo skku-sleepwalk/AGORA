@@ -59,21 +59,21 @@ export function MainAsset({ assetData }: MainAssetProps) {
           </Stack>
           <Group position="apart">
             <Group spacing={"0.3rem"}>
-              <Button className={classes.button} variant="default" radius="md">
-                <IconHeart size={"1rem"} stroke={1.2} />
-              </Button>
-              <Button className={classes.button} variant="default" radius="md">
-                <IconBookmark size={"1rem"} stroke={1.2} />
-              </Button>
+              <Box className={classes.button} w={"auto"}>
+                <Group spacing={"0.3rem"}>
+                  <IconHeart size={"1rem"} stroke={1.2} />
+                  <Text fz={12}>{assetData.likeCount}</Text>
+                </Group>
+              </Box>
             </Group>
-            <Button className={classes.button} w={"auto"} variant="default" radius="md">
+            <Box className={classes.button} w={"auto"}>
               <Group spacing={"0.3rem"}>
                 <Image src="/images/token.svg" width={"0.85rem"} height={"0.85rem"} />
-                <Text fz={12} className={cx(isSale && classes.saleText)}>
+                <Text fz={12} fw={"bold"} className={cx(isSale && classes.saleText)}>
                   {isSale ? assetData.cost.saledPrice : assetData.cost.defaultPrice}
                 </Text>
               </Group>
-            </Button>
+            </Box>
           </Group>
         </Stack>
       </CardContainer>

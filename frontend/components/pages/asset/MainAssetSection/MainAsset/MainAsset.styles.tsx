@@ -42,9 +42,15 @@ export const useMainAssetStyles = createStyles((theme) => ({
   },
 
   button: {
-    width: "1.6rem",
+    display: "flex",
     height: "1.6rem",
-    padding: "0.3rem",
+    padding: "0rem 0.4rem",
+
+    backgroundColor: "white",
+    border: `1px solid ${theme.colors.gray[4]}`,
+    borderRadius: theme.radius.md,
+
+    alignItems: "center",
   },
 
   saleText: {
