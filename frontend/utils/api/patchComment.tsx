@@ -18,7 +18,7 @@ export interface PatchCommentResponse {
 export async function patchComment({
   data: { boardId, data, token },
 }: PatchCommentResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/community/board/${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
     "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
     Authorization: `${token}`,

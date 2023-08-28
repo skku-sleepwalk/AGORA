@@ -30,8 +30,9 @@ const getKey = (
     });
   }
 
-  if (genreName) return `http://localhost:8000/game?${queryString}`; //이거 맞는지 모르겠음
-  else return `http://localhost:8000/community/board?${queryString}`; //작동X해야함
+  if (genreName)
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game?${queryString}`; //이거 맞는지 모르겠음
+  else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board?${queryString}`; //작동X해야함
 };
 
 function useGameList(settings: useGameListSettings = {}) {

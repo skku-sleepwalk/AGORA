@@ -12,7 +12,7 @@ export async function patchAssetReview({
   data,
   token,
 }: PatchAssetReviewReponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/asset/${assetId}/review`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review`;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `${token}`,

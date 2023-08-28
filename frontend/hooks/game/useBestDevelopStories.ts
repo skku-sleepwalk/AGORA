@@ -14,7 +14,7 @@ const getKey = (pageIndex: number, previousPageData: GetGameBoardListResponse | 
     queryString = stringify({
       afterCursor: previousPageData?.data.cursor.afterCursor,
     });
-  } else return `http://localhost:8000/game/best-board${queryString}`; //작동X해야함
+  } else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/best-board${queryString}`; //작동X해야함
 };
 
 function useBestDevelopStories() {

@@ -7,7 +7,7 @@ export async function PostGameTag(
   token?: string
 ): Promise<PostGameTagResponse> {
   const { data } = await axios.post<GameTagName, AxiosResponse<PostGameTagResponse>>(
-    `http://localhost:8000/game/${gameId}/tag`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/tag`,
     tagName,
     {
       headers: {
@@ -30,7 +30,7 @@ export default async function deleteGameTag(
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/game/${gameId}/tag/${relationId}`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/tag/${relationId}`,
       {
         headers,
       }

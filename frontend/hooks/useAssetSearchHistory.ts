@@ -5,7 +5,7 @@ import { GetAssetSearchHistoryResponse } from "../types/api/asset";
 
 export function useAssetSearchHistory() {
   const { token } = useAuth();
-  const url = "http://localhost:8000/asset/searchHistory";
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/searchHistory`;
 
   const response = useSWR<GetAssetSearchHistoryResponse>(url, (url) => fetcher(url, token));
 

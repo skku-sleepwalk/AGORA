@@ -7,7 +7,7 @@ export default async function deletePost(postId: string, token?: string): Promis
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/community/board/${postId}`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${postId}`,
       {
         headers,
       }

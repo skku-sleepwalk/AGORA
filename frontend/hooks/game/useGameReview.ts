@@ -25,14 +25,14 @@ const getKey = (
   }
   if (reviewId === undefined) {
     if (queryString == "") {
-      return `http://localhost:8000/game/${id}/review`;
+      return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${id}/review`;
     }
-    return `http://localhost:8000/game/${id}/review?${queryString}`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${id}/review?${queryString}`;
   } else {
     if (queryString == "") {
-      return `http://localhost:8000/game/${id}/review/${reviewId}/comment`;
+      return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${id}/review/${reviewId}/comment`;
     }
-    return `http://localhost:8000/game/${id}/review/${reviewId}/comment?${queryString}`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${id}/review/${reviewId}/comment?${queryString}`;
   }
 };
 

@@ -5,7 +5,7 @@ import { MyAssetReviewResponse } from "../types/api/asset";
 
 export function useMyAssetReview(assetId: string) {
   const { token } = useAuth();
-  const url = `http://localhost:8000/asset/${assetId}/review/user`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review/user`;
 
   const response = useSWR<MyAssetReviewResponse>(url, (url) => fetcher(url, token));
 

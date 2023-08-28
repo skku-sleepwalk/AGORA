@@ -6,7 +6,7 @@ import { GetGameBoardResponse } from "../../types/api/game/gameBoard";
 function useGameBoard(gameId: string, boardId: string) {
   const { token } = useAuth();
   const response = useSWR<GetGameBoardResponse>(
-    `http://localhost:8000/game/${gameId}/board/${boardId}`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/${boardId}`,
     (url) => fetcher(url, token)
   );
   return response;

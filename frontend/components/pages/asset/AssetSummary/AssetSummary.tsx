@@ -100,7 +100,7 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
             <Group spacing={6}>
               <Image src="/images/token.svg" width={32} height={32} />
               <Text fz={24} fw={"bold"}>
-                {asset.cost.defaultPrice}
+                {asset.cost.isSale ? asset.cost.saledPrice : asset.cost.defaultPrice}
               </Text>
             </Group>
           </Stack>
