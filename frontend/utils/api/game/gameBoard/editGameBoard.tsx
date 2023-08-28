@@ -8,7 +8,7 @@ export async function editGameBoard(
   token?: string
 ): Promise<void> {
   await axios.patch<PatchGameBoardBody, AxiosResponse<void>>(
-    `http://localhost:8000/game/${gameId}/board/${boardId}`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/${boardId}`,
     post,
     {
       headers: {

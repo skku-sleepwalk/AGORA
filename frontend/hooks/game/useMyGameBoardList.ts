@@ -17,9 +17,8 @@ const getKey = (
     queryString = stringify({
       afterCursor: previousPageData?.data.cursor.afterCursor,
     });
-  }
-  //    else return `NEXT_PUBLIC_API_URL/users/${userId}/profile/written-game-board${queryString}`;
-  else return `http://localhost:8000/users/${userId}/profile/written-game-board${queryString}`; //작동X해야함
+  } else
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${userId}/profile/written-game-board${queryString}`; //작동X해야함
 };
 
 function useMyGameBoardList() {

@@ -12,9 +12,14 @@ export const Category = new Array(
 );
 
 export const DevelopValues = [
-  { label: "Unity", checked: true, key: randomId() },
-  { label: "C#", checked: true, key: randomId() },
-  { label: "Python", checked: true, key: randomId() },
+  // { label: "Unity", checked: true, key: randomId() },
+  // { label: "C#", checked: true, key: randomId() },
+  // { label: "Python", checked: true, key: randomId() },
+  { label: "자료", checked: true, key: randomId() },
+  { label: "정보", checked: true, key: randomId() },
+  { label: "질문", checked: true, key: randomId() },
+  { label: "개발일지", checked: true, key: randomId() },
+  { label: "홍보", checked: true, key: randomId() },
 ];
 
 export const DesignValues = [

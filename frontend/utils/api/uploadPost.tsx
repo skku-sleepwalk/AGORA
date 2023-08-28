@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 
 export async function uploadPost(post: PostBoardBody, token?: string): Promise<PostBoardResponse> {
   const { data } = await axios.post<PostBoardBody, AxiosResponse<PostBoardResponse>>(
-    "http://localhost:8000/community/board",
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board`,
     post,
     {
       headers: {

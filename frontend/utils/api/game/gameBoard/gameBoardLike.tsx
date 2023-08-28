@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export function createGameBoardLike(gameId: string, boardId: string, token?: string) {
-  const url = `http://localhost:8000/game/${gameId}/board/${boardId}/like`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/${boardId}/like`;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `${token}`,
@@ -11,7 +11,7 @@ export function createGameBoardLike(gameId: string, boardId: string, token?: str
 }
 
 export function deleteGameBoardLike(gameId: string, boardId: string, token?: string) {
-  const url = `http://localhost:8000/game/${gameId}/board/${boardId}/like`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/${boardId}/like`;
   const headers = {
     "Content-Type": "application/json",
     Authorization: `${token}`,

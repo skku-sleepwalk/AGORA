@@ -12,7 +12,7 @@ export default async function deleteGameReviewComment(
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/game/${gameId}/review/${reviewId}/comment/${commentId}`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment/${commentId}`,
       {
         headers,
       }

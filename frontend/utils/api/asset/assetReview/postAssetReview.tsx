@@ -12,7 +12,7 @@ export async function PostAssetReview(
   token?: string
 ): Promise<AssetReviewResponse> {
   const { data } = await axios.post<AssetReviewData, AxiosResponse<AssetReviewResponse>>(
-    `http://localhost:8000/asset/${assetId}/review`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${assetId}/review`,
     postData,
     {
       headers: {

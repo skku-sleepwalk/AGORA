@@ -12,7 +12,7 @@ export async function PostGameReviewComment(
   token?: string
 ): Promise<GameReviewResponse> {
   const { data } = await axios.post<gameReviewCommentData, AxiosResponse<GameReviewResponse>>(
-    `http://localhost:8000/game/${gameId}/review/${reviewId}/comment`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review/${reviewId}/comment`,
     postData,
     {
       headers: {

@@ -6,7 +6,7 @@ export async function PostAssetSearchHistory(
   token?: string
 ): Promise<null> {
   const { data } = await axios.post<PostAssetSearch, AxiosResponse<null>>(
-    `http://localhost:8000/asset/searchHistory`,
+    `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/searchHistory`,
     keyword,
     {
       headers: {
@@ -25,7 +25,7 @@ export async function deleteAssetSearchHistory(keyword: string, token?: string):
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/asset/searchHistory/${keyword}`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/searchHistory/${keyword}`,
       {
         headers,
       }
@@ -42,7 +42,7 @@ export async function deleteAllAssetSearchHistory(token?: string): Promise<void>
       Authorization: token,
     };
     const response: AxiosResponse = await axios.delete(
-      `http://localhost:8000/asset/searchHistory`,
+      `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/searchHistory`,
       {
         headers,
       }

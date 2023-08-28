@@ -28,10 +28,11 @@ const getKey = (
 
   const queryString = stringify(query);
 
-  if (search) return `http://localhost:8000/game/${gameId}/board/search?${queryString}`;
+  if (search)
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/search?${queryString}`;
   if (parentId)
-    return `http://localhost:8000/game/${gameId}/board/getChild/${parentId}?${queryString}`;
-  else return `http://localhost:8000/game/${gameId}/board?${queryString}`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board/getChild/${parentId}?${queryString}`;
+  else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/board?${queryString}`;
 };
 
 function useGameBoardList(

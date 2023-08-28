@@ -12,7 +12,7 @@ export async function patchGameReview({
   data,
   token,
 }: patchGameReviewResponse): Promise<void | undefined> {
-  const url = `http://localhost:8000/game/${gameId}/review`; // PATCH 요청을 보낼 엔드포인트 URL
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/game/${gameId}/review`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {
     "Content-Type": "application/json", // 요청의 콘텐츠 유형 지정
     Authorization: `${token}`,

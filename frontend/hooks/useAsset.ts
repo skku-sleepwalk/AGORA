@@ -5,7 +5,7 @@ import { fetcher } from "../utils/fetcher";
 
 function useAsset(gameId?: string) {
   const { token } = useAuth();
-  const url = `http://localhost:8000/asset/${gameId}`;
+  const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${gameId}`;
 
   const response = useSWR<GetAssetResponse>(url, (url) => fetcher(url, token));
 

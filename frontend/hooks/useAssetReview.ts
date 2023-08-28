@@ -24,14 +24,14 @@ const getKey = (
   }
   if (reviewId === undefined) {
     if (queryString == "") {
-      return `http://localhost:8000/asset/${id}/review`;
+      return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${id}/review`;
     }
-    return `http://localhost:8000/asset/${id}/review?${queryString}`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${id}/review?${queryString}`;
   } else {
     if (queryString == "") {
-      return `http://localhost:8000/asset/${id}/review/${reviewId}/comment`;
+      return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${id}/review/${reviewId}/comment`;
     }
-    return `http://localhost:8000/asset/${id}/review/${reviewId}/comment?${queryString}`;
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset/${id}/review/${reviewId}/comment?${queryString}`;
   }
 };
 
