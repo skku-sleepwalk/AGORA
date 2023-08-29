@@ -36,7 +36,7 @@ function AssetDetail() {
       <AssetTabClickContext.Provider value={{ ontabClick, ontabClickFast }}>
         {assetData && (
           <AssetLayout
-            photoSection={<AssetCarousel />}
+            photoSection={<AssetCarousel imgUrls={assetData.data.imgUrls} />}
             summarySection={<AssetSummary asset={assetData.data} />}
             anchorSection={<div ref={tabRef}></div>}
             tabSection={<AssetTab activeTab={activeTab} setActiveTab={setActiveTab} />}

@@ -175,7 +175,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
               <MultiSelect
                 className={classes.multiSelect}
                 data={data}
-                value={post.__categories__.map((item) => item.name)}
+                value={post.categories.map((item) => item.name)}
                 readOnly
               />
               <Group spacing={13}>

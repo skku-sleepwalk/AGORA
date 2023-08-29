@@ -25,6 +25,9 @@ export interface Asset {
   like: boolean;
   likeCount: number;
   popularTags: AssetTag[];
+  isFree: boolean;
+  isPurchased: boolean;
+  imgUrls: string[];
 }
 
 export interface AssetReview {

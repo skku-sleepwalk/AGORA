@@ -1,4 +1,4 @@
-import { Group, Avatar, Text, Button, Menu } from "@mantine/core";
+import { Group, Avatar, Text, Button, Menu, Image } from "@mantine/core";
 import { IconChevronDown, IconSettings, IconUser, IconLogout } from "@tabler/icons-react";
 import { useUserMenuStyles } from "./UserMenu.styles";
 import { useRouter } from "next/router";
@@ -12,7 +12,7 @@ export interface UserMenuProps {
 export function UserMenu({ image, name }: UserMenuProps) {
   const { classes } = useUserMenuStyles();
   const router = useRouter();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   return (
     <Menu shadow="md" width={200}>
@@ -38,7 +38,7 @@ export function UserMenu({ image, name }: UserMenuProps) {
         >
           마이페이지
         </Menu.Item>
-        <Menu.Item icon={<IconSettings />}>설정</Menu.Item>
+        {/* <Menu.Item icon={<IconSettings />}>설정</Menu.Item> */}
         <Menu.Item
           icon={<IconLogout />}
           onClick={() => {
@@ -46,6 +46,9 @@ export function UserMenu({ image, name }: UserMenuProps) {
           }}
         >
           로그아웃
+        </Menu.Item>
+        <Menu.Item icon={<Image src="/images/token.svg" width={24} height={24} />}>
+          {user!.token}
         </Menu.Item>
       </Menu.Dropdown>
     </Menu>
