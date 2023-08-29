@@ -10,6 +10,7 @@ import {
   Center,
   Box,
   Modal,
+  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
@@ -23,16 +24,18 @@ import { DelGameLike, PostGameLike } from "../../../../utils/api/game/game/gameL
 import { GameContext } from "../../../../pages/game/[id]";
 import { useUserPlaytimes } from "../../../../hooks/game/useUserPlaytimes";
 import { hasPlaytime } from "../GameReviewSection/GameReviewSection";
+import { GamePlayModal } from "./GamePlayModal/GamePlayModal";
 
-interface GameDataProps {
+interface GameSummaryProps {
   postData: Game;
 }
 
-export function GameSummary({ postData }: GameDataProps) {
+export function GameSummary({ postData }: GameSummaryProps) {
   const { classes, cx } = useGameSummaryStyles();
   const { token } = useAuth();
 
-  const [opened, { open, close }] = useDisclosure(false);
+  const [tagModalOpened, { open: tagModalOpen, close: tagModalClose }] = useDisclosure(false);
+  const [playModalOpened, { open: playModalOpen, close: playModalClose }] = useDisclosure(false);
   const [isFollowing, setIsFollowing] = useState<boolean>(false);
 
   const { mutatePost } = useContext(GameContext);
@@ -77,18 +80,19 @@ export function GameSummary({ postData }: GameDataProps) {
     setIsOverflowed(checkOverflow());
   }, []);
 
-  // 게임 다운로드/플레이 관련
-  const onDownloadClick = () => {
-    window.open(`agoragame://install?id=${postData.id}&token=${token}`, "_blank");
-  };
-  const onPlayClick = () => {
-    window.open(`agoragame://execute?id=${postData.id}&token=${token}`, "_blank");
-  };
-
   return (
     <>
-      <Modal className={classes.modal} opened={opened} onClose={close} title="태그 추가" centered>
-        <GameTagModal onClose={close} gameId={postData.id} />
+      <Modal
+        className={classes.modal}
+        opened={tagModalOpened}
+        onClose={tagModalClose}
+        title="태그 추가"
+        centered
+      >
+        <GameTagModal onClose={tagModalClose} gameId={postData.id} />
+      </Modal>
+      <Modal opened={playModalOpened} onClose={playModalClose} withCloseButton={false} centered>
+        <GamePlayModal postData={postData} onCloseClick={playModalClose} />
       </Modal>
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
@@ -139,7 +143,7 @@ export function GameSummary({ postData }: GameDataProps) {
               <InvisibleButton onClick={handleIsFollowing}>
                 <Badge
                   className={classes.followBadge}
-                  color={isFollowing ? "gray" : undefined}
+                  color={isFollowing ? "gray" : "teal"}
                   size="lg"
                   radius="md"
                   leftSection={
@@ -205,14 +209,14 @@ export function GameSummary({ postData }: GameDataProps) {
             {canReview && (
               <Button
                 className={cx(classes.addButton, isOverflowed ? classes.addButton_A : null)}
-                onClick={open}
+                onClick={tagModalOpen}
               >
                 +
               </Button>
             )}
           </Box>
         </Box>
-        {!postData.isPlayable && (
+        {/* {!postData.isPlayable && (
           <Group className={classes.marginLeft} position="apart">
             <Button className={classes.sellButton}>
               <Stack spacing={"xs"}>
@@ -242,30 +246,28 @@ export function GameSummary({ postData }: GameDataProps) {
               </Stack>
             </Button>
           </Group>
-        )}
-        {postData.isPlayable && (
-          <Group className={classes.marginLeft} position="apart">
-            <Button className={cx(classes.sellButton)} onClick={onDownloadClick}>
-              <Stack spacing={"sm"}>
-                <Center>
-                  <Text fz={28}>게임 다운로드</Text>
-                </Center>
-              </Stack>
-            </Button>
-            <Button className={cx(classes.sellButton)} onClick={onPlayClick}>
-              <Stack spacing={"sm"}>
-                <Center>
-                  <Text fz={28}>게임 시작</Text>
-                </Center>
-                <Center>
-                  <Text fz={12} fw={"normal"}>
-                    마지막 플레이 2분 전
-                  </Text>
-                </Center>
-              </Stack>
-            </Button>
-          </Group>
-        )}
+        )} */}
+        <Group className={classes.marginLeft} position="apart">
+          {/* <Button className={cx(classes.sellButton)} onClick={onDownloadClick}>
+            <Stack spacing={"sm"}>
+              <Center>
+                <Text fz={28}>게임 다운로드</Text>
+              </Center>
+            </Stack>
+          </Button> */}
+          <Button className={cx(classes.sellButton)} onClick={playModalOpen}>
+            <Stack spacing={"sm"}>
+              <Center>
+                <Text fz={28}>게임 시작</Text>
+              </Center>
+              {/* <Center>
+                <Text fz={12} fw={"normal"}>
+                  마지막 플레이 2분 전
+                </Text>
+              </Center> */}
+            </Stack>
+          </Button>
+        </Group>
       </Stack>
     </>
   );

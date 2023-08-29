@@ -3,51 +3,55 @@ import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
 import useGameList from "../../hooks/game/useGameList";
-import { useRouter } from "next/router";
-import { createContext } from "react";
-import { useEffect } from "react";
-
-export const StoreContext = createContext({
-  mutatePost: () => {},
-});
+import { Stack } from "@mantine/core";
 
 export default function Main() {
-  const router = useRouter();
-
-  const genreName = "퍼즐";
+  const genreName = ["전략", "디펜스"];
 
   const {
-    data: postData,
-    isLoading: isPostLoading,
-    setSize: setPostSize,
-    mutate: mutatePost,
-    isEmpty,
+    data: postData1,
+    isLoading: isPostLoading1,
+    setSize: setPostSize1,
+    mutate: mutatePost1,
+    isEmpty: isEmpty1,
   } = useGameList({
-    genreName: genreName ? genreName : undefined,
-    // name.toString()
-    //여기 tostring 에러 가능성 있음
+    genreName: genreName ? genreName[0] : undefined,
   });
-  useEffect(() => {
-    setPostSize(1);
-  }, []);
+
+  const {
+    data: postData2,
+    isLoading: isPostLoading2,
+    setSize: setPostSize2,
+    mutate: mutatePost2,
+    isEmpty: isEmpty2,
+  } = useGameList({
+    genreName: genreName ? genreName[1] : undefined,
+  });
 
   return (
     <MainLayout tapSection={<MainTab active="main" />} upSection={<MainCarousel isMain={true} />}>
-      <StoreContext.Provider
-        value={{
-          mutatePost,
-        }}
-      >
+      <Stack spacing={0}>
         <SmallPosts
           information={{
-            data: postData,
-            isLoading: isPostLoading,
-            setSize: setPostSize,
-            mutate: mutatePost,
-            isEmpty,
+            data: postData1,
+            isLoading: isPostLoading1,
+            setSize: setPostSize1,
+            mutate: mutatePost1,
+            isEmpty1,
           }}
+          title={genreName[0]}
         ></SmallPosts>
-      </StoreContext.Provider>
+        <SmallPosts
+          information={{
+            data: postData2,
+            isLoading: isPostLoading2,
+            setSize: setPostSize2,
+            mutate: mutatePost2,
+            isEmpty2,
+          }}
+          title={genreName[1]}
+        ></SmallPosts>
+      </Stack>
     </MainLayout>
   );
 }

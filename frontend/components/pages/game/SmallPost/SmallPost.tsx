@@ -77,8 +77,9 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
     transition: "opacity 0.3s ease",
   };
   const namesArray = post.genres?.map((item) => item.name);
-  const newarray = namesArray?.join(",");
+  const newarray = namesArray?.join(", ");
   console.log(post.store?.cost);
+
   return (
     <Link href={`/game/${post.id}`} style={{ textDecoration: "none", color: "black" }}>
       <CardContainer style={sizeStyle} onMouseEnter={handleHover} onMouseLeave={handleLeave}>

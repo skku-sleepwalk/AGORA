@@ -14,10 +14,10 @@ export default function allGame() {
   //// 임시용 추후 수정 필
   const genreName = "FPS";
   const [genreList, setGenre] = useState([
-    { id: "FPS", checked: true },
-    { id: "B", checked: true },
-    { id: "C", checked: true },
+    { id: "전략", checked: true },
+    { id: "디펜스", checked: true },
   ]);
+
   const [search, setsearch] = useState("");
   function filterCheckedIds(data: DataItem[]): string[] {
     const checkedIds: string[] = [];
