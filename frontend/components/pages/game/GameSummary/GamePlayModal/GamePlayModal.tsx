@@ -58,7 +58,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
           <Text fz={16}>
             플레이한 시간:{" "}
             <Text c={theme.colors.teal[5]} fw={"bold"} span>
-              {postData.author.playtime}
+              {postData.author.playtime ? postData.author.playtime : "0분"}
             </Text>
           </Text>
         </Stack>
@@ -68,19 +68,21 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
         <Text fz={16}>
           남은 시간:{" "}
           <Text c={theme.colors.teal[5]} fw={"bold"} span>
-            {postData.author.playtime}
+            {postData.author.playtime ? postData.author.playtime : "0분"}
           </Text>
         </Text>
       </Group>
-      <Group spacing={"xs"}>
-        <IconCalendar />
-        <Text fz={16}>
-          종료 날짜:{" "}
-          <Text c={theme.colors.teal[5]} fw={"bold"} span>
-            {postData.author.playtime}
+      {postData.isPlayable && (
+        <Group spacing={"xs"}>
+          <IconCalendar />
+          <Text fz={16}>
+            종료 날짜:{" "}
+            <Text c={theme.colors.teal[5]} fw={"bold"} span>
+              {postData.author.playtime ? postData.author.playtime : "2023년 9월 28일"}
+            </Text>
           </Text>
-        </Text>
-      </Group>
+        </Group>
+      )}
       {!postData.isPlayable && (
         <Stack spacing={"xs"}>
           <Group className={classes.marginTop} position="apart">
