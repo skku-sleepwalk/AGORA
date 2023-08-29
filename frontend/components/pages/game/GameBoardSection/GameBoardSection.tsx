@@ -45,6 +45,7 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
+    isLast,
     isEmpty,
   } = useGameBoardList(
     sectionValue === "전체 보기" ? GAME_BOARD_CATEGORIES : [sectionValue],
@@ -160,6 +161,17 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
                     return <GameBoard key={post.id} post={post} gameId={gameId} />;
                   });
                 })
+              )}
+              {!isLast && (
+                <InvisibleButton
+                  onClick={() => {
+                    setPostSize((prev) => prev + 1);
+                  }}
+                >
+                  <Text fz={16} color={theme.colors.gray[5]}>
+                    게시글 더 보기
+                  </Text>
+                </InvisibleButton>
               )}
             </Stack>
           </CardContainer>

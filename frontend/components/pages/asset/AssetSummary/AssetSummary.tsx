@@ -24,6 +24,9 @@ import useAuth from "../../../../hooks/useAuth";
 import { AssetContext } from "../../../../pages/asset/[id]";
 import { DelAssetLike, PostAssetLike } from "../../../../utils/api/asset/asset/assetLike";
 import { theme } from "../../../../styles/theme";
+import { downloadAsset } from "../../../../utils/api/asset/asset/downloadAsset";
+import { purchaseAsset } from "../../../../utils/api/asset/asset/purchaseAsset";
+import { showNotification } from "../../../../utils/notifications";
 
 interface AssetSummaryProps {
   asset: Asset;
@@ -126,12 +129,30 @@ export function AssetSummary({ asset }: AssetSummaryProps) {
               </Box>
             </Stack>
           </Stack>
-          <Button className={classes.downloadButton}>
-            <a href={asset.downloadUrl} download style={{ textDecoration: "none", color: "white" }}>
-              <Center>
-                <Text fz={28}>다운로드</Text>
-              </Center>
-            </a>
+          <Button
+            className={classes.downloadButton}
+            disabled={
+              !!(
+                !asset.isPurchased &&
+                (!user ||
+                  user.token <
+                    (asset.cost.isSale ? asset.cost.saledPrice : asset.cost.defaultPrice))
+              )
+            }
+            onClick={() => {
+              if (asset.isPurchased) {
+                downloadAsset(asset.id, token!);
+              } else {
+                purchaseAsset(asset.id, token!).then(() => {
+                  mutateAsset();
+                  showNotification("결제 완료!", "이제 에셋을 다운로드 할 수 있습니다.");
+                });
+              }
+            }}
+          >
+            <Center>
+              <Text fz={28}>{asset.isPurchased ? "다운로드" : "구매하기"}</Text>
+            </Center>
           </Button>
         </Stack>
       </Stack>

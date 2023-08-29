@@ -5,7 +5,7 @@ import { GameSummary } from "../../components/pages/game/GameSummary/GameSummary
 import { GameTab } from "../../components/pages/game/GameTab/GameTab";
 import { GameRightSide } from "../../components/pages/game/GameRightSide/GameRightSide";
 import { GameReviewSection } from "../../components/pages/game/GameReviewSection/GameReviewSection";
-import { createContext, useRef, useState } from "react";
+import { createContext, useEffect, useRef, useState } from "react";
 import { GameNewsSection } from "../../components/pages/game/GameNewsSection/GameNewsSection";
 import { GameInfo } from "../../components/pages/game/GameInfo/GameInfo";
 import { GameBoardSection } from "../../components/pages/game/GameBoardSection/GameBoardSection";
@@ -37,6 +37,12 @@ function Game() {
   };
 
   const { data: postData, mutate: mutatePost } = useGame(gameId);
+
+  useEffect(() => {
+    if (board) {
+      setActiveTab("board");
+    }
+  }, [board]);
 
   return (
     <GameContext.Provider value={{ mutatePost }}>

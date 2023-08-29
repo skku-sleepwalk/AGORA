@@ -28,7 +28,7 @@ public class GameManager {
 
     public void executeGame(String id) {
       Game game = getGameById(id).orElseThrow();
-      GameExecuter executer = new GameExecuter(game);
+      GameExecuter executer = new GameExecuter(game, 2);
       try {
         executer.execute();
       } catch (IOException e) {
