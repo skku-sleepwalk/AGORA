@@ -10,7 +10,6 @@ import {
   Center,
   Box,
   Modal,
-  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
@@ -131,12 +130,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
                 <Text className={classes.grayText} fw={"bold"}>
                   개발사
                 </Text>
-                <Text
-                  className={classes.blueText}
-                  fw={"bold"}
-                  component="a"
-                  href="https://mantine.dev"
-                >
+                <Text className={classes.blueText} fw={"bold"} component="a" href="#">
                   {postData.store?.developer}
                 </Text>
               </Group>
@@ -162,12 +156,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
               <Text className={classes.grayText} fw={"bold"}>
                 배급사
               </Text>
-              <Text
-                className={classes.blueText}
-                fw={"bold"}
-                component="a"
-                href="https://mantine.dev"
-              >
+              <Text className={classes.blueText} fw={"bold"} component="a" href="#">
                 {postData.store?.distributor}
               </Text>
             </Group>
@@ -181,7 +170,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
           <Group spacing={"0.5rem"} className={classes.blueText}>
             {postData.genres?.map((data) => {
               return (
-                <Text fw={"bold"} component="a" href="https://mantine.dev">
+                <Text fw={"bold"} component="a" href="/game/allGame">
                   {data.name}
                 </Text>
               );
@@ -192,7 +181,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
           <Text className={classes.grayText} fw={"bold"}>
             이용 등급
           </Text>
-          <Text className={classes.blueText} fw={"bold"} component="a" href="https://mantine.dev">
+          <Text className={classes.blueText} fw={"bold"} component="a" href="#">
             12세 이용가
           </Text>
         </Group>

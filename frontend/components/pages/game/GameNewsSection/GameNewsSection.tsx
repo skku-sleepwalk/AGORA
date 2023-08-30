@@ -19,9 +19,9 @@ export function GameNewsSection({ gameId }: GameNewsSectionProps) {
 
   const [state, setState] = useSetState({ notice: false, update: false, develop: false });
   const handleScroll = useContext(GameTabClickContext);
-  const { data: noticeData } = useGameBoardList(["공지사항"], gameId);
-  const { data: updateData } = useGameBoardList(["업데이트"], gameId);
-  const { data: developData } = useGameBoardList(["개발일지"], gameId);
+  const { data: noticeData, isEmpty: noticeDataEmpty } = useGameBoardList(["공지사항"], gameId);
+  const { data: updateData, isEmpty: updateDataEmpty } = useGameBoardList(["업데이트"], gameId);
+  const { data: developData, isEmpty: developDataEmpty } = useGameBoardList(["개발일지"], gameId);
 
   return (
     <Stack spacing={"xl"} className={classes.all}>
@@ -29,21 +29,28 @@ export function GameNewsSection({ gameId }: GameNewsSectionProps) {
       <Stack spacing={"xl"} className={cx((state.update || state.develop) && classes.displayNone)}>
         <Group spacing={"sm"}>
           <Text fz={smallScreen ? 28 : 32}>공지사항</Text>
-          <InvisibleButton
-            className={classes.button}
-            onClick={() => {
-              setState({ notice: !state.notice });
-              handleScroll.ontabClick();
-            }}
-          >
-            <IconPlus className={cx(classes.Icon, state.notice && classes.rotate)} />
-          </InvisibleButton>
+          {!noticeDataEmpty && (
+            <InvisibleButton
+              className={classes.button}
+              onClick={() => {
+                setState({ notice: !state.notice });
+                handleScroll.ontabClick();
+              }}
+            >
+              <IconPlus className={cx(classes.Icon, state.notice && classes.rotate)} />
+            </InvisibleButton>
+          )}
         </Group>
         {noticeData?.map((data) => {
           return data.data.data.map((item) => {
             return <GameNews post={item} />;
           });
         })}
+        {noticeDataEmpty && (
+          <Group position="center">
+            <Text c={theme.colors.gray[6]}>공지사항이 없습니다.</Text>
+          </Group>
+        )}
         <Collapse in={state.notice}>
           <Stack spacing={"xl"}>
             {/* <GameNews />
@@ -52,69 +59,73 @@ export function GameNewsSection({ gameId }: GameNewsSectionProps) {
         </Collapse>
       </Stack>
       {/* 업데이트 */}
-      <Stack
-        spacing={"xl"}
-        className={cx(
-          (state.notice || state.develop) && classes.displayNone,
-          !state.update && classes.marginTop
-        )}
-      >
-        <Group spacing={"sm"}>
-          <Text fz={smallScreen ? 28 : 32}>업데이트</Text>
-          <InvisibleButton
-            className={classes.button}
-            onClick={() => {
-              setState({ update: !state.update });
-              handleScroll.ontabClick();
-            }}
-          >
-            <IconPlus className={cx(classes.Icon, state.update && classes.rotate)} />
-          </InvisibleButton>
-        </Group>
-        {updateData?.map((data) => {
-          return data.data.data.map((item) => {
-            return <GameNews post={item} />;
-          });
-        })}
-        <Collapse in={state.update}>
-          <Stack spacing={"xl"}>
-            {/* <GameNews />
+      {!updateDataEmpty && (
+        <Stack
+          spacing={"xl"}
+          className={cx(
+            (state.notice || state.develop) && classes.displayNone,
+            !state.update && classes.marginTop
+          )}
+        >
+          <Group spacing={"sm"}>
+            <Text fz={smallScreen ? 28 : 32}>업데이트</Text>
+            <InvisibleButton
+              className={classes.button}
+              onClick={() => {
+                setState({ update: !state.update });
+                handleScroll.ontabClick();
+              }}
+            >
+              <IconPlus className={cx(classes.Icon, state.update && classes.rotate)} />
+            </InvisibleButton>
+          </Group>
+          {updateData?.map((data) => {
+            return data.data.data.map((item) => {
+              return <GameNews post={item} />;
+            });
+          })}
+          <Collapse in={state.update}>
+            <Stack spacing={"xl"}>
+              {/* <GameNews />
             <GameNews /> */}
-          </Stack>
-        </Collapse>
-      </Stack>
+            </Stack>
+          </Collapse>
+        </Stack>
+      )}
       {/* 개발 일지 */}
-      <Stack
-        spacing={"xl"}
-        className={cx(
-          (state.notice || state.update) && classes.displayNone,
-          !state.develop && classes.marginTop
-        )}
-      >
-        <Group spacing={"sm"}>
-          <Text fz={smallScreen ? 28 : 32}>개발 일지</Text>
-          <InvisibleButton
-            className={classes.button}
-            onClick={() => {
-              setState({ develop: !state.develop });
-              handleScroll.ontabClick();
-            }}
-          >
-            <IconPlus className={cx(classes.Icon, state.develop && classes.rotate)} />
-          </InvisibleButton>
-        </Group>
-        {developData?.map((data) => {
-          return data.data.data.map((item) => {
-            return <GameNews post={item} />;
-          });
-        })}
-        <Collapse in={state.develop}>
-          <Stack spacing={"xl"}>
-            {/* <GameNews />
+      {!developDataEmpty && (
+        <Stack
+          spacing={"xl"}
+          className={cx(
+            (state.notice || state.update) && classes.displayNone,
+            !state.develop && classes.marginTop
+          )}
+        >
+          <Group spacing={"sm"}>
+            <Text fz={smallScreen ? 28 : 32}>개발 일지</Text>
+            <InvisibleButton
+              className={classes.button}
+              onClick={() => {
+                setState({ develop: !state.develop });
+                handleScroll.ontabClick();
+              }}
+            >
+              <IconPlus className={cx(classes.Icon, state.develop && classes.rotate)} />
+            </InvisibleButton>
+          </Group>
+          {developData?.map((data) => {
+            return data.data.data.map((item) => {
+              return <GameNews post={item} />;
+            });
+          })}
+          <Collapse in={state.develop}>
+            <Stack spacing={"xl"}>
+              {/* <GameNews />
             <GameNews /> */}
-          </Stack>
-        </Collapse>
-      </Stack>
+            </Stack>
+          </Collapse>
+        </Stack>
+      )}
     </Stack>
   );
 }

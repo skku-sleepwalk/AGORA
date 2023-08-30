@@ -11,8 +11,6 @@ interface DataItem {
   checked: boolean;
 }
 export default function allGame() {
-  //// 임시용 추후 수정 필
-  const genreName = "FPS";
   const [genreList, setGenre] = useState([
     { id: "전략", checked: true },
     { id: "디펜스", checked: true },

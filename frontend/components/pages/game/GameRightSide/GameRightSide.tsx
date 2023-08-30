@@ -52,7 +52,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
             </Group>
             <Group spacing={0}>
               <Text fw={"bold"}>100</Text>
-              <Text>명의 사람들이 이 게임을 플레이 중입니다.</Text>
+              <Text>명의 사람들이 이 게임을 플레이하였습니다.</Text>
             </Group>
           </Stack>
         </Group>

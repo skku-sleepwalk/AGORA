@@ -11,13 +11,14 @@ export interface useAssetListSettings {
 const getKey = (
   pageIndex: number,
   previousPageData: GetAssetListResponse | null,
-  category: string,
+  category: string | string[],
   { search }: useAssetListSettings
 ) => {
   if (previousPageData && previousPageData.data.cursor.afterCursor === null) return null;
   // 만약 이전 데이터가 존재 && afterCursor가 없는 경우 null 반환
   let query: Record<string, any> = {
-    categoryNames: category,
+    categoryNames:
+      category.length > 0 && typeof category !== "string" ? category.join(",") : category,
     // join 함수: 배열 요소를 문자열로 합치며, 구분자를 지정할 수 있음
   };
 
@@ -32,7 +33,7 @@ const getKey = (
   else return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/asset?${queryString}`;
 };
 
-function useAssetList(category: string, settings: useAssetListSettings = {}) {
+function useAssetList(category: string | string[], settings: useAssetListSettings = {}) {
   const { token } = useAuth();
   const response = useSWRInfinite<GetAssetListResponse>(
     (pageIndex, previousPageData) => getKey(pageIndex, previousPageData, category, settings),
