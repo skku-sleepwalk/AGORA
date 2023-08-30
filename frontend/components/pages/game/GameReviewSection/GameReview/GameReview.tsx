@@ -31,7 +31,7 @@ import {
   DelGameReviewLike,
   PostGameReviewDislike,
   PostGameReviewLike,
-} from "../../../../../utils/api/game/gameReview/gameReviewLike";
+} from "../../../../../utils/api/game/gameReview/GameReviewLike";
 import { GameReview } from "../../../../../types/api/game/gameReview";
 import { createContext, useContext } from "react";
 import { GameReviewSectionContext, authorPlaytime, hasPlaytime } from "../GameReviewSection";

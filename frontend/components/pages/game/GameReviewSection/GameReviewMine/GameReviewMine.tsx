@@ -41,7 +41,7 @@ import {
   DelGameReviewLike,
   PostGameReviewDislike,
   PostGameReviewLike,
-} from "../../../../../utils/api/game/gameReview/gameReviewLike";
+} from "../../../../../utils/api/game/gameReview/GameReviewLike";
 import { useGameReviewList } from "../../../../../hooks/game/useGameReview";
 import { useUserPlaytimes } from "../../../../../hooks/game/useUserPlaytimes";
 
