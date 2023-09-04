@@ -18,7 +18,10 @@ export default function Main() {
   } = useAllGame({ search: "", genreNames: genreName });
 
   return (
-    <MainLayout tapSection={<MainTab active="main" />} upSection={<MainCarousel isMain={true} />}>
+    <MainLayout
+      tapSection={<MainTab active="main" />}
+      upSection={<MainCarousel type="main" data={postData} />}
+    >
       <Stack spacing={0}>
         <SmallPosts
           information={{

@@ -49,7 +49,7 @@ function Game() {
       <GameTabClickContext.Provider value={{ ontabClick, ontabClickFast }}>
         {postData && (
           <GameLayout
-            photoSection={<MainCarousel isInfo={true} imgUrls={postData.data.store?.imgUrls} />}
+            photoSection={<MainCarousel type="info" imgUrls={postData.data.store?.imgUrls} />}
             summarySection={<GameSummary postData={postData.data} />}
             anchorSection={<div ref={tabRef}></div>}
             tabSection={<GameTab activeTab={activeTab} setActiveTab={setActiveTab} />}

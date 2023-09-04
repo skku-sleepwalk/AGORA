@@ -96,15 +96,9 @@ export function GameSummary({ postData }: GameSummaryProps) {
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
           <Group>
-            <Avatar
-              size={"3.75rem"}
-              radius={"md"}
-              src={
-                "/images/gameIcon.svg"
-              }
-            />
+            <Avatar size={"3.75rem"} radius={"md"} src={"/images/gameIcon.svg"} />
             <Text fw={"bold"} fz={20}>
-              {postData.store?.title}
+              {postData.title}
             </Text>
           </Group>
           <Group spacing={"xs"}>
