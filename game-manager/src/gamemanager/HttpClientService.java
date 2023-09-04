@@ -14,10 +14,20 @@ import java.io.IOException;
 
 public class HttpClientService {
     private final HttpClient client;
-    private final String baseUrl = "http://localhost:8000";
+    private final String baseUrl = "http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000";
 
     public HttpClientService() {
         this.client = HttpClient.newHttpClient();
+    }
+
+    public int getRemainPlaytime() {
+        try {
+            JSONObject response = sendRequest("GET", "/users/me", null);
+            return response.getInt("remainPlaytime");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 999999;
+        }
     }
 
     public Game getGame(String id) {
