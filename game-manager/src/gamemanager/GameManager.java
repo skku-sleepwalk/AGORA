@@ -28,7 +28,7 @@ public class GameManager {
 
     public void executeGame(String id) {
       Game game = getGameById(id).orElseThrow();
-      GameExecuter executer = new GameExecuter(game, 2);
+      GameExecuter executer = new GameExecuter(game, httpClientService.getRemainPlaytime());
       try {
         executer.execute();
       } catch (IOException e) {
