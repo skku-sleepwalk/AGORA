@@ -100,7 +100,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
               size={"3.75rem"}
               radius={"md"}
               src={
-                "https://play-lh.googleusercontent.com/He92papZcOmkgTi1sLHXQQb02aoyRtJ8ml96njM_cSAcpHhILvxMjhLix4mYEIKXPq4=s96-rw"
+                "/images/gameIcon.svg"
               }
             />
             <Text fw={"bold"} fz={20}>

@@ -35,7 +35,7 @@ export function SmallPosts({ information, title }: SmallPostsProps) {
           slidesToScroll={5}
           slideGap="lg"
           height="22rem"
-          withIndicators
+          withIndicators={false}
           controlSize={30}
           maw={1400}
           includeGapInSize={true}

@@ -62,7 +62,8 @@ function Game() {
             {activeTab === "board" && postData && (
               <GameBoardSection
                 gameName={postData.data.store.title}
-                developerName={postData.data.author.name}
+                developerName={postData.data.store.developer}
+                developerId={postData.data.author.id}
                 gameId={postData.data.id}
               />
             )}

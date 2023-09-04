@@ -20,6 +20,8 @@ import { showNotification } from "../../../../../../utils/notifications";
 import { IconAlertCircle } from "@tabler/icons-react";
 import useAuth from "../../../../../../hooks/useAuth";
 import { useSetState } from "@mantine/hooks";
+import { useContext } from "react";
+import { PostContext } from "../../PostDetailViewer";
 
 export interface CommentEditorProps {
   user: User;
@@ -111,6 +113,8 @@ export function CommentEditorPart({
 
   const [isCanceling, setIsCanceling] = useSetState({ cancel: false });
 
+  const { mutatePostDetail } = useContext(PostContext);
+
   return (
     <Box>
       <RichTextEditor editor={editor} className={classes.commentEditor}>
@@ -143,7 +147,7 @@ export function CommentEditorPart({
                       patchComment({
                         boardId: commentId,
                         data: {
-                          title: null,
+                          title: undefined,
                           content: editor!.getHTML(),
                           categoryNames,
                         },
@@ -151,6 +155,7 @@ export function CommentEditorPart({
                       }).then(() => {
                         showNotification("업로드 완료", "게시물이 성공적으로 수정되었습니다.");
                         onEditClick !== undefined ? onEditClick() : null;
+                        mutatePostDetail();
                       });
                     }
                   }}

@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Center,
   Group,
   Modal,
   Stack,
@@ -21,16 +22,21 @@ import useGameBoardList from "../../../../hooks/game/useGameBoardList";
 import { GAME_BOARD_CATEGORIES } from "../../../../constants/category";
 import { useRouter } from "next/router";
 import { GameBoardDetailViewer } from "./GameBoardDetailViewer/GameBoardDetailViewer";
-import Link from "next/link";
 import useAuth from "../../../../hooks/useAuth";
 
 export interface GameBoardSectionProps {
   gameName: string;
   developerName: string;
+  developerId: string;
   gameId: string;
 }
 
-export function GameBoardSection({ gameName, developerName, gameId }: GameBoardSectionProps) {
+export function GameBoardSection({
+  gameName,
+  developerName,
+  developerId,
+  gameId,
+}: GameBoardSectionProps) {
   const smallScreen = useMediaQuery("(max-width: 765px)");
   const { classes, cx } = useGameBoardSectionStyles({ smallScreen });
   const theme = useMantineTheme();
@@ -92,6 +98,7 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
             mutatePost();
           }}
           gameId={gameId}
+          developerId={developerId}
         />
       </Modal>
       {!boardId ? (
@@ -111,6 +118,7 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
               <Group className={classes.selectGroup} position="apart">
                 <CustomNativeSelect
                   data={["전체 보기", ...GAME_BOARD_CATEGORIES]}
+                  position="start"
                   defaultValue={sectionValue}
                   onChange={(value) => {
                     setSectionValue(value);
@@ -154,7 +162,9 @@ export function GameBoardSection({ gameName, developerName, gameId }: GameBoardS
               </Group>
               {/* 게시글 파트 */}
               {isEmpty ? (
-                <Text color={theme.colors.gray[4]}>작성된 게시글이 없습니다.</Text>
+                <Center mt={"1rem"}>
+                  <Text color={theme.colors.gray[4]}>작성된 게시글이 없습니다.</Text>
+                </Center>
               ) : (
                 postData?.map((data) => {
                   return data.data.data.map((post) => {
