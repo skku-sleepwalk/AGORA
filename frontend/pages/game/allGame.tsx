@@ -99,10 +99,7 @@ export default function allGame() {
                       return data.data.data.map((data) => {
                         return (
                           <div style={{ width: "85%", height: "85%" }}>
-                            <SmallPost
-                              key={postData[0].data.data[0]?.id || ""}
-                              post={postData[0].data.data[0] || null}
-                            ></SmallPost>
+                            <SmallPost key={data?.id || ""} post={data || null}></SmallPost>
                           </div>
                         );
                       });
