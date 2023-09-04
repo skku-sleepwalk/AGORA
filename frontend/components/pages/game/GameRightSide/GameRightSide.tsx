@@ -30,7 +30,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
   }
 
   return (
-    <Box className={classes.box}>
+    <Stack className={classes.stack} spacing={"3rem"}>
       {/* 첫 번째 컨테이너 */}
       <CardContainer className={cx(classes.container, classes.alignCenter)} h={"7rem"}>
         <Group className={classes.containerPadding} spacing={"sm"}>
@@ -51,8 +51,8 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Text c={theme.colors.gray[6]}>명의 사람들이 이 게임을 찜했습니다.</Text>
             </Group>
             <Group spacing={0}>
-              <Text fw={"bold"}>100</Text>
-              <Text>명의 사람들이 이 게임을 플레이 중입니다.</Text>
+              <Text fw={"bold"}>-</Text>
+              <Text>명의 사람들이 이 게임을 플레이하였습니다.</Text>
             </Group>
           </Stack>
         </Group>
@@ -82,6 +82,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Instagram.png"} />
                 <Text
+                  className={classes.text}
                   component="a"
                   href={postData?.store?.snsUrls?.instagram}
                   c={theme.colors.gray[6]}
@@ -95,6 +96,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Facebook.svg"} />
                 <Text
+                  className={classes.text}
                   component="a"
                   href={postData?.store.snsUrls?.facebook}
                   c={theme.colors.gray[6]}
@@ -108,6 +110,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/YouTube.png"} />
                 <Text
+                  className={classes.text}
                   component="a"
                   href={postData?.store?.snsUrls?.youtube}
                   c={theme.colors.gray[6]}
@@ -121,6 +124,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Twitch.svg"} />
                 <Text
+                  className={classes.text}
                   component="a"
                   href={postData?.store?.snsUrls?.twitch}
                   c={theme.colors.gray[6]}
@@ -134,6 +138,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
               <Stack spacing={"sm"} align="center">
                 <Image width={"4rem"} src={"/images/Homepage.svg"} />
                 <Text
+                  className={classes.text}
                   component="a"
                   href={postData?.store?.snsUrls?.customPage}
                   c={theme.colors.gray[6]}
@@ -148,7 +153,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
         </Stack>
       </CardContainer>
       {/* 세 번째 컨테이너 */}
-      {!postData?.isPlayable && (
+      {/* {!postData?.isPlayable && (
         <CardContainer className={classes.container} h={"12rem"}>
           <Stack spacing={"sm"} className={classes.containerPadding}>
             <Text fw={"bold"}>구매</Text>
@@ -212,7 +217,7 @@ export function GameRightSide({ postData, loading }: GameDataProps) {
             </Stack>
           </Button>
         </Box>
-      )}
-    </Box>
+      )} */}
+    </Stack>
   );
 }

@@ -35,10 +35,10 @@ export const useGameSummaryStyles = createStyles((theme) => ({
   blueText: {
     position: "absolute",
     marginLeft: "6.5rem",
-    color: theme.colors.blue[4],
+    color: theme.colors.teal[4],
     textDecoration: "underLine",
     "&:hover": {
-      color: theme.colors.blue[4],
+      color: theme.colors.teal[4],
       textDecoration: "underLine",
     },
   },
@@ -88,8 +88,8 @@ export const useGameSummaryStyles = createStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
 
-    backgroundColor: theme.colors.blue[1],
-    color: theme.colors.blue[6],
+    backgroundColor: theme.colors.teal[1],
+    color: theme.colors.teal[6],
     fontSize: 12,
     fontWeight: "bold",
   },
@@ -105,12 +105,12 @@ export const useGameSummaryStyles = createStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
 
-    backgroundColor: theme.colors.blue[1],
-    color: theme.colors.blue[6],
+    backgroundColor: theme.colors.teal[1],
+    color: theme.colors.teal[6],
     fontSize: 16,
 
     "&:hover": {
-      backgroundColor: theme.colors.blue[2],
+      backgroundColor: theme.colors.teal[2],
     },
   },
 
@@ -138,7 +138,13 @@ export const useGameSummaryStyles = createStyles((theme) => ({
     // width: "17rem",
     width: "8rem",
     height: "4.7rem",
+
+    backgroundColor: theme.colors.teal[4],
     flexGrow: 1,
+
+    "&:hover": {
+      backgroundColor: theme.colors.teal[5],
+    },
   },
 
   passButton: {

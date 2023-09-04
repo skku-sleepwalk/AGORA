@@ -24,13 +24,13 @@ export function MainTab({ active }: MainTabProps) {
         >
           메인
         </Tabs.Tab>
-        <Tabs.Tab
+        {/* <Tabs.Tab
           value="develop"
           className={cx(classes.tabItem, activeTab === "develop" && classes.tabItemActive)}
           onClick={() => router.replace("/game/developStory")}
         >
           개발 과정
-        </Tabs.Tab>
+        </Tabs.Tab> */}
         <Tabs.Tab
           value="allGame"
           className={cx(classes.tabItem, activeTab === "allGame" && classes.tabItemActive)}

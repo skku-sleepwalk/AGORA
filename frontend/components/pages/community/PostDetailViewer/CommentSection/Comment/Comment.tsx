@@ -41,6 +41,7 @@ import useAuth from "../../../../../../hooks/useAuth";
 import { CommentContext } from "../CommentSection";
 import deletePost from "../../../../../../utils/api/deletepost";
 import { ModalContext } from "../../../PostViewer/PostViewer";
+import { PostContext } from "../../PostDetailViewer";
 
 export interface CommentProps {
   post: Board;
@@ -88,6 +89,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
 
   const [isDeleting, setIsDeleting] = useSetState({ delete: false });
 
+  const { mutatePostDetail } = useContext(PostContext);
   const { mutateComment } = useContext(CommentContext);
 
   const { canCloseModal } = useContext(ModalContext);
@@ -149,6 +151,7 @@ function Comment({ post, mutateReply, onSubmitComment }: CommentProps) {
                         mutateReply !== undefined ? mutateReply() : null;
                         mutateCommentList();
                         mutateComment();
+                        mutatePostDetail();
                         showNotification("댓글 삭제 완료", "댓글이 성공적으로 삭제되었습니다.");
                       });
                     }}

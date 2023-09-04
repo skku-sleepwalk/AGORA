@@ -5,6 +5,7 @@ import {
   Button,
   Center,
   Group,
+  HoverCard,
   Image,
   Stack,
   Text,
@@ -33,15 +34,19 @@ export function AssetRightSide({ asset, loading }: AssetRightSideProps) {
         <Stack className={cx(classes.containerPadding, classes.container)} spacing={20}>
           <Group position="apart" className={classes.container}>
             <Text size="md" weight={700}>
-              Liscence Agreement
-            </Text>
-            <Anchor href="https://www.google.com">간장게장 밥도둑</Anchor>
-          </Group>
-          <Group position="apart" className={classes.container}>
-            <Text size="md" weight={700}>
               라이선스
             </Text>
-            <Anchor href="https://www.google.com">에셋의 사용범위에 대해</Anchor>
+            <HoverCard width={280} shadow="sm" position="bottom-end">
+              <HoverCard.Target>
+                <Text className={classes.blueText}>CC BY</Text>
+              </HoverCard.Target>
+              <HoverCard.Dropdown>
+                <Text size="sm" lh={1.3}>
+                  원작자를 표시하면 저작물을 수정, 재배포, 상업적 이용 등 어떤 방식으로든 사용할 수
+                  있습니다.
+                </Text>
+              </HoverCard.Dropdown>
+            </HoverCard>
           </Group>
           <Group position="apart" className={classes.container}>
             <Text size="md" weight={700}>

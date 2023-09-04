@@ -4,7 +4,7 @@ import { MainLayout } from "../../components/pages/asset/MainLayout/MainLayout";
 import { useWindowScroll } from "@mantine/hooks";
 import { MovingUpButton } from "../../components/common/MovingUpButton/MovingUpButton";
 import { MainSearchHistory } from "../../components/pages/asset/MainSearchHistory/MainSearchHistory";
-import { MainTab } from "../../components/pages/asset/MainTab/MainTab";
+import { MainTab, sectionData } from "../../components/pages/asset/MainTab/MainTab";
 import { MainAssetSection } from "../../components/pages/asset/MainAssetSection/MainAssetSection";
 import { useRouter } from "next/router";
 import { MainAssetSearchSection } from "../../components/pages/asset/MainAssetSection/MainAssetSearchSection/MainAssetSearchSection";
@@ -23,7 +23,7 @@ function Asset() {
   const router = useRouter();
   const search = router.query.search;
 
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState<string | string[]>("");
 
   // asset 목록을 가져옴
   const {
@@ -79,7 +79,11 @@ function Asset() {
         tabSection={
           <MainTab
             onTabChange={(category) => {
-              setCategory(category);
+              if (category !== "All") {
+                setCategory(category);
+              } else {
+                setCategory(sectionData);
+              }
             }}
             MovingUp={() => {
               window.scrollTo(0, 0);

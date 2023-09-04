@@ -2,21 +2,21 @@ import axios from "axios";
 
 // boardId와 data, userId를 받아 boards/update?에 patch하는 함수
 export interface patchComment {
-  title: null;
+  title: undefined;
   content: string;
   categoryNames: string[];
 }
 
 export interface PatchCommentResponse {
-  data: {
-    boardId: string;
-    data: patchComment;
-    token?: string;
-  };
+  boardId: string;
+  data: patchComment;
+  token?: string;
 }
 
 export async function patchComment({
-  data: { boardId, data, token },
+  boardId,
+  data,
+  token,
 }: PatchCommentResponse): Promise<void | undefined> {
   const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/community/board/${boardId}`; // PATCH 요청을 보낼 엔드포인트 URL
   const headers = {

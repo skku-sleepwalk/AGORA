@@ -61,13 +61,14 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
   const theme = useMantineTheme();
   const router = useRouter();
   const { data: postData, mutate: mutatePost } = useGameBoard(gameId, boardId);
-  const { data: commentData, mutate: mutateComment } = useGameBoardList(
-    GAME_BOARD_CATEGORIES,
-    gameId,
-    {
-      parentId: boardId,
-    }
-  );
+  const {
+    data: commentData,
+    mutate: mutateComment,
+    setSize: setCommentSize,
+    isLast,
+  } = useGameBoardList(GAME_BOARD_CATEGORIES, gameId, {
+    parentId: boardId,
+  });
   const { user, token, openSignInModal } = useAuth();
   const canEdit = postData?.data.author.id === user?.id;
   const [isDeleting, setIsDeleting] = useState(false);
@@ -273,6 +274,17 @@ export function GameBoardDetailViewer({ gameId, boardId }: GameBoardDetailViewer
               );
             });
           })}
+          {!isLast && (
+            <InvisibleButton
+              onClick={() => {
+                setCommentSize((prev) => prev + 1);
+              }}
+            >
+              <Text fz={16} color={theme.colors.gray[5]}>
+                댓글 더 보기
+              </Text>
+            </InvisibleButton>
+          )}
         </Stack>
       </CardContainer>
     )

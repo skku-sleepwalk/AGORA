@@ -1,13 +1,15 @@
-import { useState } from "react";
 import SmallPost from "./SmallPost";
 import { Text } from "@mantine/core";
 import { Carousel } from "@mantine/carousel";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { extractThumbnailUrl } from "../../../../utils/api/ViewPhotos";
 
-export function SmallPosts({ information }: any) {
-  const [Title, setTitle] = useState("전략 / 퍼즐 게임 특집");
+export interface SmallPostsProps {
+  information: any;
+  title: string;
+}
 
+export function SmallPosts({ information, title }: SmallPostsProps) {
   const {
     data: postData,
     isLoading: isPostLoading,
@@ -17,13 +19,13 @@ export function SmallPosts({ information }: any) {
   } = information;
 
   return (
-    <div style={{ marginTop: "5rem" }}>
+    <div style={{ marginTop: "2rem" }}>
       <Text
-        style={{ marginLeft: "40px", marginTop: "20px", marginBottom: "30px" }}
+        style={{ marginLeft: "40px", marginTop: "20px", marginBottom: "10px" }}
         size={25}
         weight={"bold"}
       >
-        {Title}
+        {title}
       </Text>
 
       <div style={{ display: "flex", flexDirection: "row", marginLeft: "3rem" }}>
@@ -32,8 +34,8 @@ export function SmallPosts({ information }: any) {
           align="start"
           slidesToScroll={5}
           slideGap="lg"
-          height="25rem"
-          withIndicators
+          height="22rem"
+          withIndicators={false}
           controlSize={30}
           maw={1400}
           includeGapInSize={true}

@@ -91,6 +91,14 @@ export const useMainCarouselStyles = createStyles((theme) => ({
     },
   },
 
+  content: {
+    lineHeight: 1.5,
+
+    "*": {
+      marginBottom: "0px !important",
+    },
+  },
+
   carousel: {
     width: "100%",
     height: "100%",

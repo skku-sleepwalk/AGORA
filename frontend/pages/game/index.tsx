@@ -3,51 +3,37 @@ import { SmallPosts } from "../../components/pages/game/SmallPost/SmallPosts";
 import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
 import useGameList from "../../hooks/game/useGameList";
-import { useRouter } from "next/router";
-import { createContext } from "react";
-import { useEffect } from "react";
-
-export const StoreContext = createContext({
-  mutatePost: () => {},
-});
+import { Stack } from "@mantine/core";
+import useAllGame from "../../hooks/game/useAllGame";
 
 export default function Main() {
-  const router = useRouter();
-
-  const genreName = "퍼즐";
+  const genreName = ["전략", "디펜스"];
 
   const {
     data: postData,
     isLoading: isPostLoading,
     setSize: setPostSize,
     mutate: mutatePost,
-    isEmpty,
-  } = useGameList({
-    genreName: genreName ? genreName : undefined,
-    // name.toString()
-    //여기 tostring 에러 가능성 있음
-  });
-  useEffect(() => {
-    setPostSize(1);
-  }, []);
+    isEmpty: isEmpty,
+  } = useAllGame({ search: "", genreNames: genreName });
 
   return (
-    <MainLayout tapSection={<MainTab active="main" />} upSection={<MainCarousel isMain={true} />}>
-      <StoreContext.Provider
-        value={{
-          mutatePost,
-        }}
-      >
+    <MainLayout
+      tapSection={<MainTab active="main" />}
+      upSection={<MainCarousel type="main" data={postData} />}
+    >
+      <Stack spacing={0}>
         <SmallPosts
           information={{
             data: postData,
             isLoading: isPostLoading,
             setSize: setPostSize,
             mutate: mutatePost,
-            isEmpty,
+            isEmpty1: isEmpty,
           }}
+          title={"Agora 베타테스트 스페셜"}
         ></SmallPosts>
-      </StoreContext.Provider>
+      </Stack>
     </MainLayout>
   );
 }

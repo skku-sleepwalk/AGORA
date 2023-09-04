@@ -11,13 +11,11 @@ interface DataItem {
   checked: boolean;
 }
 export default function allGame() {
-  //// 임시용 추후 수정 필
-  const genreName = "FPS";
   const [genreList, setGenre] = useState([
-    { id: "FPS", checked: true },
-    { id: "B", checked: true },
-    { id: "C", checked: true },
+    { id: "전략", checked: true },
+    { id: "디펜스", checked: true },
   ]);
+
   const [search, setsearch] = useState("");
   function filterCheckedIds(data: DataItem[]): string[] {
     const checkedIds: string[] = [];
@@ -94,14 +92,25 @@ export default function allGame() {
                     flexDirection: "row",
                   }}
                 >
-                  {postData?.[0]?.data?.data[0]?.id != undefined && (
-                    <div style={{ width: "85%", height: "85%" }}>
-                      <SmallPost
-                        key={postData[0].data.data[0]?.id || ""}
-                        post={postData[0].data.data[0] || null}
-                      ></SmallPost>
-                    </div>
-                  )}
+                  {
+                    postData?.map((data) => {
+                      return data.data.data.map((data) => {
+                        return (
+                          <div style={{ width: "85%", height: "85%" }}>
+                            <SmallPost key={data?.id || ""} post={data || null}></SmallPost>
+                          </div>
+                        );
+                      });
+                    })
+                    // postData?.[0]?.data?.data[0]?.id != undefined && (
+                    //   <div style={{ width: "85%", height: "85%" }}>
+                    //     <SmallPost
+                    //       key={postData[0].data.data[0]?.id || ""}
+                    //       post={postData[0].data.data[0] || null}
+                    //     ></SmallPost>
+                    //   </div>
+                    // )
+                  }
 
                   {/* 스토리 4개 */}
                 </div>

@@ -1,12 +1,8 @@
 import { createStyles } from "@mantine/core";
 
 export const useGameRightSideStyles = createStyles((theme) => ({
-  box: {
-    display: "flex",
-    flexWrap: "wrap",
-
+  stack: {
     height: "100%",
-    alignContent: "space-between",
 
     cursor: "default",
   },
@@ -36,6 +32,10 @@ export const useGameRightSideStyles = createStyles((theme) => ({
     maxWidth: "4rem",
     textAlign: "center",
     overflowWrap: "break-word",
+
+    "&:hover": {
+      cursor: "pointer",
+    },
   },
 
   marginTop: {
