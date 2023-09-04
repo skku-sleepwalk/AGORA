@@ -1,6 +1,16 @@
 {
-  "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
+  "/_app": "pages/_app.js",
+  "/asset": "pages/asset.html",
+  "/community": "pages/community.html",
   "/_document": "pages/_document.js",
-  "/game/allGame": "pages/game/allGame.js"
+  "/community/[id]": "pages/community/[id].html",
+  "/game/allGame": "pages/game/allGame.html",
+  "/mypage": "pages/mypage.html",
+  "/game/developStory": "pages/game/developStory.html",
+  "/": "pages/index.html",
+  "/game": "pages/game.html",
+  "/asset/[id]": "pages/asset/[id].html",
+  "/game/[id]": "pages/game/[id].html",
+  "/404": "pages/404.html"
 }
