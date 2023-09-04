@@ -5,20 +5,18 @@ import {
   Collapse,
   Divider,
   Group,
-  List,
   Stack,
   Text,
-  ThemeIcon,
-  Title,
   useMantineTheme,
 } from "@mantine/core";
 import { useGamePlayModalStyles } from "./GamePlayModal.styles";
-import { IconCalendar, IconClock, IconTicket } from "@tabler/icons-react";
+import { IconCalendar, IconClock } from "@tabler/icons-react";
 import useAuth from "../../../../../hooks/useAuth";
 import { useDisclosure } from "@mantine/hooks";
 import { PostGameSubscribe } from "../../../../../utils/api/game/game/gameSubscribe";
 import { Game } from "../../../../../types/api/game/game";
-import { showError, showNotification } from "../../../../../utils/notifications";
+import { showNotification } from "../../../../../utils/notifications";
+import { SwitchPlaytime } from "../../../mypage/mypagePlaytimesSecion/mypagePlaytimesSection";
 
 interface GamePlayModalProps {
   onCloseClick: () => void;
@@ -58,7 +56,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
           <Text fz={16}>
             플레이한 시간:{" "}
             <Text c={theme.colors.teal[5]} fw={"bold"} span>
-              {postData.author.playtime ? postData.author.playtime : "0분"}
+              {postData.playtime ? SwitchPlaytime(postData.playtime) : "-"}
             </Text>
           </Text>
         </Stack>
@@ -68,11 +66,11 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
         <Text fz={16}>
           남은 시간:{" "}
           <Text c={theme.colors.teal[5]} fw={"bold"} span>
-            {postData.author.playtime ? postData.author.playtime : "0분"}
+            {postData.remaintime ? SwitchPlaytime(postData.remaintime) : "-"}
           </Text>
         </Text>
       </Group>
-      {postData.isPlayable && (
+      {/* {postData.isPlayable && (
         <Group spacing={"xs"}>
           <IconCalendar />
           <Text fz={16}>
@@ -82,7 +80,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
             </Text>
           </Text>
         </Group>
-      )}
+      )} */}
       {!postData.isPlayable && (
         <Stack spacing={"xs"}>
           <Group className={classes.marginTop} position="apart">
