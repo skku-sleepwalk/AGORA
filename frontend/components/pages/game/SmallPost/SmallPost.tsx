@@ -96,7 +96,7 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
           </Group>
           <Group spacing={0}>
             <Group spacing={4} style={{ marginRight: "1rem" }}>
-              <Image width={"0.8rem"} height={"0.65rem"} src="images/HeartFilled.svg" />
+              <Image width={"0.8rem"} height={"0.65rem"} src="/images/HeartFilled.svg" />
               <Text size={"xs"}>{post.likeCount}</Text>
             </Group>
           </Group>
