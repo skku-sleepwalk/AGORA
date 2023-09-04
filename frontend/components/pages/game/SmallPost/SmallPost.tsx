@@ -3,8 +3,6 @@ import UserInfoSmall from "../../../common/UserInfoSmall/UserInfoSmall";
 
 import { Group } from "@mantine/core";
 import { Text } from "@mantine/core";
-import { User } from "../../../../types/api/user";
-import { Rating } from "@mantine/core";
 import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";

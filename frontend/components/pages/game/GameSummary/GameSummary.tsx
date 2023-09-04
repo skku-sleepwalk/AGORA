@@ -31,7 +31,7 @@ interface GameSummaryProps {
 
 export function GameSummary({ postData }: GameSummaryProps) {
   const { classes, cx } = useGameSummaryStyles();
-  const { token } = useAuth();
+  const { user, token, openSignInModal } = useAuth();
 
   const [tagModalOpened, { open: tagModalOpen, close: tagModalClose }] = useDisclosure(false);
   const [playModalOpened, { open: playModalOpen, close: playModalClose }] = useDisclosure(false);
@@ -244,7 +244,16 @@ export function GameSummary({ postData }: GameSummaryProps) {
               </Center>
             </Stack>
           </Button> */}
-          <Button className={cx(classes.sellButton)} onClick={playModalOpen}>
+          <Button
+            className={cx(classes.sellButton)}
+            onClick={
+              user
+                ? playModalOpen
+                : () => {
+                    openSignInModal();
+                  }
+            }
+          >
             <Stack spacing={"sm"}>
               <Center>
                 <Text fz={28}>게임 시작</Text>
