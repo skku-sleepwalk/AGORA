@@ -1,12 +1,10 @@
-import { Checkbox, Group, Modal, Text } from "@mantine/core";
-import LoginForm from "../components/common/LoginForm/LoginForm";
-import { resetModalStyles } from "../styles/resetStyle";
-import InvisibleButton from "../components/common/InvisibleButton/InvisibleButton";
-import SignInForm from "../components/common/SignInForm/SignInForm";
-import SignUpForm from "../components/common/SignUpForm/ResisterPanel";
+import { Box, Image } from "@mantine/core";
 
 function Main() {
-  return;
+  return (
+    <Box>
+      <Image src="/images/intro.svg" />
+    </Box>
+  );
 }
-
 export default Main;
