@@ -17,6 +17,8 @@ import { PostGameSubscribe } from "../../../../../utils/api/game/game/gameSubscr
 import { Game } from "../../../../../types/api/game/game";
 import { showNotification } from "../../../../../utils/notifications";
 import { SwitchPlaytime } from "../../../mypage/mypagePlaytimesSecion/mypagePlaytimesSection";
+import { GameContext } from "../../../../../pages/game/[id]";
+import { useContext } from "react";
 
 interface GamePlayModalProps {
   onCloseClick: () => void;
@@ -30,6 +32,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
   const { user, token, openSignInModal } = useAuth();
 
   const [opened, { toggle }] = useDisclosure(false);
+  const { mutatePost } = useContext(GameContext); // 게임 postData mutate 관련
 
   // 게임 다운로드/플레이 관련
   const onDownloadClick = () => {
@@ -85,7 +88,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
           <Collapse in={opened}>
             <Stack spacing={"0.4rem"}>
               <Group className={classes.marginSide} position="apart">
-                <Text>1시간 / 1개월</Text>
+                <Text>10시간 / 1개월</Text>
                 <Button
                   className={classes.priceButton}
                   onClick={() => {
@@ -93,9 +96,9 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
                       openSignInModal();
                       onCloseClick();
                     } else {
-                      PostGameSubscribe(user.id, { time: 60, duration: 30 }).then(() => {
+                      PostGameSubscribe(user.id, { time: 600, duration: 30 }).then(() => {
                         showNotification("Agora 패스 구매가 완료되었습니다!", null);
-                        onCloseClick();
+                        mutatePost();
                       });
                     }
                   }}
@@ -105,7 +108,7 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
               </Group>
               <Divider />
               <Group className={classes.marginSide} position="apart">
-                <Text>2시간 / 1개월</Text>
+                <Text>20시간 / 1개월</Text>
                 <Button
                   className={classes.priceButton}
                   onClick={() => {
@@ -113,9 +116,29 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
                       openSignInModal();
                       onCloseClick();
                     } else {
-                      PostGameSubscribe(user.id, { time: 120, duration: 30 }).then(() => {
+                      PostGameSubscribe(user.id, { time: 1200, duration: 30 }).then(() => {
                         showNotification("Agora 패스 구매가 완료되었습니다!", null);
-                        onCloseClick();
+                        mutatePost();
+                      });
+                    }
+                  }}
+                >
+                  무료
+                </Button>
+              </Group>
+              <Divider />
+              <Group className={classes.marginSide} position="apart">
+                <Text>30시간 / 1개월</Text>
+                <Button
+                  className={classes.priceButton}
+                  onClick={() => {
+                    if (!user) {
+                      openSignInModal();
+                      onCloseClick();
+                    } else {
+                      PostGameSubscribe(user.id, { time: 1800, duration: 30 }).then(() => {
+                        showNotification("Agora 패스 구매가 완료되었습니다!", null);
+                        mutatePost();
                       });
                     }
                   }}

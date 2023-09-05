@@ -11,7 +11,7 @@ export async function PostGameSubscribe(
 ): Promise<null> {
   const { data } = await axios.post<PostGameSubscribeProps, AxiosResponse<null>>(
     `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${userId}/subscribe`,
-    { body },
+    body,
     {
       headers: {
         "Content-Type": "application/json",
