@@ -38,10 +38,14 @@ public class GameExecuter {
     }
 
     public void execute() throws Exception {
-        Path decryptedExecutablePath = Paths.get(game.getPath().toString() + ".dec");
-        decryptFile(game.getPath(), decryptedExecutablePath);
+        Path originalExecutablePath = game.getPath();
+        Path tmpExecutablePath = Paths.get(game.getPath().toString() + ".tmp");
 
-        ProcessBuilder processBuilder = new ProcessBuilder(decryptedExecutablePath.toString());
+        Files.move(originalExecutablePath, tmpExecutablePath);
+
+        decryptFile(tmpExecutablePath, originalExecutablePath);
+
+        ProcessBuilder processBuilder = new ProcessBuilder(originalExecutablePath.toString());
         Process process = processBuilder.start();
 
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -54,7 +58,9 @@ public class GameExecuter {
                 System.out.println("게임 종료");
                 executorService.shutdown();
                 try {
-                    Files.delete(decryptedExecutablePath);
+                    Files.delete(originalExecutablePath);
+                    
+                    Files.move(tmpExecutablePath, originalExecutablePath);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

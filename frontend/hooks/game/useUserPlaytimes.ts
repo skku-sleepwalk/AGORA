@@ -9,6 +9,9 @@ export interface UserPlaytimesResponse {
 
 export function useUserPlaytimes() {
   const { user, token } = useAuth();
+
+  if (!user) return { data: undefined };
+
   const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${user?.id}`;
 
   const response = useSWR<UserPlaytimesResponse>(url, (url) => fetcher(url, token));
