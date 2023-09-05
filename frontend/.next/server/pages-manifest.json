@@ -1,16 +1,16 @@
 {
   "/_error": "pages/_error.js",
-  "/_app": "pages/_app.js",
-  "/asset": "pages/asset.html",
   "/_document": "pages/_document.js",
   "/asset/[id]": "pages/asset/[id].html",
-  "/community/[id]": "pages/community/[id].html",
-  "/community": "pages/community.html",
+  "/_app": "pages/_app.js",
   "/game/[id]": "pages/game/[id].html",
-  "/game/allGame": "pages/game/allGame.html",
-  "/game": "pages/game.html",
+  "/community/[id]": "pages/community/[id].html",
+  "/asset": "pages/asset.html",
+  "/community": "pages/community.html",
   "/game/developStory": "pages/game/developStory.html",
+  "/game/allGame": "pages/game/allGame.html",
   "/": "pages/index.html",
+  "/game": "pages/game.html",
   "/mypage": "pages/mypage.html",
   "/404": "pages/404.html"
 }

@@ -45,7 +45,7 @@ const AuthContext = /*#__PURE__*/ (0,react__WEBPACK_IMPORTED_MODULE_1__.createCo
 function AuthProvider({ children }) {
     const cookie = new (cookies_ts__WEBPACK_IMPORTED_MODULE_3___default())();
     const [token, setToken] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(undefined);
-    const { data: userData, mutate: mutateUser } = (0,swr__WEBPACK_IMPORTED_MODULE_4__["default"])(token ? `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/users/me` : null, (url)=>(0,_utils_fetcher__WEBPACK_IMPORTED_MODULE_5__/* .fetcher */ ._)(url, token || undefined));
+    const { data: userData, mutate: mutateUser } = (0,swr__WEBPACK_IMPORTED_MODULE_4__["default"])(token ? `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/users/me` : null, (url)=>(0,_utils_fetcher__WEBPACK_IMPORTED_MODULE_5__/* .fetcher */ ._)(url, token || undefined));
     const [user, setUser] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(userData?.data || null);
     const [signInModalOpened, setSignInModalOpened] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
     const [signUpModalOpened, setSignUpModalOpened] = (0,react__WEBPACK_IMPORTED_MODULE_1__.useState)(false);
@@ -530,7 +530,7 @@ axios__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (awa
 
 async function login(email, password) {
     try {
-        const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/users/login`, {
+        const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/users/login`, {
             email,
             password
         });
@@ -541,7 +541,7 @@ async function login(email, password) {
     }
 }
 async function register({ email, password, name, description }) {
-    const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/users`, {
+    const response = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/users`, {
         email,
         password,
         name,

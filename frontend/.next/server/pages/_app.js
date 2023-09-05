@@ -73,10 +73,10 @@ __webpack_async_result__();
 /* harmony export */   k: () => (/* binding */ HEADER_LINKS)
 /* harmony export */ });
 const HEADER_LINKS = [
-    // {
-    //   label: "소개",
-    //   link: "/",
-    // },
+    {
+        label: "소개",
+        link: "/"
+    },
     {
         label: "게임",
         link: "/game"
@@ -251,11 +251,17 @@ function Header({ links }) {
                         className: classes.fullHeight,
                         noWrap: true,
                         children: [
-                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_mantine_core__WEBPACK_IMPORTED_MODULE_1__.Text, {
-                                size: 32,
-                                weight: "bold",
-                                color: "white",
-                                children: "Agora"
+                            /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx("a", {
+                                href: "/",
+                                style: {
+                                    textDecoration: "none"
+                                },
+                                children: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_mantine_core__WEBPACK_IMPORTED_MODULE_1__.Text, {
+                                    size: 32,
+                                    weight: "bold",
+                                    color: "white",
+                                    children: "Agora"
+                                })
                             }),
                             /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_mantine_core__WEBPACK_IMPORTED_MODULE_1__.Group, {
                                 spacing: 0,
@@ -698,7 +704,7 @@ module.exports = import("swr");;
 var __webpack_require__ = require("../webpack-runtime.js");
 __webpack_require__.C(exports);
 var __webpack_exec__ = (moduleId) => (__webpack_require__(__webpack_require__.s = moduleId))
-var __webpack_exports__ = __webpack_require__.X(0, [722,893,664,4], () => (__webpack_exec__(9942)));
+var __webpack_exports__ = __webpack_require__.X(0, [812,664,4], () => (__webpack_exec__(9942)));
 module.exports = __webpack_exports__;
 
 })();

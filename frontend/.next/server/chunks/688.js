@@ -539,7 +539,7 @@ axios__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (awa
 async function uploadImage(image) {
     const formData = new FormData();
     formData.append("image", image);
-    const { data } = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/upload/image`, formData, {
+    const { data } = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/upload/image`, formData, {
         headers: {
             "Content-Type": "multipart/form-data"
         }

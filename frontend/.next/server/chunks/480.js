@@ -280,7 +280,7 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([swr_
 
 function useUserPlaytimes() {
     const { user, token } = (0,_useAuth__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .Z)();
-    const url = `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/users/${user?.id}`;
+    const url = `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/users/${user?.id}`;
     const response = (0,swr__WEBPACK_IMPORTED_MODULE_0__["default"])(url, (url)=>(0,_utils_fetcher__WEBPACK_IMPORTED_MODULE_1__/* .fetcher */ ._)(url, token));
     return response;
 }

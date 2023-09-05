@@ -274,7 +274,7 @@ const getKey = (pageIndex, previousPageData, { genreNames, search })=>{
             q: searchString
         });
     }
-    return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/game/search?${queryString}`; //이거 맞는지 모르겠음
+    return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/game/search?${queryString}`; //이거 맞는지 모르겠음
 };
 function useAllGame(settings = {}) {
     const { token } = (0,_useAuth__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)();

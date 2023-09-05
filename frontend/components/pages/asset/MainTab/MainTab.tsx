@@ -12,7 +12,7 @@ export interface MainTabProps {
 
 export function MainTab({ onTabChange, MovingUp, scrollY }: MainTabProps) {
   const { classes, cx } = useMainTabStyles();
-  const [activeTab, setActiveTab] = useState("3D");
+  const [activeTab, setActiveTab] = useState("All");
 
   useEffect(() => {
     onTabChange(activeTab);

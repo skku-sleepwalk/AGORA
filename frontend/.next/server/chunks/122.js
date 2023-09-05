@@ -20,7 +20,7 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([swr_
 
 function useGame(gameId) {
     const { token } = (0,_useAuth__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Z)();
-    const url = `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}`;
+    const url = `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}`;
     const response = (0,swr__WEBPACK_IMPORTED_MODULE_0__["default"])(url, (url)=>(0,_utils_fetcher__WEBPACK_IMPORTED_MODULE_2__/* .fetcher */ ._)(url, token));
     return response;
 }
@@ -58,9 +58,9 @@ const getKey = (pageIndex, previousPageData, gameId, categories, { search, paren
     if (boardType) query.boardType = boardType;
     if (pageIndex > 0) query.afterCursor = previousPageData?.data.cursor.afterCursor;
     const queryString = (0,querystring__WEBPACK_IMPORTED_MODULE_1__.stringify)(query);
-    if (search) return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board/search?${queryString}`;
-    if (parentId) return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board/getChild/${parentId}?${queryString}`;
-    else return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board?${queryString}`;
+    if (search) return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board/search?${queryString}`;
+    if (parentId) return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board/getChild/${parentId}?${queryString}`;
+    else return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/game/${gameId}/board?${queryString}`;
 };
 function useGameBoardList(categories, gameId, settings = {}) {
     const { token } = (0,_useAuth__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)();

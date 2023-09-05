@@ -1729,9 +1729,9 @@ const getKey = (pageIndex, previousPageData, categories, { search, parentId, boa
     if (boardType) query.boardType = boardType;
     if (pageIndex > 0) query.afterCursor = previousPageData?.data.cursor.afterCursor;
     const queryString = (0,querystring__WEBPACK_IMPORTED_MODULE_1__.stringify)(query);
-    if (search) return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/search?${queryString}`;
-    if (parentId) return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/getChild/${parentId}?${queryString}`;
-    else return `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/community/board?${queryString}`;
+    if (search) return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/search?${queryString}`;
+    if (parentId) return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/getChild/${parentId}?${queryString}`;
+    else return `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/community/board?${queryString}`;
 };
 function useBoardList(categories, settings = {}) {
     const { token } = (0,_useAuth__WEBPACK_IMPORTED_MODULE_3__/* ["default"] */ .Z)();
@@ -1905,7 +1905,7 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([axio
 axios__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
 async function onLikeClick({ data: { boardId, token } }, currentLike) {
-    const url = `${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/${boardId}/like`; // PATCH 요청을 보낼 엔드포인트 URL
+    const url = `${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/community/board/${boardId}/like`; // PATCH 요청을 보낼 엔드포인트 URL
     const headers = {
         "Content-Type": "application/json",
         Authorization: `${token}`
@@ -1945,7 +1945,7 @@ var __webpack_async_dependencies__ = __webpack_handle_async_dependencies__([axio
 axios__WEBPACK_IMPORTED_MODULE_0__ = (__webpack_async_dependencies__.then ? (await __webpack_async_dependencies__)() : __webpack_async_dependencies__)[0];
 
 async function uploadPost(post, token) {
-    const { data } = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000"}/community/board`, post, {
+    const { data } = await axios__WEBPACK_IMPORTED_MODULE_0__["default"].post(`${"http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000"}/community/board`, post, {
         headers: {
             "Content-Type": "application/json",
             Authorization: `${token}`
