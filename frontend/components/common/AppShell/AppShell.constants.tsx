@@ -1,8 +1,8 @@
 export const HEADER_LINKS = [
-  // {
-  //   label: "소개",
-  //   link: "/",
-  // },
+  {
+    label: "소개",
+    link: "/",
+  },
   {
     label: "게임",
     link: "/game",
