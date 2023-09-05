@@ -5,8 +5,8 @@
   "devFiles": [],
   "ampDevFiles": [],
   "lowPriorityFiles": [
-    "static/7MI5KXzNJfyO8tT70Bxq6/_buildManifest.js",
-    "static/7MI5KXzNJfyO8tT70Bxq6/_ssgManifest.js"
+    "static/JlftzJCPlXSFMFnx2hswx/_buildManifest.js",
+    "static/JlftzJCPlXSFMFnx2hswx/_ssgManifest.js"
   ],
   "rootMainFiles": [],
   "pages": {
@@ -20,7 +20,7 @@
       "static/chunks/webpack-6c3759321fc0b2c3.js",
       "static/chunks/framework-305cb810cde7afac.js",
       "static/chunks/main-4a0bed4c1674b11f.js",
-      "static/chunks/pages/_app-cdb2d5e6eec8ac50.js"
+      "static/chunks/pages/_app-070a2ac23bfb7cb3.js"
     ],
     "/_error": [
       "static/chunks/webpack-6c3759321fc0b2c3.js",
@@ -92,14 +92,14 @@
       "static/chunks/180-0fa3820afde86ddb.js",
       "static/chunks/830-347c4e59dbef6c19.js",
       "static/chunks/213-d8e5871d2ac8b7a1.js",
-      "static/chunks/pages/game/[id]-c3067427a6e0adf3.js"
+      "static/chunks/pages/game/[id]-3c822eb014cd7509.js"
     ],
     "/game/allGame": [
       "static/chunks/webpack-6c3759321fc0b2c3.js",
       "static/chunks/framework-305cb810cde7afac.js",
       "static/chunks/main-4a0bed4c1674b11f.js",
       "static/chunks/436-16df0fd5c0f2b1a5.js",
-      "static/chunks/pages/game/allGame-f0c9121970a5fabb.js"
+      "static/chunks/pages/game/allGame-60d66b0fdfd8ce97.js"
     ],
     "/game/developStory": [
       "static/chunks/webpack-6c3759321fc0b2c3.js",
