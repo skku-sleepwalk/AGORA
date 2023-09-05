@@ -20,7 +20,8 @@ const getKey = (
     });
   }
   // return `NEXT_PUBLIC_API_URL/users/${userId}/profile/written-community-board${queryString}`;
-  else return `http://localhost:8000/users/${userId}/profile/written-community-board${queryString}`; //작동X해야함
+  else
+    return `${process.env.NEXT_PUBLIC_API_ENDPOINT}/users/${userId}/profile/written-community-board${queryString}`; //작동X해야함
 };
 
 function useMyCommunityPost() {
