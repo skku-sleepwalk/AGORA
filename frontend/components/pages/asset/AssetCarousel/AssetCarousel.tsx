@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { useAssetCarouselStyles } from "./AssetCarousel.styles";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
-import { GameSrcValues } from "../../game/MainCarousel/MainCarousel.constants";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
 import { useListState, useMediaQuery } from "@mantine/hooks";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
@@ -19,7 +18,7 @@ export function AssetCarousel({ imgUrls }: AssetCarouselProps) {
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
   const autoplay = useRef(emblaCarouselAutoplay({ delay: 4000 }));
 
-  const [values] = useListState(imgUrls?.map((url) => ({ src: url })) || GameSrcValues);
+  const [values] = useListState(imgUrls?.map((url) => ({ src: url })));
 
   const lgScreen = useMediaQuery("(max-width: 820px)");
   const smScreen = useMediaQuery("(max-width: 540px)");
