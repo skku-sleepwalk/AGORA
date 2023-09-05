@@ -42,16 +42,10 @@ export function GamePlayModal({ onCloseClick, postData }: GamePlayModalProps) {
   return (
     <Stack spacing={"xs"}>
       <Group>
-        <Avatar
-          size={"3.75rem"}
-          radius={"md"}
-          src={
-            "https://play-lh.googleusercontent.com/He92papZcOmkgTi1sLHXQQb02aoyRtJ8ml96njM_cSAcpHhILvxMjhLix4mYEIKXPq4=s96-rw"
-          }
-        />
+        <Avatar size={"3.75rem"} radius={"md"} src={"/images/gameIcon.svg"} />
         <Stack spacing={"xs"}>
           <Text fw={"bold"} fz={20}>
-            {postData.store?.title}
+            {postData.title}
           </Text>
           <Text fz={16}>
             플레이한 시간:{" "}
