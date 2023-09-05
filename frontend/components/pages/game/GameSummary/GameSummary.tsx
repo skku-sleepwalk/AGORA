@@ -10,7 +10,6 @@ import {
   Center,
   Box,
   Modal,
-  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useGameSummaryStyles } from "./GameSummary.styles";
@@ -32,7 +31,7 @@ interface GameSummaryProps {
 
 export function GameSummary({ postData }: GameSummaryProps) {
   const { classes, cx } = useGameSummaryStyles();
-  const { token } = useAuth();
+  const { user, token, openSignInModal } = useAuth();
 
   const [tagModalOpened, { open: tagModalOpen, close: tagModalClose }] = useDisclosure(false);
   const [playModalOpened, { open: playModalOpen, close: playModalClose }] = useDisclosure(false);
@@ -97,15 +96,9 @@ export function GameSummary({ postData }: GameSummaryProps) {
       <Stack spacing={"1rem"} className={classes.stack}>
         <Group position="apart">
           <Group>
-            <Avatar
-              size={"3.75rem"}
-              radius={"md"}
-              src={
-                "https://play-lh.googleusercontent.com/He92papZcOmkgTi1sLHXQQb02aoyRtJ8ml96njM_cSAcpHhILvxMjhLix4mYEIKXPq4=s96-rw"
-              }
-            />
+            <Avatar size={"3.75rem"} radius={"md"} src={"/images/gameIcon.svg"} />
             <Text fw={"bold"} fz={20}>
-              {postData.store?.title}
+              {postData.title}
             </Text>
           </Group>
           <Group spacing={"xs"}>
@@ -131,12 +124,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
                 <Text className={classes.grayText} fw={"bold"}>
                   개발사
                 </Text>
-                <Text
-                  className={classes.blueText}
-                  fw={"bold"}
-                  component="a"
-                  href="https://mantine.dev"
-                >
+                <Text className={classes.blueText} fw={"bold"} component="a" href="#">
                   {postData.store?.developer}
                 </Text>
               </Group>
@@ -162,12 +150,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
               <Text className={classes.grayText} fw={"bold"}>
                 배급사
               </Text>
-              <Text
-                className={classes.blueText}
-                fw={"bold"}
-                component="a"
-                href="https://mantine.dev"
-              >
+              <Text className={classes.blueText} fw={"bold"} component="a" href="#">
                 {postData.store?.distributor}
               </Text>
             </Group>
@@ -181,7 +164,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
           <Group spacing={"0.5rem"} className={classes.blueText}>
             {postData.genres?.map((data) => {
               return (
-                <Text fw={"bold"} component="a" href="https://mantine.dev">
+                <Text fw={"bold"} component="a" href="/game/allGame">
                   {data.name}
                 </Text>
               );
@@ -192,7 +175,7 @@ export function GameSummary({ postData }: GameSummaryProps) {
           <Text className={classes.grayText} fw={"bold"}>
             이용 등급
           </Text>
-          <Text className={classes.blueText} fw={"bold"} component="a" href="https://mantine.dev">
+          <Text className={classes.blueText} fw={"bold"} component="a" href="#">
             12세 이용가
           </Text>
         </Group>
@@ -255,7 +238,16 @@ export function GameSummary({ postData }: GameSummaryProps) {
               </Center>
             </Stack>
           </Button> */}
-          <Button className={cx(classes.sellButton)} onClick={playModalOpen}>
+          <Button
+            className={cx(classes.sellButton)}
+            onClick={
+              user
+                ? playModalOpen
+                : () => {
+                    openSignInModal();
+                  }
+            }
+          >
             <Stack spacing={"sm"}>
               <Center>
                 <Text fz={28}>게임 시작</Text>

@@ -7,10 +7,17 @@ export interface CustomNativeSelect {
   data: string[];
   defaultValue: string;
   height?: string;
+  position?: "start" | "end";
   onChange: (value: string) => void;
 }
 
-export function CustomNativeSelect({ data, defaultValue, height, onChange }: CustomNativeSelect) {
+export function CustomNativeSelect({
+  data,
+  defaultValue,
+  height,
+  position,
+  onChange,
+}: CustomNativeSelect) {
   const { classes, cx } = useCustomNativeSelectStyles({ height });
   const theme = useMantineTheme();
 
@@ -27,7 +34,11 @@ export function CustomNativeSelect({ data, defaultValue, height, onChange }: Cus
   ));
 
   return (
-    <Menu position="bottom-start" width={"7rem"} shadow="sm">
+    <Menu
+      position={position === "start" ? "bottom-start" : "bottom-end"}
+      width={"7rem"}
+      shadow="sm"
+    >
       <Menu.Target>
         <UnstyledButton className={classes.button} variant="outline">
           <Group spacing={"0.3rem"}>

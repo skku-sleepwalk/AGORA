@@ -6,8 +6,8 @@ import useBoardList from "../../../../../hooks/useBoardList";
 import { createContext, useContext, useEffect } from "react";
 import InvisibleButton from "../../../../common/InvisibleButton/InvisibleButton";
 import { showNotification } from "../../../../../utils/notifications";
-import { CommunityContext } from "../../../../../pages/community";
 import useAuth from "../../../../../hooks/useAuth";
+import { PostContext } from "../PostDetailViewer";
 
 interface CommentSectionProps {
   parentId: string;
@@ -36,7 +36,7 @@ function CommentSection({
   } = useBoardList(categoryNames, {
     parentId,
   });
-  const { mutatePost } = useContext(CommunityContext);
+  const { mutatePostDetail } = useContext(PostContext);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -61,7 +61,7 @@ function CommentSection({
                 } else {
                   return onSubmitComment?.(content, parentId).then(() => {
                     mutateComment();
-                    mutatePost();
+                    mutatePostDetail();
                     showNotification("댓글 등록 완료", "댓글이 성공적으로 등록되었습니다.");
                   });
                 }

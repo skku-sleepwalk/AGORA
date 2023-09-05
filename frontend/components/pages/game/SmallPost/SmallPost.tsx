@@ -1,11 +1,6 @@
 import CardContainer from "../../../common/CardContainer/CardContainer";
-import UserInfoSmall from "../../../common/UserInfoSmall/UserInfoSmall";
-
-import { Group } from "@mantine/core";
+import { Avatar, Group, Image } from "@mantine/core";
 import { Text } from "@mantine/core";
-import { User } from "../../../../types/api/user";
-import { Rating } from "@mantine/core";
-import { IconHeart } from "@tabler/icons-react";
 import { useState } from "react";
 import { CSSProperties } from "react";
 import { Game } from "../../../../types/api/game/game";
@@ -87,17 +82,22 @@ export default function ({ post, thumbnailUrl }: PostViewerProps) {
           {newarray}
         </Text>
         {/* 여기 맵이든 뭐든 해야할듯 */}
-
         <Text font-weight="bold" size={20} style={margins}>
-          {post.store.title}
+          {post.title}
         </Text>
-
         <Group position="apart" style={margins}>
-          <UserInfoSmall user={post.author} />
+          <Group spacing={7}>
+            <Avatar
+              src="https://avatars.githubusercontent.com/u/52057157?v=4"
+              radius="xl"
+              size={20}
+            />
+            <Text size="xs">{post.store.developer}</Text>
+          </Group>
           <Group spacing={0}>
-            <Group spacing={5} style={{ marginRight: "1rem" }}>
-              <IconHeart size={15} stroke={1.3} />
-              <Text size={"xs"}>({post.likeCount})</Text>
+            <Group spacing={4} style={{ marginRight: "1rem" }}>
+              <Image width={"0.8rem"} height={"0.65rem"} src="/images/HeartFilled.svg" />
+              <Text size={"xs"}>{post.likeCount}</Text>
             </Group>
           </Group>
         </Group>

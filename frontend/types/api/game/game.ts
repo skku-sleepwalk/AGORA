@@ -15,6 +15,8 @@ export interface Game {
   likeCount: number;
   like: boolean;
   isPlayable: boolean;
+  playtime: number;
+  remaintime: number;
   store: GameStore;
   author: User;
   rating: number;

@@ -1,8 +1,8 @@
 export const HEADER_LINKS = [
-  {
-    label: "소개",
-    link: "/",
-  },
+  // {
+  //   label: "소개",
+  //   link: "/",
+  // },
   {
     label: "게임",
     link: "/game",
@@ -15,8 +15,8 @@ export const HEADER_LINKS = [
     label: "에셋",
     link: "/asset",
   },
-  {
-    label: "기타",
-    link: "/etc",
-  },
+  // {
+  //   label: "기타",
+  //   link: "/etc",
+  // },
 ];

@@ -68,7 +68,8 @@ function AuthProvider({ children }: AuthProviderProps) {
               });
               setToken(response.data.email);
               mutateUser();
-              showNotification("로그인 완료!", "로그인이 완료되었습니다.");
+              location.reload();
+              // showNotification("로그인 완료!", "로그인이 완료되었습니다.");
             }
             return response;
           });
@@ -79,6 +80,7 @@ function AuthProvider({ children }: AuthProviderProps) {
           cookie.remove("token");
           setToken(undefined);
           mutateUser();
+          location.reload();
         },
         openSignInModal: () => {
           setSignInModalOpened(true);

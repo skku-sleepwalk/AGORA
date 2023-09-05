@@ -1,35 +1,19 @@
 import { useRef, useState } from "react";
-import { Avatar, BackgroundImage, Image, Box, Group, Stack, Text, Container } from "@mantine/core";
-import { useListState, useMediaQuery } from "@mantine/hooks";
+import { Avatar, BackgroundImage, Image, Group, Stack, Text, Container } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { Carousel, Embla, useAnimationOffsetEffect } from "@mantine/carousel";
 import emblaCarouselAutoplay from "embla-carousel-autoplay";
-import { GameSrcValues } from "./MainCarousel.constants";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useMainCarouselStyles } from "./MainCarousel.styles";
-
-function processString(input: string): string {
-  if (!input) {
-    return "";
-  }
-
-  if (input.length <= 75) {
-    return input;
-  }
-
-  let processedString = input.slice(0, 75);
-  if (input.length > 150) {
-    processedString += "...";
-  }
-  return processedString;
-}
+import { GetGameListResponse } from "../../../../types/api/game/game";
 
 interface MainCarouselProps {
-  isMain?: boolean;
-  isInfo?: boolean;
+  type: "main" | "info";
+  data?: GetGameListResponse[] | undefined;
   imgUrls?: string[] | undefined;
 }
 
-export function MainCarousel({ isMain, isInfo, imgUrls }: MainCarouselProps) {
+export function MainCarousel({ type, imgUrls, data }: MainCarouselProps) {
   const { classes, cx } = useMainCarouselStyles();
 
   const TRANSITION_DURATION = 200;
@@ -37,46 +21,60 @@ export function MainCarousel({ isMain, isInfo, imgUrls }: MainCarouselProps) {
   useAnimationOffsetEffect(embla, TRANSITION_DURATION);
   const autoplay = useRef(emblaCarouselAutoplay({ delay: 4000 }));
 
-  const [values] = useListState(imgUrls?.map((url) => ({ src: url })) || GameSrcValues);
-
   const lgScreen = useMediaQuery("(max-width: 820px)");
   const smScreen = useMediaQuery("(max-width: 540px)");
 
-  const GameCarouselSlides = values.map((value) => (
-    <Carousel.Slide>
-      {isMain && (
-        <BackgroundImage
-          className={classes.backgroundImage}
-          component="a"
-          href={value.href}
-          src={value.src}
-          h={"100%"}
-        >
-          <Stack className={classes.gameIntro}>
-            <Group>
-              <Avatar className={classes.gameAvatar} radius={"20%"} src={value.src} />
-              <Text className={classes.gameName} color="#fff">
-                {value.gameName}
-              </Text>
-            </Group>
-            <Box className={classes.gameExplain}>{processString(value.gameExplain)}</Box>
-          </Stack>
-        </BackgroundImage>
-      )}
-      {isInfo && (
-        <Container className={classes.imageContainer}>
-          <Image
-            className={classes.image}
-            width={"100%"}
-            height={"100%"}
-            radius={"lg"}
-            fit="contain"
-            src={value.src}
-          />
-        </Container>
-      )}
-    </Carousel.Slide>
-  ));
+  const GameCarouselSlides =
+    (type === "main" && data === undefined) || (type === "info" && imgUrls === undefined) ? (
+      <Carousel.Slide>
+        <Image src={"/images/nonImageRectangle.svg"} fit="fill" />
+      </Carousel.Slide>
+    ) : type === "main" ? (
+      data?.map((value) => {
+        return value.data.data.map((data) => (
+          <Carousel.Slide>
+            <BackgroundImage
+              className={classes.backgroundImage}
+              component="a"
+              href={`/game/${data.id}`}
+              src={data.store.imgUrls[0]}
+              h={"100%"}
+            >
+              <Stack className={classes.gameIntro}>
+                <Group>
+                  <Avatar
+                    className={classes.gameAvatar}
+                    radius={"20%"}
+                    src={"images/gameIcon.svg"}
+                  />
+                  <Text className={classes.gameName} color="#fff">
+                    {data.title}
+                  </Text>
+                </Group>
+                <Text className={classes.gameExplain} lineClamp={2}>
+                  {data.title}을 Agora 베타테스트에서 즐겨보세요!!
+                </Text>
+              </Stack>
+            </BackgroundImage>
+          </Carousel.Slide>
+        ));
+      })
+    ) : (
+      imgUrls?.map((url) => (
+        <Carousel.Slide>
+          <Container className={classes.imageContainer}>
+            <Image
+              className={classes.image}
+              width={"100%"}
+              height={"100%"}
+              radius={"lg"}
+              fit="contain"
+              src={url}
+            />
+          </Container>
+        </Carousel.Slide>
+      ))
+    );
 
   return (
     <Carousel

@@ -4,52 +4,34 @@ import { MainTab } from "../../components/pages/game/MainTab/MainTab";
 import { MainCarousel } from "../../components/pages/game/MainCarousel/MainCarousel";
 import useGameList from "../../hooks/game/useGameList";
 import { Stack } from "@mantine/core";
+import useAllGame from "../../hooks/game/useAllGame";
 
 export default function Main() {
   const genreName = ["전략", "디펜스"];
 
   const {
-    data: postData1,
-    isLoading: isPostLoading1,
-    setSize: setPostSize1,
-    mutate: mutatePost1,
-    isEmpty: isEmpty1,
-  } = useGameList({
-    genreName: genreName ? genreName[0] : undefined,
-  });
-
-  const {
-    data: postData2,
-    isLoading: isPostLoading2,
-    setSize: setPostSize2,
-    mutate: mutatePost2,
-    isEmpty: isEmpty2,
-  } = useGameList({
-    genreName: genreName ? genreName[1] : undefined,
-  });
+    data: postData,
+    isLoading: isPostLoading,
+    setSize: setPostSize,
+    mutate: mutatePost,
+    isEmpty: isEmpty,
+  } = useAllGame({ search: "", genreNames: genreName });
 
   return (
-    <MainLayout tapSection={<MainTab active="main" />} upSection={<MainCarousel isMain={true} />}>
+    <MainLayout
+      tapSection={<MainTab active="main" />}
+      upSection={<MainCarousel type="main" data={postData} />}
+    >
       <Stack spacing={0}>
         <SmallPosts
           information={{
-            data: postData1,
-            isLoading: isPostLoading1,
-            setSize: setPostSize1,
-            mutate: mutatePost1,
-            isEmpty1,
+            data: postData,
+            isLoading: isPostLoading,
+            setSize: setPostSize,
+            mutate: mutatePost,
+            isEmpty1: isEmpty,
           }}
-          title={genreName[0]}
-        ></SmallPosts>
-        <SmallPosts
-          information={{
-            data: postData2,
-            isLoading: isPostLoading2,
-            setSize: setPostSize2,
-            mutate: mutatePost2,
-            isEmpty2,
-          }}
-          title={genreName[1]}
+          title={"Agora 베타테스트 스페셜"}
         ></SmallPosts>
       </Stack>
     </MainLayout>

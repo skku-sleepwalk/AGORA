@@ -14,6 +14,7 @@ import { editGameBoard } from "../../../../../utils/api/game/gameBoard/editGameB
 export interface GameBoardWriterProps {
   opened: boolean;
   gameId: string;
+  developerId: string;
   close: () => void;
   fullWidth?: boolean;
   editProps?: {
@@ -27,17 +28,20 @@ export interface GameBoardWriterProps {
 export function GameBoardWriter({
   opened,
   gameId,
+  developerId,
   close,
   fullWidth,
   editProps,
 }: GameBoardWriterProps) {
   const { classes, cx } = useGameBoardWriterStyles({ fullWidth });
-  const { token } = useAuth();
+  const { user, token } = useAuth();
+
   // 카테고리 관련
-  const isDeveloper = true;
   const developerData = ["공지사항", "업데이트", "개발일지", "리뷰", "공략", "뻘글"];
   const userData = ["리뷰", "공략", "뻘글"];
-  const [sectionValue, setSectionValue] = useState(isDeveloper ? developerData[0] : userData[0]);
+  const [sectionValue, setSectionValue] = useState(
+    developerId === user?.id ? developerData[0] : userData[0]
+  );
   const form = useForm({
     initialValues: {
       title: editProps ? editProps.title : "",
@@ -80,7 +84,7 @@ export function GameBoardWriter({
               data-autofocus
             />
             <CustomNativeSelect
-              data={isDeveloper ? developerData : userData}
+              data={developerId === user?.id ? developerData : userData}
               defaultValue={sectionValue}
               height="2.375rem"
               onChange={(value) => {
