@@ -1,5 +1,4 @@
 import {
-  Anchor,
   Button,
   Group,
   Header as MantineHeader,
@@ -14,10 +13,6 @@ import { UserMenu } from "./UserMenu/UserMenu";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useAuth from "../../../../hooks/useAuth";
-import { resetModalStyles } from "../../../../styles/resetStyle";
-import SignInForm from "../../SignInForm/SignInForm";
-import { sign } from "crypto";
-import SignUpForm from "../../SignUpForm/SignUpForm";
 
 export interface HeaderProps {
   links: { label: string; link: string }[];
@@ -34,9 +29,11 @@ export function Header({ links }: HeaderProps) {
       <MantineHeader height={69} className={classes.header}>
         <Group className={classes.container} position="apart" noWrap>
           <Group spacing={40} className={classes.fullHeight} noWrap>
-            <Text size={32} weight="bold" color="white">
-              Agora
-            </Text>
+            <a href="/" style={{ textDecoration: "none" }}>
+              <Text size={32} weight="bold" color="white">
+                Agora
+              </Text>
+            </a>
             <Group spacing={0} className={classes.fullHeight} noWrap>
               {links.map((link) => (
                 <Link
