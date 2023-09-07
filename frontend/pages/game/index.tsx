@@ -7,7 +7,18 @@ import { Stack } from "@mantine/core";
 import useAllGame from "../../hooks/game/useAllGame";
 
 export default function Main() {
-  const genreName = ["전략", "디펜스"];
+  const genreName = [
+    "디펜스",
+    "비주얼노벨",
+    "시뮬레이션",
+    "액션",
+    "어드벤처",
+    "전략",
+    "캐주얼",
+    "퍼즐",
+    "플랫포머",
+    "RPG",
+  ];
 
   const {
     data: postData,
