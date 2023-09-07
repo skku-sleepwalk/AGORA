@@ -19,16 +19,6 @@ export default function Main() {
     "플랫포머",
     "RPG",
   ];
-  //   { id: "디펜스", checked: true },
-  // { id: "비주얼노벨", checked: true },
-  // { id: "시뮬레이션", checked: true },
-  // { id: "액션", checked: true },
-  // { id: "어드벤처", checked: true },
-  // { id: "전략", checked: true },
-  // { id: "캐주얼", checked: true },
-  // { id: "퍼즐", checked: true },
-  // { id: "플랫포머", checked: true },
-  // { id: "RPG", checked: true },
 
   const {
     data: postData,
