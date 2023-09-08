@@ -33,7 +33,7 @@ export function UserMenu({ image, name }: UserMenuProps) {
         <Menu.Item
           icon={<IconUser />}
           onClick={() => {
-            router.replace("http://localhost:3000/mypage");
+            router.push("/mypage");
           }}
         >
           마이페이지

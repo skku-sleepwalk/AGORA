@@ -849,7 +849,7 @@ function PostViewer({ post, thumbnailUrl }) {
                             center: false,
                             onClick: (e)=>{
                                 e.stopPropagation();
-                                router.replace(`http://localhost:3000/community/${post.parent?.id}`);
+                                router.push(`/community/${post.parent?.id}`);
                             },
                             children: /*#__PURE__*/ (0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsxs)(_mantine_core__WEBPACK_IMPORTED_MODULE_1__.Group, {
                                 spacing: 0,
@@ -1655,7 +1655,7 @@ function SideBar({ onSearchSubmit }) {
                                 (0,notifications/* showError */.x2)("검색어를 입력해주세요.", "검색 창에 아무 내용도 입력하지 않으셨습니다.");
                             } else {
                                 onSearchSubmit?.(values.searchKeyword);
-                                router.replace(`http://localhost:3000/community?search=${values.searchKeyword}`);
+                                router.push(`/community?search=${values.searchKeyword}`);
                             }
                         }),
                         children: /*#__PURE__*/ jsx_runtime.jsx(core_.TextInput, {

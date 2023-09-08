@@ -93,7 +93,7 @@ function PostDetailViewer({ post }: PostDetailViewerProps) {
                 center={false}
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.replace(`http://localhost:3000/community/${post.parent?.id}`);
+                  router.replace(`/community/${post.parent?.id}`);
                 }}
               >
                 <Group spacing={0}>

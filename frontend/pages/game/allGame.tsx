@@ -12,8 +12,16 @@ interface DataItem {
 }
 export default function allGame() {
   const [genreList, setGenre] = useState([
-    { id: "전략", checked: true },
     { id: "디펜스", checked: true },
+    { id: "비주얼노벨", checked: true },
+    { id: "시뮬레이션", checked: true },
+    { id: "액션", checked: true },
+    { id: "어드벤처", checked: true },
+    { id: "전략", checked: true },
+    { id: "캐주얼", checked: true },
+    { id: "퍼즐", checked: true },
+    { id: "플랫포머", checked: true },
+    { id: "RPG", checked: true },
   ]);
 
   const [search, setsearch] = useState("");
@@ -75,6 +83,7 @@ export default function allGame() {
                 display: "flex",
                 justifyContent: "center",
                 paddingTop: "2rem",
+                width: "100%",
               }}
             >
               {/* 게임들 */}
@@ -90,16 +99,14 @@ export default function allGame() {
                   style={{
                     display: "flex",
                     flexDirection: "row",
+                    gap: "1rem",
+                    flexWrap: "wrap",
                   }}
                 >
                   {
                     postData?.map((data) => {
                       return data.data.data.map((data) => {
-                        return (
-                          <div style={{ width: "85%", height: "85%" }}>
-                            <SmallPost key={data?.id || ""} post={data || null}></SmallPost>
-                          </div>
-                        );
+                        return <SmallPost key={data?.id || ""} post={data || null}></SmallPost>;
                       });
                     })
                     // postData?.[0]?.data?.data[0]?.id != undefined && (

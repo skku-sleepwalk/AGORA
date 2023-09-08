@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class HttpClientService {
     private final HttpClient client;
-    private final String baseUrl = "http://ec2-43-207-85-73.ap-northeast-1.compute.amazonaws.com:8000";
+    private final String baseUrl = "http://ec2-3-112-178-120.ap-northeast-1.compute.amazonaws.com:8000";
 
     public HttpClientService() {
         this.client = HttpClient.newHttpClient();
