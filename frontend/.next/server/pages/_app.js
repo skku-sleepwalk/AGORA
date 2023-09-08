@@ -384,7 +384,7 @@ function UserMenu({ image, name }) {
                     /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_mantine_core__WEBPACK_IMPORTED_MODULE_1__.Menu.Item, {
                         icon: /*#__PURE__*/ react_jsx_runtime__WEBPACK_IMPORTED_MODULE_0__.jsx(_tabler_icons_react__WEBPACK_IMPORTED_MODULE_2__.IconUser, {}),
                         onClick: ()=>{
-                            router.replace("http://localhost:3000/mypage");
+                            router.push("/mypage");
                         },
                         children: "마이페이지"
                     }),

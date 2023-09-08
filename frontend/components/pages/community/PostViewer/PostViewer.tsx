@@ -122,7 +122,7 @@ function PostViewer({ post, thumbnailUrl }: PostViewerProps) {
                 center={false}
                 onClick={(e) => {
                   e.stopPropagation();
-                  router.replace(`http://localhost:3000/community/${post.parent?.id}`);
+                  router.push(`/community/${post.parent?.id}`);
                 }}
               >
                 <Group spacing={0}>
