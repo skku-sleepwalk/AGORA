@@ -28,7 +28,7 @@ export function MypageTab({ activeTab, setActiveTab }: GameTabProps) {
         >
           플레이한 게임
         </Tabs.Tab>
-        <Tabs.Tab
+        {/* <Tabs.Tab
           value="purchasedAssets"
           className={cx(
             smallScreen ? classes.tabItem_S : classes.tabItem_B,
@@ -68,7 +68,7 @@ export function MypageTab({ activeTab, setActiveTab }: GameTabProps) {
           onClick={handleScroll.ontabClickFast}
         >
           업로드한 애셋
-        </Tabs.Tab>
+        </Tabs.Tab> */}
       </Tabs.List>
     </Tabs>
   );

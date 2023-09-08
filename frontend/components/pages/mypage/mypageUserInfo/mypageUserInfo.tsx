@@ -17,7 +17,7 @@ export function MypageUserInfo() {
         <Group className={classes.group}>
           <Avatar
             className={classes.avatar}
-            src="https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=https%3A%2F%2Fblog.kakaocdn.net%2Fdn%2F1Tg4y%2FbtqDurHhxax%2FrFjK7yUIuO0fwMsZsvubU0%2Fimg.jpg"
+            src="https://avatars.githubusercontent.com/u/52057157?v=4"
             radius="50%"
           />
           <Stack>
@@ -25,7 +25,7 @@ export function MypageUserInfo() {
               {user?.name}
             </Text>
             <Text className={classes.userinfo} color="white">
-              팔로워 7명
+              팔로워 0명
             </Text>
           </Stack>
         </Group>
