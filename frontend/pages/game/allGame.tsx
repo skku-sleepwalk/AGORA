@@ -78,50 +78,27 @@ export default function allGame() {
               {/* 검색창 */}
               <SearchBar setsearch={setsearch}></SearchBar>
             </div>
+
+            {/* 게임들 */}
+
             <div
               style={{
                 display: "flex",
-                justifyContent: "center",
-                paddingTop: "2rem",
+                flexDirection: "row",
+                gap: "1rem",
                 width: "100%",
+                marginTop: "2rem",
+                marginLeft: "5rem",
+                flexWrap: "wrap",
               }}
             >
-              {/* 게임들 */}
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  width: "80%",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    gap: "1rem",
-                    flexWrap: "wrap",
-                  }}
-                >
-                  {
-                    postData?.map((data) => {
-                      return data.data.data.map((data) => {
-                        return <SmallPost key={data?.id || ""} post={data || null}></SmallPost>;
-                      });
-                    })
-                    // postData?.[0]?.data?.data[0]?.id != undefined && (
-                    //   <div style={{ width: "85%", height: "85%" }}>
-                    //     <SmallPost
-                    //       key={postData[0].data.data[0]?.id || ""}
-                    //       post={postData[0].data.data[0] || null}
-                    //     ></SmallPost>
-                    //   </div>
-                    // )
-                  }
+              {postData?.map((data) => {
+                return data.data.data.map((data) => {
+                  return <SmallPost key={data?.id || ""} post={data || null}></SmallPost>;
+                });
+              })}
 
-                  {/* 스토리 4개 */}
-                </div>
-              </div>
+              {/* 스토리 4개 */}
             </div>
           </div>
         </div>
