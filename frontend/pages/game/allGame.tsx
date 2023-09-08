@@ -83,6 +83,7 @@ export default function allGame() {
                 display: "flex",
                 justifyContent: "center",
                 paddingTop: "2rem",
+                width: "100%",
               }}
             >
               {/* 게임들 */}
@@ -98,16 +99,14 @@ export default function allGame() {
                   style={{
                     display: "flex",
                     flexDirection: "row",
+                    gap: "1rem",
+                    flexWrap: "wrap",
                   }}
                 >
                   {
                     postData?.map((data) => {
                       return data.data.data.map((data) => {
-                        return (
-                          <div style={{ width: "85%", height: "85%" }}>
-                            <SmallPost key={data?.id || ""} post={data || null}></SmallPost>
-                          </div>
-                        );
+                        return <SmallPost key={data?.id || ""} post={data || null}></SmallPost>;
                       });
                     })
                     // postData?.[0]?.data?.data[0]?.id != undefined && (
